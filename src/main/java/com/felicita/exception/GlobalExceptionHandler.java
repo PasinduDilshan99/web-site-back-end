@@ -61,4 +61,19 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
+
+    @ExceptionHandler(UpdateFailedErrorExceptionHandler.class)
+    public ResponseEntity<CommonResponse<String>> handleUpdateFailedErrorException(UpdateFailedErrorExceptionHandler e) {
+        logger.error("{} Update Failed Error Exception: {} {}", Constant.ERROR_DOTS_START, e.getMessage(), Constant.ERROR_DOTS_END);
+
+        CommonResponse<String> response = new CommonResponse<>(
+                CommonResponseMessages.BAD_REQUEST_CODE,
+                CommonResponseMessages.BAD_REQUEST_STATUS,
+                CommonResponseMessages.BAD_REQUEST_MESSAGES,
+                e.getMessage(),
+                Instant.now()
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
 }
