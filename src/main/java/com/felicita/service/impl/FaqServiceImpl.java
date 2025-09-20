@@ -4,9 +4,11 @@ import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
 import com.felicita.model.enums.FaqItemStatus;
 import com.felicita.model.enums.HeroSectionItemStatus;
+import com.felicita.model.request.FaqViewCountUpdateRequest;
 import com.felicita.model.response.CommonResponse;
 import com.felicita.model.response.FaqResponse;
 import com.felicita.model.response.HeroSectionResponse;
+import com.felicita.model.response.UpdateResponse;
 import com.felicita.repository.FaqRepository;
 import com.felicita.service.FaqService;
 import com.felicita.util.CommonResponseMessages;
@@ -100,6 +102,43 @@ public class FaqServiceImpl implements FaqService {
             throw new InternalServerErrorExceptionHandler("Failed to fetch faq items from database");
         } finally {
             LOGGER.info("End fetching all visible faq items from repository");
+        }
+    }
+
+    @Override
+    public ResponseEntity<CommonResponse<UpdateResponse>> updateFaqViewCount(FaqViewCountUpdateRequest faqViewCountUpdateRequest) {
+        LOGGER.info("Start update faq view count from repository");
+        try {
+            FaqResponse faqResponse = faqRepository.getFaqItemById(faqViewCountUpdateRequest.getFaqId());
+
+            if (faqResponse != null) {
+                LOGGER.info("Fetched faq item successfully");
+                faqResponse.setFaqViewCount(faqResponse.getFaqViewCount() + 1);
+                faqResponse.setFaqLastView(Instant.now().atZone(java.time.ZoneId.systemDefault()).toLocalDateTime());
+                faqRepository.updateFaqViewCount(faqResponse);
+            }else{
+                LOGGER.warn("No faq item found in database");
+                throw new DataNotFoundErrorExceptionHandler("No faq item found");
+            }
+
+            return ResponseEntity.ok(
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            new UpdateResponse(
+                                    "Success fully update faq count",
+                                    faqViewCountUpdateRequest.getFaqId()
+                            ),
+                            Instant.now()
+                    )
+            );
+
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while updating faq items: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch faq items from database");
+        } finally {
+            LOGGER.info("End updating faq items from repository");
         }
     }
 }

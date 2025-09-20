@@ -1,18 +1,16 @@
 package com.felicita.controller;
 
+import com.felicita.model.request.FaqViewCountUpdateRequest;
 import com.felicita.model.response.CommonResponse;
 import com.felicita.model.response.FaqResponse;
-import com.felicita.model.response.NavBarResponse;
+import com.felicita.model.response.UpdateResponse;
 import com.felicita.service.FaqService;
-import com.felicita.service.NavBarService;
 import com.felicita.util.Constant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -42,6 +40,15 @@ public class FaqController {
         LOGGER.info("{} Start execute get all visible faq data {}", Constant.DOTS, Constant.DOTS);
         ResponseEntity<CommonResponse<List<FaqResponse>>> response = faqService.getAllVisibleFaqItems();
         LOGGER.info("{} End execute get all visible faq data {}", Constant.DOTS, Constant.DOTS);
+        return response;
+    }
+
+    @PutMapping(path = "/view-count")
+    public ResponseEntity<CommonResponse<UpdateResponse>> updateFaqViewCount(@RequestBody FaqViewCountUpdateRequest faqViewCountUpdateRequest){
+        LOGGER.info("{} Start execute update faq data {}", Constant.DOTS, Constant.DOTS);
+        LOGGER.info(faqViewCountUpdateRequest.toString());
+        ResponseEntity<CommonResponse<UpdateResponse>> response = faqService.updateFaqViewCount(faqViewCountUpdateRequest);
+        LOGGER.info("{} End execute update faq data {}", Constant.DOTS, Constant.DOTS);
         return response;
     }
 }

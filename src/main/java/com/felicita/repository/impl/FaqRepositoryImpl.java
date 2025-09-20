@@ -2,6 +2,7 @@ package com.felicita.repository.impl;
 
 import com.felicita.exception.DataAccessErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
+import com.felicita.exception.UpdateFailedErrorExceptionHandler;
 import com.felicita.model.response.FaqResponse;
 import com.felicita.queries.FaqQueries;
 import com.felicita.repository.FaqRepository;
@@ -72,5 +73,78 @@ public class FaqRepositoryImpl implements FaqRepository {
             throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching faq items");
         }
     }
+
+    @Override
+    public void updateFaqViewCount(FaqResponse faqResponse) {
+        String UPDATE_VIEW_COUNT = FaqQueries.UPDATE_VIEW_COUNT;
+
+        try {
+            int rowsAffected = jdbcTemplate.update(
+                    UPDATE_VIEW_COUNT,
+                    faqResponse.getFaqViewCount(),
+                    faqResponse.getFaqLastView(),
+                    faqResponse.getFaqId()
+            );
+
+            if (rowsAffected == 0) {
+                throw new UpdateFailedErrorExceptionHandler(
+                        "Failed to update view count for FAQ ID: " + faqResponse.getFaqId()
+                );
+            }
+
+            LOGGER.info("Successfully updated view count for FAQ ID {}", faqResponse.getFaqId());
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while updating view count for FAQ ID {}: {}",
+                    faqResponse.getFaqId(), ex.getMessage(), ex);
+            throw new UpdateFailedErrorExceptionHandler(
+                    "Database error: Failed to update view count for FAQ ID " + faqResponse.getFaqId()
+            );
+        }
+    }
+
+
+    @Override
+    public FaqResponse getFaqItemById(long faqId) {
+        String GET_FAQ_BY_ID = FaqQueries.GET_FAQ_BY_ID;
+
+        try {
+            return jdbcTemplate.queryForObject(GET_FAQ_BY_ID, new Object[]{faqId}, (rs, rowNum) -> {
+                FaqResponse response = new FaqResponse();
+
+                response.setFaqId(rs.getLong("FAQ_ID"));
+                response.setFaqQuestion(rs.getString("FAQ_QUESTION"));
+                response.setFaqAnswer1(rs.getString("FAQ_ANSWER1"));
+                response.setFaqAnswer2(rs.getString("FAQ_ANSWER2"));
+                response.setFaqAnswer3(rs.getString("FAQ_ANSWER3"));
+                response.setFaqAnswer4(rs.getString("FAQ_ANSWER4"));
+                response.setFaqAnswer5(rs.getString("FAQ_ANSWER5"));
+                response.setFaqDisplayAnswer(rs.getString("FAQ_DISPLAY_ASNWER"));
+                response.setFaqStatus(rs.getString("FAQ_STATUS"));
+                response.setFaqStatusStatus(rs.getString("FAQ_STATUS_STATUS"));
+                response.setFaqCreatedAt(rs.getTimestamp("FAQ_CREATED_AT") != null ?
+                        rs.getTimestamp("FAQ_CREATED_AT").toLocalDateTime() : null);
+                response.setFaqCreatedBy(rs.getLong("FAQ_CREATED_BY"));
+                response.setFaqUpdatedAt(rs.getTimestamp("FAQ_UPDATED_AT") != null ?
+                        rs.getTimestamp("FAQ_UPDATED_AT").toLocalDateTime() : null);
+                response.setFaqUpdatedBy(rs.getLong("FAQ_UPDATED_BY"));
+                response.setFaqTerminatedAt(rs.getTimestamp("FAQ_TERMINATED_AT") != null ?
+                        rs.getTimestamp("FAQ_TERMINATED_AT").toLocalDateTime() : null);
+                response.setFaqTerminatedBy(rs.getLong("FAQ_TERMINATED_BY"));
+                response.setFaqViewCount(rs.getObject("FAQ_VIEW_COUNT") != null ? rs.getInt("FAQ_VIEW_COUNT") : 0);
+                response.setFaqLastView(rs.getTimestamp("FAQ_LAST_VIEW") != null ?
+                        rs.getTimestamp("FAQ_LAST_VIEW").toLocalDateTime() : null);
+
+                return response;
+            });
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching FAQ ID {}: {}", faqId, ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler(
+                    "Database error: Failed to fetch FAQ item with ID " + faqId
+            );
+        }
+    }
+
 
 }
