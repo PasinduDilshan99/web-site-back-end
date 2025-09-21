@@ -20,4 +20,6 @@ public interface DestinationRepository {
     List<DestinationResponse> getAllActiveDestinations();
 
     List<TrendingDestinationResponse> getAllTrendingDestinations();
+
+    List<DestinationResponse> getDestinationByIds(List<Integer> destinationIds);
 }

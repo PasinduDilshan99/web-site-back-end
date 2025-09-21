@@ -234,4 +234,45 @@ public class DestinationQueries {
             LEFT JOIN common_status cs4
                 ON td.status_id = cs4.id
             """;
+
+    public static final String GET_DESTINATIONS_BY_ID = """
+    SELECT
+        d.id AS DESTINATION_ID,
+        d.name AS DESTINATION_NAME,
+        d.description AS DESTINATION_DESCRIPTION,
+        cs2.name AS DESTINATION_STATUS,
+        dc.name AS DESTINATION_CATEGORY,
+        dc.description AS DESTINATION_CATEGORY_DESCRIPTION,
+        dc.image_url AS DESTINATION_CATEGORY_IMAGE_URL,
+        cs1.name AS DESTINATION_CATEGORY_STATUS,
+        d.location AS DESTINATION_LOCATION,
+        d.rating AS DESTINATION_RATING,
+        d.popularity AS DESTINATION_POPULARITY,
+        d.created_at AS DESTINATION_CREATED_AT,
+        d.created_by AS DESTINATION_CREATED_BY,
+        d.updated_at AS DESTINATION_UPDATED_AT,
+        d.updated_by AS DESTINATION_UPDATED_BY,
+        d.terminated_at AS DESTINATION_TERMINATED_AT,
+        d.terminated_by AS DESTINATION_TERMINATED_BY,
+        di.id AS IMAGE_ID,
+        di.name AS IMAGE_NAME,
+        di.description AS IMAGE_DESCRIPTION,
+        di.image_url AS IMAGE_URL,
+        cs3.name AS IMAGE_STATUS
+    FROM destination d
+    LEFT JOIN destination_category dc
+        ON d.destination_category_id = dc.id
+    LEFT JOIN destination_images di
+        ON d.id = di.destination_id
+    LEFT JOIN common_status cs1
+        ON dc.common_status_id = cs1.id
+    LEFT JOIN common_status cs2
+        ON d.common_status_id = cs2.id
+    LEFT JOIN common_status cs3
+        ON di.common_status_id = cs3.id
+    WHERE d.id IN (:ids)
+""";
+
+
+
 }

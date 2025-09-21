@@ -26,4 +26,6 @@ public interface DestinationService {
     ResponseEntity<CommonResponse<List<TrendingDestinationResponse>>> getAllTrendingDestinations();
 
     ResponseEntity<CommonResponse<List<DestinationResponse>>> getAllNewDestinations();
+
+    List<DestinationResponse> getDestinationByIds(List<Integer> destinationIds);
 }
