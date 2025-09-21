@@ -7,6 +7,7 @@ import com.felicita.model.dto.DestinationImageDto;
 import com.felicita.model.response.DestinationCategoryResponse;
 import com.felicita.model.response.DestinationResponse;
 import com.felicita.model.response.PartnerResponse;
+import com.felicita.model.response.TrendingDestinationResponse;
 import com.felicita.queries.DestinationQueries;
 import com.felicita.queries.PartnerQueries;
 import com.felicita.repository.DestinationRepository;
@@ -436,6 +437,102 @@ public class DestinationRepositoryImpl implements DestinationRepository {
             throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching destinations");
         }
     }
+
+    @Override
+    public List<TrendingDestinationResponse> getAllTrendingDestinations() {
+        String GET_ALL_TRENDING_DESTINATIONS = DestinationQueries.GET_ALL_TRENDING_DESTINATIONS;
+        try {
+            LOGGER.info("Executing query to fetch all trending destinations...");
+
+            List<TrendingDestinationResponse> results = jdbcTemplate.query(GET_ALL_TRENDING_DESTINATIONS, rs -> {
+                Map<Integer, TrendingDestinationResponse> trendingMap = new LinkedHashMap<>();
+
+                while (rs.next()) {
+                    int trendingId = rs.getInt("TRENDING_ID");
+
+                    // If not already created, create TrendingDestinationResponse
+                    TrendingDestinationResponse trending = trendingMap.get(trendingId);
+                    if (trending == null) {
+                        trending = new TrendingDestinationResponse();
+                        trending.setTrendingId(trendingId);
+                        trending.setTrendingStatus(rs.getString("TRENDING_STATUS"));
+
+                        Timestamp trendingCreatedAt = rs.getTimestamp("TRENDING_CREATED_AT");
+                        if (trendingCreatedAt != null) trending.setTrendingCreatedAt(trendingCreatedAt.toLocalDateTime());
+                        trending.setTrendingCreatedBy(rs.getInt("TRENDING_CREATED_BY"));
+
+                        Timestamp trendingUpdatedAt = rs.getTimestamp("TRENDING_UPDATED_AT");
+                        if (trendingUpdatedAt != null) trending.setTrendingUpdatedAt(trendingUpdatedAt.toLocalDateTime());
+                        trending.setTrendingUpdatedBy(rs.getInt("TRENDING_UPDATED_BY"));
+
+                        Timestamp trendingTerminatedAt = rs.getTimestamp("TRENDING_TERMINATED_AT");
+                        if (trendingTerminatedAt != null) trending.setTrendingTerminatedAt(trendingTerminatedAt.toLocalDateTime());
+                        trending.setTrendingTerminatedBy(rs.getInt("TRENDING_TERMINATED_BY"));
+
+                        // Create DestinationResponse
+                        DestinationResponse destination = new DestinationResponse();
+                        destination.setDestinationId(rs.getInt("DESTINATION_ID"));
+                        destination.setDestinationName(rs.getString("DESTINATION_NAME"));
+                        destination.setDestinationDescription(rs.getString("DESTINATION_DESCRIPTION"));
+                        destination.setDestinationStatus(rs.getString("DESTINATION_STATUS"));
+
+                        // Map Category
+                        DestinationCategoryDto category = new DestinationCategoryDto();
+                        category.setCategoryName(rs.getString("DESTINATION_CATEGORY"));
+                        category.setCategoryDescription(rs.getString("DESTINATION_CATEGORY_DESCRIPTION"));
+                        category.setCategoryStatus(rs.getString("DESTINATION_CATEGORY_STATUS"));
+                        destination.setCategory(category);
+
+                        destination.setLocation(rs.getString("DESTINATION_LOCATION"));
+                        destination.setRating(rs.getDouble("DESTINATION_RATING"));
+                        destination.setPopularity(rs.getInt("DESTINATION_POPULARITY"));
+
+                        Timestamp createdAt = rs.getTimestamp("DESTINATION_CREATED_AT");
+                        if (createdAt != null) destination.setCreatedAt(createdAt.toLocalDateTime());
+                        destination.setCreatedBy(rs.getInt("DESTINATION_CREATED_BY"));
+
+                        Timestamp updatedAt = rs.getTimestamp("DESTINATION_UPDATED_AT");
+                        if (updatedAt != null) destination.setUpdatedAt(updatedAt.toLocalDateTime());
+                        destination.setUpdatedBy(rs.getInt("DESTINATION_UPDATED_BY"));
+
+                        Timestamp terminatedAt = rs.getTimestamp("DESTINATION_TERMINATED_AT");
+                        if (terminatedAt != null) destination.setTerminatedAt(terminatedAt.toLocalDateTime());
+                        destination.setTerminatedBy(rs.getInt("DESTINATION_TERMINATED_BY"));
+
+                        destination.setImages(new ArrayList<>());
+
+                        trending.setDestination(destination);
+                        trendingMap.put(trendingId, trending);
+                    }
+
+                    // Add image if exists
+                    int imageId = rs.getInt("IMAGE_ID");
+                    if (imageId > 0) {
+                        DestinationImageDto image = new DestinationImageDto();
+                        image.setImageId(imageId);
+                        image.setImageName(rs.getString("IMAGE_NAME"));
+                        image.setImageDescription(rs.getString("IMAGE_DESCRIPTION"));
+                        image.setImageUrl(rs.getString("IMAGE_URL"));
+                        image.setImageStatus(rs.getString("IMAGE_STATUS"));
+                        trending.getDestination().getImages().add(image);
+                    }
+                }
+
+                return new ArrayList<>(trendingMap.values());
+            });
+
+            LOGGER.info("Successfully fetched {} trending destinations.", results.size());
+            return results;
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching trending destinations: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler("Failed to fetch trending destinations from database");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching trending destinations: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching trending destinations");
+        }
+    }
+
 
 
 }

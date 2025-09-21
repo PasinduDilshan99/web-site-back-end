@@ -2,10 +2,7 @@ package com.felicita.service.impl;
 
 import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
-import com.felicita.model.response.CommonResponse;
-import com.felicita.model.response.DestinationCategoryResponse;
-import com.felicita.model.response.DestinationResponse;
-import com.felicita.model.response.PartnerResponse;
+import com.felicita.model.response.*;
 import com.felicita.repository.DestinationRepository;
 import com.felicita.service.DestinationService;
 import com.felicita.util.CommonResponseMessages;
@@ -16,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -263,6 +261,81 @@ public class DestinationServiceImpl implements DestinationService {
             throw new InternalServerErrorExceptionHandler("Failed to fetch popular destinations from database");
         } finally {
             LOGGER.info("End fetching popular destinations from repository");
+        }
+    }
+
+    @Override
+    public ResponseEntity<CommonResponse<List<TrendingDestinationResponse>>> getAllTrendingDestinations() {
+        LOGGER.info("Start fetching trending destinations from repository");
+        try {
+            List<TrendingDestinationResponse> trendingDestinationResponses = destinationRepository.getAllTrendingDestinations();
+
+            if (trendingDestinationResponses.isEmpty()) {
+                LOGGER.warn("No trending destinations found in database");
+                throw new DataNotFoundErrorExceptionHandler("No popular destinations found");
+            }
+
+            LOGGER.info("Fetched {} trending destinations successfully", trendingDestinationResponses.size());
+
+            return ResponseEntity.ok(
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            trendingDestinationResponses,
+                            Instant.now()
+                    )
+            );
+
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching trending destinations: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch trending destinations from database");
+        } finally {
+            LOGGER.info("End fetching trending destinations from repository");
+        }
+    }
+
+    @Override
+    public ResponseEntity<CommonResponse<List<DestinationResponse>>> getAllNewDestinations() {
+        LOGGER.info("Start fetching all new destinations from repository");
+        try {
+            List<DestinationResponse> destinationResponses = destinationRepository.getAllDestinations();
+
+            if (destinationResponses.isEmpty()) {
+                LOGGER.warn("No new destinations found in database");
+                throw new DataNotFoundErrorExceptionHandler("No destinations found");
+            }
+
+            LocalDateTime oneMonthAgo = LocalDateTime.now().minusMonths(1);
+            List<DestinationResponse> lastMonthDestinations = destinationResponses.stream()
+                    .filter(destination -> destination.getCreatedAt() != null)
+                    .filter(destination -> destination.getCreatedAt().isAfter(oneMonthAgo))
+                    .collect(Collectors.toList());
+
+            if (lastMonthDestinations.isEmpty()) {
+                LOGGER.warn("No new destinations found from the last month");
+                throw new DataNotFoundErrorExceptionHandler("No destinations found from the last month");
+            }
+
+            LOGGER.info("Fetched {} new destinations from the last month successfully", lastMonthDestinations.size());
+            return ResponseEntity.ok(
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            lastMonthDestinations,
+                            Instant.now()
+                    )
+            );
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching new destinations: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching new destinations: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch new destinations from database");
+        } finally {
+            LOGGER.info("End fetching all new destinations from repository");
         }
     }
 

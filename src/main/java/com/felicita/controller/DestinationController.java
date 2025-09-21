@@ -3,6 +3,7 @@ package com.felicita.controller;
 import com.felicita.model.response.CommonResponse;
 import com.felicita.model.response.DestinationCategoryResponse;
 import com.felicita.model.response.DestinationResponse;
+import com.felicita.model.response.TrendingDestinationResponse;
 import com.felicita.service.DestinationService;
 import com.felicita.util.Constant;
 import org.slf4j.Logger;
@@ -82,6 +83,22 @@ public class DestinationController {
         LOGGER.info("{} Start execute get all popular destinations {}", Constant.DOTS, Constant.DOTS);
         ResponseEntity<CommonResponse<List<DestinationResponse>>> response = destinationService.getAllPopularDestinations();
         LOGGER.info("{} End execute get all popular destinations {}", Constant.DOTS, Constant.DOTS);
+        return response;
+    }
+
+    @GetMapping(path = "/trending-destinations")
+    public ResponseEntity<CommonResponse<List<TrendingDestinationResponse>>> getAllTrendingDestinations(){
+        LOGGER.info("{} Start execute get all trending destinations {}", Constant.DOTS, Constant.DOTS);
+        ResponseEntity<CommonResponse<List<TrendingDestinationResponse>>> response = destinationService.getAllTrendingDestinations();
+        LOGGER.info("{} End execute get all trending destinations {}", Constant.DOTS, Constant.DOTS);
+        return response;
+    }
+
+    @GetMapping(path = "/new-destinations")
+    public ResponseEntity<CommonResponse<List<DestinationResponse>>> getAllNewDestinations(){
+        LOGGER.info("{} Start execute get all new destinations {}", Constant.DOTS, Constant.DOTS);
+        ResponseEntity<CommonResponse<List<DestinationResponse>>> response = destinationService.getAllNewDestinations();
+        LOGGER.info("{} End execute get all new destinations {}", Constant.DOTS, Constant.DOTS);
         return response;
     }
 
