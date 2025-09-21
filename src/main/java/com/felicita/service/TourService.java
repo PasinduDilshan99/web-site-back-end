@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface TourService {
     ResponseEntity<CommonResponse<List<TourResponse>>> getAllTours();
+
+    ResponseEntity<CommonResponse<List<TourResponse>>> getAllActiveTours();
 }

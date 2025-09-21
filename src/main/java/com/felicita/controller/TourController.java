@@ -37,4 +37,12 @@ public class TourController {
         return response;
     }
 
+    @GetMapping(path = "/active")
+    public ResponseEntity<CommonResponse<List<TourResponse>>> getAllActiveTours(){
+        LOGGER.info("{} Start execute get all active tours {}", Constant.DOTS, Constant.DOTS);
+        ResponseEntity<CommonResponse<List<TourResponse>>> response = tourService.getAllActiveTours();
+        LOGGER.info("{} End execute get all active tours {}", Constant.DOTS, Constant.DOTS);
+        return response;
+    }
+
 }
