@@ -339,4 +339,28 @@ public class DestinationServiceImpl implements DestinationService {
         }
     }
 
+    @Override
+    public List<DestinationResponse> getDestinationByIds(List<Integer> destinationIds) {
+        LOGGER.info("Start fetching destination by ids from repository");
+        try {
+            List<DestinationResponse> destinationResponses = destinationRepository.getDestinationByIds(destinationIds);
+
+            if (destinationResponses.isEmpty()) {
+                LOGGER.warn("No destination by ids found in database");
+                throw new DataNotFoundErrorExceptionHandler("No destinations found");
+            }
+
+            LOGGER.info("Fetched {}  destination by ids successfully", destinationResponses.size());
+            return destinationResponses;
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching  destination by ids: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching  destination by ids: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch  destination by ids from database");
+        } finally {
+            LOGGER.info("End fetching destination by ids from repository");
+        }
+    }
+
 }

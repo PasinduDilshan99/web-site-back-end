@@ -19,10 +19,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 public class DestinationRepositoryImpl implements DestinationRepository {
@@ -532,6 +530,92 @@ public class DestinationRepositoryImpl implements DestinationRepository {
             throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching trending destinations");
         }
     }
+
+    @Override
+    public List<DestinationResponse> getDestinationByIds(List<Integer> destinationIds) {
+        if (destinationIds == null || destinationIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        // Dynamically build IN clause (?, ?, ?)
+        String inSql = destinationIds.stream().map(id -> "?").collect(Collectors.joining(", "));
+        String sql = DestinationQueries.GET_DESTINATIONS_BY_ID.replace(":ids", inSql);
+
+        try {
+            LOGGER.info("Executing query to fetch destinations for IDs: {}", destinationIds);
+
+            return jdbcTemplate.query(sql, ps -> {
+                for (int i = 0; i < destinationIds.size(); i++) {
+                    ps.setInt(i + 1, destinationIds.get(i));
+                }
+            }, rs -> {
+                Map<Integer, DestinationResponse> destinationMap = new LinkedHashMap<>();
+
+                while (rs.next()) {
+                    int destinationId = rs.getInt("DESTINATION_ID");
+
+                    DestinationResponse destination = destinationMap.get(destinationId);
+                    if (destination == null) {
+                        destination = new DestinationResponse();
+                        destination.setDestinationId(destinationId);
+                        destination.setDestinationName(rs.getString("DESTINATION_NAME"));
+                        destination.setDestinationDescription(rs.getString("DESTINATION_DESCRIPTION"));
+                        destination.setDestinationStatus(rs.getString("DESTINATION_STATUS"));
+
+                        // Category
+                        DestinationCategoryDto category = new DestinationCategoryDto();
+                        category.setCategoryName(rs.getString("DESTINATION_CATEGORY"));
+                        category.setCategoryDescription(rs.getString("DESTINATION_CATEGORY_DESCRIPTION"));
+                        category.setCategoryStatus(rs.getString("DESTINATION_CATEGORY_STATUS"));
+                        category.setCategoryImageUrl(rs.getString("DESTINATION_CATEGORY_IMAGE_URL"));
+                        destination.setCategory(category);
+
+                        destination.setLocation(rs.getString("DESTINATION_LOCATION"));
+                        destination.setRating(rs.getDouble("DESTINATION_RATING"));
+                        destination.setPopularity(rs.getInt("DESTINATION_POPULARITY"));
+
+                        Timestamp createdAt = rs.getTimestamp("DESTINATION_CREATED_AT");
+                        if (createdAt != null) destination.setCreatedAt(createdAt.toLocalDateTime());
+                        destination.setCreatedBy(rs.getObject("DESTINATION_CREATED_BY", Integer.class));
+
+                        Timestamp updatedAt = rs.getTimestamp("DESTINATION_UPDATED_AT");
+                        if (updatedAt != null) destination.setUpdatedAt(updatedAt.toLocalDateTime());
+                        destination.setUpdatedBy(rs.getObject("DESTINATION_UPDATED_BY", Integer.class));
+
+                        Timestamp terminatedAt = rs.getTimestamp("DESTINATION_TERMINATED_AT");
+                        if (terminatedAt != null) destination.setTerminatedAt(terminatedAt.toLocalDateTime());
+                        destination.setTerminatedBy(rs.getObject("DESTINATION_TERMINATED_BY", Integer.class));
+
+                        destination.setImages(new ArrayList<>());
+                        destinationMap.put(destinationId, destination);
+                    }
+
+                    int imageId = rs.getInt("IMAGE_ID");
+                    if (!rs.wasNull()) {
+                        DestinationImageDto image = new DestinationImageDto();
+                        image.setImageId(imageId);
+                        image.setImageName(rs.getString("IMAGE_NAME"));
+                        image.setImageDescription(rs.getString("IMAGE_DESCRIPTION"));
+                        image.setImageUrl(rs.getString("IMAGE_URL"));
+                        image.setImageStatus(rs.getString("IMAGE_STATUS"));
+                        destination.getImages().add(image);
+                    }
+                }
+
+                LOGGER.info("Successfully fetched {} destinations.", destinationMap.size());
+                return new ArrayList<>(destinationMap.values());
+            });
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching destinations: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler("Failed to fetch destinations from database");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching destinations: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching destinations");
+        }
+    }
+
+
 
 
 
