@@ -1,5 +1,19 @@
 USE TravelAgencyDB;
 
+CREATE TABLE nav_bar_status (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(50) NOT NULL,
+    description VARCHAR(255),
+    common_status_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_by INT,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_by INT,
+    terminated_at TIMESTAMP,
+    terminated_by INT,
+    CONSTRAINT fk_navbarstatus_commonstatus FOREIGN KEY (common_status_id) REFERENCES common_status(id)
+);
+
 CREATE TABLE nav_bar (
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(50) NOT NULL,
@@ -15,13 +29,19 @@ CREATE TABLE nav_bar (
     CONSTRAINT fk_navbar_navbarstatus FOREIGN KEY (status_id) REFERENCES nav_bar_status(id)
 );
 
+INSERT INTO nav_bar_status (name, description, common_status_id, created_by)
+VALUES
+('VISIBLE', 'Nav bar item is visible', 1, 1),   -- common_status_id 1 = ACTIVE
+('HIDDEN', 'Nav bar item is hidden', 2, 1),     -- common_status_id 2 = INACTIVE
+('REMOVED', 'Nav bar item removed', 3, 1);      -- common_status_id 3 = TERMINATED
+
 
 -- Insert NAV BAR items
 INSERT INTO nav_bar (name, description, status_id, link_url, created_by)
 VALUES
 ('Home', 'Homepage link', 1, '/home', 1),              -- VISIBLE
 ('About Us', 'About us page link', 1, '/about-us', 1), -- VISIBLE
-('Destination', 'Destinations page link', 1, '/destination', 1),
+('Destination', 'Destinations page link', 1, '/destination', 1), 
 ('Blogs', 'Travel blogs and articles', 1, '/blogs', 1),
 ('Contact Us', 'Contact information and form', 1, '/contact-us', 1),
 ('FAQ', 'Frequently Asked Questions', 1, '/faq', 1),
@@ -34,7 +54,7 @@ VALUES
 ('Activities', 'Things to do and activities', 1, '/activities', 1);
 
 
-SELECT
+SELECT 
 	nb.name AS NAME,
     nb.description AS DESCRIPTION,
     nbs.name AS STATUS,

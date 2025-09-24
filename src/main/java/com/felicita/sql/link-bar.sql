@@ -2,10 +2,10 @@ CREATE TABLE link_bar (
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(50) NOT NULL,
     description VARCHAR(255),
-    link_bar_type_id INT NOT NULL,
+    link_bar_type_id INT NOT NULL,            
     icon_url VARCHAR(100),
     link_url VARCHAR(255),
-    link_bar_status_id INT NOT NULL,
+    link_bar_status_id INT NOT NULL,          
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     created_by INT,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -28,7 +28,8 @@ VALUES
 ('Contact Us', 'Footer contact link', 3, '/icons/contact.png', '/contact', 1, 1);
 
 
-SELECT
+
+SELECT 
     lb.name AS NAME,
     lb.description AS DESCRIPTION,
     lbt.name AS TYPE_NAME,
@@ -44,11 +45,28 @@ SELECT
     lb.terminated_at AS TERMINATED_AT,
     lb.terminated_by AS TERMINATED_BY
 FROM link_bar lb
-LEFT JOIN link_bar_status lbs
+LEFT JOIN link_bar_status lbs 
     ON lb.link_bar_status_id = lbs.id
-LEFT JOIN link_bar_type lbt
+LEFT JOIN link_bar_type lbt 
     ON lb.link_bar_type_id = lbt.id
-LEFT JOIN common_status cs1
+LEFT JOIN common_status cs1 
     ON lbt.common_status_id = cs1.id
-LEFT JOIN common_status cs2
+LEFT JOIN common_status cs2 
     ON lbs.common_status_id = cs2.id;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
