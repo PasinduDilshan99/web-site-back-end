@@ -1,3 +1,24 @@
+use travelagencydb;
+
+CREATE TABLE hero_section_status (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(50) NOT NULL,
+    description VARCHAR(255),
+    common_status_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_by INT,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_by INT,
+    terminated_at TIMESTAMP,
+    terminated_by INT,
+    FOREIGN KEY (common_status_id) REFERENCES common_status(id)
+);
+
+INSERT INTO hero_section_status (name, description, common_status_id, created_by)
+VALUES
+('VISIBLE', 'Slider is visible on homepage', 1, 1),
+('HIDDEN', 'Slider is not visible', 2, 1);
+
 CREATE TABLE hero_section (
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(50) NOT NULL,
@@ -21,9 +42,9 @@ CREATE TABLE hero_section (
 );
 
 INSERT INTO hero_section (
-    name, image_url, title, subtitle, description,
-    primary_button_text, primary_button_link,
-    secondary_button_text, secondary_button_link,
+    name, image_url, title, subtitle, description, 
+    primary_button_text, primary_button_link, 
+    secondary_button_text, secondary_button_link, 
     hero_section_status_id, `order`, created_by
 )
 VALUES
@@ -32,7 +53,7 @@ VALUES
 ('slider-3', '/images/hero-section-images/slider-3.jpg', 'Your Journey', 'Begins Here', 'Take the first step towards excellence with our comprehensive range of professional services', 'Join Us', '/join', 'Contact', '/contact', 1, 3, 1);
 
 
-SELECT
+SELECT 
 	hs.id AS IMAGE_ID,
     hs.name AS IMAGE_NAME,
     hs.image_url AS IMAGE_URL,
