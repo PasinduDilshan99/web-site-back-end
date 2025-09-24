@@ -2,6 +2,7 @@ package com.felicita.controller;
 
 import com.felicita.model.response.CommonResponse;
 import com.felicita.model.response.PartnerResponse;
+import com.felicita.model.response.PopularTourResponse;
 import com.felicita.model.response.TourResponse;
 import com.felicita.service.PartnerService;
 import com.felicita.service.TourService;
@@ -44,5 +45,14 @@ public class TourController {
         LOGGER.info("{} End execute get all active tours {}", Constant.DOTS, Constant.DOTS);
         return response;
     }
+
+    @GetMapping(path = "/popular")
+    public ResponseEntity<CommonResponse<List<PopularTourResponse>>> getPopularTours(){
+        LOGGER.info("{} Start execute get all popular tours {}", Constant.DOTS, Constant.DOTS);
+        ResponseEntity<CommonResponse<List<PopularTourResponse>>> response = tourService.getPopularTours();
+        LOGGER.info("{} End execute get all popular tours {}", Constant.DOTS, Constant.DOTS);
+        return response;
+    }
+
 
 }
