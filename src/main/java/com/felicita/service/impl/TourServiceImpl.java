@@ -186,7 +186,7 @@ public class TourServiceImpl implements TourService {
             List<PopularTourResponse> popularTourResponses = tourRepository.getPopularTours();
 
             // logic
-            
+
 
             if (popularTourResponses.isEmpty()) {
                 LOGGER.warn("No tours found in database");
