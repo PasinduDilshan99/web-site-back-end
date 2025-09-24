@@ -6,10 +6,7 @@ import com.felicita.model.dto.TourImageDto;
 import com.felicita.model.dto.TourResponseDto;
 import com.felicita.model.enums.CommonStatus;
 import com.felicita.model.enums.PartnerStatus;
-import com.felicita.model.response.CommonResponse;
-import com.felicita.model.response.DestinationResponse;
-import com.felicita.model.response.PartnerResponse;
-import com.felicita.model.response.TourResponse;
+import com.felicita.model.response.*;
 import com.felicita.repository.TourRepository;
 import com.felicita.service.DestinationService;
 import com.felicita.service.TourService;
@@ -179,6 +176,42 @@ public class TourServiceImpl implements TourService {
             throw new InternalServerErrorExceptionHandler("Failed to fetch partners from database");
         } finally {
             LOGGER.info("End fetching all active tours from repository");
+        }
+    }
+
+    @Override
+    public ResponseEntity<CommonResponse<List<PopularTourResponse>>> getPopularTours() {
+        LOGGER.info("Start fetching popular tours from repository");
+        try {
+            List<PopularTourResponse> popularTourResponses = tourRepository.getPopularTours();
+
+            // logic
+            
+
+            if (popularTourResponses.isEmpty()) {
+                LOGGER.warn("No tours found in database");
+                throw new DataNotFoundErrorExceptionHandler("No tours found");
+            }
+
+            LOGGER.info("Fetched {} popular tour successfully", popularTourResponses.size());
+            return ResponseEntity.ok(
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            popularTourResponses,
+                            Instant.now()
+                    )
+            );
+
+        }catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching popular tour: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        }catch (Exception e) {
+            LOGGER.error("Error occurred while fetching popular tour: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch popular tour from database");
+        } finally {
+            LOGGER.info("End fetching popular tour from repository");
         }
     }
 
