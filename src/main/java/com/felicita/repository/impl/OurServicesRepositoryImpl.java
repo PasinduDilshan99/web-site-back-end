@@ -55,7 +55,7 @@ public class OurServicesRepositoryImpl implements OurServicesRepository {
                 service.setServiceTerminatedAt(rs.getTimestamp("SERVICE_TERMINATED_AT") != null
                         ? rs.getTimestamp("SERVICE_TERMINATED_AT").toLocalDateTime() : null);
                 service.setServiceTerminatedBy(rs.getInt("SERVICE_TERMINATED_BY"));
-
+                service.setServiceIconUrl(rs.getString("SERVICE_ICON_URL"));
                 return service;
             });
 

@@ -10,31 +10,95 @@ public class BlogQueries {
                 b.description,
                 b.writer_id,
                 u_writer.username AS writer_name,
-                cs.name AS blog_status,
-                b.created_at,
-                b.created_by,
-                b.updated_at,
-                b.updated_by,
-                b.terminated_at,
-                b.terminated_by,
-                bi.id AS image_id,
-                bi.image_url,
-                bl.id AS like_id,
-                u_like.username AS liked_by_username,
-                bc.id AS comment_id,
-                u_comment.username AS comment_by_username,
-                bc.comment,
-                bc.comment_date,
-                cs2.name AS comment_status
+                cs_blog.name AS blog_status,
+                b.created_at AS blog_created_at,
+            
+                -- Images (grouped as JSON array)
+                (SELECT JSON_ARRAYAGG(JSON_OBJECT(
+                    'id', bi.id,
+                    'image_url', bi.image_url
+                ))
+                FROM blog_images bi
+                WHERE bi.blog_id = b.id AND bi.status = 1
+                ) AS images,
+            
+                -- Likes (count)
+                (SELECT COUNT(*) FROM blog_likes bl WHERE bl.blog_id = b.id AND bl.status = 1) AS like_count,
+            
+                -- Reactions (grouped)
+            COALESCE(
+                (
+                    SELECT JSON_ARRAYAGG(JSON_OBJECT(
+                        'reaction_type_id', t.reaction_type_id,
+                        'reaction_type_name', brt.name,
+                        'count', t.cnt
+                    ))
+                    FROM (
+                        SELECT bl.reaction_type_id, COUNT(*) AS cnt
+                        FROM blog_likes bl
+                        WHERE bl.blog_id = b.id
+                        GROUP BY bl.reaction_type_id
+                    ) AS t
+                    LEFT JOIN blog_reactions_types brt ON t.reaction_type_id = brt.id
+                ),
+                JSON_ARRAY()
+            ) AS blog_reactions
+            
+            ,
+            
+                -- Comments with replies and reactions
+                (SELECT JSON_ARRAYAGG(
+                    JSON_OBJECT(
+                        'comment_id', bc.id,
+                        'user_id', bc.user_id,
+                        'username', u_comment.username,
+                        'comment', bc.comment,
+                        'comment_date', bc.comment_date,
+                        'reactions', (
+                            SELECT JSON_ARRAYAGG(JSON_OBJECT(
+                                'user_id', cr.user_id,
+                                'username', u_react.username,
+                                'reaction_type_id', cr.reaction_type_id
+                            ))
+                            FROM blog_comment_reactions cr
+                            LEFT JOIN user u_react ON cr.user_id = u_react.user_id
+                            WHERE cr.comment_id = bc.id
+                        ),
+                        'replies', (
+                            SELECT JSON_ARRAYAGG(
+                                JSON_OBJECT(
+                                    'comment_id', r.id,
+                                    'user_id', r.user_id,
+                                    'username', u_reply.username,
+                                    'comment', r.comment,
+                                    'comment_date', r.comment_date,
+                                    'reactions', (
+                                        SELECT JSON_ARRAYAGG(JSON_OBJECT(
+                                            'user_id', cr2.user_id,
+                                            'username', u_react2.username,
+                                            'reaction_type_id', cr2.reaction_type_id
+                                        ))
+                                        FROM blog_comment_reactions cr2
+                                        LEFT JOIN user u_react2 ON cr2.user_id = u_react2.user_id
+                                        WHERE cr2.comment_id = r.id
+                                    )
+                                )
+                            )
+                            FROM blog_comments r
+                            LEFT JOIN user u_reply ON r.user_id = u_reply.user_id
+                            WHERE r.parent_comment_id = bc.id
+                        )
+                    )
+                )
+                FROM blog_comments bc
+                LEFT JOIN user u_comment ON bc.user_id = u_comment.user_id
+                WHERE bc.blog_id = b.id AND bc.parent_comment_id IS NULL
+                ) AS comments
             FROM blogs b
             LEFT JOIN user u_writer ON b.writer_id = u_writer.user_id
-            LEFT JOIN common_status cs ON b.status = cs.id
-            LEFT JOIN blog_images bi ON bi.blog_id = b.id AND bi.status = 1
-            LEFT JOIN blog_likes bl ON bl.blog_id = b.id AND bl.status = 1
-            LEFT JOIN user u_like ON bl.user_id = u_like.user_id
-            LEFT JOIN blog_comments bc ON bc.blog_id = b.id AND bc.status = 1
-            LEFT JOIN user u_comment ON bc.user_id = u_comment.user_id
-            LEFT JOIN common_status cs2 ON bc.status = cs2.id
+            LEFT JOIN common_status cs_blog ON b.status = cs_blog.id
+            WHERE b.status = 1
             ORDER BY b.created_at DESC
             """;
+
 }

@@ -137,6 +137,7 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                                 ? rs.getTimestamp("CATEGORY_TERMINATED_AT").toLocalDateTime()
                                 : null);
                         category.setTerminatedBy(rs.getObject("CATEGORY_TERMINATED_BY", Integer.class));
+                        category.setImageUrl(rs.getString("CATEGORY_IMAGE_URL"));
                         return category;
                     });
 
@@ -344,6 +345,7 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                                 ? rs.getTimestamp("CATEGORY_TERMINATED_AT").toLocalDateTime()
                                 : null);
                         category.setTerminatedBy(rs.getObject("CATEGORY_TERMINATED_BY", Integer.class));
+                        category.setImageUrl(rs.getString("CATEGORY_IMAGE_URL"));
                         return category;
                     });
 

@@ -15,6 +15,7 @@ public class AccommodationResponse {
     private String accommodationSubTitle;
     private String accommodationDescription;
     private String accommodationIconUrl;
+    private String accommodationImageUrl;
     private String accommodationColor;
     private String accommodationHoverColor;
     private String accommodationLinkUrl;

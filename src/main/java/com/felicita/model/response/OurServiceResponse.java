@@ -24,4 +24,5 @@ public class OurServiceResponse {
     private Integer serviceUpdatedBy;
     private LocalDateTime serviceTerminatedAt;
     private Integer serviceTerminatedBy;
+    private String serviceIconUrl;
 }

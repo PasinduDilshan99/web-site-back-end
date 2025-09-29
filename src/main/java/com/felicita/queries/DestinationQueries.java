@@ -50,7 +50,8 @@ public class DestinationQueries {
                 dc.updated_at AS CATEGORY_UPDATED_AT,
                 dc.updated_by AS CATEGORY_UPDATED_BY,
                 dc.terminated_at AS CATEGORY_TERMINATED_AT,
-                dc.terminated_by AS CATEGORY_TERMINATED_BY
+                dc.terminated_by AS CATEGORY_TERMINATED_BY,
+                dc.image_url AS CATEGORY_IMAGE_URL
             FROM destination_category dc
             LEFT JOIN common_status cs
                 ON dc.common_status_id = cs.id
@@ -142,7 +143,8 @@ public class DestinationQueries {
                 dc.updated_at AS CATEGORY_UPDATED_AT,
                 dc.updated_by AS CATEGORY_UPDATED_BY,
                 dc.terminated_at AS CATEGORY_TERMINATED_AT,
-                dc.terminated_by AS CATEGORY_TERMINATED_BY
+                dc.terminated_by AS CATEGORY_TERMINATED_BY,
+                dc.image_url AS CATEGORY_IMAGE_URL
             FROM destination_category dc
             LEFT JOIN common_status cs
                 ON dc.common_status_id = cs.id

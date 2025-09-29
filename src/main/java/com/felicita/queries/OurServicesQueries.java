@@ -16,7 +16,8 @@ public class OurServicesQueries {
                 cs.updated_at AS SERVICE_UPDATED_AT,
                 cs.updated_by AS SERVICE_UPDATED_BY,
                 cs.terminated_at AS SERVICE_TERMINATED_AT,
-                cs.terminated_by AS SERVICE_TERMINATED_BY
+                cs.terminated_by AS SERVICE_TERMINATED_BY,
+                os.icon_url AS SERVICE_ICON_URL
             FROM our_services os
             LEFT JOIN our_service_status oss
             ON os.our_service_status_id = oss.id

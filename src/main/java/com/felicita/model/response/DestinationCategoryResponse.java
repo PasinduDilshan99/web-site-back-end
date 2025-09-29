@@ -20,4 +20,5 @@ public class DestinationCategoryResponse {
     private Integer updatedBy;
     private LocalDateTime terminatedAt;
     private Integer terminatedBy;
+    private String imageUrl;
 }
