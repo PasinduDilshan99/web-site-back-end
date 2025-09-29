@@ -2,6 +2,7 @@ package com.felicita.repository.impl;
 
 import com.felicita.exception.DataAccessErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
+import com.felicita.model.dto.DestinationDto;
 import com.felicita.model.dto.PackageImageDto;
 import com.felicita.model.dto.PackageTypeDto;
 import com.felicita.model.dto.TourDto;
@@ -15,8 +16,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Repository;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -40,53 +44,48 @@ public class PackageRepositoryImpl implements PackageRepository {
         try {
             LOGGER.info("Executing query to fetch all packages...");
 
-            List<PackageDetailsResponse> results = jdbcTemplate.query(GET_ALL_PACKAGES, (rs, rowNum) -> {
-                PackageDetailsResponse response = new PackageDetailsResponse();
+            List<PackageDetailsResponse> results = jdbcTemplate.query(GET_ALL_PACKAGES, new ResultSetExtractor<List<PackageDetailsResponse>>() {
+                @Override
+                public List<PackageDetailsResponse> extractData(ResultSet rs) throws SQLException, DataAccessException {
+                    Map<Integer, PackageDetailsResponse> packageMap = new LinkedHashMap<>();
 
-                // Map basic package details
-                response.setPackageId(rs.getInt("package_id"));
-                response.setPackageName(rs.getString("package_name"));
-                response.setPackageDescription(rs.getString("package_description"));
-                response.setTotalPrice(rs.getBigDecimal("total_price"));
-                response.setDiscountPercentage(rs.getBigDecimal("discount_percentage"));
-                response.setPackageStartDate(rs.getDate("package_start_date").toLocalDate());
-                response.setPackageEndDate(rs.getDate("package_end_date").toLocalDate());
-                response.setColor(rs.getString("color"));
-                response.setHoverColor(rs.getString("hover_color"));
-                response.setMinPersonCount(rs.getInt("min_person_count"));
-                response.setMaxPersonCount(rs.getInt("max_person_count"));
-                response.setPackageStatus(rs.getString("package_status"));
+                    while (rs.next()) {
+                        Integer packageId = rs.getInt("package_id");
 
-                // Map PackageTypeDto
-                PackageTypeDto packageType = new PackageTypeDto();
-                packageType.setId(rs.getInt("package_type_id"));
-                packageType.setName(rs.getString("package_type_name"));
-                packageType.setDescription(rs.getString("package_type_description"));
-                packageType.setStatus(rs.getString("package_type_status"));
-                response.setPackageType(packageType);
+                        PackageDetailsResponse response = packageMap.get(packageId);
+                        if (response == null) {
+                            response = createPackageDetailsResponse(rs);
+                            packageMap.put(packageId, response);
+                        }
 
-                // Map TourDto
-                TourDto tour = new TourDto();
-                tour.setTourId(rs.getInt("tour_id"));
-                tour.setTourName(rs.getString("tour_name"));
-                tour.setTourDescription(rs.getString("tour_description"));
-                tour.setTourStartDate(rs.getDate("tour_start_date").toLocalDate());
-                tour.setTourEndDate(rs.getDate("tour_end_date").toLocalDate());
-                tour.setDurationDays(rs.getInt("duration_days"));
-                tour.setMaxPeople(rs.getInt("tour_max_people"));
-                tour.setMinPeople(rs.getInt("tour_min_people"));
-                tour.setPricePerPerson(rs.getBigDecimal("price_per_person"));
-                tour.setTourStatus(rs.getString("tour_status"));
-                response.setTour(tour);
+                        // Add image if exists
+                        Integer imageId = rs.getObject("image_id") != null ? rs.getInt("image_id") : null;
+                        if (imageId != null) {
+                            PackageImageDto image = createPackageImageDto(rs);
+                            // Check if image already exists to avoid duplicates
+                            boolean imageExists = response.getImages().stream()
+                                    .anyMatch(img -> img.getImageId().equals(imageId));
+                            if (!imageExists) {
+                                response.getImages().add(image);
+                            }
+                        }
 
-                // Map PackageImageDto (will be handled in post-processing)
-                response.setImages(new ArrayList<>());
+                        // Add destination if exists
+                        String destinationName = rs.getString("destiantion_name");
+                        if (destinationName != null) {
+                            DestinationDto destination = createDestinationDto(rs);
+                            // Check if destination already exists to avoid duplicates
+                            boolean destinationExists = response.getDestinationDto().stream()
+                                    .anyMatch(dest -> dest.getDestinationName().equals(destinationName));
+                            if (!destinationExists) {
+                                response.getDestinationDto().add(destination);
+                            }
+                        }
+                    }
 
-                return response;
+                    return new ArrayList<>(packageMap.values());
+                }
             });
-
-            // Post-process to aggregate images for each package
-            results = aggregatePackageImages(results);
 
             LOGGER.info("Successfully fetched {} packages.", results.size());
             return results;
@@ -100,22 +99,64 @@ public class PackageRepositoryImpl implements PackageRepository {
         }
     }
 
-    private List<PackageDetailsResponse> aggregatePackageImages(List<PackageDetailsResponse> packages) {
-        Map<Integer, PackageDetailsResponse> packageMap = new LinkedHashMap<>();
+    private PackageDetailsResponse createPackageDetailsResponse(ResultSet rs) throws SQLException {
+        PackageDetailsResponse response = new PackageDetailsResponse();
 
-        for (PackageDetailsResponse pkg : packages) {
-            if (!packageMap.containsKey(pkg.getPackageId())) {
-                packageMap.put(pkg.getPackageId(), pkg);
-            }
+        // Map basic package details
+        response.setPackageId(rs.getInt("package_id"));
+        response.setPackageName(rs.getString("package_name"));
+        response.setPackageDescription(rs.getString("package_description"));
+        response.setTotalPrice(rs.getBigDecimal("total_price"));
+        response.setDiscountPercentage(rs.getBigDecimal("discount_percentage"));
+        response.setPackageStartDate(rs.getDate("package_start_date").toLocalDate());
+        response.setPackageEndDate(rs.getDate("package_end_date").toLocalDate());
+        response.setColor(rs.getString("color"));
+        response.setHoverColor(rs.getString("hover_color"));
+        response.setMinPersonCount(rs.getInt("min_person_count"));
+        response.setMaxPersonCount(rs.getInt("max_person_count"));
+        response.setPackageStatus(rs.getString("package_status"));
 
-            // Add image if it exists (check if image_id is not null)
-            Integer imageId = pkg.getImages().isEmpty() ? null : pkg.getImages().get(0).getImageId();
-            if (imageId != null) {
-                PackageImageDto image = pkg.getImages().get(0);
-                packageMap.get(pkg.getPackageId()).getImages().add(image);
-            }
-        }
+        // Map PackageTypeDto
+        PackageTypeDto packageType = new PackageTypeDto();
+        packageType.setId(rs.getInt("package_type_id"));
+        packageType.setName(rs.getString("package_type_name"));
+        packageType.setDescription(rs.getString("package_type_description"));
+        packageType.setStatus(rs.getString("package_type_status"));
+        response.setPackageType(packageType);
 
-        return new ArrayList<>(packageMap.values());
+        // Map TourDto
+        TourDto tour = new TourDto();
+        tour.setTourId(rs.getInt("tour_id"));
+        tour.setTourName(rs.getString("tour_name"));
+        tour.setTourDescription(rs.getString("tour_description"));
+        tour.setTourStartDate(rs.getDate("tour_start_date").toLocalDate());
+        tour.setTourEndDate(rs.getDate("tour_end_date").toLocalDate());
+        tour.setDurationDays(rs.getInt("duration_days"));
+        tour.setMaxPeople(rs.getInt("tour_max_people"));
+        tour.setMinPeople(rs.getInt("tour_min_people"));
+        tour.setPricePerPerson(rs.getBigDecimal("price_per_person"));
+        tour.setTourStatus(rs.getString("tour_status"));
+        response.setTour(tour);
+
+        // Initialize empty collections
+        response.setImages(new ArrayList<>());
+        response.setDestinationDto(new ArrayList<>());
+
+        return response;
+    }
+
+    private PackageImageDto createPackageImageDto(ResultSet rs) throws SQLException {
+        PackageImageDto image = new PackageImageDto();
+        image.setImageId(rs.getInt("image_id"));
+        image.setImageUrl(rs.getString("image_url"));
+        image.setImageStatus(rs.getString("image_status"));
+        return image;
+    }
+
+    private DestinationDto createDestinationDto(ResultSet rs) throws SQLException {
+        DestinationDto destination = new DestinationDto();
+        destination.setDestinationName(rs.getString("destiantion_name"));
+        destination.setDestinationDescription(rs.getString("destiantion_description"));
+        return destination;
     }
 }

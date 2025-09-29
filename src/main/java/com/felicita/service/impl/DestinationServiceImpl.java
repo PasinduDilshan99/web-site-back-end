@@ -2,6 +2,7 @@ package com.felicita.service.impl;
 
 import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
+import com.felicita.model.enums.CommonStatus;
 import com.felicita.model.response.*;
 import com.felicita.repository.DestinationRepository;
 import com.felicita.service.DestinationService;
@@ -362,5 +363,76 @@ public class DestinationServiceImpl implements DestinationService {
             LOGGER.info("End fetching destination by ids from repository");
         }
     }
+
+    @Override
+    public ResponseEntity<CommonResponse<List<ActiveDestinationLocations>>> getActiveDestinationsLocations() {
+        LOGGER.info("Start fetching destinations locations from repository");
+        try {
+            List<ActiveDestinationLocations> activeDestinations = destinationRepository.getActiveDestinationsLocations();
+
+            LOGGER.info("Fetched {} destinations locations before filtering", activeDestinations.size());
+
+            if (activeDestinations.isEmpty()) {
+                LOGGER.warn("No destinations locations by ids found in database");
+                throw new DataNotFoundErrorExceptionHandler("No destinations locations found");
+            }
+
+            LOGGER.info("Fetched {} active destinations locations successfully", activeDestinations.size());
+
+            return ResponseEntity.ok(
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            activeDestinations,
+                            Instant.now()
+                    )
+            );
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching  destination by ids: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching destinations locations: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch destinations locations from database");
+        } finally {
+            LOGGER.info("End fetching destinations locations from repository");
+        }
+    }
+
+    @Override
+    public ResponseEntity<CommonResponse<List<ActiveDestinationsLocationsCategories>>> getActiveDestinationsCategories() {
+        LOGGER.info("Start fetching destinations locations from repository");
+        try {
+            List<ActiveDestinationsLocationsCategories> activeDestinationsLocationsCategories = destinationRepository.getActiveDestinationsCategories();
+
+            LOGGER.info("Fetched {} destinations locations before filtering", activeDestinationsLocationsCategories.size());
+
+            if (activeDestinationsLocationsCategories.isEmpty()) {
+                LOGGER.warn("No destinations locations by ids found in database");
+                throw new DataNotFoundErrorExceptionHandler("No destinations locations found");
+            }
+
+            LOGGER.info("Fetched {} active destinations locations successfully", activeDestinationsLocationsCategories.size());
+
+            return ResponseEntity.ok(
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            activeDestinationsLocationsCategories,
+                            Instant.now()
+                    )
+            );
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching  destination by ids: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching destinations locations: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch destinations locations from database");
+        } finally {
+            LOGGER.info("End fetching destinations locations from repository");
+        }
+    }
+
 
 }

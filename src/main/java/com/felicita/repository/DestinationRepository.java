@@ -1,8 +1,6 @@
 package com.felicita.repository;
 
-import com.felicita.model.response.DestinationCategoryResponse;
-import com.felicita.model.response.DestinationResponse;
-import com.felicita.model.response.TrendingDestinationResponse;
+import com.felicita.model.response.*;
 
 import java.util.List;
 
@@ -22,4 +20,8 @@ public interface DestinationRepository {
     List<TrendingDestinationResponse> getAllTrendingDestinations();
 
     List<DestinationResponse> getDestinationByIds(List<Integer> destinationIds);
+
+    List<ActiveDestinationLocations> getActiveDestinationsLocations();
+
+    List<ActiveDestinationsLocationsCategories> getActiveDestinationsCategories();
 }

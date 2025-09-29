@@ -4,10 +4,7 @@ import com.felicita.exception.DataAccessErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
 import com.felicita.model.dto.DestinationCategoryDto;
 import com.felicita.model.dto.DestinationImageDto;
-import com.felicita.model.response.DestinationCategoryResponse;
-import com.felicita.model.response.DestinationResponse;
-import com.felicita.model.response.PartnerResponse;
-import com.felicita.model.response.TrendingDestinationResponse;
+import com.felicita.model.response.*;
 import com.felicita.queries.DestinationQueries;
 import com.felicita.queries.PartnerQueries;
 import com.felicita.repository.DestinationRepository;
@@ -617,8 +614,66 @@ public class DestinationRepositoryImpl implements DestinationRepository {
         }
     }
 
+    @Override
+    public List<ActiveDestinationLocations> getActiveDestinationsLocations() {
+        String GET_ALL_DESTINATIONS_LOCATIONS = DestinationQueries.GET_ALL_DESTINATIONS_LOCATIONS;
+        try {
+            LOGGER.info("Executing query to fetch all destination locations...");
 
+            List<ActiveDestinationLocations> results = jdbcTemplate.query(
+                    GET_ALL_DESTINATIONS_LOCATIONS,
+                    (rs, rowNum) -> {
+                        ActiveDestinationLocations location = new ActiveDestinationLocations();
+                        location.setId(rs.getLong("DESTINATION_ID"));
+                        location.setName(rs.getString("DESTINATION_NAME"));
+                        location.setCategory(rs.getString("DESTINATION_CATEGORY"));
+                        location.setLat(rs.getDouble("DESTINATION_LATITUDE"));
+                        location.setLng(rs.getDouble("DESTINATION_LONGITUDE"));
+                        location.setDescription(rs.getString("DESTINATION_DESCRIPTION"));
+                        return location;
+                    }
+            );
 
+            LOGGER.info("Successfully fetched {} destination locations.", results.size());
+            return results;
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching destination locations: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler("Failed to fetch destination locations from database");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching destination locations: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching destination locations");
+        }
+    }
+
+    @Override
+    public List<ActiveDestinationsLocationsCategories> getActiveDestinationsCategories() {
+        String GET_ALL_DESTINATIONS_LOCATIONS_CATEGORIES = DestinationQueries.GET_ALL_DESTINATIONS_LOCATIONS_CATEGORIES;
+        try {
+            LOGGER.info("Executing query to fetch all destination locations...");
+
+            List<ActiveDestinationsLocationsCategories> results = jdbcTemplate.query(
+                    GET_ALL_DESTINATIONS_LOCATIONS_CATEGORIES,
+                    (rs, rowNum) -> {
+                        ActiveDestinationsLocationsCategories location = new ActiveDestinationsLocationsCategories();
+                        location.setId(rs.getString("ID"));
+                        location.setName(rs.getString("ID"));
+                        location.setColor(rs.getString("COLOR"));
+                        return location;
+                    }
+            );
+
+            LOGGER.info("Successfully fetched {} destination locations.", results.size());
+            return results;
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching destination locations: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler("Failed to fetch destination locations from database");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching destination locations: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching destination locations");
+        }
+    }
 
 
 }

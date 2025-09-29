@@ -1,5 +1,6 @@
 package com.felicita.model.response;
 
+import com.felicita.model.dto.DestinationDto;
 import com.felicita.model.dto.PackageImageDto;
 import com.felicita.model.dto.PackageTypeDto;
 import com.felicita.model.dto.TourDto;
@@ -30,5 +31,6 @@ public class PackageDetailsResponse {
 
     private PackageTypeDto packageType;
     private TourDto tour;
+    private List<DestinationDto> destinationDto;
     private List<PackageImageDto> images;
 }

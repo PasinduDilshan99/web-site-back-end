@@ -1,9 +1,6 @@
 package com.felicita.service;
 
-import com.felicita.model.response.CommonResponse;
-import com.felicita.model.response.DestinationCategoryResponse;
-import com.felicita.model.response.DestinationResponse;
-import com.felicita.model.response.TrendingDestinationResponse;
+import com.felicita.model.response.*;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -28,4 +25,8 @@ public interface DestinationService {
     ResponseEntity<CommonResponse<List<DestinationResponse>>> getAllNewDestinations();
 
     List<DestinationResponse> getDestinationByIds(List<Integer> destinationIds);
+
+    ResponseEntity<CommonResponse<List<ActiveDestinationLocations>>> getActiveDestinationsLocations();
+
+    ResponseEntity<CommonResponse<List<ActiveDestinationsLocationsCategories>>> getActiveDestinationsCategories();
 }

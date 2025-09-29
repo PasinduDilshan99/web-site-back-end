@@ -276,5 +276,29 @@ public class DestinationQueries {
 """;
 
 
-
+    public static final String GET_ALL_DESTINATIONS_LOCATIONS = """
+            SELECT
+            	d.id AS DESTINATION_ID,
+                d.name AS DESTINATION_NAME,
+                d.description AS DESTINATION_DESCRIPTION,
+                dc.name AS DESTINATION_CATEGORY,
+                d.latitude AS DESTINATION_LATITUDE,
+                d.longitude AS DESTINATION_LONGITUDE
+            FROM destination d
+            LEFT JOIN common_status cs
+            ON d.common_status_id = cs.id
+            LEFT JOIN destination_category dc
+            ON d.destination_category_id = dc.id
+            WHERE cs.name = 'ACTIVE'
+            """ ;
+    public static final String GET_ALL_DESTINATIONS_LOCATIONS_CATEGORIES = """
+            SELECT
+            	dc.name AS ID,
+                dc.description NAME,
+                dc.color AS COLOR
+            FROM destination_category dc
+            LEFT JOIN common_status cs
+            ON dc.common_status_id = cs.id
+            WHERE cs.name= 'active'
+            """;
 }
