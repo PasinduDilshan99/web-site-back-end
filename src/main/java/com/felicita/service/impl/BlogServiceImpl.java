@@ -77,7 +77,7 @@ public class BlogServiceImpl implements BlogService {
             }
 
             List<BlogResponse> blogResponseList = blogResponses.stream()
-                    .filter(item -> CommonStatus.ACTIVE.toString().equalsIgnoreCase(item.getStatus()))
+                    .filter(item -> CommonStatus.ACTIVE.toString().equalsIgnoreCase(item.getBlogStatus()))
                     .toList();
 
             if (blogResponseList.isEmpty()) {

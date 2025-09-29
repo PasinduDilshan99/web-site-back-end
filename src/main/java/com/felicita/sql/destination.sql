@@ -72,11 +72,44 @@ VALUES
 ('Ella Rock View', 'Scenic view from Ella Rock', 'https://example.com/images/ella-rock.jpg', 2, 1, 1),
 ('Colombo Skyline', 'Skyline view of Colombo at night', 'https://example.com/images/colombo-skyline.jpg', 3, 1, 1);
 
-INSERT INTO destination_images (name, description, image_url, destination_id, common_status_id, created_by)
+INSERT INTO destination_images 
+(name, description, image_url, destination_id, common_status_id, created_by)
 VALUES
-('Mirissa Sunset', 'Sunset view at Mirissa Beach', 'https://example.com/images/mirissa-sunset.jpg', 1, 1, 1),
-('Ella Rock View', 'Scenic view from Ella Rock', 'https://example.com/images/ella-rock.jpg', 1, 1, 1),
-('Colombo Skyline', 'Skyline view of Colombo at night', 'https://example.com/images/colombo-skyline.jpg', 1, 1, 1);
+-- Mirissa Beach (id=1)
+('Mirissa Beach Sunrise', 'Golden sunrise view at Mirissa Beach', 'https://example.com/images/mirissa1.jpg', 1, 1, 1),
+('Mirissa Whale Watching', 'Whale watching boats at Mirissa', 'https://example.com/images/mirissa2.jpg', 1, 1, 1),
+('Mirissa Beach Sunset', 'Beautiful sunset at Mirissa Beach', 'https://example.com/images/mirissa3.jpg', 1, 1, 1),
+
+-- Ella Rock (id=2)
+('Ella Rock Viewpoint', 'Scenic viewpoint of Ella Rock', 'https://example.com/images/ella1.jpg', 2, 1, 1),
+('Ella Rock Hiking Trail', 'Trail leading to Ella Rock', 'https://example.com/images/ella2.jpg', 2, 1, 1),
+('Ella Rock Sunrise', 'Sunrise from Ella Rock peak', 'https://example.com/images/ella3.jpg', 2, 1, 1),
+
+-- Colombo City (id=3)
+('Colombo Skyline', 'Modern skyline of Colombo City', 'https://example.com/images/colombo1.jpg', 3, 1, 1),
+('Colombo Street Life', 'Busy streets in Colombo City', 'https://example.com/images/colombo2.jpg', 3, 1, 1),
+('Colombo Lotus Tower', 'Iconic Lotus Tower in Colombo', 'https://example.com/images/colombo3.jpg', 3, 1, 1),
+
+-- Colombo (id=4)
+('Colombo Fort', 'Historic Colombo Fort area', 'https://example.com/images/colombo_fort1.jpg', 4, 1, 1),
+('Colombo Beach', 'Galle Face Green in Colombo', 'https://example.com/images/colombo_fort2.jpg', 4, 1, 1),
+('Colombo Market', 'Local market in Colombo city', 'https://example.com/images/colombo_fort3.jpg', 4, 1, 1),
+
+-- Kandy (id=5)
+('Temple of the Tooth', 'Famous Temple of the Tooth in Kandy', 'https://example.com/images/kandy1.jpg', 5, 1, 1),
+('Kandy Lake', 'Scenic view of Kandy Lake', 'https://example.com/images/kandy2.jpg', 5, 1, 1),
+('Kandy Hill View', 'Hilltop view of Kandy city', 'https://example.com/images/kandy3.jpg', 5, 1, 1),
+
+-- Galle (id=6)
+('Galle Fort Walls', 'Historic Galle Fort walls by the sea', 'https://example.com/images/galle1.jpg', 6, 1, 1),
+('Galle Lighthouse', 'Iconic lighthouse at Galle Fort', 'https://example.com/images/galle2.jpg', 6, 1, 1),
+('Galle Streets', 'Charming colonial streets in Galle', 'https://example.com/images/galle3.jpg', 6, 1, 1),
+
+-- Paris (id=7)
+('Eiffel Tower', 'Eiffel Tower at sunset in Paris', 'https://example.com/images/paris1.jpg', 7, 1, 1),
+('Louvre Museum', 'Famous Louvre Museum in Paris', 'https://example.com/images/paris2.jpg', 7, 1, 1),
+('Seine River', 'Seine River view with boats', 'https://example.com/images/paris3.jpg', 7, 1, 1);
+
 
 
 CREATE TABLE trending_destinations (

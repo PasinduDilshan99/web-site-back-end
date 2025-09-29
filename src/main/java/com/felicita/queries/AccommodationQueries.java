@@ -8,6 +8,7 @@ public class AccommodationQueries {
                 ac.sub_title AS ACCOMMADATION_SUB_TITLE,
                 ac.description AS ACCOMMADATION_DESCRIPTION,
                 ac.icon_url AS ACCOMMADATION_ICON_URL,
+                ac.image_url AS ACCOMMADATION_IMAGE_URL,
                 ac.color AS ACCOMMADATION_COLOR,
                 ac.hover_color AS ACCOMMADATION_HOVER_COLOR,
                 ac.link_url AS ACCOMMADATION_LINK_URL,

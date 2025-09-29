@@ -41,6 +41,7 @@ public class AccommodationRepositoryImpl implements AccommodationRepository {
                 accommodation.setAccommodationSubTitle(rs.getString("ACCOMMADATION_SUB_TITLE"));
                 accommodation.setAccommodationDescription(rs.getString("ACCOMMADATION_DESCRIPTION"));
                 accommodation.setAccommodationIconUrl(rs.getString("ACCOMMADATION_ICON_URL"));
+                accommodation.setAccommodationImageUrl(rs.getString("ACCOMMADATION_IMAGE_URL"));
                 accommodation.setAccommodationColor(rs.getString("ACCOMMADATION_COLOR"));
                 accommodation.setAccommodationHoverColor(rs.getString("ACCOMMADATION_HOVER_COLOR"));
                 accommodation.setAccommodationLinkUrl(rs.getString("ACCOMMADATION_LINK_URL"));
