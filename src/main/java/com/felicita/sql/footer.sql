@@ -119,3 +119,66 @@ VALUES
 ('Privacy Policy', 'Privacy Policy', '/help', 1, 1),
 ('Terms of Service', 'Terms of Service', '/blog', 1, 1),
 ('Sitemap', 'Sitemap', '/careers', 1, 1);
+
+
+
+
+
+
+-- Get footer sections with sub items
+SELECT 
+    f.id AS footer_id,
+    f.title AS footer_title,
+    f.description AS footer_description,
+    f.color AS footer_color,
+    cs1.name AS footer_status,
+    s.id AS sub_item_id,
+    s.name AS sub_item_name,
+    s.description AS sub_item_description,
+    s.icon AS sub_item_icon,
+    s.link_url AS sub_item_url,
+    cs2.name AS sub_item_status
+FROM footer f
+LEFT JOIN footer_sub_items s ON f.id = s.footer_id
+LEFT JOIN common_status cs1
+ON cs1.id = f.status 
+LEFT JOIN common_status cs2
+ON cs2.id = f.status; 
+
+-- Get social media
+SELECT 
+    sm.id,
+    sm.name,
+    sm.description,
+    sm.link,
+    sm.icon_url,
+    sm.color,
+    sm.hover_color,
+    cs.name
+FROM social_media sm
+LEFT JOIN common_status cs
+ON cs.id = sm.status;
+ 
+-- Get footer others
+SELECT 
+    fo.id, 
+    fo.name, 
+    fo.description, 
+    fo.link_url,
+    cs.name AS status_name
+FROM footer_others fo
+LEFT JOIN common_status cs
+    ON cs.id = fo.status;
+
+
+
+
+
+
+
+
+
+
+
+
+
