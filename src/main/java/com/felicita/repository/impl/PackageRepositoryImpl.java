@@ -1,15 +1,10 @@
 package com.felicita.repository.impl;
 
 import com.felicita.exception.DataAccessErrorExceptionHandler;
+import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
-import com.felicita.model.dto.DestinationDto;
-import com.felicita.model.dto.PackageImageDto;
-import com.felicita.model.dto.PackageTypeDto;
-import com.felicita.model.dto.TourDto;
-import com.felicita.model.response.PackageDetailsResponse;
-import com.felicita.model.response.PartnerResponse;
+import com.felicita.model.dto.*;
 import com.felicita.queries.PackageQueries;
-import com.felicita.queries.PartnerQueries;
 import com.felicita.repository.PackageRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,10 +16,8 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDate;
+import java.util.*;
 
 @Repository
 public class PackageRepositoryImpl implements PackageRepository {
@@ -38,125 +31,108 @@ public class PackageRepositoryImpl implements PackageRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+
     @Override
-    public List<PackageDetailsResponse> getAllPackages() {
-        String GET_ALL_PACKAGES = PackageQueries.GET_ALL_PACKAGES;
+    public List<PackageResponseDto> getAllPackages() {
         try {
-            LOGGER.info("Executing query to fetch all packages...");
+            return jdbcTemplate.query(PackageQueries.GET_ALL_PACKAGES, (ResultSet rs) -> {
+                Map<Integer, PackageResponseDto> packageMap = new HashMap<>();
 
-            List<PackageDetailsResponse> results = jdbcTemplate.query(GET_ALL_PACKAGES, new ResultSetExtractor<List<PackageDetailsResponse>>() {
-                @Override
-                public List<PackageDetailsResponse> extractData(ResultSet rs) throws SQLException, DataAccessException {
-                    Map<Integer, PackageDetailsResponse> packageMap = new LinkedHashMap<>();
+                while (rs.next()) {
+                    int packageId = rs.getInt("package_id");
 
-                    while (rs.next()) {
-                        Integer packageId = rs.getInt("package_id");
+                    // Get or create package
+                    PackageResponseDto pkg = packageMap.get(packageId);
+                    if (pkg == null) {
+                        pkg = new PackageResponseDto();
+                        pkg.setPackageId(packageId);
+                        pkg.setPackageName(rs.getString("package_name"));
+                        pkg.setPackageDescription(rs.getString("package_description"));
+                        pkg.setTotalPrice(rs.getBigDecimal("total_price"));
+                        pkg.setDiscountPercentage(rs.getBigDecimal("discount_percentage"));
+                        pkg.setStartDate(rs.getObject("start_date", LocalDate.class));
+                        pkg.setEndDate(rs.getObject("end_date", LocalDate.class));
+                        pkg.setColor(rs.getString("color"));
+                        pkg.setHoverColor(rs.getString("hover_color"));
+                        pkg.setMinPersonCount(rs.getObject("min_person_count", Integer.class));
+                        pkg.setMaxPersonCount(rs.getObject("max_person_count", Integer.class));
+                        pkg.setPackageStatus(rs.getString("package_status"));
 
-                        PackageDetailsResponse response = packageMap.get(packageId);
-                        if (response == null) {
-                            response = createPackageDetailsResponse(rs);
-                            packageMap.put(packageId, response);
-                        }
+                        // Tour info
+                        pkg.setTourId(rs.getInt("tour_id"));
+                        pkg.setTourName(rs.getString("tour_name"));
+                        pkg.setTourDescription(rs.getString("tour_description"));
+                        pkg.setDuration(rs.getObject("duration", Integer.class));
+                        pkg.setLatitude(rs.getObject("latitude", Double.class));
+                        pkg.setLongitude(rs.getObject("longitude", Double.class));
+                        pkg.setStartLocation(rs.getString("start_location"));
+                        pkg.setEndLocation(rs.getString("end_location"));
+                        pkg.setTourStatus(rs.getString("tour_status"));
 
-                        // Add image if exists
-                        Integer imageId = rs.getObject("image_id") != null ? rs.getInt("image_id") : null;
-                        if (imageId != null) {
-                            PackageImageDto image = createPackageImageDto(rs);
-                            // Check if image already exists to avoid duplicates
-                            boolean imageExists = response.getImages().stream()
-                                    .anyMatch(img -> img.getImageId().equals(imageId));
-                            if (!imageExists) {
-                                response.getImages().add(image);
-                            }
-                        }
+                        pkg.setSchedules(new ArrayList<>());
+                        pkg.setFeatures(new ArrayList<>());
+                        pkg.setImages(new ArrayList<>());
+                        packageMap.put(packageId, pkg);
+                    }
 
-                        // Add destination if exists
-                        String destinationName = rs.getString("destiantion_name");
-                        if (destinationName != null) {
-                            DestinationDto destination = createDestinationDto(rs);
-                            // Check if destination already exists to avoid duplicates
-                            boolean destinationExists = response.getDestinationDto().stream()
-                                    .anyMatch(dest -> dest.getDestinationName().equals(destinationName));
-                            if (!destinationExists) {
-                                response.getDestinationDto().add(destination);
-                            }
+                    // Schedule
+                    int scheduleId = rs.getInt("schedule_id");
+                    if (scheduleId != 0 && rs.getString("schedule_name") != null) {
+                        PackageScheduleResponseDto schedule = new PackageScheduleResponseDto();
+                        schedule.setScheduleId(scheduleId);
+                        schedule.setScheduleName(rs.getString("schedule_name"));
+                        schedule.setAssumeStartDate(rs.getObject("assume_start_date", LocalDate.class));
+                        schedule.setAssumeEndDate(rs.getObject("assume_end_date", LocalDate.class));
+                        schedule.setDurationStart(rs.getObject("duration_start", Integer.class));
+                        schedule.setDurationEnd(rs.getObject("duration_end", Integer.class));
+                        schedule.setSpecialNote(rs.getString("schedule_special_note"));
+                        schedule.setScheduleDescription(rs.getString("schedule_description"));
+
+                        if (pkg.getSchedules().stream().noneMatch(s -> s.getScheduleId() == scheduleId)) {
+                            pkg.getSchedules().add(schedule);
                         }
                     }
 
-                    return new ArrayList<>(packageMap.values());
+                    // Feature
+                    int featureId = rs.getInt("feature_id");
+                    if (featureId != 0 && rs.getString("feature_name") != null) {
+                        PackageFeatureResponseDto feature = new PackageFeatureResponseDto();
+                        feature.setFeatureId(featureId);
+                        feature.setFeatureName(rs.getString("feature_name"));
+                        feature.setFeatureValue(rs.getString("feature_value"));
+                        feature.setFeatureDescription(rs.getString("feature_description"));
+                        feature.setColor(rs.getString("feature_color"));
+                        feature.setSpecialNote(rs.getString("feature_special_note"));
+
+                        if (pkg.getFeatures().stream().noneMatch(f -> f.getFeatureId() == featureId)) {
+                            pkg.getFeatures().add(feature);
+                        }
+                    }
+
+                    // Image
+                    int imageId = rs.getInt("image_id");
+                    if (imageId != 0 && rs.getString("image_url") != null) {
+                        PackageImageResponseDto image = new PackageImageResponseDto();
+                        image.setImageId(imageId);
+                        image.setImageName(rs.getString("image_name"));
+                        image.setImageDescription(rs.getString("image_description"));
+                        image.setImageUrl(rs.getString("image_url"));
+                        image.setColor(rs.getString("image_color"));
+
+                        if (pkg.getImages().stream().noneMatch(i -> i.getImageId() == imageId)) {
+                            pkg.getImages().add(image);
+                        }
+                    }
                 }
+
+                return new ArrayList<>(packageMap.values());
             });
-
-            LOGGER.info("Successfully fetched {} packages.", results.size());
-            return results;
-
         } catch (DataAccessException ex) {
-            LOGGER.error("Database error while fetching packages: {}", ex.getMessage(), ex);
-            throw new DataAccessErrorExceptionHandler("Failed to fetch packages from database");
+            LOGGER.error(ex.toString());
+            throw new DataNotFoundErrorExceptionHandler("Database error while fetching packages");
         } catch (Exception ex) {
-            LOGGER.error("Unexpected error while fetching packages: {}", ex.getMessage(), ex);
-            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching packages");
+            throw new InternalServerErrorExceptionHandler("Unexpected error while fetching packages");
         }
     }
 
-    private PackageDetailsResponse createPackageDetailsResponse(ResultSet rs) throws SQLException {
-        PackageDetailsResponse response = new PackageDetailsResponse();
-
-        // Map basic package details
-        response.setPackageId(rs.getInt("package_id"));
-        response.setPackageName(rs.getString("package_name"));
-        response.setPackageDescription(rs.getString("package_description"));
-        response.setTotalPrice(rs.getBigDecimal("total_price"));
-        response.setDiscountPercentage(rs.getBigDecimal("discount_percentage"));
-        response.setPackageStartDate(rs.getDate("package_start_date").toLocalDate());
-        response.setPackageEndDate(rs.getDate("package_end_date").toLocalDate());
-        response.setColor(rs.getString("color"));
-        response.setHoverColor(rs.getString("hover_color"));
-        response.setMinPersonCount(rs.getInt("min_person_count"));
-        response.setMaxPersonCount(rs.getInt("max_person_count"));
-        response.setPackageStatus(rs.getString("package_status"));
-
-        // Map PackageTypeDto
-        PackageTypeDto packageType = new PackageTypeDto();
-        packageType.setId(rs.getInt("package_type_id"));
-        packageType.setName(rs.getString("package_type_name"));
-        packageType.setDescription(rs.getString("package_type_description"));
-        packageType.setStatus(rs.getString("package_type_status"));
-        response.setPackageType(packageType);
-
-        // Map TourDto
-        TourDto tour = new TourDto();
-        tour.setTourId(rs.getInt("tour_id"));
-        tour.setTourName(rs.getString("tour_name"));
-        tour.setTourDescription(rs.getString("tour_description"));
-        tour.setTourStartDate(rs.getDate("tour_start_date").toLocalDate());
-        tour.setTourEndDate(rs.getDate("tour_end_date").toLocalDate());
-        tour.setDurationDays(rs.getInt("duration_days"));
-        tour.setMaxPeople(rs.getInt("tour_max_people"));
-        tour.setMinPeople(rs.getInt("tour_min_people"));
-        tour.setPricePerPerson(rs.getBigDecimal("price_per_person"));
-        tour.setTourStatus(rs.getString("tour_status"));
-        response.setTour(tour);
-
-        // Initialize empty collections
-        response.setImages(new ArrayList<>());
-        response.setDestinationDto(new ArrayList<>());
-
-        return response;
-    }
-
-    private PackageImageDto createPackageImageDto(ResultSet rs) throws SQLException {
-        PackageImageDto image = new PackageImageDto();
-        image.setImageId(rs.getInt("image_id"));
-        image.setImageUrl(rs.getString("image_url"));
-        image.setImageStatus(rs.getString("image_status"));
-        return image;
-    }
-
-    private DestinationDto createDestinationDto(ResultSet rs) throws SQLException {
-        DestinationDto destination = new DestinationDto();
-        destination.setDestinationName(rs.getString("destiantion_name"));
-        destination.setDestinationDescription(rs.getString("destiantion_description"));
-        return destination;
-    }
 }

@@ -2,11 +2,10 @@ package com.felicita.service.impl;
 
 import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
+import com.felicita.model.dto.DestinationResponseDto;
+import com.felicita.model.dto.PackageResponseDto;
 import com.felicita.model.enums.CommonStatus;
-import com.felicita.model.enums.PartnerStatus;
 import com.felicita.model.response.CommonResponse;
-import com.felicita.model.response.PackageDetailsResponse;
-import com.felicita.model.response.PartnerResponse;
 import com.felicita.repository.PackageRepository;
 import com.felicita.service.PackageService;
 import com.felicita.util.CommonResponseMessages;
@@ -18,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PackageServiceImpl implements PackageService {
@@ -31,32 +31,33 @@ public class PackageServiceImpl implements PackageService {
         this.packageRepository = packageRepository;
     }
 
+
     @Override
-    public ResponseEntity<CommonResponse<List<PackageDetailsResponse>>> getAllPackages() {
+    public ResponseEntity<CommonResponse<List<PackageResponseDto>>> getAllPackages() {
         LOGGER.info("Start fetching all package from repository");
         try {
-            List<PackageDetailsResponse> packageDetailsResponses = packageRepository.getAllPackages();
+            List<PackageResponseDto> packageResponseDtos = packageRepository.getAllPackages();
 
-            if (packageDetailsResponses.isEmpty()) {
+            if (packageResponseDtos.isEmpty()) {
                 LOGGER.warn("No package found in database");
                 throw new DataNotFoundErrorExceptionHandler("No package found");
             }
 
-            LOGGER.info("Fetched {} package successfully", packageDetailsResponses.size());
+            LOGGER.info("Fetched {} package successfully", packageResponseDtos.size());
             return ResponseEntity.ok(
                     new CommonResponse<>(
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            packageDetailsResponses,
+                            packageResponseDtos,
                             Instant.now()
                     )
             );
 
-        }catch (DataNotFoundErrorExceptionHandler e) {
+        } catch (DataNotFoundErrorExceptionHandler e) {
             LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
             throw new DataNotFoundErrorExceptionHandler(e.getMessage());
-        }catch (Exception e) {
+        } catch (Exception e) {
             LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
             throw new InternalServerErrorExceptionHandler("Failed to fetch package from database");
         } finally {
@@ -65,46 +66,39 @@ public class PackageServiceImpl implements PackageService {
     }
 
     @Override
-    public ResponseEntity<CommonResponse<List<PackageDetailsResponse>>> getAllActivePackages() {
-        LOGGER.info("Start fetching all visible package from repository");
-
+    public ResponseEntity<CommonResponse<List<PackageResponseDto>>> getActivePackages() {
+        LOGGER.info("Start fetching all active package from repository");
         try {
-            List<PackageDetailsResponse> packageDetailsResponses = packageRepository.getAllPackages();
+            List<PackageResponseDto> packageResponseDtos = packageRepository.getAllPackages();
 
-            if (packageDetailsResponses.isEmpty()) {
-                LOGGER.warn("No package found in database");
+            if (packageResponseDtos.isEmpty()) {
+                LOGGER.warn("No active package found in database");
                 throw new DataNotFoundErrorExceptionHandler("No package found");
             }
 
-            List<PackageDetailsResponse> packageDetailsResponseList = packageDetailsResponses.stream()
-                    .filter(item -> CommonStatus.ACTIVE.toString().equalsIgnoreCase(item.getPackageStatus()))
-                    .toList();
+            List<PackageResponseDto> packageResponseDtoList = packageResponseDtos.stream()
+                    .filter(data -> CommonStatus.ACTIVE.name().equalsIgnoreCase(data.getPackageStatus()))
+                    .collect(Collectors.toList());
 
-            if (packageDetailsResponseList.isEmpty()) {
-                LOGGER.warn("No visible package found in database");
-                throw new DataNotFoundErrorExceptionHandler("No visible package found");
-            }
-
-            LOGGER.info("Fetched {} visible package successfully", packageDetailsResponseList.size());
-
+            LOGGER.info("Fetched {} active package successfully", packageResponseDtoList.size());
             return ResponseEntity.ok(
                     new CommonResponse<>(
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            packageDetailsResponseList,
+                            packageResponseDtoList,
                             Instant.now()
                     )
             );
 
-        }catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching visible package: {}", e.getMessage(), e);
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching active package: {}", e.getMessage(), e);
             throw new DataNotFoundErrorExceptionHandler(e.getMessage());
-        }catch (Exception e) {
-            LOGGER.error("Error occurred while fetching visible package: {}", e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch package from database");
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching active package: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch active package from database");
         } finally {
-            LOGGER.info("End fetching all visible package from repository");
+            LOGGER.info("End fetching all active package from repository");
         }
     }
 }

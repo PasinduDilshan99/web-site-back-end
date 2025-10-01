@@ -1,10 +1,8 @@
 package com.felicita.controller;
 
+import com.felicita.model.dto.DestinationResponseDto;
+import com.felicita.model.dto.TourResponseDto;
 import com.felicita.model.response.CommonResponse;
-import com.felicita.model.response.PartnerResponse;
-import com.felicita.model.response.PopularTourResponse;
-import com.felicita.model.response.TourResponse;
-import com.felicita.service.PartnerService;
 import com.felicita.service.TourService;
 import com.felicita.util.Constant;
 import org.slf4j.Logger;
@@ -31,28 +29,19 @@ public class TourController {
     }
 
     @GetMapping(path = "/all")
-    public ResponseEntity<CommonResponse<List<TourResponse>>> getAllTours(){
+    public ResponseEntity<CommonResponse<List<TourResponseDto>>> getAllTours() {
         LOGGER.info("{} Start execute get all tours {}", Constant.DOTS, Constant.DOTS);
-        ResponseEntity<CommonResponse<List<TourResponse>>> response = tourService.getAllTours();
+        ResponseEntity<CommonResponse<List<TourResponseDto>>> response = tourService.getAllTours();
         LOGGER.info("{} End execute get all tours {}", Constant.DOTS, Constant.DOTS);
         return response;
     }
 
     @GetMapping(path = "/active")
-    public ResponseEntity<CommonResponse<List<TourResponse>>> getAllActiveTours(){
+    public ResponseEntity<CommonResponse<List<TourResponseDto>>> getActiveTours() {
         LOGGER.info("{} Start execute get all active tours {}", Constant.DOTS, Constant.DOTS);
-        ResponseEntity<CommonResponse<List<TourResponse>>> response = tourService.getAllActiveTours();
+        ResponseEntity<CommonResponse<List<TourResponseDto>>> response = tourService.getActiveTours();
         LOGGER.info("{} End execute get all active tours {}", Constant.DOTS, Constant.DOTS);
         return response;
     }
-
-    @GetMapping(path = "/popular")
-    public ResponseEntity<CommonResponse<List<PopularTourResponse>>> getPopularTours(){
-        LOGGER.info("{} Start execute get all popular tours {}", Constant.DOTS, Constant.DOTS);
-        ResponseEntity<CommonResponse<List<PopularTourResponse>>> response = tourService.getPopularTours();
-        LOGGER.info("{} End execute get all popular tours {}", Constant.DOTS, Constant.DOTS);
-        return response;
-    }
-
 
 }

@@ -1,9 +1,7 @@
 package com.felicita.controller;
 
-import com.felicita.model.response.ActivityCategoryResponse;
-import com.felicita.model.response.ActivityResponse;
+import com.felicita.model.dto.ActivityResponseDto;
 import com.felicita.model.response.CommonResponse;
-import com.felicita.model.response.PartnerResponse;
 import com.felicita.service.ActivitiesService;
 import com.felicita.util.Constant;
 import org.slf4j.Logger;
@@ -30,34 +28,18 @@ public class ActivitiesController {
     }
 
     @GetMapping(path = "/all")
-    public ResponseEntity<CommonResponse<List<ActivityResponse>>> getAllActivities(){
+    public ResponseEntity<CommonResponse<List<ActivityResponseDto>>> getAllActivities(){
         LOGGER.info("{} Start execute get all activities {}", Constant.DOTS, Constant.DOTS);
-        ResponseEntity<CommonResponse<List<ActivityResponse>>> response = activitiesService.getAllActivities();
+        ResponseEntity<CommonResponse<List<ActivityResponseDto>>> response = activitiesService.getAllActivities();
         LOGGER.info("{} End execute get all activities {}", Constant.DOTS, Constant.DOTS);
         return response;
     }
 
     @GetMapping(path = "/active")
-    public ResponseEntity<CommonResponse<List<ActivityResponse>>> getActiveActivities(){
-        LOGGER.info("{} Start execute get all active activities {}", Constant.DOTS, Constant.DOTS);
-        ResponseEntity<CommonResponse<List<ActivityResponse>>> response = activitiesService.getActiveActivities();
-        LOGGER.info("{} End execute get all active activities {}", Constant.DOTS, Constant.DOTS);
-        return response;
-    }
-
-    @GetMapping(path = "/category")
-    public ResponseEntity<CommonResponse<List<ActivityCategoryResponse>>> getActivityCategories(){
-        LOGGER.info("{} Start execute get activity categories {}", Constant.DOTS, Constant.DOTS);
-        ResponseEntity<CommonResponse<List<ActivityCategoryResponse>>> response = activitiesService.getActivityCategories();
-        LOGGER.info("{} End execute get activity categories {}", Constant.DOTS, Constant.DOTS);
-        return response;
-    }
-
-    @GetMapping(path = "/active-category")
-    public ResponseEntity<CommonResponse<List<ActivityCategoryResponse>>> getActiveActivityCategories(){
-        LOGGER.info("{} Start execute get activity categories {}", Constant.DOTS, Constant.DOTS);
-        ResponseEntity<CommonResponse<List<ActivityCategoryResponse>>> response = activitiesService.getActiveActivityCategories();
-        LOGGER.info("{} End execute get activity categories {}", Constant.DOTS, Constant.DOTS);
+    public ResponseEntity<CommonResponse<List<ActivityResponseDto>>> getActiveActivities(){
+        LOGGER.info("{} Start execute get active activities {}", Constant.DOTS, Constant.DOTS);
+        ResponseEntity<CommonResponse<List<ActivityResponseDto>>> response = activitiesService.getActiveActivities();
+        LOGGER.info("{} End execute get active activities {}", Constant.DOTS, Constant.DOTS);
         return response;
     }
 

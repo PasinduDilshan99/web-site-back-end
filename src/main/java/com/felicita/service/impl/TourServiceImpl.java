@@ -2,10 +2,9 @@ package com.felicita.service.impl;
 
 import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
-import com.felicita.model.dto.TourImageDto;
+import com.felicita.model.dto.DestinationResponseDto;
 import com.felicita.model.dto.TourResponseDto;
 import com.felicita.model.enums.CommonStatus;
-import com.felicita.model.enums.PartnerStatus;
 import com.felicita.model.response.*;
 import com.felicita.repository.TourRepository;
 import com.felicita.service.DestinationService;
@@ -20,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TourServiceImpl implements TourService {
@@ -35,184 +35,74 @@ public class TourServiceImpl implements TourService {
         this.destinationService = destinationService;
     }
 
+
     @Override
-    public ResponseEntity<CommonResponse<List<TourResponse>>> getAllTours() {
-        LOGGER.info("Start fetching all partners from repository");
+    public ResponseEntity<CommonResponse<List<TourResponseDto>>> getAllTours() {
+        LOGGER.info("Start fetching all tours from repository");
         try {
-            List<TourResponse> tourResponses = new ArrayList<>();
             List<TourResponseDto> tourResponseDtos = tourRepository.getAllTours();
 
-            for (TourResponseDto responseDto : tourResponseDtos) {
-                List<Integer> destinationIds = responseDto.getDestinations();
-                List<DestinationResponse> destinationResponse = new ArrayList<>();
-                if (destinationIds != null && !destinationIds.isEmpty()) {
-                    destinationResponse = destinationService.getDestinationByIds(destinationIds);
-                }
-                TourResponse tourResponse = new TourResponse();
-                tourResponse.setTourId(responseDto.getTourId());
-                tourResponse.setTourName(responseDto.getTourName());
-                tourResponse.setTourDescription(responseDto.getTourDescription());
-                tourResponse.setTourType(responseDto.getTourType());
-                tourResponse.setTourCategory(responseDto.getTourCategory());
-                tourResponse.setDurationDays(responseDto.getDurationDays());
-                tourResponse.setStartDate(responseDto.getStartDate());
-                tourResponse.setEndDate(responseDto.getEndDate());
-                tourResponse.setStartLocation(responseDto.getStartLocation());
-                tourResponse.setEndLocation(responseDto.getEndLocation());
-                tourResponse.setMaxPeople(responseDto.getMaxPeople());
-                tourResponse.setMinPeople(responseDto.getMinPeople());
-                tourResponse.setPricePerPerson(responseDto.getPricePerPerson());
-                tourResponse.setTourStatus(responseDto.getTourStatus());
-                tourResponse.setTourImages(responseDto.getTourImages());
-                tourResponse.setDestinations(destinationResponse);
-                tourResponse.setCreatedAt(responseDto.getCreatedAt());
-                tourResponse.setCreatedBy(responseDto.getCreatedBy());
-                tourResponse.setUpdatedAt(responseDto.getUpdatedAt());
-                tourResponse.setUpdatedBy(responseDto.getUpdatedBy());
-                tourResponse.setTerminatedAt(responseDto.getTerminatedAt());
-                tourResponse.setTerminatedBy(responseDto.getTerminatedBy());
-                tourResponses.add(tourResponse);
+            if (tourResponseDtos.isEmpty()) {
+                LOGGER.warn("No tours found in database");
+                throw new DataNotFoundErrorExceptionHandler("No tours found");
             }
 
-            if (tourResponses.isEmpty()) {
-                LOGGER.warn("No partners found in database");
-                throw new DataNotFoundErrorExceptionHandler("No partners found");
-            }
-
-            LOGGER.info("Fetched {} partners successfully", tourResponses.size());
+            LOGGER.info("Fetched {} tours successfully", tourResponseDtos.size());
             return ResponseEntity.ok(
                     new CommonResponse<>(
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            tourResponses,
+                            tourResponseDtos,
                             Instant.now()
                     )
             );
 
         } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching partners: {}", e.getMessage(), e);
+            LOGGER.error("Error occurred while fetching tours: {}", e.getMessage(), e);
             throw new DataNotFoundErrorExceptionHandler(e.getMessage());
         } catch (Exception e) {
-            LOGGER.error("Error occurred while fetching partners: {}", e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch partners from database");
+            LOGGER.error("Error occurred while fetching tours: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch tours from database");
         } finally {
-            LOGGER.info("End fetching all partners from repository");
+            LOGGER.info("End fetching all tours from repository");
         }
     }
 
     @Override
-    public ResponseEntity<CommonResponse<List<TourResponse>>> getAllActiveTours() {
+    public ResponseEntity<CommonResponse<List<TourResponseDto>>> getActiveTours() {
         LOGGER.info("Start fetching all active tours from repository");
-
         try {
-            List<TourResponse> tourResponses = new ArrayList<>();
             List<TourResponseDto> tourResponseDtos = tourRepository.getAllTours();
 
-            for (TourResponseDto responseDto : tourResponseDtos) {
-                List<Integer> destinationIds = responseDto.getDestinations();
-                List<DestinationResponse> destinationResponse = new ArrayList<>();
-                if (destinationIds != null && !destinationIds.isEmpty()) {
-                    destinationResponse = destinationService.getDestinationByIds(destinationIds);
-                }
-                TourResponse tourResponse = new TourResponse();
-                tourResponse.setTourId(responseDto.getTourId());
-                tourResponse.setTourName(responseDto.getTourName());
-                tourResponse.setTourDescription(responseDto.getTourDescription());
-                tourResponse.setTourType(responseDto.getTourType());
-                tourResponse.setTourCategory(responseDto.getTourCategory());
-                tourResponse.setDurationDays(responseDto.getDurationDays());
-                tourResponse.setStartDate(responseDto.getStartDate());
-                tourResponse.setEndDate(responseDto.getEndDate());
-                tourResponse.setStartLocation(responseDto.getStartLocation());
-                tourResponse.setEndLocation(responseDto.getEndLocation());
-                tourResponse.setMaxPeople(responseDto.getMaxPeople());
-                tourResponse.setMinPeople(responseDto.getMinPeople());
-                tourResponse.setPricePerPerson(responseDto.getPricePerPerson());
-                tourResponse.setTourStatus(responseDto.getTourStatus());
-                tourResponse.setTourImages(responseDto.getTourImages());
-                tourResponse.setDestinations(destinationResponse);
-                tourResponse.setCreatedAt(responseDto.getCreatedAt());
-                tourResponse.setCreatedBy(responseDto.getCreatedBy());
-                tourResponse.setUpdatedAt(responseDto.getUpdatedAt());
-                tourResponse.setUpdatedBy(responseDto.getUpdatedBy());
-                tourResponse.setTerminatedAt(responseDto.getTerminatedAt());
-                tourResponse.setTerminatedBy(responseDto.getTerminatedBy());
-                tourResponses.add(tourResponse);
-            }
-
-
-            if (tourResponses.isEmpty()) {
-                LOGGER.warn("No tours found in database");
+            if (tourResponseDtos.isEmpty()) {
+                LOGGER.warn("No active tours found in database");
                 throw new DataNotFoundErrorExceptionHandler("No tours found");
             }
 
-            List<TourResponse> tourResponseList = tourResponses.stream()
-                    .filter(item -> CommonStatus.ACTIVE.toString().equalsIgnoreCase(item.getTourStatus()))
-                    .toList();
+            List<TourResponseDto> tourResponseDtoList = tourResponseDtos.stream()
+                    .filter(data -> CommonStatus.ACTIVE.name().equalsIgnoreCase(data.getStatusName()))
+                    .collect(Collectors.toList());
 
-            if (tourResponseList.isEmpty()) {
-                LOGGER.warn("No active tours found in database");
-                throw new DataNotFoundErrorExceptionHandler("No active tours found");
-            }
-
-            LOGGER.info("Fetched {} active tours successfully", tourResponseList.size());
-
+            LOGGER.info("Fetched {} active tours successfully", tourResponseDtoList.size());
             return ResponseEntity.ok(
                     new CommonResponse<>(
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            tourResponseList,
+                            tourResponseDtoList,
                             Instant.now()
                     )
             );
 
-        }catch (DataNotFoundErrorExceptionHandler e) {
+        } catch (DataNotFoundErrorExceptionHandler e) {
             LOGGER.error("Error occurred while fetching active tours: {}", e.getMessage(), e);
             throw new DataNotFoundErrorExceptionHandler(e.getMessage());
-        }catch (Exception e) {
+        } catch (Exception e) {
             LOGGER.error("Error occurred while fetching active tours: {}", e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch partners from database");
+            throw new InternalServerErrorExceptionHandler("Failed to fetch active tours from database");
         } finally {
             LOGGER.info("End fetching all active tours from repository");
         }
     }
-
-    @Override
-    public ResponseEntity<CommonResponse<List<PopularTourResponse>>> getPopularTours() {
-        LOGGER.info("Start fetching popular tours from repository");
-        try {
-            List<PopularTourResponse> popularTourResponses = tourRepository.getPopularTours();
-
-            // logic
-
-
-            if (popularTourResponses.isEmpty()) {
-                LOGGER.warn("No tours found in database");
-                throw new DataNotFoundErrorExceptionHandler("No tours found");
-            }
-
-            LOGGER.info("Fetched {} popular tour successfully", popularTourResponses.size());
-            return ResponseEntity.ok(
-                    new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            popularTourResponses,
-                            Instant.now()
-                    )
-            );
-
-        }catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching popular tour: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
-        }catch (Exception e) {
-            LOGGER.error("Error occurred while fetching popular tour: {}", e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch popular tour from database");
-        } finally {
-            LOGGER.info("End fetching popular tour from repository");
-        }
-    }
-
 }

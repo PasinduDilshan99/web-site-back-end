@@ -1,13 +1,14 @@
 package com.felicita.service;
 
+import com.felicita.model.dto.PackageResponseDto;
 import com.felicita.model.response.CommonResponse;
-import com.felicita.model.response.PackageDetailsResponse;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
 public interface PackageService {
-    ResponseEntity<CommonResponse<List<PackageDetailsResponse>>> getAllPackages();
 
-    ResponseEntity<CommonResponse<List<PackageDetailsResponse>>> getAllActivePackages();
+    ResponseEntity<CommonResponse<List<PackageResponseDto>>> getAllPackages();
+
+    ResponseEntity<CommonResponse<List<PackageResponseDto>>> getActivePackages();
 }

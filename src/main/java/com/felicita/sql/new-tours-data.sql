@@ -1,9 +1,23 @@
+use travelagencydb;
+
 -- 1. Insert Seasons
 INSERT INTO seasons (name, description, status, created_by) VALUES
 ('Summer', 'Hot and sunny season, ideal for beach activities', 1, 1),
 ('Winter', 'Cool season, perfect for hill country tours', 1, 1),
 ('Monsoon', 'Rainy season, great for waterfalls and lush greenery', 1, 1),
 ('Spring', 'Pleasant weather, blooming season', 1, 1);
+
+INSERT INTO activity_category (name, description, status, created_by) VALUES
+('Adventure', 'Thrilling outdoor activities like climbing, hiking, and trekking', 1, 1),
+('Water Sports', 'Ocean and water-based activities including surfing, diving, and snorkeling', 1, 1),
+('Wildlife', 'Animal watching and safari experiences', 1, 1),
+('Marine Life', 'Ocean wildlife experiences like whale watching and dolphin tours', 1, 1),
+('Sightseeing', 'Visiting landmarks, viewpoints, and scenic locations', 1, 1),
+('Hiking', 'Mountain and nature trail walking activities', 1, 1),
+('Cultural', 'Temple visits, cultural shows, and heritage experiences', 1, 1),
+('Wellness', 'Yoga, meditation, spa, and relaxation activities', 1, 1),
+('Photography', 'Specialized photo tours and sessions', 1, 1),
+('Food & Dining', 'Culinary experiences, cooking classes, and food tours', 1, 1);
 
 -- 2. Insert Tour Types
 INSERT INTO tour_type (name, description, status, created_by) VALUES
@@ -159,7 +173,12 @@ INSERT INTO destination_images (destination_id, name, description, image_url, st
 (4, 'Mirissa Sunset', 'Beautiful sunset at Mirissa beach', '/images/destinations/mirissa_sunset.jpg', 1, 1);
 
 -- Destination Categories Images Table
-
+INSERT INTO destination_categories_images (destination_categories_id, name, description, image_url, status, created_by) VALUES
+(1, 'Historical Sites Banner', 'Ancient ruins and temples', '/images/dest_categories/historical_sites.jpg', 1, 1),
+(2, 'Natural Wonders Hero', 'Waterfalls and mountains', '/images/dest_categories/natural_wonders.jpg', 1, 1),
+(3, 'Beach Paradise', 'Golden sandy beaches', '/images/dest_categories/beaches.jpg', 1, 1),
+(4, 'Wildlife Gallery', 'Animals in natural habitat', '/images/dest_categories/national_parks.jpg', 1, 1),
+(5, 'Urban Scenes', 'City life and culture', '/images/dest_categories/cities.jpg', 1, 1);
 
 -- 25. Insert Sample Images - Activities
 INSERT INTO activities_images (activity_id, name, description, image_url, status, created_by) VALUES
@@ -167,11 +186,32 @@ INSERT INTO activities_images (activity_id, name, description, image_url, status
 (4, 'Safari Jeep', 'Safari vehicle in Yala', '/images/activities/yala_jeep.jpg', 1, 1),
 (5, 'Whale Breach', 'Blue whale breaching near boat', '/images/activities/whale_watching.jpg', 1, 1);
 
--- Tour History Images Table
+-- 25b. Insert Sample Images - Tour History
+INSERT INTO tour_history_images (tour_schedule_id, name, description, status, image_url, color, created_by) VALUES
+(1, 'Sigiriya Group Oct 15', 'Group photo at Sigiriya fortress base', 1, '/images/tour_history/sigiriya_oct15_group.jpg', '#FF6B6B', 1),
+(1, 'Sigiriya Summit View', 'View captured during October tour', 1, '/images/tour_history/sigiriya_oct15_summit.jpg', '#FF6B6B', 1),
+(2, 'Ella Train Ride', 'Scenic train journey November batch', 1, '/images/tour_history/ella_nov_train.jpg', '#4ECDC4', 1),
+(2, 'Ella Nine Arch Bridge', 'Group at Nine Arch Bridge', 1, '/images/tour_history/ella_nov_bridge.jpg', '#4ECDC4', 1),
+(2, 'Ella Accommodation', 'Beautiful hotel with mountain view', 1, '/images/tour_history/ella_nov_hotel.jpg', '#4ECDC4', 1);
 
--- Activities History Images Table
+-- 25c. Insert Sample Images - Activities History
+INSERT INTO activities_history_images (activities_history_id, name, description, image_url, status, created_by) VALUES
+(1, 'Sunrise at Sigiriya', 'Beautiful sunrise during morning climb', '/images/activity_history/sigiriya_sunrise.jpg', 1, 1),
+(1, 'Group at Summit', 'Participants at the top', '/images/activity_history/sigiriya_group_top.jpg', 1, 1),
+(1, 'Ancient Frescoes', 'Famous Sigiriya frescoes', '/images/activity_history/sigiriya_frescoes.jpg', 1, 1),
+(2, 'Leopard Sighting', 'One of two leopards spotted', '/images/activity_history/yala_leopard1.jpg', 1, 1),
+(2, 'Second Leopard', 'Rare second leopard on same safari', '/images/activity_history/yala_leopard2.jpg', 1, 1),
+(2, 'Elephant Herd', 'Large elephant herd near waterhole', '/images/activity_history/yala_elephants.jpg', 1, 1);
 
--- Package History Images Table
+-- 25d. Insert Sample Images - Package History
+INSERT INTO package_history_images (package_schedule_id, name, description, image_url, status, created_by) VALUES
+(1, 'Sigiriya Package Memories 1', 'Participants enjoying the tour', '/images/package_history/sigiriya_pkg_mem1.jpg', 1, 1),
+(1, 'Sigiriya Package Memories 2', 'Lunch break with traditional food', '/images/package_history/sigiriya_pkg_mem2.jpg', 1, 1),
+(2, 'Ella Package Day 1', 'Arrival and hotel check-in', '/images/package_history/ella_pkg_day1.jpg', 1, 1),
+(2, 'Ella Package Day 2', 'Hiking and exploring', '/images/package_history/ella_pkg_day2.jpg', 1, 1),
+(2, 'Ella Package Day 3', 'Final day breakfast view', '/images/package_history/ella_pkg_day3.jpg', 1, 1),
+(3, 'Yala Safari Package', 'Morning safari departure', '/images/package_history/yala_pkg_safari.jpg', 1, 1),
+(3, 'Yala Camping Experience', 'Luxury camping setup', '/images/package_history/yala_pkg_camp.jpg', 1, 1);
 
 -- 26. Insert Sample Images - Reviews
 INSERT INTO tour_review_images (tour_review_id, name, description, image_url, status, created_by) VALUES

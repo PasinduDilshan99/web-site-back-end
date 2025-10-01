@@ -151,6 +151,23 @@ CREATE TABLE destination (
     FOREIGN KEY (status) REFERENCES common_status(id)
 );
 
+
+-- Activity Category Table
+CREATE TABLE activity_category (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    status INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_by INT,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_by INT,
+    terminated_at TIMESTAMP NULL,
+    terminated_by INT,
+    FOREIGN KEY (status) REFERENCES common_status(id)
+);
+
+
 -- Activities Table
 CREATE TABLE activities (
     id INT PRIMARY KEY AUTO_INCREMENT,
