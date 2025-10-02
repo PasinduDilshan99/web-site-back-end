@@ -222,3 +222,40 @@ INSERT INTO activities_review_images (activities_review_id, name, description, i
 
 INSERT INTO package_review_images (package_review_id, name, description, image_url, status, created_by) VALUES
 (1, 'Happy Guests', 'Group photo with guide', '/images/reviews/happy_guests.jpg', 1, 1);
+
+INSERT INTO popular_destination (destination_id, rating, popularity, created_by)
+VALUES
+(1, 4.8, 95, 1), -- Sigiriya
+(2, 4.7, 90, 1), -- Ella
+(3, 4.6, 85, 1), -- Yala National Park
+(4, 4.5, 80, 1), -- Mirissa
+(5, 4.4, 70, 1), -- Anuradhapura
+(6, 4.3, 65, 1); -- Nuwara Eliya
+
+
+-- Sigiriya Rock Fortress Adventure -> Sigiriya
+INSERT INTO tour_destination (tour_id, destination_id) VALUES (1, 1);
+
+-- Ella Hill Country Explorer -> Ella, Nuwara Eliya
+INSERT INTO tour_destination (tour_id, destination_id) VALUES (2, 2);
+INSERT INTO tour_destination (tour_id, destination_id) VALUES (2, 6);
+
+-- Yala Wildlife Safari -> Yala National Park
+INSERT INTO tour_destination (tour_id, destination_id) VALUES (3, 3);
+
+-- Mirissa Beach Retreat -> Mirissa
+INSERT INTO tour_destination (tour_id, destination_id) VALUES (4, 4);
+
+-- Cultural Triangle Tour -> Anuradhapura, Sigiriya
+INSERT INTO tour_destination (tour_id, destination_id) VALUES (5, 5);
+INSERT INTO tour_destination (tour_id, destination_id) VALUES (5, 1);
+
+INSERT INTO activity_category_images (activity_category_id, name, description, image_url, status, created_by, updated_by)
+VALUES
+(1, 'Mountain Trail', 'Scenic hiking trail in the mountains.', 'https://example.com/images/hiking1.jpg', 1, 1, 1),
+(1, 'Forest Path', 'Dense forest path for adventurous hiking.', 'https://example.com/images/hiking2.jpg', 1, 1, 1),
+(2, 'Elephant Safari', 'Spot elephants in their natural habitat.', 'https://example.com/images/safari1.jpg', 1, 1, 1),
+(2, 'Bird Watching', 'Observe exotic birds during the safari.', 'https://example.com/images/safari2.jpg', 1, 1, 1),
+(3, 'Temple Visit', 'Visit ancient temples and historical monuments.', 'https://example.com/images/cultural1.jpg', 1, 1, 1),
+(3, 'Local Market', 'Explore the vibrant local markets.', 'https://example.com/images/cultural2.jpg', 1, 1, 1);
+

@@ -2,6 +2,7 @@ package com.felicita.service.impl;
 
 import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
+import com.felicita.model.dto.ActivityCategoryResponseDto;
 import com.felicita.model.dto.ActivityResponseDto;
 import com.felicita.model.enums.CommonStatus;
 import com.felicita.model.response.CommonResponse;
@@ -83,6 +84,75 @@ public class ActivitiesServiceImpl implements ActivitiesService {
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
                             activityResponseDtoList,
+                            Instant.now()
+                    )
+            );
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching activities: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching activities: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch activities from database");
+        } finally {
+            LOGGER.info("End fetching all activities from repository");
+        }
+    }
+
+    @Override
+    public ResponseEntity<CommonResponse<List<ActivityCategoryResponseDto>>> getAllActivityCategories() {
+        LOGGER.info("Start fetching all activities from repository");
+        try {
+            List<ActivityCategoryResponseDto> activityCategoryResponseDtos = activitiesRepository.getAllActivityCategories();
+
+            if (activityCategoryResponseDtos.isEmpty()) {
+                LOGGER.warn("No activities found in database");
+                throw new DataNotFoundErrorExceptionHandler("No activities found");
+            }
+
+            LOGGER.info("Fetched {} activities successfully", activityCategoryResponseDtos.size());
+            return ResponseEntity.ok(
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            activityCategoryResponseDtos,
+                            Instant.now()
+                    )
+            );
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching activities: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching activities: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch activities from database");
+        } finally {
+            LOGGER.info("End fetching all activities from repository");
+        }
+    }
+
+    @Override
+    public ResponseEntity<CommonResponse<List<ActivityCategoryResponseDto>>> getActiveActivityCategories() {
+        LOGGER.info("Start fetching active activities from repository");
+        try {
+            List<ActivityCategoryResponseDto> activityCategoryResponseDtos = activitiesRepository.getAllActivityCategories();
+
+            if (activityCategoryResponseDtos.isEmpty()) {
+                LOGGER.warn("No activities found in database");
+                throw new DataNotFoundErrorExceptionHandler("No activities found");
+            }
+
+            List<ActivityCategoryResponseDto> activityCategoryResponseDtoList = activityCategoryResponseDtos.stream()
+                    .filter(t -> CommonStatus.ACTIVE.name().equalsIgnoreCase(t.getCategoryStatus()))
+                    .toList();
+            LOGGER.info("Fetched {} activities successfully", activityCategoryResponseDtoList.size());
+            return ResponseEntity.ok(
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            activityCategoryResponseDtoList,
                             Instant.now()
                     )
             );

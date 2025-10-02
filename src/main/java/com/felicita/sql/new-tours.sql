@@ -151,6 +151,14 @@ CREATE TABLE destination (
     FOREIGN KEY (status) REFERENCES common_status(id)
 );
 
+CREATE TABLE tour_destination (
+    tour_id INT NOT NULL,
+    destination_id INT NOT NULL,
+    PRIMARY KEY (tour_id, destination_id),
+    FOREIGN KEY (tour_id) REFERENCES tour(tour_id) ON DELETE CASCADE,
+    FOREIGN KEY (destination_id) REFERENCES destination(destination_id) ON DELETE CASCADE
+);
+
 
 -- Activity Category Table
 CREATE TABLE activity_category (
@@ -546,6 +554,24 @@ CREATE TABLE destination_categories_images (
     FOREIGN KEY (status) REFERENCES common_status(id)
 );
 
+CREATE TABLE activity_category_images (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    activity_category_id INT NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    image_url VARCHAR(500),
+    status INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_by INT,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_by INT,
+    terminated_at TIMESTAMP NULL,
+    terminated_by INT,
+    FOREIGN KEY (activity_category_id) REFERENCES activity_category(id),
+    FOREIGN KEY (status) REFERENCES common_status(id)
+);
+
+
 -- Activities Images Table
 CREATE TABLE activities_images (
     id INT PRIMARY KEY AUTO_INCREMENT,
@@ -671,6 +697,16 @@ CREATE TABLE package_review_images (
     terminated_by INT,
     FOREIGN KEY (package_review_id) REFERENCES package_review(id),
     FOREIGN KEY (status) REFERENCES common_status(id)
+);
+
+CREATE TABLE popular_destination (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    destination_id INT NOT NULL,
+    rating DECIMAL(3,2) NOT NULL, -- e.g. 4.75
+    popularity INT NOT NULL,      -- could represent number of visits, searches, etc.
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_by INT,
+    FOREIGN KEY (destination_id) REFERENCES destination(destination_id)
 );
 
 -- =============================================

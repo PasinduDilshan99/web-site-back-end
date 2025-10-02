@@ -1,5 +1,6 @@
 package com.felicita.controller;
 
+import com.felicita.model.dto.ActivityCategoryResponseDto;
 import com.felicita.model.dto.ActivityResponseDto;
 import com.felicita.model.response.CommonResponse;
 import com.felicita.service.ActivitiesService;
@@ -40,6 +41,22 @@ public class ActivitiesController {
         LOGGER.info("{} Start execute get active activities {}", Constant.DOTS, Constant.DOTS);
         ResponseEntity<CommonResponse<List<ActivityResponseDto>>> response = activitiesService.getActiveActivities();
         LOGGER.info("{} End execute get active activities {}", Constant.DOTS, Constant.DOTS);
+        return response;
+    }
+
+    @GetMapping(path = "/category")
+    public ResponseEntity<CommonResponse<List<ActivityCategoryResponseDto>>> getAllActivityCategories(){
+        LOGGER.info("{} Start execute get activities categories {}", Constant.DOTS, Constant.DOTS);
+        ResponseEntity<CommonResponse<List<ActivityCategoryResponseDto>>> response = activitiesService.getAllActivityCategories();
+        LOGGER.info("{} End execute get activities categories {}", Constant.DOTS, Constant.DOTS);
+        return response;
+    }
+
+    @GetMapping(path = "/active-category")
+    public ResponseEntity<CommonResponse<List<ActivityCategoryResponseDto>>> getActiveActivityCategories(){
+        LOGGER.info("{} Start execute get active activities categories {}", Constant.DOTS, Constant.DOTS);
+        ResponseEntity<CommonResponse<List<ActivityCategoryResponseDto>>> response = activitiesService.getActiveActivityCategories();
+        LOGGER.info("{} End execute get active activities categories {}", Constant.DOTS, Constant.DOTS);
         return response;
     }
 

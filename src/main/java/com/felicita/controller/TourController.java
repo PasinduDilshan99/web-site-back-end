@@ -1,6 +1,7 @@
 package com.felicita.controller;
 
 import com.felicita.model.dto.DestinationResponseDto;
+import com.felicita.model.dto.PopularTourResponseDto;
 import com.felicita.model.dto.TourResponseDto;
 import com.felicita.model.response.CommonResponse;
 import com.felicita.service.TourService;
@@ -44,4 +45,11 @@ public class TourController {
         return response;
     }
 
+    @GetMapping(path = "/popular")
+    public ResponseEntity<CommonResponse<List<PopularTourResponseDto>>> getPopularTours() {
+        LOGGER.info("{} Start execute get popular tours {}", Constant.DOTS, Constant.DOTS);
+        ResponseEntity<CommonResponse<List<PopularTourResponseDto>>> response = tourService.getPopularTours();
+        LOGGER.info("{} End execute get popular tours {}", Constant.DOTS, Constant.DOTS);
+        return response;
+    }
 }

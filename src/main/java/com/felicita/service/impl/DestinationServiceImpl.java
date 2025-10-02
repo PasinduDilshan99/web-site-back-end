@@ -2,7 +2,10 @@ package com.felicita.service.impl;
 
 import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
+import com.felicita.model.dto.DestinationCategoryResponseDto;
 import com.felicita.model.dto.DestinationResponseDto;
+import com.felicita.model.dto.PopularDestinationResponseDto;
+import com.felicita.model.dto.TrendingDestinationResponseDto;
 import com.felicita.model.enums.CommonStatus;
 import com.felicita.model.response.*;
 import com.felicita.repository.DestinationRepository;
@@ -99,6 +102,182 @@ public class DestinationServiceImpl implements DestinationService {
             throw new InternalServerErrorExceptionHandler("Failed to fetch active destinations from database");
         } finally {
             LOGGER.info("End fetching all active destinations from repository");
+        }
+    }
+
+    @Override
+    public ResponseEntity<CommonResponse<List<DestinationCategoryResponseDto>>> getAllDestinationsCategories() {
+        LOGGER.info("Start fetching all destinations categories from repository");
+        try {
+            List<DestinationCategoryResponseDto> destinationCategoryResponseDtos = destinationRepository.getAllDestinationsCategories();
+
+            if (destinationCategoryResponseDtos.isEmpty()) {
+                LOGGER.warn("No destinations categories found in database");
+                throw new DataNotFoundErrorExceptionHandler("No destinations categories found");
+            }
+
+            LOGGER.info("Fetched {} destinations categories successfully", destinationCategoryResponseDtos.size());
+            return ResponseEntity.ok(
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            destinationCategoryResponseDtos,
+                            Instant.now()
+                    )
+            );
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching destinations categories: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching destinations categories: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch destinations categories from database");
+        } finally {
+            LOGGER.info("End fetching all destinations categories from repository");
+        }
+    }
+
+    @Override
+    public ResponseEntity<CommonResponse<List<DestinationCategoryResponseDto>>> getActiveDestinationsCategories() {
+        LOGGER.info("Start fetching all destinations categories from repository");
+        try {
+            List<DestinationCategoryResponseDto> destinationCategoryResponseDtos = destinationRepository.getAllDestinationsCategories();
+
+            if (destinationCategoryResponseDtos.isEmpty()) {
+                LOGGER.warn("No destinations categories found in database");
+                throw new DataNotFoundErrorExceptionHandler("No destinations categories found");
+            }
+
+            List<DestinationCategoryResponseDto> destinationCategoryResponseDtoList = destinationCategoryResponseDtos.stream()
+                    .filter(data -> CommonStatus.ACTIVE.name().equalsIgnoreCase(data.getCategoryStatus()))
+                    .collect(Collectors.toList());
+
+            LOGGER.info("Fetched {} destinations categories successfully", destinationCategoryResponseDtoList.size());
+            return ResponseEntity.ok(
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            destinationCategoryResponseDtoList,
+                            Instant.now()
+                    )
+            );
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching destinations categories: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching destinations categories: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch destinations categories from database");
+        } finally {
+            LOGGER.info("End fetching all destinations categories from repository");
+        }
+    }
+
+    @Override
+    public ResponseEntity<CommonResponse<List<PopularDestinationResponseDto>>> getPopularDestinations() {
+        LOGGER.info("Start fetching all popular destinations from repository");
+        try {
+            List<PopularDestinationResponseDto> popularDestinationResponseDtos = destinationRepository.getPopularDestinations();
+
+            if (popularDestinationResponseDtos.isEmpty()) {
+                LOGGER.warn("No popular  destinations  found in database");
+                throw new DataNotFoundErrorExceptionHandler("No popular destinations found");
+            }
+
+            LOGGER.info("Fetched {} popular destinations  successfully", popularDestinationResponseDtos.size());
+            return ResponseEntity.ok(
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            popularDestinationResponseDtos,
+                            Instant.now()
+                    )
+            );
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching popular destinations : {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching popular destinations : {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch popular destinations  from database");
+        } finally {
+            LOGGER.info("End fetching all popular destinations  from repository");
+        }
+    }
+
+    @Override
+    public ResponseEntity<CommonResponse<List<PopularDestinationResponseDto>>> getNewDestinations() {
+        LOGGER.info("Start fetching all popular destinations from repository");
+        try {
+            List<PopularDestinationResponseDto> popularDestinationResponseDtos =
+                    destinationRepository.getPopularDestinations();
+
+            List<PopularDestinationResponseDto> lastMonthDestinations = popularDestinationResponseDtos.stream()
+                    .filter(d -> d.getPopularCreatedAt() != null &&
+                            d.getPopularCreatedAt().isAfter(LocalDateTime.now().minusMonths(1)))
+                    .collect(Collectors.toList());
+
+
+            if (lastMonthDestinations.isEmpty()) {
+                LOGGER.warn("No popular  destinations  found in database");
+                throw new DataNotFoundErrorExceptionHandler("No popular destinations found");
+            }
+
+            LOGGER.info("Fetched {} popular destinations  successfully", lastMonthDestinations.size());
+            return ResponseEntity.ok(
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            lastMonthDestinations,
+                            Instant.now()
+                    )
+            );
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching popular destinations : {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching popular destinations : {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch popular destinations  from database");
+        } finally {
+            LOGGER.info("End fetching all popular destinations  from repository");
+        }
+    }
+
+    @Override
+    public ResponseEntity<CommonResponse<List<TrendingDestinationResponseDto>>> getTrendingDestinations() {
+        LOGGER.info("Start fetching all popular destinations from repository");
+        try {
+            List<TrendingDestinationResponseDto> trendingDestinationResponseDtos = destinationRepository.getTrendingDestinations();
+
+            if (trendingDestinationResponseDtos.isEmpty()) {
+                LOGGER.warn("No popular  destinations  found in database");
+                throw new DataNotFoundErrorExceptionHandler("No popular destinations found");
+            }
+
+            LOGGER.info("Fetched {} popular destinations  successfully", trendingDestinationResponseDtos.size());
+            return ResponseEntity.ok(
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            trendingDestinationResponseDtos,
+                            Instant.now()
+                    )
+            );
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching popular destinations : {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching popular destinations : {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch popular destinations  from database");
+        } finally {
+            LOGGER.info("End fetching all popular destinations  from repository");
         }
     }
 

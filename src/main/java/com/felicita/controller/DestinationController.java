@@ -1,7 +1,6 @@
 package com.felicita.controller;
 
-import com.felicita.model.dto.DestinationResponseDto;
-import com.felicita.model.dto.TourResponseDto;
+import com.felicita.model.dto.*;
 import com.felicita.model.response.*;
 import com.felicita.service.DestinationService;
 import com.felicita.util.Constant;
@@ -42,6 +41,46 @@ public class DestinationController {
         LOGGER.info("{} Start execute get all active destinations {}", Constant.DOTS, Constant.DOTS);
         ResponseEntity<CommonResponse<List<DestinationResponseDto>>> response = destinationService.getAllActiveDestinations();
         LOGGER.info("{} End execute get all active destinations {}", Constant.DOTS, Constant.DOTS);
+        return response;
+    }
+
+    @GetMapping(path = "/all-categories")
+    public ResponseEntity<CommonResponse<List<DestinationCategoryResponseDto>>> getAllDestinationsCategories() {
+        LOGGER.info("{} Start execute get all destinations categories {}", Constant.DOTS, Constant.DOTS);
+        ResponseEntity<CommonResponse<List<DestinationCategoryResponseDto>>> response = destinationService.getAllDestinationsCategories();
+        LOGGER.info("{} End execute get all destinations categories {}", Constant.DOTS, Constant.DOTS);
+        return response;
+    }
+
+    @GetMapping(path = "/active-categories")
+    public ResponseEntity<CommonResponse<List<DestinationCategoryResponseDto>>> getActiveDestinationsCategories() {
+        LOGGER.info("{} Start execute get active destinations categories{}", Constant.DOTS, Constant.DOTS);
+        ResponseEntity<CommonResponse<List<DestinationCategoryResponseDto>>> response = destinationService.getActiveDestinationsCategories();
+        LOGGER.info("{} End execute get active destinations categories{}", Constant.DOTS, Constant.DOTS);
+        return response;
+    }
+
+    @GetMapping(path = "/popular-destinations")
+    public ResponseEntity<CommonResponse<List<PopularDestinationResponseDto>>> getPopularDestinations() {
+        LOGGER.info("{} Start execute get popular destinations {}", Constant.DOTS, Constant.DOTS);
+        ResponseEntity<CommonResponse<List<PopularDestinationResponseDto>>> response = destinationService.getPopularDestinations();
+        LOGGER.info("{} End execute get popular destinations {}", Constant.DOTS, Constant.DOTS);
+        return response;
+    }
+
+    @GetMapping(path = "/new-destinations")
+    public ResponseEntity<CommonResponse<List<PopularDestinationResponseDto>>> getNewDestinations() {
+        LOGGER.info("{} Start execute get new destinations {}", Constant.DOTS, Constant.DOTS);
+        ResponseEntity<CommonResponse<List<PopularDestinationResponseDto>>> response = destinationService.getNewDestinations();
+        LOGGER.info("{} End execute get new destinations {}", Constant.DOTS, Constant.DOTS);
+        return response;
+    }
+
+    @GetMapping(path = "/trending-destinations")
+    public ResponseEntity<CommonResponse<List<TrendingDestinationResponseDto>>> getTrendingDestinations() {
+        LOGGER.info("{} Start execute get trending destinations {}", Constant.DOTS, Constant.DOTS);
+        ResponseEntity<CommonResponse<List<TrendingDestinationResponseDto>>> response = destinationService.getTrendingDestinations();
+        LOGGER.info("{} End execute get trending destinations {}", Constant.DOTS, Constant.DOTS);
         return response;
     }
 

@@ -41,4 +41,57 @@ public class TourQueries {
             """;
 
 
+    public static final String GET_POPULAR_TOURS = """
+            SELECT
+                t.tour_id,
+                t.name AS tour_name,
+                t.description AS tour_description,
+                t.duration AS tour_duration,
+                t.latitude,
+                t.longitude,
+                t.start_location,
+                t.end_location,
+                tt.name AS tour_type,
+                tc.name AS tour_category,
+                s.name AS season,
+                cs_t.name AS tour_status,
+                ts.id AS schedule_id,
+                ts.name AS schedule_name,
+                ts.assume_start_date,
+                ts.assume_end_date,
+                ts.duration_start,
+                ts.duration_end,
+                ts.special_note,
+                ts.description AS schedule_description,
+                cs_ts.name AS schedule_status,
+                d.destination_id,
+                d.name AS destination_name,
+                d.description AS destination_description,
+                d.location AS destination_location,
+                cs_dest.name AS destination_status,
+                tr.id AS review_id,
+                tr.name AS reviewer_name,
+                tr.review,
+                tr.rating,
+                tr.description AS review_description,
+                tr.number_of_participate,
+                cs_tr.name AS review_status,
+                tr.created_at AS review_created_at
+            FROM tour t
+            LEFT JOIN tour_type tt ON t.tour_type = tt.id
+            LEFT JOIN tour_category tc ON t.tour_category = tc.id
+            LEFT JOIN seasons s ON t.season = s.id
+            LEFT JOIN common_status cs_t ON t.status = cs_t.id
+            LEFT JOIN tour_schedule ts ON t.tour_id = ts.tour_id
+            LEFT JOIN common_status cs_ts ON ts.status = cs_ts.id
+            LEFT JOIN tour_destination td ON t.tour_id = td.tour_id
+            LEFT JOIN destination d ON td.destination_id = d.destination_id
+            LEFT JOIN common_status cs_dest ON d.status = cs_dest.id
+            LEFT JOIN tour_review tr ON ts.id = tr.tour_schedule_id AND tr.rating > 4.0
+            LEFT JOIN common_status cs_tr ON tr.status = cs_tr.id
+            WHERE tr.id IS NOT NULL
+            ORDER BY tr.rating DESC, t.tour_id
+            """;
+
+
 }

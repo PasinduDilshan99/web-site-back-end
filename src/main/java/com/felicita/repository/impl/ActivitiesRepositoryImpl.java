@@ -4,12 +4,11 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.felicita.exception.DataAccessErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
-import com.felicita.model.dto.ActivityImageDto;
-import com.felicita.model.dto.ActivityRequirementDto;
-import com.felicita.model.dto.ActivityResponseDto;
-import com.felicita.model.dto.ActivityScheduleDto;
+import com.felicita.model.dto.*;
 import com.felicita.model.response.ActivityCategoryResponse;
+import com.felicita.model.response.PartnerResponse;
 import com.felicita.queries.ActivitiesQueries;
+import com.felicita.queries.PartnerQueries;
 import com.felicita.repository.ActivitiesRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +42,69 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
 
         return jdbcTemplate.query(GET_ALL_ACTIVITIES, new ActivityRowMapper());
     }
+
+    @Override
+    public List<ActivityCategoryResponseDto> getAllActivityCategories() {
+        String GET_ALL_ACTIVITY_CATEGORIES = ActivitiesQueries.GET_ALL_ACTIVITY_CATEGORIES;
+
+        try {
+            LOGGER.info("Executing query to fetch all activity categories...");
+
+            // Use a LinkedHashMap to maintain insertion order and group images under categories
+            Map<Integer, ActivityCategoryResponseDto> categoryMap = new LinkedHashMap<>();
+
+            jdbcTemplate.query(GET_ALL_ACTIVITY_CATEGORIES, (rs) -> {
+                int categoryId = rs.getInt("category_id");
+
+                ActivityCategoryResponseDto category = categoryMap.get(categoryId);
+                if (category == null) {
+                    category = new ActivityCategoryResponseDto();
+                    category.setCategoryId(categoryId);
+                    category.setCategoryName(rs.getString("category_name"));
+                    category.setCategoryDescription(rs.getString("category_description"));
+                    category.setCategoryStatus(rs.getString("category_status"));
+                    category.setCreatedAt(rs.getTimestamp("category_created_at"));
+                    category.setCreatedBy(rs.getObject("category_created_by", Integer.class));
+                    category.setUpdatedAt(rs.getTimestamp("category_updated_at"));
+                    category.setUpdatedBy(rs.getObject("category_updated_by", Integer.class));
+                    category.setTerminatedAt(rs.getTimestamp("category_terminated_at"));
+                    category.setTerminatedBy(rs.getObject("category_terminated_by", Integer.class));
+                    category.setImages(new ArrayList<>());
+
+                    categoryMap.put(categoryId, category);
+                }
+
+                int imageId = rs.getInt("image_id");
+                if (!rs.wasNull()) {
+                    ActivityCategoryImageResponseDto image = new ActivityCategoryImageResponseDto();
+                    image.setImageId(imageId);
+                    image.setImageName(rs.getString("image_name"));
+                    image.setImageDescription(rs.getString("image_description"));
+                    image.setImageUrl(rs.getString("image_url"));
+                    image.setImageStatus(rs.getString("image_status"));
+                    image.setCreatedAt(rs.getTimestamp("image_created_at"));
+                    image.setCreatedBy(rs.getObject("image_created_by", Integer.class));
+                    image.setUpdatedAt(rs.getTimestamp("image_updated_at"));
+                    image.setUpdatedBy(rs.getObject("image_updated_by", Integer.class));
+                    image.setTerminatedAt(rs.getTimestamp("image_terminated_at"));
+                    image.setTerminatedBy(rs.getObject("image_terminated_by", Integer.class));
+
+                    category.getImages().add(image);
+                }
+            });
+
+            return new ArrayList<>(categoryMap.values());
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching activity categories: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler("Failed to fetch activity categories from database");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching activity categories: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching activity categories");
+        }
+    }
+
+
 
     private class ActivityRowMapper implements RowMapper<ActivityResponseDto> {
         @Override

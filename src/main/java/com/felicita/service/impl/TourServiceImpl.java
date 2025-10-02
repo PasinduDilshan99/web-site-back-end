@@ -3,6 +3,7 @@ package com.felicita.service.impl;
 import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
 import com.felicita.model.dto.DestinationResponseDto;
+import com.felicita.model.dto.PopularTourResponseDto;
 import com.felicita.model.dto.TourResponseDto;
 import com.felicita.model.enums.CommonStatus;
 import com.felicita.model.response.*;
@@ -91,6 +92,39 @@ public class TourServiceImpl implements TourService {
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
                             tourResponseDtoList,
+                            Instant.now()
+                    )
+            );
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching active tours: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching active tours: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch active tours from database");
+        } finally {
+            LOGGER.info("End fetching all active tours from repository");
+        }
+    }
+
+    @Override
+    public ResponseEntity<CommonResponse<List<PopularTourResponseDto>>> getPopularTours() {
+        LOGGER.info("Start fetching all active tours from repository");
+        try {
+            List<PopularTourResponseDto> popularTours = tourRepository.getPopularTours();
+
+            if (popularTours.isEmpty()) {
+                LOGGER.warn("No active tours found in database");
+                throw new DataNotFoundErrorExceptionHandler("No tours found");
+            }
+
+            LOGGER.info("Fetched {} active tours successfully", popularTours.size());
+            return ResponseEntity.ok(
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            popularTours,
                             Instant.now()
                     )
             );

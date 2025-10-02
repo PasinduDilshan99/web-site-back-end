@@ -77,21 +77,37 @@ public class ActivitiesQueries {
                         LIMIT 1000
             """;
 
-    public static final String GET_ACTIVITY_CATEGORIES = """
+    public static final String GET_ALL_ACTIVITY_CATEGORIES = """
             SELECT
-                ac.id,
-                ac.name,
-                ac.description,
-                ac.image_url,
-                ac.color,
-                ac.hover_color,
-                cs.name AS status_name,
-                ac.created_at,
-                ac.created_by,
-                ac.updated_at,
-                ac.updated_by
-            FROM activities_category ac
-            JOIN common_status cs ON ac.common_status_id = cs.id
+                ac.id AS category_id,
+                ac.name AS category_name,
+                ac.description AS category_description,
+                ac.created_at AS category_created_at,
+                ac.created_by AS category_created_by,
+                ac.updated_at AS category_updated_at,
+                ac.updated_by AS category_updated_by,
+                ac.terminated_at AS category_terminated_at,
+                ac.terminated_by AS category_terminated_by,
+                cs1.name AS category_status,
+                aci.id AS image_id,
+                aci.name AS image_name,
+                aci.description AS image_description,
+                aci.image_url,
+                cs2.name AS image_status,
+                aci.created_at AS image_created_at,
+                aci.created_by AS image_created_by,
+                aci.updated_at AS image_updated_at,
+                aci.updated_by AS image_updated_by,
+                aci.terminated_at AS image_terminated_at,
+                aci.terminated_by AS image_terminated_by
+            FROM activity_category ac
+            LEFT JOIN activity_category_images aci
+                ON ac.id = aci.activity_category_id
+            LEFT JOIN common_status cs1
+            	ON cs1.id = ac.status
+            LEFT JOIN common_status cs2
+            	ON cs2.id = aci.status
+            ORDER BY ac.id, aci.id
             """;
 
 

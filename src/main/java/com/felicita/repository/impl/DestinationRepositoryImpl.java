@@ -14,6 +14,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -113,6 +114,231 @@ public class DestinationRepositoryImpl implements DestinationRepository {
             throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching destinations");
         }
     }
+
+    @Override
+    public List<DestinationCategoryResponseDto> getAllDestinationsCategories() {
+        String GET_ALL_DESTINATIONS_CATEGORIES = DestinationQueries.GET_ALL_DESTINATIONS_CATEGORIES;
+        try {
+            LOGGER.info("Executing query to fetch all destinations...");
+
+            return jdbcTemplate.query(GET_ALL_DESTINATIONS_CATEGORIES, rs -> {
+                Map<Integer, DestinationCategoryResponseDto> categoryMap = new LinkedHashMap<>();
+
+                while (rs.next()) {
+                    int categoryId = rs.getInt("category_id");
+
+                    // If category not seen before, create a new DTO
+                    DestinationCategoryResponseDto category = categoryMap.computeIfAbsent(categoryId, id ->
+                            {
+                                try {
+                                    return new DestinationCategoryResponseDto(
+                                            id,
+                                            rs.getString("category"),
+                                            rs.getString("category_description"),
+                                            rs.getString("category_status"),
+                                            rs.getTimestamp("created_at") != null ? rs.getTimestamp("created_at").toLocalDateTime() : null,
+                                            rs.getTimestamp("updated_at") != null ? rs.getTimestamp("updated_at").toLocalDateTime() : null,
+                                            new ArrayList<>()
+                                    );
+                                } catch (SQLException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }
+                    );
+
+                    int imageId = rs.getInt("image_id");
+                    if (imageId > 0) {
+                        DestinationsCategoryImageResponseDto image = new DestinationsCategoryImageResponseDto(
+                                imageId,
+                                rs.getString("image_name"),
+                                rs.getString("image_description"),
+                                rs.getString("image_url"),
+                                rs.getString("image_status"),
+                                rs.getTimestamp("image_created_at") != null ? rs.getTimestamp("image_created_at").toLocalDateTime() : null
+                        );
+                        category.getImages().add(image);
+                    }
+                }
+
+                return new ArrayList<>(categoryMap.values());
+            });
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching destinations: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler("Failed to fetch destinations from database");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching destinations: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching destinations");
+        }
+    }
+
+    @Override
+    public List<PopularDestinationResponseDto> getPopularDestinations() {
+        String GET_POPULAR_DESTINATIONS = DestinationQueries.GET_POPULAR_DESTINATIONS;
+        try {
+            LOGGER.info("Executing query to fetch all popular destinations...");
+
+            return jdbcTemplate.query(GET_POPULAR_DESTINATIONS, rs -> {
+                Map<Integer, PopularDestinationResponseDto> destinationMap = new LinkedHashMap<>();
+
+                while (rs.next()) {
+                    int popularId = rs.getInt("popular_id");
+
+                    // If we haven't added this destination yet → create DTO
+                    PopularDestinationResponseDto popularDestination = destinationMap.computeIfAbsent(popularId, id ->
+                            {
+                                try {
+                                    return new PopularDestinationResponseDto(
+                                            rs.getInt("popular_id"),
+                                            rs.getDouble("rating"),
+                                            rs.getInt("popularity"),
+                                            rs.getTimestamp("popular_created_at") != null ? rs.getTimestamp("popular_created_at").toLocalDateTime() : null,
+
+                                            rs.getInt("destination_id"),
+                                            rs.getString("destination_name"),
+                                            rs.getString("destination_description"),
+                                            rs.getString("location"),
+                                            rs.getObject("latitude") != null ? rs.getDouble("latitude") : null,
+                                            rs.getObject("longitude") != null ? rs.getDouble("longitude") : null,
+                                            rs.getString("destination_status"),
+
+                                            rs.getInt("category_id"),
+                                            rs.getString("category_name"),
+                                            rs.getString("category_description"),
+                                            rs.getString("category_status"),
+
+                                            new ArrayList<>() // empty images list initially
+                                    );
+                                } catch (SQLException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }
+                    );
+
+                    // Handle image (if exists)
+                    int imageId = rs.getInt("image_id");
+                    if (imageId > 0) {
+                        DestinationImageResponseDto image = new DestinationImageResponseDto(
+                                imageId,
+                                rs.getString("image_name"),
+                                rs.getString("image_description"),
+                                rs.getString("image_url"),
+                                rs.getString("image_status"),
+                                rs.getTimestamp("popular_created_at") != null ? rs.getTimestamp("popular_created_at").toLocalDateTime() : null
+                        );
+                        popularDestination.getImages().add(image);
+                    }
+                }
+
+                return new ArrayList<>(destinationMap.values());
+            });
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching popular destinations: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler("Failed to fetch popular destinations from database");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching popular destinations: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching popular destinations");
+        }
+    }
+
+    @Override
+    public List<TrendingDestinationResponseDto> getTrendingDestinations() {
+        String GET_TRENDING_DESTINATIONS = DestinationQueries.GET_TRENDING_DESTINATIONS;
+        try {
+            LOGGER.info("Executing query to fetch all trending destinations...");
+
+            return jdbcTemplate.query(GET_TRENDING_DESTINATIONS, rs -> {
+                Map<Integer, TrendingDestinationResponseDto> destinationMap = new LinkedHashMap<>();
+
+                while (rs.next()) {
+                    int popularId = rs.getInt("popular_id");
+
+                    // Create or get the destination DTO
+                    TrendingDestinationResponseDto trendingDestination = destinationMap.computeIfAbsent(popularId, id ->
+                            {
+                                try {
+                                    return new TrendingDestinationResponseDto(
+                                            rs.getInt("popular_id"),
+                                            rs.getDouble("rating"),
+                                            rs.getInt("popularity"),
+                                            rs.getTimestamp("popular_created_at") != null ? rs.getTimestamp("popular_created_at").toLocalDateTime() : null,
+
+                                            rs.getInt("destination_id"),
+                                            rs.getString("destination_name"),
+                                            rs.getString("destination_description"),
+                                            rs.getString("location"),
+                                            rs.getObject("latitude") != null ? rs.getDouble("latitude") : null,
+                                            rs.getObject("longitude") != null ? rs.getDouble("longitude") : null,
+                                            rs.getString("destination_status"),
+
+                                            rs.getInt("category_id"),
+                                            rs.getString("category_name"),
+                                            rs.getString("category_description"),
+                                            rs.getString("category_status"),
+
+                                            new ArrayList<>(), // images list
+                                            new ArrayList<>()  // activities list
+                                    );
+                                } catch (SQLException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }
+                    );
+
+                    // Handle image
+                    int imageId = rs.getInt("image_id");
+                    if (!rs.wasNull() && imageId > 0) {
+                        DestinationImageResponseDto image = new DestinationImageResponseDto(
+                                imageId,
+                                rs.getString("image_name"),
+                                rs.getString("image_description"),
+                                rs.getString("image_url"),
+                                rs.getString("image_status"),
+                                rs.getTimestamp("image_created_at") != null ? rs.getTimestamp("image_created_at").toLocalDateTime() : null
+                        );
+                        // Prevent duplicate images
+                        if (trendingDestination.getImages().stream().noneMatch(i -> i.getImageId() == imageId)) {
+                            trendingDestination.getImages().add(image);
+                        }
+                    }
+
+                    // Handle activity
+                    int activityId = rs.getInt("activity_id");
+                    if (!rs.wasNull() && activityId > 0) {
+                        DestinationActivityResponseDto activity = new DestinationActivityResponseDto(
+                                activityId,
+                                rs.getString("activity_name"),
+                                rs.getString("activity_description"),
+                                rs.getString("activities_category"),
+                                rs.getObject("duration_hours") != null ? rs.getDouble("duration_hours") : null,
+                                rs.getString("available_from"),
+                                rs.getString("available_to"),
+                                rs.getObject("price_local") != null ? rs.getDouble("price_local") : null,
+                                rs.getObject("price_foreigners") != null ? rs.getDouble("price_foreigners") : null,
+                                rs.getObject("min_participate") != null ? rs.getInt("min_participate") : null,
+                                rs.getObject("max_participate") != null ? rs.getInt("max_participate") : null,
+                                rs.getString("season")
+                        );
+                        // Prevent duplicate activities
+                        if (trendingDestination.getActivities().stream().noneMatch(a -> a.getActivityId() == activityId)) {
+                            trendingDestination.getActivities().add(activity);
+                        }
+                    }
+                }
+
+                return new ArrayList<>(destinationMap.values());
+            });
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching trending destinations: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler("Failed to fetch trending destinations from database");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching trending destinations: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching trending destinations");
+        }
+    }
+
 
 
 }

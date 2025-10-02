@@ -1,5 +1,6 @@
 package com.felicita.service;
 
+import com.felicita.model.dto.PopularTourResponseDto;
 import com.felicita.model.dto.TourResponseDto;
 import com.felicita.model.response.CommonResponse;
 import org.springframework.http.ResponseEntity;
@@ -11,4 +12,6 @@ public interface TourService {
     ResponseEntity<CommonResponse<List<TourResponseDto>>> getAllTours();
 
     ResponseEntity<CommonResponse<List<TourResponseDto>>> getActiveTours();
+
+    ResponseEntity<CommonResponse<List<PopularTourResponseDto>>> getPopularTours();
 }
