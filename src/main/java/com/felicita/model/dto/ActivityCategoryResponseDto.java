@@ -14,7 +14,7 @@ public class ActivityCategoryResponseDto {
     private int categoryId;
     private String categoryName;
     private String categoryDescription;
-    private String categoryStatus; // status name from cs1.name
+    private String categoryStatus;
     private Timestamp createdAt;
     private Integer createdBy;
     private Timestamp updatedAt;
@@ -24,3 +24,4 @@ public class ActivityCategoryResponseDto {
 
     private List<ActivityCategoryImageResponseDto> images;
 }
+
