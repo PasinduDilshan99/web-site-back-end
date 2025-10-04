@@ -678,61 +678,42 @@ VALUES
 INSERT INTO activity_category_images 
 (activity_category_id, name, description, image_url, status, created_by)
 VALUES
--- Category 1: Adventure
 (1, 'Rock Climbing', 'Adventurers scaling cliffs in Ella', '/images/activity_categories/adventure_1.jpg', 1, 1),
 (1, 'Zip Lining', 'Thrilling zipline ride across lush valleys', '/images/activity_categories/adventure_2.jpg', 1, 1),
 (1, 'Caving', 'Exploring mysterious caves and underground paths', '/images/activity_categories/adventure_3.jpg', 1, 1),
 (1, 'Trekking Trail', 'Group trekking through dense forest terrain', '/images/activity_categories/adventure_4.jpg', 1, 1),
-
--- Category 2: Water Sports
 (2, 'Surfing', 'Surfers riding the waves at Arugam Bay', '/images/activity_categories/watersports_1.jpg', 1, 1),
 (2, 'Scuba Diving', 'Exploring coral reefs and marine life underwater', '/images/activity_categories/watersports_2.jpg', 1, 1),
 (2, 'Jet Skiing', 'Tourists enjoying high-speed jet skiing', '/images/activity_categories/watersports_3.jpg', 1, 1),
 (2, 'Snorkeling', 'Colorful reef fish viewed from surface snorkel', '/images/activity_categories/watersports_4.jpg', 1, 1),
-
--- Category 3: Wildlife
 (3, 'Safari Jeep', 'Jeep driving through Yala National Park', '/images/activity_categories/wildlife_1.jpg', 1, 1),
 (3, 'Bird Watching', 'Spotting exotic birds in Bundala Sanctuary', '/images/activity_categories/wildlife_2.jpg', 1, 1),
 (3, 'Elephants in Wild', 'Herd of elephants grazing in Udawalawe', '/images/activity_categories/wildlife_3.jpg', 1, 1),
 (3, 'Leopard Sighting', 'Rare leopard encounter at Wilpattu Park', '/images/activity_categories/wildlife_4.jpg', 1, 1),
-
--- Category 4: Marine Life
 (4, 'Whale Watching', 'Whales breaching off Mirissa coast', '/images/activity_categories/marinelife_1.jpg', 1, 1),
 (4, 'Dolphin Tour', 'Dolphins swimming alongside boats', '/images/activity_categories/marinelife_2.jpg', 1, 1),
 (4, 'Sea Turtle Experience', 'Visitors observing sea turtles nesting', '/images/activity_categories/marinelife_3.jpg', 1, 1),
 (4, 'Underwater World', 'Colorful marine species in coral reefs', '/images/activity_categories/marinelife_4.jpg', 1, 1),
-
--- Category 5: Sightseeing
 (5, 'Scenic Viewpoint', 'Tourists enjoying panoramic mountain views', '/images/activity_categories/sightseeing_1.jpg', 1, 1),
 (5, 'City Tour', 'Exploring historic streets and monuments', '/images/activity_categories/sightseeing_2.jpg', 1, 1),
 (5, 'Sunset Point', 'Beautiful sunset over coastal cliffs', '/images/activity_categories/sightseeing_3.jpg', 1, 1),
 (5, 'Waterfall Visit', 'Tourists visiting a majestic waterfall', '/images/activity_categories/sightseeing_4.jpg', 1, 1),
-
--- Category 6: Hiking
 (6, 'Mountain Trail', 'Hikers climbing misty mountain paths', '/images/activity_categories/hiking_1.jpg', 1, 1),
 (6, 'Forest Path', 'Exploring dense forest hiking trails', '/images/activity_categories/hiking_2.jpg', 1, 1),
 (6, 'Peak Summit', 'Trekkers reaching the top viewpoint', '/images/activity_categories/hiking_3.jpg', 1, 1),
 (6, 'River Crossing', 'Adventure hikers crossing shallow streams', '/images/activity_categories/hiking_4.jpg', 1, 1),
-
--- Category 7: Cultural
 (7, 'Temple Visit', 'Visitors exploring sacred temples', '/images/activity_categories/cultural_1.jpg', 1, 1),
 (7, 'Traditional Dance', 'Cultural dancers performing in Kandy', '/images/activity_categories/cultural_2.jpg', 1, 1),
 (7, 'Ancient Ruins', 'Tourists discovering heritage ruins', '/images/activity_categories/cultural_3.jpg', 1, 1),
 (7, 'Cultural Festival', 'Vibrant street festival with costumes and music', '/images/activity_categories/cultural_4.jpg', 1, 1),
-
--- Category 8: Wellness
 (8, 'Yoga Retreat', 'Morning yoga session in a peaceful environment', '/images/activity_categories/wellness_1.jpg', 1, 1),
 (8, 'Meditation', 'Meditation practice near a waterfall', '/images/activity_categories/wellness_2.jpg', 1, 1),
 (8, 'Spa Therapy', 'Relaxing herbal spa treatments', '/images/activity_categories/wellness_3.jpg', 1, 1),
 (8, 'Ayurvedic Massage', 'Traditional ayurvedic healing experience', '/images/activity_categories/wellness_4.jpg', 1, 1),
-
--- Category 9: Photography
 (9, 'Wildlife Photography', 'Photographer capturing animals in the wild', '/images/activity_categories/photography_1.jpg', 1, 1),
 (9, 'Landscape Shot', 'Capturing breathtaking sunrise over hills', '/images/activity_categories/photography_2.jpg', 1, 1),
 (9, 'Cultural Portraits', 'Portrait photography during cultural events', '/images/activity_categories/photography_3.jpg', 1, 1),
 (9, 'Night Photography', 'Stars and night sky captured in long exposure', '/images/activity_categories/photography_4.jpg', 1, 1),
-
--- Category 10: Food & Dining
 (10, 'Local Cuisine', 'Authentic Sri Lankan rice and curry served on banana leaf', '/images/activity_categories/food_1.jpg', 1, 1),
 (10, 'Cooking Class', 'Tourists learning traditional cooking methods', '/images/activity_categories/food_2.jpg', 1, 1),
 (10, 'Street Food', 'Colorful local food stalls in Colombo', '/images/activity_categories/food_3.jpg', 1, 1),
@@ -939,99 +920,43 @@ VALUES
 
 
 
-INSERT INTO activity_category_images
-(activity_category_id, name, description, image_url, status, created_by)
-VALUES
--- Adventure
-(1, 'Mountain Climbing', 'Climbers scaling rocky peaks', '/images/activity_categories/adventure_1.jpg', 1, 1),
-(1, 'Forest Trekking', 'Hikers walking through lush forests', '/images/activity_categories/adventure_2.jpg', 1, 1),
-(1, 'Adventure Camp', 'Camping and outdoor adventure setup', '/images/activity_categories/adventure_3.jpg', 1, 1),
-
--- Water Sports
-(2, 'Surfing Fun', 'People surfing on ocean waves', '/images/activity_categories/watersports_1.jpg', 1, 1),
-(2, 'Kayaking', 'Tourists kayaking along rivers', '/images/activity_categories/watersports_2.jpg', 1, 1),
-(2, 'Scuba Diving', 'Exploring underwater marine life', '/images/activity_categories/watersports_3.jpg', 1, 1),
-
--- Wildlife
-(3, 'Safari Jeep', 'Wildlife safari with jeep tour', '/images/activity_categories/wildlife_1.jpg', 1, 1),
-(3, 'Elephant Herd', 'Elephants roaming freely in national parks', '/images/activity_categories/wildlife_2.jpg', 1, 1),
-(3, 'Bird Watching', 'Spotting exotic birds in their habitat', '/images/activity_categories/wildlife_3.jpg', 1, 1),
-
--- Marine Life
-(4, 'Whale Watching', 'Tourists spotting whales at sea', '/images/activity_categories/marine_1.jpg', 1, 1),
-(4, 'Dolphin Cruise', 'Boat cruise to observe playful dolphins', '/images/activity_categories/marine_2.jpg', 1, 1),
-(4, 'Snorkeling Reef', 'Snorkeling among colorful coral reefs', '/images/activity_categories/marine_3.jpg', 1, 1),
-
--- Sightseeing
-(5, 'Historic Landmark', 'Tourists visiting famous landmarks', '/images/activity_categories/sightseeing_1.jpg', 1, 1),
-(5, 'Scenic Viewpoint', 'Overlooking breathtaking landscapes', '/images/activity_categories/sightseeing_2.jpg', 1, 1),
-(5, 'City Tour', 'Exploring city streets and heritage sites', '/images/activity_categories/sightseeing_3.jpg', 1, 1),
-
--- Hiking
-(6, 'Mountain Trail', 'Hikers on a trail through mountains', '/images/activity_categories/hiking_1.jpg', 1, 1),
-(6, 'Nature Walk', 'Walking along scenic nature trails', '/images/activity_categories/hiking_2.jpg', 1, 1),
-(6, 'Sunrise Hike', 'Early morning hike with sunrise view', '/images/activity_categories/hiking_3.jpg', 1, 1),
-
--- Cultural
-(7, 'Temple Visit', 'Tourists visiting ancient temples', '/images/activity_categories/cultural_1.jpg', 1, 1),
-(7, 'Cultural Dance', 'Traditional dance performance', '/images/activity_categories/cultural_2.jpg', 1, 1),
-(7, 'Heritage Site', 'Exploring historical and cultural sites', '/images/activity_categories/cultural_3.jpg', 1, 1),
-
--- Wellness
-(8, 'Yoga Session', 'Morning yoga session in nature', '/images/activity_categories/wellness_1.jpg', 1, 1),
-(8, 'Meditation Retreat', 'Relaxation and meditation practice', '/images/activity_categories/wellness_2.jpg', 1, 1),
-(8, 'Spa Therapy', 'Wellness spa treatment session', '/images/activity_categories/wellness_3.jpg', 1, 1),
-
--- Photography
-(9, 'Landscape Photography', 'Capturing scenic landscapes', '/images/activity_categories/photography_1.jpg', 1, 1),
-(9, 'Wildlife Photography', 'Photographing animals in the wild', '/images/activity_categories/photography_2.jpg', 1, 1),
-(9, 'Sunset Photography', 'Photographing colorful sunsets', '/images/activity_categories/photography_3.jpg', 1, 1),
-
--- Food & Dining
-(10, 'Cooking Class', 'Learning to cook local dishes', '/images/activity_categories/food_1.jpg', 1, 1),
-(10, 'Street Food', 'Tasting popular local street food', '/images/activity_categories/food_2.jpg', 1, 1),
-(10, 'Gourmet Dining', 'Enjoying fine dining experiences', '/images/activity_categories/food_3.jpg', 1, 1);
-
-
-
-
 
 
 INSERT INTO tour_history_images (tour_schedule_id, name, description, status, image_url, color, created_by) VALUES
-(1, 'Sigiriya Group Oct 15', 'Group photo at Sigiriya fortress base', 1, '/images/tour_history/sigiriya_oct15_group.jpg', '#FF6B6B', 1),
-(1, 'Sigiriya Summit View', 'View captured during October tour', 1, '/images/tour_history/sigiriya_oct15_summit.jpg', '#FF6B6B', 1),
-(2, 'Ella Train Ride', 'Scenic train journey November batch', 1, '/images/tour_history/ella_nov_train.jpg', '#4ECDC4', 1),
-(2, 'Ella Nine Arch Bridge', 'Group at Nine Arch Bridge', 1, '/images/tour_history/ella_nov_bridge.jpg', '#4ECDC4', 1),
-(2, 'Ella Accommodation', 'Beautiful hotel with mountain view', 1, '/images/tour_history/ella_nov_hotel.jpg', '#4ECDC4', 1);
+(1, 'Sigiriya Group Oct 15', 'Group photo at Sigiriya fortress base', 1, '/images/tour-history/sigiriya-group-oct-15.jpg', '#FF6B6B', 1),
+(1, 'Sigiriya Summit View', 'View captured during October tour', 1, '/images/tour-history/sigiriya-summit-view.jpg', '#FF6B6B', 1),
+(2, 'Ella Train Ride', 'Scenic train journey November batch', 1, '/images/tour-history/ella-train-ride.jpg', '#4ECDC4', 1),
+(2, 'Ella Nine Arch Bridge', 'Group at Nine Arch Bridge', 1, '/images/tour-history/ella-nine-arch-bridge.jpg', '#4ECDC4', 1),
+(2, 'Ella Accommodation', 'Beautiful hotel with mountain view', 1, '/images/tour-history/ella-accommodation.webp', '#4ECDC4', 1);
 
 -- 25c. Insert Sample Images - Activities History
 INSERT INTO activities_history_images (activities_history_id, name, description, image_url, status, created_by) VALUES
-(1, 'Sunrise at Sigiriya', 'Beautiful sunrise during morning climb', '/images/activity_history/sigiriya_sunrise.jpg', 1, 1),
-(1, 'Group at Summit', 'Participants at the top', '/images/activity_history/sigiriya_group_top.jpg', 1, 1),
-(1, 'Ancient Frescoes', 'Famous Sigiriya frescoes', '/images/activity_history/sigiriya_frescoes.jpg', 1, 1),
-(2, 'Leopard Sighting', 'One of two leopards spotted', '/images/activity_history/yala_leopard1.jpg', 1, 1),
-(2, 'Second Leopard', 'Rare second leopard on same safari', '/images/activity_history/yala_leopard2.jpg', 1, 1),
-(2, 'Elephant Herd', 'Large elephant herd near waterhole', '/images/activity_history/yala_elephants.jpg', 1, 1);
+(1, 'Sunrise at Sigiriya', 'Beautiful sunrise during morning climb', '/images/activity-history/sunrise-at-sigiriya.jpg', 1, 1),
+(1, 'Group at Summit', 'Participants at the top', '/images/activity-history/group-at-summit.webp', 1, 1),
+(1, 'Ancient Frescoes', 'Famous Sigiriya frescoes', '/images/activity-history/ancient-frescoes.jpg', 1, 1),
+(2, 'Leopard Sighting', 'One of two leopards spotted', '/images/activity-history/leopard-sighting.jpg', 1, 1),
+(2, 'Second Leopard', 'Rare second leopard on same safari', '/images/activity-history/second-leopard.jpg', 1, 1),
+(2, 'Elephant Herd', 'Large elephant herd near waterhole', '/images/activity-history/elephant-herd.jpg', 1, 1);
 
 -- 25d. Insert Sample Images - Package History
 INSERT INTO package_history_images (package_schedule_id, name, description, image_url, status, created_by) VALUES
-(1, 'Sigiriya Package Memories 1', 'Participants enjoying the tour', '/images/package_history/sigiriya_pkg_mem1.jpg', 1, 1),
-(1, 'Sigiriya Package Memories 2', 'Lunch break with traditional food', '/images/package_history/sigiriya_pkg_mem2.jpg', 1, 1),
-(2, 'Ella Package Day 1', 'Arrival and hotel check-in', '/images/package_history/ella_pkg_day1.jpg', 1, 1),
-(2, 'Ella Package Day 2', 'Hiking and exploring', '/images/package_history/ella_pkg_day2.jpg', 1, 1),
-(2, 'Ella Package Day 3', 'Final day breakfast view', '/images/package_history/ella_pkg_day3.jpg', 1, 1),
-(3, 'Yala Safari Package', 'Morning safari departure', '/images/package_history/yala_pkg_safari.jpg', 1, 1),
-(3, 'Yala Camping Experience', 'Luxury camping setup', '/images/package_history/yala_pkg_camp.jpg', 1, 1);
+(1, 'Sigiriya Package Memories 1', 'Participants enjoying the tour', '/images/package-history/sigiriya-package-memories-1.png', 1, 1),
+(1, 'Sigiriya Package Memories 2', 'Lunch break with traditional food', '/images/package-history/sigiriya-package-memories-2.webp', 1, 1),
+(2, 'Ella Package Day 1', 'Arrival and hotel check-in', '/images/package-history/ella-package-day-1.webp', 1, 1),
+(2, 'Ella Package Day 2', 'Hiking and exploring', '/images/package-history/ella-package-day-2.jpg', 1, 1),
+(2, 'Ella Package Day 3', 'Final day breakfast view', '/images/package-history/ella-package-day-3.webp', 1, 1),
+(3, 'Yala Safari Package', 'Morning safari departure', '/images/package-history/yala-safari-package.jpg', 1, 1),
+(3, 'Yala Camping Experience', 'Luxury camping setup', '/images/package-history/yala-camping-experience.jpg', 1, 1);
 
 -- 26. Insert Sample Images - Reviews
 INSERT INTO tour_review_images (tour_review_id, name, description, image_url, status, created_by) VALUES
-(1, 'Guest Photo - Sigiriya Top', 'Photo taken by guest at summit', '/images/reviews/guest_sigiriya.jpg', 1, 1);
+(1, 'Guest Photo - Sigiriya Top', 'Photo taken by guest at summit', '/images/tour-review/sigiriya-review.png', 1, 1);
 
 INSERT INTO activities_review_images (activities_review_id, name, description, image_url, status, created_by) VALUES
-(1, 'Guest Sunrise Photo', 'Beautiful sunrise captured by guest', '/images/reviews/guest_sunrise.jpg', 1, 1);
+(1, 'Guest Sunrise Photo', 'Beautiful sunrise captured by guest', '/images/activities-review/sunrise-photo.jpg', 1, 1);
 
 INSERT INTO package_review_images (package_review_id, name, description, image_url, status, created_by) VALUES
-(1, 'Happy Guests', 'Group photo with guide', '/images/reviews/happy_guests.jpg', 1, 1);
+(1, 'Happy Guests', 'Group photo with guide', '/images/package-review/happy-guests.webp', 1, 1);
 
 INSERT INTO popular_destination (destination_id, rating, popularity, created_by)
 VALUES
