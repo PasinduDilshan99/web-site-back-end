@@ -1,13 +1,8 @@
 package com.felicita.repository.impl;
 
-import com.felicita.exception.DataAccessErrorExceptionHandler;
+import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
-import com.felicita.model.dto.ReviewResponseDto;
-import com.felicita.model.dto.TourImageDto;
-import com.felicita.model.dto.TourResponseDto;
-import com.felicita.model.response.PartnerResponse;
-import com.felicita.model.response.PopularTourResponse;
-import com.felicita.queries.PartnerQueries;
+import com.felicita.model.dto.*;
 import com.felicita.queries.TourQueries;
 import com.felicita.repository.TourRepository;
 import org.slf4j.Logger;
@@ -17,10 +12,10 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Repository
 public class TourRepositoryImpl implements TourRepository {
@@ -34,178 +29,199 @@ public class TourRepositoryImpl implements TourRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+
     @Override
     public List<TourResponseDto> getAllTours() {
         String GET_ALL_TOURS = TourQueries.GET_ALL_TOURS;
+
         try {
-            LOGGER.info("Executing query to fetch all tours...");
+            return jdbcTemplate.query(GET_ALL_TOURS, (ResultSet rs) -> {
+                Map<Integer, TourResponseDto> tourMap = new HashMap<>();
 
-            // Map to store tours by tourId to handle multiple rows per tour (due to images)
-            Map<Integer, TourResponseDto> tourMap = new LinkedHashMap<>();
+                while (rs.next()) {
+                    int tourId = rs.getInt("tour_id");
 
-            jdbcTemplate.query(GET_ALL_TOURS, rs -> {
-                int tourId = rs.getInt("tour_id");
+                    // If we haven't seen this tour before, create it
+                    TourResponseDto tour = tourMap.get(tourId);
+                    if (tour == null) {
+                        tour = new TourResponseDto();
+                        tour.setTourId(tourId);
+                        tour.setTourName(rs.getString("tour_name"));
+                        tour.setTourDescription(rs.getString("tour_description"));
+                        tour.setDuration(rs.getObject("duration", Integer.class));
+                        tour.setLatitude(rs.getObject("latitude", Double.class));
+                        tour.setLongitude(rs.getObject("longitude", Double.class));
+                        tour.setStartLocation(rs.getString("start_location"));
+                        tour.setEndLocation(rs.getString("end_location"));
 
-                // Parse destination IDs CSV into List<Integer>
-                String destCsv = rs.getString("destination_ids");
-                List<Integer> destinationIds = new ArrayList<>();
-                if (destCsv != null && !destCsv.isEmpty()) {
-                    destinationIds = Arrays.stream(destCsv.split(","))
-                            .map(Integer::parseInt)
-                            .collect(Collectors.toList());
+                        tour.setTourTypeName(rs.getString("tour_type_name"));
+                        tour.setTourTypeDescription(rs.getString("tour_type_description"));
+                        tour.setTourCategoryName(rs.getString("tour_category_name"));
+                        tour.setTourCategoryDescription(rs.getString("tour_category_description"));
+                        tour.setSeasonName(rs.getString("season_name"));
+                        tour.setSeasonDescription(rs.getString("season_description"));
+                        tour.setStatusName(rs.getString("status_name"));
+
+                        tour.setSchedules(new ArrayList<>());
+                        tour.setImages(new ArrayList<>());
+
+                        tourMap.put(tourId, tour);
+                    }
+
+                    // Handle schedules
+                    int scheduleId = rs.getInt("schedule_id");
+                    if (scheduleId != 0 && rs.getString("schedule_name") != null) {
+                        TourScheduleResponseDto schedule = new TourScheduleResponseDto();
+                        schedule.setScheduleId(scheduleId);
+                        schedule.setScheduleName(rs.getString("schedule_name"));
+                        schedule.setAssumeStartDate(rs.getObject("assume_start_date", LocalDate.class));
+                        schedule.setAssumeEndDate(rs.getObject("assume_end_date", LocalDate.class));
+                        schedule.setDurationStart(rs.getObject("duration_start", Integer.class));
+                        schedule.setDurationEnd(rs.getObject("duration_end", Integer.class));
+                        schedule.setSpecialNote(rs.getString("special_note"));
+                        schedule.setScheduleDescription(rs.getString("schedule_description"));
+
+                        // Avoid duplicates
+                        if (tour.getSchedules().stream().noneMatch(s -> s.getScheduleId() == scheduleId)) {
+                            tour.getSchedules().add(schedule);
+                        }
+                    }
+
+                    // Handle images
+                    int imageId = rs.getInt("image_id");
+                    if (imageId != 0 && rs.getString("image_url") != null) {
+                        TourImageResponseDto image = new TourImageResponseDto();
+                        image.setImageId(imageId);
+                        image.setImageName(rs.getString("image_name"));
+                        image.setImageDescription(rs.getString("image_description"));
+                        image.setImageUrl(rs.getString("image_url"));
+
+                        // Avoid duplicates
+                        if (tour.getImages().stream().noneMatch(i -> i.getImageId() == imageId)) {
+                            tour.getImages().add(image);
+                        }
+                    }
                 }
 
-                // Build TourImageDto if image exists
-                List<TourImageDto> images = new ArrayList<>();
-                Integer imageId = rs.getObject("image_id", Integer.class);
-                if (imageId != null) {
-                    images.add(new TourImageDto(
-                            imageId,
-                            rs.getString("image_name"),
-                            rs.getString("image_url"),
-                            rs.getString("image_description"),
-                            rs.getString("image_status")
-                    ));
-                }
-
-                // Check if tour already exists in map
-                if (tourMap.containsKey(tourId)) {
-                    // Add image to existing tour
-                    TourResponseDto existingTour = tourMap.get(tourId);
-                    existingTour.getTourImages().addAll(images);
-                } else {
-                    // Create new tour
-                    TourResponseDto tour = new TourResponseDto(
-                            tourId,
-                            rs.getString("tour_name"),
-                            rs.getString("tour_description"),
-                            rs.getString("tour_type"),
-                            rs.getString("tour_category"),
-                            rs.getInt("duration_days"),
-                            rs.getDate("start_date") != null ? rs.getDate("start_date").toLocalDate() : null,
-                            rs.getDate("end_date") != null ? rs.getDate("end_date").toLocalDate() : null,
-                            rs.getString("start_location"),
-                            rs.getString("end_location"),
-                            rs.getObject("max_people", Integer.class),
-                            rs.getObject("min_people", Integer.class),
-                            rs.getBigDecimal("price_per_person"),
-                            rs.getString("tour_status"),
-                            images,
-                            destinationIds,
-                            rs.getTimestamp("created_at") != null ? rs.getTimestamp("created_at").toLocalDateTime() : null,
-                            rs.getObject("created_by", Integer.class),
-                            rs.getTimestamp("updated_at") != null ? rs.getTimestamp("updated_at").toLocalDateTime() : null,
-                            rs.getObject("updated_by", Integer.class),
-                            rs.getTimestamp("terminated_at") != null ? rs.getTimestamp("terminated_at").toLocalDateTime() : null,
-                            rs.getObject("terminated_by", Integer.class)
-                    );
-                    tourMap.put(tourId, tour);
-                }
+                return new ArrayList<>(tourMap.values());
             });
 
-            List<TourResponseDto> results = new ArrayList<>(tourMap.values());
-            LOGGER.info("Successfully fetched {} tours.", results.size());
-            return results;
-
         } catch (DataAccessException ex) {
-            LOGGER.error("Database error while fetching tours: {}", ex.getMessage(), ex);
-            throw new DataAccessErrorExceptionHandler("Failed to fetch tours from database");
+            throw new DataNotFoundErrorExceptionHandler("Database error while fetching tours");
         } catch (Exception ex) {
-            LOGGER.error("Unexpected error while fetching tours: {}", ex.getMessage(), ex);
             throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching tours");
         }
     }
 
     @Override
-    public List<PopularTourResponse> getPopularTours() {
+    public List<PopularTourResponseDto> getPopularTours() {
         String GET_POPULAR_TOURS = TourQueries.GET_POPULAR_TOURS;
+
         try {
-            LOGGER.info("Executing query to fetch all popular tours...");
+            return jdbcTemplate.query(GET_POPULAR_TOURS, rs -> {
+                // Map to hold tours by tourId
+                Map<Integer, PopularTourResponseDto> tourMap = new LinkedHashMap<>();
 
-            // Use a map to collect tours by tourId
-            Map<Integer, PopularTourResponse> tourMap = new LinkedHashMap<>();
+                while (rs.next()) {
+                    int tourId = rs.getInt("tour_id");
 
-            jdbcTemplate.query(GET_POPULAR_TOURS, (rs) -> {
-                Integer tourId = rs.getInt("tour_id");
+                    // Create or get tour DTO
+                    PopularTourResponseDto tour = tourMap.computeIfAbsent(tourId, id ->
+                            {
+                                try {
+                                    return new PopularTourResponseDto(
+                                            tourId,
+                                            rs.getString("tour_name"),
+                                            rs.getString("tour_description"),
+                                            rs.getObject("tour_duration") != null ? rs.getInt("tour_duration") : null,
+                                            rs.getObject("latitude") != null ? rs.getDouble("latitude") : null,
+                                            rs.getObject("longitude") != null ? rs.getDouble("longitude") : null,
+                                            rs.getString("start_location"),
+                                            rs.getString("end_location"),
+                                            rs.getString("tour_type"),
+                                            rs.getString("tour_category"),
+                                            rs.getString("season"),
+                                            rs.getString("tour_status"),
+                                            new ArrayList<>() // schedules list
+                                    );
+                                } catch (SQLException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }
+                    );
 
-                // Check if this tour is already in the map
-                PopularTourResponse tour = tourMap.get(tourId);
-                if (tour == null) {
-                    tour = new PopularTourResponse();
-                    tour.setTourId(tourId);
-                    tour.setTourName(rs.getString("tour_name"));
-                    tour.setTourDescription(rs.getString("tour_description"));
-                    tour.setTourType(rs.getString("tour_type"));
-                    tour.setTourCategory(rs.getString("tour_category"));
-                    tour.setDurationDays(rs.getInt("duration_days"));
-                    tour.setStartDate(rs.getObject("start_date", LocalDate.class));
-                    tour.setEndDate(rs.getObject("end_date", LocalDate.class));
-                    tour.setStartLocation(rs.getString("start_location"));
-                    tour.setEndLocation(rs.getString("end_location"));
-                    tour.setMaxPeople(rs.getInt("max_people"));
-                    tour.setMinPeople(rs.getInt("min_people"));
-                    tour.setPricePerPerson(rs.getBigDecimal("price_per_person"));
-                    tour.setTourStatus(rs.getString("tour_status"));
-                    tour.setCreatedAt(rs.getObject("created_at", LocalDateTime.class));
-                    tour.setCreatedBy((Integer) rs.getObject("created_by"));
-                    tour.setUpdatedAt(rs.getObject("updated_at", LocalDateTime.class));
-                    tour.setUpdatedBy((Integer) rs.getObject("updated_by"));
-                    tour.setTerminatedAt(rs.getObject("terminated_at", LocalDateTime.class));
-                    tour.setTerminatedBy((Integer) rs.getObject("terminated_by"));
+                    // Handle schedule
+                    int scheduleId = rs.getInt("schedule_id");
+                    if (!rs.wasNull()) {
+                        popularTourScheduleResponseDto schedule = tour.getSchedules().stream()
+                                .filter(s -> s.getScheduleId() == scheduleId)
+                                .findFirst()
+                                .orElseGet(() -> {
+                                    popularTourScheduleResponseDto s = null;
+                                    try {
+                                        s = new popularTourScheduleResponseDto(
+                                                scheduleId,
+                                                rs.getString("schedule_name"),
+                                                rs.getObject("assume_start_date") != null ? rs.getDate("assume_start_date").toLocalDate() : null,
+                                                rs.getObject("assume_end_date") != null ? rs.getDate("assume_end_date").toLocalDate() : null,
+                                                rs.getObject("duration_start") != null ? rs.getInt("duration_start") : null,
+                                                rs.getObject("duration_end") != null ? rs.getInt("duration_end") : null,
+                                                rs.getString("special_note"),
+                                                rs.getString("schedule_description"),
+                                                rs.getString("schedule_status"),
+                                                new ArrayList<>(), // destinations
+                                                new ArrayList<>()  // reviews
+                                        );
+                                    } catch (SQLException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                    tour.getSchedules().add(s);
+                                    return s;
+                                });
 
-                    tour.setTourImages(new ArrayList<>());
-                    tour.setReviews(new ArrayList<>());
-                    tour.setDestinations(new ArrayList<>()); // if destinations are handled separately
+                        // Handle destination
+                        int destinationId = rs.getInt("destination_id");
+                        if (!rs.wasNull() && destinationId > 0) {
+                            if (schedule.getDestinations().stream().noneMatch(d -> d.getDestinationId() == destinationId)) {
+                                TourDestinationResponseDto destination = new TourDestinationResponseDto(
+                                        destinationId,
+                                        rs.getString("destination_name"),
+                                        rs.getString("destination_description"),
+                                        rs.getString("destination_location"),
+                                        rs.getString("destination_status")
+                                );
+                                schedule.getDestinations().add(destination);
+                            }
+                        }
 
-                    tourMap.put(tourId, tour);
-                }
-
-                // Add TourImageDto if image exists
-                Integer imageId = rs.getObject("image_id", Integer.class);
-                if (imageId != null) {
-                    TourImageDto image = new TourImageDto();
-                    image.setId(imageId);
-                    image.setName(rs.getString("image_name"));
-                    image.setImageUrl(rs.getString("image_url"));
-                    image.setDescription(rs.getString("image_description"));
-                    image.setStatus(rs.getString("image_status"));
-                    if (!tour.getTourImages().contains(image)) {
-                        tour.getTourImages().add(image);
+                        // Handle review
+                        int reviewId = rs.getInt("review_id");
+                        if (!rs.wasNull() && reviewId > 0) {
+                            if (schedule.getReviews().stream().noneMatch(r -> r.getReviewId() == reviewId)) {
+                                TourReviewResponseDto review = new TourReviewResponseDto(
+                                        reviewId,
+                                        rs.getString("reviewer_name"),
+                                        rs.getString("review"),
+                                        rs.getObject("rating") != null ? rs.getDouble("rating") : null,
+                                        rs.getString("review_description"),
+                                        rs.getObject("number_of_participate") != null ? rs.getInt("number_of_participate") : null,
+                                        rs.getString("review_status"),
+                                        rs.getTimestamp("review_created_at") != null ? rs.getTimestamp("review_created_at").toLocalDateTime() : null
+                                );
+                                schedule.getReviews().add(review);
+                            }
+                        }
                     }
                 }
 
-                // Add ReviewResponseDto if review exists
-                Integer reviewId = rs.getObject("review_id", Integer.class);
-                if (reviewId != null) {
-                    ReviewResponseDto review = new ReviewResponseDto();
-                    review.setReviewId(reviewId);
-                    review.setUserId(rs.getInt("user_id"));
-                    review.setRating(rs.getInt("rating"));
-                    review.setComment(rs.getString("comment"));
-                    review.setReviewStatusId(rs.getInt("review_status_id"));
-                    review.setReviewStatusName(rs.getString("review_status_name"));
-                    review.setCreatedAt(rs.getObject("review_created_at", LocalDateTime.class));
-                    review.setUpdatedAt(rs.getObject("review_updated_at", LocalDateTime.class));
-
-                    if (!tour.getReviews().contains(review)) {
-                        tour.getReviews().add(review);
-                    }
-                }
-
+                return new ArrayList<>(tourMap.values());
             });
 
-            List<PopularTourResponse> results = new ArrayList<>(tourMap.values());
-            LOGGER.info("Successfully fetched {} popular tours.", results.size());
-            return results;
-
         } catch (DataAccessException ex) {
-            LOGGER.error("Database error while fetching popular tours: {}", ex.getMessage(), ex);
-            throw new DataAccessErrorExceptionHandler("Failed to fetch popular tours from database");
+            throw new DataNotFoundErrorExceptionHandler("Database error while fetching tours");
         } catch (Exception ex) {
-            LOGGER.error("Unexpected error while fetching popular tours: {}", ex.getMessage(), ex);
-            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching popular tours");
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching tours");
         }
     }
-
 
 }

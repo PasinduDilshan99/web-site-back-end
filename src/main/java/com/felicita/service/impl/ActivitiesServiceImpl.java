@@ -2,12 +2,10 @@ package com.felicita.service.impl;
 
 import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
+import com.felicita.model.dto.ActivityCategoryResponseDto;
+import com.felicita.model.dto.ActivityResponseDto;
 import com.felicita.model.enums.CommonStatus;
-import com.felicita.model.enums.PartnerStatus;
-import com.felicita.model.response.ActivityCategoryResponse;
-import com.felicita.model.response.ActivityResponse;
 import com.felicita.model.response.CommonResponse;
-import com.felicita.model.response.PartnerResponse;
 import com.felicita.repository.ActivitiesRepository;
 import com.felicita.service.ActivitiesService;
 import com.felicita.util.CommonResponseMessages;
@@ -33,10 +31,10 @@ public class ActivitiesServiceImpl implements ActivitiesService {
     }
 
     @Override
-    public ResponseEntity<CommonResponse<List<ActivityResponse>>> getAllActivities() {
+    public ResponseEntity<CommonResponse<List<ActivityResponseDto>>> getAllActivities() {
         LOGGER.info("Start fetching all activities from repository");
         try {
-            List<ActivityResponse> activityResponses = activitiesRepository.getAllActivities();
+            List<ActivityResponseDto> activityResponses = activitiesRepository.getAllActivities();
 
             if (activityResponses.isEmpty()) {
                 LOGGER.warn("No activities found in database");
@@ -54,10 +52,10 @@ public class ActivitiesServiceImpl implements ActivitiesService {
                     )
             );
 
-        }catch (DataNotFoundErrorExceptionHandler e) {
+        } catch (DataNotFoundErrorExceptionHandler e) {
             LOGGER.error("Error occurred while fetching activities: {}", e.getMessage(), e);
             throw new DataNotFoundErrorExceptionHandler(e.getMessage());
-        }catch (Exception e) {
+        } catch (Exception e) {
             LOGGER.error("Error occurred while fetching activities: {}", e.getMessage(), e);
             throw new InternalServerErrorExceptionHandler("Failed to fetch activities from database");
         } finally {
@@ -66,123 +64,109 @@ public class ActivitiesServiceImpl implements ActivitiesService {
     }
 
     @Override
-    public ResponseEntity<CommonResponse<List<ActivityResponse>>> getActiveActivities() {
-        LOGGER.info("Start fetching all visible activities from repository");
-
+    public ResponseEntity<CommonResponse<List<ActivityResponseDto>>> getActiveActivities() {
+        LOGGER.info("Start fetching active activities from repository");
         try {
-            List<ActivityResponse> activityResponses = activitiesRepository.getAllActivities();
+            List<ActivityResponseDto> activityResponses = activitiesRepository.getAllActivities();
 
             if (activityResponses.isEmpty()) {
                 LOGGER.warn("No activities found in database");
                 throw new DataNotFoundErrorExceptionHandler("No activities found");
             }
 
-            List<ActivityResponse> activityResponseList = activityResponses.stream()
-                    .filter(item -> CommonStatus.ACTIVE.toString().equalsIgnoreCase(item.getStatus().getName()))
+            List<ActivityResponseDto> activityResponseDtoList = activityResponses.stream()
+                    .filter(t -> CommonStatus.ACTIVE.name().equalsIgnoreCase(t.getStatus()))
                     .toList();
-
-            if (activityResponseList.isEmpty()) {
-                LOGGER.warn("No visible activities found in database");
-                throw new DataNotFoundErrorExceptionHandler("No visible activities found");
-            }
-
-            LOGGER.info("Fetched {} visible activities successfully", activityResponseList.size());
-
+            LOGGER.info("Fetched {} activities successfully", activityResponseDtoList.size());
             return ResponseEntity.ok(
                     new CommonResponse<>(
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            activityResponseList,
+                            activityResponseDtoList,
                             Instant.now()
                     )
             );
 
-        }catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching visible activities: {}", e.getMessage(), e);
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching activities: {}", e.getMessage(), e);
             throw new DataNotFoundErrorExceptionHandler(e.getMessage());
-        }catch (Exception e) {
-            LOGGER.error("Error occurred while fetching visible activities: {}", e.getMessage(), e);
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching activities: {}", e.getMessage(), e);
             throw new InternalServerErrorExceptionHandler("Failed to fetch activities from database");
         } finally {
-            LOGGER.info("End fetching all visible activities from repository");
+            LOGGER.info("End fetching all activities from repository");
         }
     }
 
     @Override
-    public ResponseEntity<CommonResponse<List<ActivityCategoryResponse>>> getActivityCategories() {
-        LOGGER.info("Start fetching activity categories from repository");
+    public ResponseEntity<CommonResponse<List<ActivityCategoryResponseDto>>> getAllActivityCategories() {
+        LOGGER.info("Start fetching all activities from repository");
         try {
-            List<ActivityCategoryResponse> activityCategoryResponses = activitiesRepository.getActivityCategories();
+            List<ActivityCategoryResponseDto> activityCategoryResponseDtos = activitiesRepository.getAllActivityCategories();
 
-            if (activityCategoryResponses.isEmpty()) {
-                LOGGER.warn("No activity categories found in database");
+            if (activityCategoryResponseDtos.isEmpty()) {
+                LOGGER.warn("No activities found in database");
                 throw new DataNotFoundErrorExceptionHandler("No activities found");
             }
 
-            LOGGER.info("Fetched {} activity categories successfully", activityCategoryResponses.size());
+            LOGGER.info("Fetched {} activities successfully", activityCategoryResponseDtos.size());
             return ResponseEntity.ok(
                     new CommonResponse<>(
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            activityCategoryResponses,
+                            activityCategoryResponseDtos,
                             Instant.now()
                     )
             );
 
-        }catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching activity categories: {}", e.getMessage(), e);
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching activities: {}", e.getMessage(), e);
             throw new DataNotFoundErrorExceptionHandler(e.getMessage());
-        }catch (Exception e) {
-            LOGGER.error("Error occurred while fetching activity categories: {}", e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch activity categories from database");
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching activities: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch activities from database");
         } finally {
-            LOGGER.info("End fetching activity categories from repository");
+            LOGGER.info("End fetching all activities from repository");
         }
     }
 
     @Override
-    public ResponseEntity<CommonResponse<List<ActivityCategoryResponse>>> getActiveActivityCategories() {
-        LOGGER.info("Start fetching all active activity categories from repository");
-
+    public ResponseEntity<CommonResponse<List<ActivityCategoryResponseDto>>> getActiveActivityCategories() {
+        LOGGER.info("Start fetching active activities from repository");
         try {
-            List<ActivityCategoryResponse> activityCategoryResponses = activitiesRepository.getActivityCategories();
+            List<ActivityCategoryResponseDto> activityCategoryResponseDtos = activitiesRepository.getAllActivityCategories();
 
-            if (activityCategoryResponses.isEmpty()) {
-                LOGGER.warn("No activity category found in database");
-                throw new DataNotFoundErrorExceptionHandler("No activity category found");
+            if (activityCategoryResponseDtos.isEmpty()) {
+                LOGGER.warn("No activities found in database");
+                throw new DataNotFoundErrorExceptionHandler("No activities found");
             }
 
-            List<ActivityCategoryResponse> activityCategoryResponseList = activityCategoryResponses.stream()
-                    .filter(item -> CommonStatus.ACTIVE.toString().equalsIgnoreCase(item.getStatusName()))
+            List<ActivityCategoryResponseDto> activityCategoryResponseDtoList = activityCategoryResponseDtos.stream()
+                    .filter(t -> CommonStatus.ACTIVE.name().equalsIgnoreCase(t.getCategoryStatus()))
                     .toList();
-
-            if (activityCategoryResponseList.isEmpty()) {
-                LOGGER.warn("No active activity categories found in database");
-                throw new DataNotFoundErrorExceptionHandler("No active activity categories found");
-            }
-
-            LOGGER.info("Fetched {} active activity categories successfully", activityCategoryResponseList.size());
-
+            LOGGER.info("Fetched {} activities successfully", activityCategoryResponseDtoList.size());
             return ResponseEntity.ok(
                     new CommonResponse<>(
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            activityCategoryResponseList,
+                            activityCategoryResponseDtoList,
                             Instant.now()
                     )
             );
 
-        }catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching active activity categories: {}", e.getMessage(), e);
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching activities: {}", e.getMessage(), e);
             throw new DataNotFoundErrorExceptionHandler(e.getMessage());
-        }catch (Exception e) {
-            LOGGER.error("Error occurred while fetching active activity categories: {}", e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch active activity categories from database");
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching activities: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch activities from database");
         } finally {
-            LOGGER.info("End fetching all active activity categories from repository");
+            LOGGER.info("End fetching all activities from repository");
         }
     }
+
+
 }

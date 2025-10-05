@@ -3,6 +3,7 @@ package com.felicita.controller;
 import com.felicita.model.response.CommonResponse;
 import com.felicita.model.response.PartnerResponse;
 import com.felicita.model.response.ReviewResponse;
+import com.felicita.model.response.TourReviewResponse;
 import com.felicita.service.ReviewService;
 import com.felicita.util.Constant;
 import org.slf4j.Logger;
@@ -29,17 +30,17 @@ public class ReviewController {
     }
 
     @GetMapping(path = "/all")
-    public ResponseEntity<CommonResponse<List<ReviewResponse>>> getAllReviews(){
+    public ResponseEntity<CommonResponse<List<TourReviewResponse>>> getAllTourReviews(){
         LOGGER.info("{} Start execute get all reviews {}", Constant.DOTS, Constant.DOTS);
-        ResponseEntity<CommonResponse<List<ReviewResponse>>> response = reviewService.getAllReviews();
+        ResponseEntity<CommonResponse<List<TourReviewResponse>>> response = reviewService.getAllTourReviews();
         LOGGER.info("{} End execute get all reviews {}", Constant.DOTS, Constant.DOTS);
         return response;
     }
 
     @GetMapping(path = "/active")
-    public ResponseEntity<CommonResponse<List<ReviewResponse>>> getAllActiveReviews(){
+    public ResponseEntity<CommonResponse<List<TourReviewResponse>>> getActiveTourReviews(){
         LOGGER.info("{} Start execute get all active reviews {}", Constant.DOTS, Constant.DOTS);
-        ResponseEntity<CommonResponse<List<ReviewResponse>>> response = reviewService.getAllActiveReviews();
+        ResponseEntity<CommonResponse<List<TourReviewResponse>>> response = reviewService.getActiveTourReviews();
         LOGGER.info("{} End execute get all active reviews {}", Constant.DOTS, Constant.DOTS);
         return response;
     }

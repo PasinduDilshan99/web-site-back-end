@@ -1,12 +1,13 @@
 package com.felicita.repository;
 
+import com.felicita.model.dto.ActivityCategoryResponseDto;
+import com.felicita.model.dto.ActivityResponseDto;
 import com.felicita.model.response.ActivityCategoryResponse;
-import com.felicita.model.response.ActivityResponse;
 
 import java.util.List;
 
 public interface ActivitiesRepository {
-    List<ActivityResponse> getAllActivities();
+    List<ActivityResponseDto> getAllActivities();
 
-    List<ActivityCategoryResponse> getActivityCategories();
+    List<ActivityCategoryResponseDto> getAllActivityCategories();
 }

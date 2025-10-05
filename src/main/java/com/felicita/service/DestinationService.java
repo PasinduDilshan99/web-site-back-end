@@ -1,31 +1,25 @@
 package com.felicita.service;
 
-import com.felicita.model.response.CommonResponse;
-import com.felicita.model.response.DestinationCategoryResponse;
-import com.felicita.model.response.DestinationResponse;
-import com.felicita.model.response.TrendingDestinationResponse;
+import com.felicita.model.dto.*;
+import com.felicita.model.response.*;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
 public interface DestinationService {
-    ResponseEntity<CommonResponse<List<DestinationResponse>>> getAllDestinations();
+    ResponseEntity<CommonResponse<List<DestinationResponseDto>>> getAllDestinations();
 
-    ResponseEntity<CommonResponse<List<DestinationCategoryResponse>>> getAllActiveDestinationsCategory();
+    ResponseEntity<CommonResponse<List<DestinationResponseDto>>> getAllActiveDestinations();
 
-    ResponseEntity<CommonResponse<List<DestinationResponse>>> getAllDestinationsByCategoryId(String categoryId);
+    ResponseEntity<CommonResponse<List<DestinationCategoryResponseDto>>> getAllDestinationsCategories();
 
-    ResponseEntity<CommonResponse<DestinationResponse>> getDestinationDetailsById(String destinationId);
+    ResponseEntity<CommonResponse<List<DestinationCategoryResponseDto>>> getActiveDestinationsCategories();
 
-    ResponseEntity<CommonResponse<List<DestinationCategoryResponse>>> getAllDestinationsCategory();
+    ResponseEntity<CommonResponse<List<PopularDestinationResponseDto>>> getPopularDestinations();
 
-    ResponseEntity<CommonResponse<List<DestinationResponse>>> getAllActiveDestinations();
+    ResponseEntity<CommonResponse<List<PopularDestinationResponseDto>>> getNewDestinations();
 
-    ResponseEntity<CommonResponse<List<DestinationResponse>>> getAllPopularDestinations();
+    ResponseEntity<CommonResponse<List<TrendingDestinationResponseDto>>> getTrendingDestinations();
 
-    ResponseEntity<CommonResponse<List<TrendingDestinationResponse>>> getAllTrendingDestinations();
-
-    ResponseEntity<CommonResponse<List<DestinationResponse>>> getAllNewDestinations();
-
-    List<DestinationResponse> getDestinationByIds(List<Integer> destinationIds);
+    ResponseEntity<CommonResponse<List<DestinationsForTourMapDto>>> getDestinationsForTourMap();
 }

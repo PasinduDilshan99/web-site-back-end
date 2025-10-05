@@ -9,40 +9,52 @@ public class PackageQueries {
                 p.description AS package_description,
                 p.total_price,
                 p.discount_percentage,
-                p.start_date AS package_start_date,
-                p.end_date AS package_end_date,
+                p.start_date,
+                p.end_date,
                 p.color,
+                p.price_per_person,
                 p.hover_color,
                 p.min_person_count,
                 p.max_person_count,
-                ps.name AS package_status,
-                pt.id AS package_type_id,
-                pt.name AS package_type_name,
-                pt.description AS package_type_description,
-                pt_status.name AS package_type_status,
+                p.price_per_person,
+                cs2.name AS package_status,
                 t.tour_id,
                 t.name AS tour_name,
                 t.description AS tour_description,
-                t.start_date AS tour_start_date,
-                t.end_date AS tour_end_date,
-                t.duration_days,
-                t.max_people AS tour_max_people,
-                t.min_people AS tour_min_people,
-                t.price_per_person,
-                ts.name AS tour_status,
+                t.duration,
+                t.latitude,
+                t.longitude,
+                t.start_location,
+                t.end_location,
+                t.status AS tour_status,
+                ps.id AS schedule_id,
+                ps.name AS schedule_name,
+                ps.assume_start_date,
+                ps.assume_end_date,
+                ps.duration_start,
+                ps.duration_end,
+                ps.special_note AS schedule_special_note,
+                ps.description AS schedule_description,
+                f.id AS feature_id,
+                f.name AS feature_name,
+                f.value AS feature_value,
+                f.description AS feature_description,
+                f.color AS feature_color,
+                f.special_note AS feature_special_note,
                 pi.id AS image_id,
+                pi.name AS image_name,
+                pi.description AS image_description,
                 pi.image_url,
-                pi_status.name AS image_status
-            FROM package p
-            INNER JOIN tour t ON p.tour_id = t.tour_id
-            INNER JOIN common_status ps ON p.package_status_id = ps.id
-            INNER JOIN common_status ts ON t.tour_status_id = ts.id
-            LEFT JOIN package_type pt ON pt.id = p.package_id
-            LEFT JOIN common_status pt_status ON pt.status_id = pt_status.id
-            LEFT JOIN package_image pi ON pi.package_id = p.package_id
-            LEFT JOIN common_status pi_status ON pi.status_id = pi_status.id
-            ORDER BY p.package_id, pi.id;
-            
-            """;
+                pi.color AS image_color
+            FROM packages p
+            LEFT JOIN common_status cs2 ON p.status = cs2.id
+            LEFT JOIN tour t ON p.tour_id = t.tour_id
+            LEFT JOIN package_schedule ps ON p.package_id = ps.package_id
+            LEFT JOIN features f ON p.package_id = f.package_id
+            LEFT JOIN package_images pi ON p.package_id = pi.package_id
+            LEFT JOIN common_status cs_package ON p.status = cs_package.id
+            LEFT JOIN common_status cs_tour ON t.status = cs_tour.id
+""";
+
 
 }

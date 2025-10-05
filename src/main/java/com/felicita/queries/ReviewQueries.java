@@ -2,47 +2,45 @@ package com.felicita.queries;
 
 public class ReviewQueries {
 
-    public static final String GET_ALL_REVIEW = """
+    public static final String GET_ALL_TOUR_REVIEW = """
             SELECT
-                 r.review_id,
-                 r.rating,
-                 r.comment AS review_description,
-                 r.created_at AS review_created_at,
-                 r.updated_at AS review_updated_at,
-                 cs.name AS review_status,
-                 u.user_id,
-                 u.username,
-                 u.first_name,
-                 u.last_name,
-                 u.image_url AS user_avatar,
-                 t.tour_id,
-                 t.name AS tour_name,
-                 p.package_id,
-                 p.name AS package_name,
-                 ri.id AS image_id,
-                 ri.image_url,
-                 rr.id AS reaction_id,
-                 rt.name AS reaction_type,
-                 ru.user_id AS reacted_by_user_id,
-                 ru.username AS reacted_by_username,
-                 rc.id AS comment_id,
-                 rc.comment_text,
-                 rc.parent_id AS comment_parent_id,
-                 cu.user_id AS comment_user_id,
-                 cu.username AS comment_user_name,
-                 rc.created_at AS comment_created_at
-             FROM review r
-             LEFT JOIN common_status cs ON r.status_id = cs.id
-             LEFT JOIN user u ON r.user_id = u.user_id
-             LEFT JOIN tour t ON r.tour_id = t.tour_id
-             LEFT JOIN package p ON r.package_id = p.package_id
-             LEFT JOIN review_image ri ON ri.review_id = r.review_id AND ri.status_id = 1
-             LEFT JOIN review_reaction rr ON rr.review_id = r.review_id AND rr.status_id = 1
-             LEFT JOIN reaction_type rt ON rr.reaction_type_id = rt.id
-             LEFT JOIN user ru ON rr.user_id = ru.user_id
-             LEFT JOIN review_comment rc ON rc.review_id = r.review_id AND rc.status_id = 1
-             LEFT JOIN user cu ON rc.user_id = cu.user_id
-             ORDER BY r.review_id, ri.id, rr.id, rc.id
+                tr.id AS review_id,
+                tr.name AS reviewer_name,
+                tr.review,
+                tr.rating,
+                tr.description AS review_description,
+                tr.number_of_participate,
+                tr.created_at AS review_created_at,
+                ts.id AS schedule_id,
+                ts.name AS schedule_name,
+                ts.assume_start_date,
+                ts.assume_end_date,
+                t.tour_id,
+                t.name AS tour_name,
+                t.description AS tour_description,
+                t.start_location,
+                t.end_location,
+                u.user_id,
+                CONCAT(u.first_name, ' ', u.last_name) AS user_full_name,
+                u.email AS user_email,
+                cs.name AS review_status,
+                tri.id AS image_id,
+                tri.name AS image_name,
+                tri.description AS image_description,
+                tri.image_url AS image_url
+            FROM tour_review tr
+            INNER JOIN tour_schedule ts
+                ON tr.tour_schedule_id = ts.id
+            INNER JOIN tour t
+                ON ts.tour_id = t.tour_id
+            LEFT JOIN user u
+                ON tr.created_by = u.user_id
+            LEFT JOIN tour_review_images tri
+                ON tr.id = tri.tour_review_id
+            LEFT JOIN common_status cs
+                ON tr.status = cs.id
+            WHERE tr.status = 1
+            ORDER BY tr.created_at DESC, tri.id
             """;
 
 

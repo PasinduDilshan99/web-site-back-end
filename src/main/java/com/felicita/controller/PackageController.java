@@ -1,9 +1,8 @@
 package com.felicita.controller;
 
-import com.felicita.model.response.BlogResponse;
+import com.felicita.model.dto.DestinationResponseDto;
+import com.felicita.model.dto.PackageResponseDto;
 import com.felicita.model.response.CommonResponse;
-import com.felicita.model.response.PackageDetailsResponse;
-import com.felicita.service.BlogService;
 import com.felicita.service.PackageService;
 import com.felicita.util.Constant;
 import org.slf4j.Logger;
@@ -30,18 +29,18 @@ public class PackageController {
     }
 
     @GetMapping(path = "/all")
-    public ResponseEntity<CommonResponse<List<PackageDetailsResponse>>> getAllPackages() {
-        LOGGER.info("{} Start execute get all packages {}", Constant.DOTS, Constant.DOTS);
-        ResponseEntity<CommonResponse<List<PackageDetailsResponse>>> response = packageService.getAllPackages();
-        LOGGER.info("{} End execute get all packages {}", Constant.DOTS, Constant.DOTS);
+    public ResponseEntity<CommonResponse<List<PackageResponseDto>>> getAllPackages() {
+        LOGGER.info("{} Start execute get all package {}", Constant.DOTS, Constant.DOTS);
+        ResponseEntity<CommonResponse<List<PackageResponseDto>>> response = packageService.getAllPackages();
+        LOGGER.info("{} End execute get all package {}", Constant.DOTS, Constant.DOTS);
         return response;
     }
 
     @GetMapping(path = "/active")
-    public ResponseEntity<CommonResponse<List<PackageDetailsResponse>>> getAllActivePackages() {
-        LOGGER.info("{} Start execute get all active packages {}", Constant.DOTS, Constant.DOTS);
-        ResponseEntity<CommonResponse<List<PackageDetailsResponse>>> response = packageService.getAllActivePackages();
-        LOGGER.info("{} End execute get all active packages {}", Constant.DOTS, Constant.DOTS);
+    public ResponseEntity<CommonResponse<List<PackageResponseDto>>> getActivePackages() {
+        LOGGER.info("{} Start execute get all active package {}", Constant.DOTS, Constant.DOTS);
+        ResponseEntity<CommonResponse<List<PackageResponseDto>>> response = packageService.getActivePackages();
+        LOGGER.info("{} End execute get all active package {}", Constant.DOTS, Constant.DOTS);
         return response;
     }
 

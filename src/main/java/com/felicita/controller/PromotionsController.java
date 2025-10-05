@@ -1,5 +1,6 @@
 package com.felicita.controller;
 
+import com.felicita.model.dto.PackageResponseDto;
 import com.felicita.model.response.CommonResponse;
 import com.felicita.model.response.PartnerResponse;
 import com.felicita.model.response.PromotionTourResponse;
@@ -30,17 +31,17 @@ public class PromotionsController {
 
 
     @GetMapping(path = "/all")
-    public ResponseEntity<CommonResponse<List<PromotionTourResponse>>> getAllPromotions(){
+    public ResponseEntity<CommonResponse<List<PackageResponseDto>>> getAllPromotions(){
         LOGGER.info("{} Start execute get all tour promotions {}", Constant.DOTS, Constant.DOTS);
-        ResponseEntity<CommonResponse<List<PromotionTourResponse>>> response = promotionsService.getAllPromotions();
+        ResponseEntity<CommonResponse<List<PackageResponseDto>>> response = promotionsService.getAllPromotions();
         LOGGER.info("{} End execute get all tour promotions {}", Constant.DOTS, Constant.DOTS);
         return response;
     }
 
     @GetMapping(path = "/active")
-    public ResponseEntity<CommonResponse<List<PromotionTourResponse>>> getAllActivePromotions(){
+    public ResponseEntity<CommonResponse<List<PackageResponseDto>>> getAllActivePromotions(){
         LOGGER.info("{} Start execute get all active tour promotions {}", Constant.DOTS, Constant.DOTS);
-        ResponseEntity<CommonResponse<List<PromotionTourResponse>>> response = promotionsService.getAllActivePromotions();
+        ResponseEntity<CommonResponse<List<PackageResponseDto>>> response = promotionsService.getAllActivePromotions();
         LOGGER.info("{} End execute get all active tour promotions {}", Constant.DOTS, Constant.DOTS);
         return response;
     }

@@ -7,10 +7,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TourImageDto {
-    private Integer id;
+public class FooterOtherDto {
+    private int id;
     private String name;
-    private String imageUrl;
     private String description;
+    private String linkUrl;
     private String status;
 }
