@@ -67,7 +67,7 @@ public class DestinationQueries {
                 pd.rating,
                 pd.popularity,
                 pd.created_at AS popular_created_at,
-
+            
                 d.destination_id,
                 d.name AS destination_name,
                 d.description AS destination_description,
@@ -75,18 +75,18 @@ public class DestinationQueries {
                 d.latitude,
                 d.longitude,
                 cs_dest.name AS destination_status,
-
+            
                 dc.id AS category_id,
                 dc.category AS category_name,
                 dc.description AS category_description,
                 cs_cat.name AS category_status,
-
+            
                 di.id AS image_id,
                 di.name AS image_name,
                 di.description AS image_description,
                 di.image_url,
                 cs_img.name AS image_status
-
+            
             FROM popular_destination pd
             JOIN destination d
                 ON pd.destination_id = d.destination_id
@@ -100,7 +100,7 @@ public class DestinationQueries {
                 ON d.destination_id = di.destination_id
             LEFT JOIN common_status cs_img
                 ON di.status = cs_img.id
-
+            
             ORDER BY pd.popularity DESC, pd.rating DESC;
             
             """;
@@ -267,42 +267,42 @@ public class DestinationQueries {
             """;
 
     public static final String GET_DESTINATIONS_BY_ID = """
-    SELECT
-        d.id AS DESTINATION_ID,
-        d.name AS DESTINATION_NAME,
-        d.description AS DESTINATION_DESCRIPTION,
-        cs2.name AS DESTINATION_STATUS,
-        dc.name AS DESTINATION_CATEGORY,
-        dc.description AS DESTINATION_CATEGORY_DESCRIPTION,
-        dc.image_url AS DESTINATION_CATEGORY_IMAGE_URL,
-        cs1.name AS DESTINATION_CATEGORY_STATUS,
-        d.location AS DESTINATION_LOCATION,
-        d.rating AS DESTINATION_RATING,
-        d.popularity AS DESTINATION_POPULARITY,
-        d.created_at AS DESTINATION_CREATED_AT,
-        d.created_by AS DESTINATION_CREATED_BY,
-        d.updated_at AS DESTINATION_UPDATED_AT,
-        d.updated_by AS DESTINATION_UPDATED_BY,
-        d.terminated_at AS DESTINATION_TERMINATED_AT,
-        d.terminated_by AS DESTINATION_TERMINATED_BY,
-        di.id AS IMAGE_ID,
-        di.name AS IMAGE_NAME,
-        di.description AS IMAGE_DESCRIPTION,
-        di.image_url AS IMAGE_URL,
-        cs3.name AS IMAGE_STATUS
-    FROM destination d
-    LEFT JOIN destination_category dc
-        ON d.destination_category_id = dc.id
-    LEFT JOIN destination_images di
-        ON d.id = di.destination_id
-    LEFT JOIN common_status cs1
-        ON dc.common_status_id = cs1.id
-    LEFT JOIN common_status cs2
-        ON d.common_status_id = cs2.id
-    LEFT JOIN common_status cs3
-        ON di.common_status_id = cs3.id
-    WHERE d.id IN (:ids)
-""";
+                SELECT
+                    d.id AS DESTINATION_ID,
+                    d.name AS DESTINATION_NAME,
+                    d.description AS DESTINATION_DESCRIPTION,
+                    cs2.name AS DESTINATION_STATUS,
+                    dc.name AS DESTINATION_CATEGORY,
+                    dc.description AS DESTINATION_CATEGORY_DESCRIPTION,
+                    dc.image_url AS DESTINATION_CATEGORY_IMAGE_URL,
+                    cs1.name AS DESTINATION_CATEGORY_STATUS,
+                    d.location AS DESTINATION_LOCATION,
+                    d.rating AS DESTINATION_RATING,
+                    d.popularity AS DESTINATION_POPULARITY,
+                    d.created_at AS DESTINATION_CREATED_AT,
+                    d.created_by AS DESTINATION_CREATED_BY,
+                    d.updated_at AS DESTINATION_UPDATED_AT,
+                    d.updated_by AS DESTINATION_UPDATED_BY,
+                    d.terminated_at AS DESTINATION_TERMINATED_AT,
+                    d.terminated_by AS DESTINATION_TERMINATED_BY,
+                    di.id AS IMAGE_ID,
+                    di.name AS IMAGE_NAME,
+                    di.description AS IMAGE_DESCRIPTION,
+                    di.image_url AS IMAGE_URL,
+                    cs3.name AS IMAGE_STATUS
+                FROM destination d
+                LEFT JOIN destination_category dc
+                    ON d.destination_category_id = dc.id
+                LEFT JOIN destination_images di
+                    ON d.id = di.destination_id
+                LEFT JOIN common_status cs1
+                    ON dc.common_status_id = cs1.id
+                LEFT JOIN common_status cs2
+                    ON d.common_status_id = cs2.id
+                LEFT JOIN common_status cs3
+                    ON di.common_status_id = cs3.id
+                WHERE d.id IN (:ids)
+            """;
 
 
     public static final String GET_ALL_DESTINATIONS_LOCATIONS = """
@@ -319,15 +319,47 @@ public class DestinationQueries {
             LEFT JOIN destination_category dc
             ON d.destination_category_id = dc.id
             WHERE cs.name = 'ACTIVE'
-            """ ;
-    public static final String GET_ALL_DESTINATIONS_LOCATIONS_CATEGORIES = """
-            SELECT
-            	dc.name AS ID,
-                dc.description NAME,
-                dc.color AS COLOR
-            FROM destination_category dc
-            LEFT JOIN common_status cs
-            ON dc.common_status_id = cs.id
-            WHERE cs.name= 'active'
             """;
+
+
+    public static final String GET_DESTINATIONS_FOR_TOUR_MAP = """
+            SELECT
+                d.destination_id AS destination_id,
+                d.name AS destination_name,
+                d.description AS destination_description,
+                cs1.name AS destination_status,
+                dc.category AS destination_category,
+                cs2.name AS destination_category_status,
+                d.location AS destination_location,
+                d.latitude AS destination_latitude,
+                d.longitude AS destination_longitude,
+                d.created_at AS destination_created_at,
+                d.created_by AS destination_created_by,
+                di.id AS destination_image_id,
+                di.name AS destination_image_name,
+                di.description AS destination_image_description,
+                di.image_url AS destination_image_url,
+                cs3.name AS destination_image_status,
+                dci.id AS destination_category_image_id,
+                dci.name AS destination_category_image_name,
+                dci.description AS destination_category_image_description,
+                dci.image_url AS destination_category_image_url,
+                cs4.name AS destination_category_image_status
+            FROM destination d
+            LEFT JOIN common_status cs1
+                ON cs1.id = d.status
+            LEFT JOIN destination_categories dc
+                ON dc.id = d.destination_category
+            LEFT JOIN common_status cs2
+                ON cs2.id = dc.status
+            LEFT JOIN destination_images di
+                ON di.destination_id = d.destination_id
+            LEFT JOIN common_status cs3
+                ON cs3.id = di.status
+            LEFT JOIN destination_categories_images dci
+                ON dci.destination_categories_id = dc.id
+            LEFT JOIN common_status cs4
+                ON cs4.id = dci.status
+            """;
+
 }

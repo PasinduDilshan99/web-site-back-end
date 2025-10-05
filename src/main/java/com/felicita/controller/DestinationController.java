@@ -84,4 +84,12 @@ public class DestinationController {
         return response;
     }
 
+    @GetMapping(path = "/tour-map")
+    public ResponseEntity<CommonResponse<List<DestinationsForTourMapDto>>> getDestinationsForTourMap() {
+        LOGGER.info("{} Start execute get destinations for tour map {}", Constant.DOTS, Constant.DOTS);
+        ResponseEntity<CommonResponse<List<DestinationsForTourMapDto>>> response = destinationService.getDestinationsForTourMap();
+        LOGGER.info("{} End execute get destinations for tour map {}", Constant.DOTS, Constant.DOTS);
+        return response;
+    }
+
 }

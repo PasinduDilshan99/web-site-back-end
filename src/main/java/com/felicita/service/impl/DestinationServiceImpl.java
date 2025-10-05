@@ -2,10 +2,7 @@ package com.felicita.service.impl;
 
 import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
-import com.felicita.model.dto.DestinationCategoryResponseDto;
-import com.felicita.model.dto.DestinationResponseDto;
-import com.felicita.model.dto.PopularDestinationResponseDto;
-import com.felicita.model.dto.TrendingDestinationResponseDto;
+import com.felicita.model.dto.*;
 import com.felicita.model.enums.CommonStatus;
 import com.felicita.model.response.*;
 import com.felicita.repository.DestinationRepository;
@@ -278,6 +275,39 @@ public class DestinationServiceImpl implements DestinationService {
             throw new InternalServerErrorExceptionHandler("Failed to fetch popular destinations  from database");
         } finally {
             LOGGER.info("End fetching all popular destinations  from repository");
+        }
+    }
+
+    @Override
+    public ResponseEntity<CommonResponse<List<DestinationsForTourMapDto>>> getDestinationsForTourMap() {
+        LOGGER.info("Start fetching get destinations for tour map from repository");
+        try {
+            List<DestinationsForTourMapDto> destinationsForTourMapDtos = destinationRepository.getDestinationsForTourMap();
+
+            if (destinationsForTourMapDtos.isEmpty()) {
+                LOGGER.warn("No destinations for tour map  found in database");
+                throw new DataNotFoundErrorExceptionHandler("No destinations for tour map found");
+            }
+
+            LOGGER.info("Fetched {} destinations for tour map  successfully", destinationsForTourMapDtos.size());
+            return ResponseEntity.ok(
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            destinationsForTourMapDtos,
+                            Instant.now()
+                    )
+            );
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching destinations for tour map : {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching destinations for tour map : {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch destinations for tour map  from database");
+        } finally {
+            LOGGER.info("End fetching all destinations for tour map  from repository");
         }
     }
 

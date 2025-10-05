@@ -674,52 +674,49 @@ VALUES
 (5, 'Mountain Viewpoint', 'Panoramic view of Ella Gap valley', '/images/destination-categories/mountain-viewpoint.webp', 1, 1),
 (5, 'Cool Mist Morning', 'Foggy sunrise over Haputale hills', '/images/destination-categories/cool-mist-morning.jpg', 1, 1);
 
-
 INSERT INTO activity_category_images 
 (activity_category_id, name, description, image_url, status, created_by)
 VALUES
-(1, 'Rock Climbing', 'Adventurers scaling cliffs in Ella', '/images/activity_categories/adventure_1.jpg', 1, 1),
-(1, 'Zip Lining', 'Thrilling zipline ride across lush valleys', '/images/activity_categories/adventure_2.jpg', 1, 1),
-(1, 'Caving', 'Exploring mysterious caves and underground paths', '/images/activity_categories/adventure_3.jpg', 1, 1),
-(1, 'Trekking Trail', 'Group trekking through dense forest terrain', '/images/activity_categories/adventure_4.jpg', 1, 1),
-(2, 'Surfing', 'Surfers riding the waves at Arugam Bay', '/images/activity_categories/watersports_1.jpg', 1, 1),
-(2, 'Scuba Diving', 'Exploring coral reefs and marine life underwater', '/images/activity_categories/watersports_2.jpg', 1, 1),
-(2, 'Jet Skiing', 'Tourists enjoying high-speed jet skiing', '/images/activity_categories/watersports_3.jpg', 1, 1),
-(2, 'Snorkeling', 'Colorful reef fish viewed from surface snorkel', '/images/activity_categories/watersports_4.jpg', 1, 1),
-(3, 'Safari Jeep', 'Jeep driving through Yala National Park', '/images/activity_categories/wildlife_1.jpg', 1, 1),
-(3, 'Bird Watching', 'Spotting exotic birds in Bundala Sanctuary', '/images/activity_categories/wildlife_2.jpg', 1, 1),
-(3, 'Elephants in Wild', 'Herd of elephants grazing in Udawalawe', '/images/activity_categories/wildlife_3.jpg', 1, 1),
-(3, 'Leopard Sighting', 'Rare leopard encounter at Wilpattu Park', '/images/activity_categories/wildlife_4.jpg', 1, 1),
-(4, 'Whale Watching', 'Whales breaching off Mirissa coast', '/images/activity_categories/marinelife_1.jpg', 1, 1),
-(4, 'Dolphin Tour', 'Dolphins swimming alongside boats', '/images/activity_categories/marinelife_2.jpg', 1, 1),
-(4, 'Sea Turtle Experience', 'Visitors observing sea turtles nesting', '/images/activity_categories/marinelife_3.jpg', 1, 1),
-(4, 'Underwater World', 'Colorful marine species in coral reefs', '/images/activity_categories/marinelife_4.jpg', 1, 1),
-(5, 'Scenic Viewpoint', 'Tourists enjoying panoramic mountain views', '/images/activity_categories/sightseeing_1.jpg', 1, 1),
-(5, 'City Tour', 'Exploring historic streets and monuments', '/images/activity_categories/sightseeing_2.jpg', 1, 1),
-(5, 'Sunset Point', 'Beautiful sunset over coastal cliffs', '/images/activity_categories/sightseeing_3.jpg', 1, 1),
-(5, 'Waterfall Visit', 'Tourists visiting a majestic waterfall', '/images/activity_categories/sightseeing_4.jpg', 1, 1),
-(6, 'Mountain Trail', 'Hikers climbing misty mountain paths', '/images/activity_categories/hiking_1.jpg', 1, 1),
-(6, 'Forest Path', 'Exploring dense forest hiking trails', '/images/activity_categories/hiking_2.jpg', 1, 1),
-(6, 'Peak Summit', 'Trekkers reaching the top viewpoint', '/images/activity_categories/hiking_3.jpg', 1, 1),
-(6, 'River Crossing', 'Adventure hikers crossing shallow streams', '/images/activity_categories/hiking_4.jpg', 1, 1),
-(7, 'Temple Visit', 'Visitors exploring sacred temples', '/images/activity_categories/cultural_1.jpg', 1, 1),
-(7, 'Traditional Dance', 'Cultural dancers performing in Kandy', '/images/activity_categories/cultural_2.jpg', 1, 1),
-(7, 'Ancient Ruins', 'Tourists discovering heritage ruins', '/images/activity_categories/cultural_3.jpg', 1, 1),
-(7, 'Cultural Festival', 'Vibrant street festival with costumes and music', '/images/activity_categories/cultural_4.jpg', 1, 1),
-(8, 'Yoga Retreat', 'Morning yoga session in a peaceful environment', '/images/activity_categories/wellness_1.jpg', 1, 1),
-(8, 'Meditation', 'Meditation practice near a waterfall', '/images/activity_categories/wellness_2.jpg', 1, 1),
-(8, 'Spa Therapy', 'Relaxing herbal spa treatments', '/images/activity_categories/wellness_3.jpg', 1, 1),
-(8, 'Ayurvedic Massage', 'Traditional ayurvedic healing experience', '/images/activity_categories/wellness_4.jpg', 1, 1),
-(9, 'Wildlife Photography', 'Photographer capturing animals in the wild', '/images/activity_categories/photography_1.jpg', 1, 1),
-(9, 'Landscape Shot', 'Capturing breathtaking sunrise over hills', '/images/activity_categories/photography_2.jpg', 1, 1),
-(9, 'Cultural Portraits', 'Portrait photography during cultural events', '/images/activity_categories/photography_3.jpg', 1, 1),
-(9, 'Night Photography', 'Stars and night sky captured in long exposure', '/images/activity_categories/photography_4.jpg', 1, 1),
-(10, 'Local Cuisine', 'Authentic Sri Lankan rice and curry served on banana leaf', '/images/activity_categories/food_1.jpg', 1, 1),
-(10, 'Cooking Class', 'Tourists learning traditional cooking methods', '/images/activity_categories/food_2.jpg', 1, 1),
-(10, 'Street Food', 'Colorful local food stalls in Colombo', '/images/activity_categories/food_3.jpg', 1, 1),
-(10, 'Fine Dining', 'Elegant restaurant setup with local dishes', '/images/activity_categories/food_4.jpg', 1, 1);
-
-
+(1, 'Rock Climbing', 'Adventurers scaling cliffs in Ella', '/images/activity-categories/rock-climbing.jpg', 1, 1),
+(1, 'Zip Lining', 'Thrilling zipline ride across lush valleys', '/images/activity-categories/zip-lining.jpg', 1, 1),
+(1, 'Caving', 'Exploring mysterious caves and underground paths', '/images/activity-categories/caving.jpg', 1, 1),
+(1, 'Trekking Trail', 'Group trekking through dense forest terrain', '/images/activity-categories/trekking-trail.jpg', 1, 1),
+(2, 'Surfing', 'Surfers riding the waves at Arugam Bay', '/images/activity-categories/surfing.png', 1, 1),
+(2, 'Scuba Diving', 'Exploring coral reefs and marine life underwater', '/images/activity-categories/scuba-diving.jpg', 1, 1),
+(2, 'Jet Skiing', 'Tourists enjoying high-speed jet skiing', '/images/activity-categories/jet-skiing.jpg', 1, 1),
+(2, 'Snorkeling', 'Colorful reef fish viewed from surface snorkel', '/images/activity-categories/snorkeling.jpg', 1, 1),
+(3, 'Safari Jeep', 'Jeep driving through Yala National Park', '/images/activity-categories/safari-jeep.jpg', 1, 1),
+(3, 'Bird Watching', 'Spotting exotic birds in Bundala Sanctuary', '/images/activity-categories/bird-watching.webp', 1, 1),
+(3, 'Elephants in Wild', 'Herd of elephants grazing in Udawalawe', '/images/activity-categories/elephants-in-wild.jpg', 1, 1),
+(3, 'Leopard Sighting', 'Rare leopard encounter at Wilpattu Park', '/images/activity-categories/leopard-sighting.jpg', 1, 1),
+(4, 'Whale Watching', 'Whales breaching off Mirissa coast', '/images/activity-categories/whale-watching.jpg', 1, 1),
+(4, 'Dolphin Tour', 'Dolphins swimming alongside boats', '/images/activity-categories/dolphin-tour.jpg', 1, 1),
+(4, 'Sea Turtle Experience', 'Visitors observing sea turtles nesting', '/images/activity-categories/sea-turtle-experience.jpg', 1, 1),
+(4, 'Underwater World', 'Colorful marine species in coral reefs', '/images/activity-categories/underwater-world.jpg', 1, 1),
+(5, 'Scenic Viewpoint', 'Tourists enjoying panoramic mountain views', '/images/activity-categories/scenic-viewpoint.jpg', 1, 1),
+(5, 'City Tour', 'Exploring historic streets and monuments', '/images/activity-categories/city-tour.jpg', 1, 1),
+(5, 'Sunset Point', 'Beautiful sunset over coastal cliffs', '/images/activity-categories/sunset-point.jpg', 1, 1),
+(5, 'Waterfall Visit', 'Tourists visiting a majestic waterfall', '/images/activity-categories/waterfall-visit.jpg', 1, 1),
+(6, 'Mountain Trail', 'Hikers climbing misty mountain paths', '/images/activity-categories/mountain-trail.jpg', 1, 1),
+(6, 'Forest Path', 'Exploring dense forest hiking trails', '/images/activity-categories/forest-path.jpg', 1, 1),
+(6, 'Peak Summit', 'Trekkers reaching the top viewpoint', '/images/activity-categories/peak-summit.jpg', 1, 1),
+(6, 'River Crossing', 'Adventure hikers crossing shallow streams', '/images/activity-categories/river-crossing.jpg', 1, 1),
+(7, 'Temple Visit', 'Visitors exploring sacred temples', '/images/activity-categories/temple-visit.jpg', 1, 1),
+(7, 'Traditional Dance', 'Cultural dancers performing in Kandy', '/images/activity-categories/traditional-dance.webp', 1, 1),
+(7, 'Ancient Ruins', 'Tourists discovering heritage ruins', '/images/activity-categories/ancient-ruins.jpg', 1, 1),
+(7, 'Cultural Festival', 'Vibrant street festival with costumes and music', '/images/activity-categories/cultural-festival.png', 1, 1),
+(8, 'Yoga Retreat', 'Morning yoga session in a peaceful environment', '/images/activity-categories/yoga-retreat.jpg', 1, 1),
+(8, 'Meditation', 'Meditation practice near a waterfall', '/images/activity-categories/meditation.jpeg', 1, 1),
+(8, 'Spa Therapy', 'Relaxing herbal spa treatments', '/images/activity-categories/spa-therapy.webp', 1, 1),
+(8, 'Ayurvedic Massage', 'Traditional ayurvedic healing experience', '/images/activity-categories/ayurvedic-massage.webp', 1, 1),
+(9, 'Wildlife Photography', 'Photographer capturing animals in the wild', '/images/activity-categories/wildlife-photography.jpg', 1, 1),
+(9, 'Landscape Shot', 'Capturing breathtaking sunrise over hills', '/images/activity-categories/landscape-shot.jpg', 1, 1),
+(9, 'Cultural Portraits', 'Portrait photography during cultural events', '/images/activity-categories/cultural-portraits.jpg', 1, 1),
+(9, 'Night Photography', 'Stars and night sky captured in long exposure', '/images/activity-categories/night-photography.jpg', 1, 1),
+(10, 'Local Cuisine', 'Authentic Sri Lankan rice and curry served on banana leaf', '/images/activity-categories/local-cuisine.jpg', 1, 1),
+(10, 'Cooking Class', 'Tourists learning traditional cooking methods', '/images/activity-categories/cooking-class.jpg', 1, 1),
+(10, 'Street Food', 'Colorful local food stalls in Colombo', '/images/activity-categories/street-food.jpg', 1, 1),
+(10, 'Fine Dining', 'Elegant restaurant setup with local dishes', '/images/activity-categories/fine-dining.jpg', 1, 1);
 
 
 
@@ -727,196 +724,164 @@ INSERT INTO activities_images
 (activity_id, name, description, image_url, status, created_by)
 VALUES
 -- Activity 1: Sigiriya Rock Climb
-(1, 'Sigiriya Rock Summit', 'View from the top of Sigiriya Rock', '/images/activities/sigiriya_rockclimb_1.jpg', 1, 1),
-(1, 'Sigiriya Rock Path', 'Steps and climbing path to the summit', '/images/activities/sigiriya_rockclimb_2.jpg', 1, 1),
+(1, 'Sigiriya Rock Summit', 'View from the top of Sigiriya Rock', '/images/activities/sigiriya-rock-summit.jpg', 1, 1),
+(1, 'Sigiriya Rock Path', 'Steps and climbing path to the summit', '/images/activities/sigiriyarock-path.jpg', 1, 1),
 
 -- Activity 2: Knuckles Mountain Trek
-(2, 'Knuckles Trail View', 'Scenic trail in Knuckles Range', '/images/activities/knuckles_trek_1.jpg', 1, 1),
-(2, 'Knuckles Forest', 'Dense forest along trekking path', '/images/activities/knuckles_trek_2.jpg', 1, 1),
+(2, 'Knuckles Trail View', 'Scenic trail in Knuckles Range', '/images/activities/knuckles-trail-view.webp', 1, 1),
+(2, 'Knuckles Forest', 'Dense forest along trekking path', '/images/activities/knuckles-forest.webp', 1, 1),
 
 -- Activity 3: Kitulgala White Water Rafting
-(3, 'Rafting Rapids', 'Adventure on Kitulgala river rapids', '/images/activities/kitulgala_rafting_1.jpg', 1, 1),
-(3, 'Rafting Team', 'Group navigating the rapids', '/images/activities/kitulgala_rafting_2.jpg', 1, 1),
+(3, 'Rafting Rapids', 'Adventure on Kitulgala river rapids', '/images/activities/rafting-rapids.jpeg', 1, 1),
+(3, 'Rafting Team', 'Group navigating the rapids', '/images/activities/rafting-team.jpg', 1, 1),
 
 -- Activity 4: Knuckles Overnight Camping
-(4, 'Knuckles Camp Setup', 'Tent and campfire at Knuckles mountains', '/images/activities/knuckles_camping_1.jpg', 1, 1),
-(4, 'Starry Night', 'Night sky view during camping', '/images/activities/knuckles_camping_2.jpg', 1, 1),
+(4, 'Knuckles Camp Setup', 'Tent and campfire at Knuckles mountains', '/images/activities/knuckles-camp-setup.jpg', 1, 1),
+(4, 'Starry Night', 'Night sky view during camping', '/images/activities/starry-night.webp', 1, 1),
 
 -- Activity 5: Surfing Lessons
-(5, 'Surf Lessons Beach', 'Beginner surfing session', '/images/activities/surfing_lessons_1.jpg', 1, 1),
-(5, 'Surf Instructor', 'Instructor guiding students', '/images/activities/surfing_lessons_2.jpg', 1, 1),
+(5, 'Surf Lessons Beach', 'Beginner surfing session', '/images/activities/surf-lessons-beach.webp', 1, 1),
+(5, 'Surf Instructor', 'Instructor guiding students', '/images/activities/surf-instructor.jpg', 1, 1),
 
 -- Activity 6: Kayaking in Bentota River
-(6, 'Kayak on River', 'Tourist paddling along Bentota River', '/images/activities/kayaking_bentota_1.jpg', 1, 1),
-(6, 'River View', 'Scenic river and surrounding greenery', '/images/activities/kayaking_bentota_2.jpg', 1, 1),
+(6, 'Kayak on River', 'Tourist paddling along Bentota River', '/images/activities/kayak-on-river.jpg', 1, 1),
+(6, 'River View', 'Scenic river and surrounding greenery', '/images/activities/river-view.jpg', 1, 1),
 
 -- Activity 7: Arugam Bay Surf Adventure
-(7, 'Arugam Bay Waves', 'Surfers catching waves at Arugam Bay', '/images/activities/arugam_surf_1.jpg', 1, 1),
-(7, 'Surf Team', 'Group of surfers enjoying the ocean', '/images/activities/arugam_surf_2.jpg', 1, 1),
+(7, 'Arugam Bay Waves', 'Surfers catching waves at Arugam Bay', '/images/activities/arugambay-waves.jpg', 1, 1),
+(7, 'Surf Team', 'Group of surfers enjoying the ocean', '/images/activities/surf-team.webp', 1, 1),
 
 -- Activity 8: Mirissa Jet Skiing
-(8, 'Jet Ski Splash', 'High-speed jet ski ride on Mirissa beach', '/images/activities/mirissa_jetski_1.jpg', 1, 1),
-(8, 'Coastal View', 'Rider speeding along the coastline', '/images/activities/mirissa_jetski_2.jpg', 1, 1),
+(8, 'Jet Ski Splash', 'High-speed jet ski ride on Mirissa beach', '/images/activities/jet-ski-splash.jpg', 1, 1),
+(8, 'Coastal View', 'Rider speeding along the coastline', '/images/activities/coastal-view.webp', 1, 1),
 
 -- Activity 9: Yala Safari
-(9, 'Yala Leopard Spotting', 'Leopard seen in Yala National Park', '/images/activities/yala_safari_1.jpg', 1, 1),
-(9, 'Elephant Herd', 'Elephants crossing the trail during safari', '/images/activities/yala_safari_2.jpg', 1, 1),
+(9, 'Yala Leopard Spotting', 'Leopard seen in Yala National Park', '/images/activities/yala-leopard-spotting.jpg', 1, 1),
+(9, 'Elephant Herd', 'Elephants crossing the trail during safari', '/images/activities/elephant-herd.webp', 1, 1),
 
 -- Activity 10: Udawalawe Elephant Safari
-(10, 'Elephant Closeup', 'Close encounter with wild elephants', '/images/activities/udawalawe_safari_1.jpg', 1, 1),
-(10, 'Safari Jeep', 'Jeep moving through Udawalawe National Park', '/images/activities/udawalawe_safari_2.jpg', 1, 1),
+(10, 'Elephant Closeup', 'Close encounter with wild elephants', '/images/activities/elephant-closeup.jpg', 1, 1),
+(10, 'Safari Jeep', 'Jeep moving through Udawalawe National Park', '/images/activities/safari-jeep.webp', 1, 1),
 
 -- Activity 11: Wilpattu Leopard Safari
-(11, 'Wilpattu Leopard', 'Leopard resting in Wilpattu National Park', '/images/activities/wilpattu_safari_1.jpg', 1, 1),
-(11, 'Bird Watching', 'Birds in the Wilpattu park scenery', '/images/activities/wilpattu_safari_2.jpg', 1, 1),
+(11, 'Wilpattu Leopard', 'Leopard resting in Wilpattu National Park', '/images/activities/wilpattu-leopard.jpg', 1, 1),
+(11, 'Bird Watching', 'Birds in the Wilpattu park scenery', '/images/activities/bird-watching.jpeg', 1, 1),
 
 -- Activity 12: Minneriya Elephant Gathering
-(12, 'Elephant Gathering', 'Mass elephant gathering in Minneriya', '/images/activities/minneriya_elephants_1.jpg', 1, 1),
-(12, 'Sunset View', 'Elephants silhouetted against sunset', '/images/activities/minneriya_elephants_2.jpg', 1, 1),
+(12, 'Elephant Gathering', 'Mass elephant gathering in Minneriya', '/images/activities/elephant-gathering.jpg', 1, 1),
+(12, 'Sunset View', 'Elephants silhouetted against sunset', '/images/activities/sunset-view.jpg', 1, 1),
 
 -- Activity 13: Whale Watching
-(13, 'Blue Whale Spotting', 'Whale surfacing in ocean', '/images/activities/whale_watching_1.jpg', 1, 1),
-(13, 'Whale Watching Boat', 'Tourists on boat spotting whales', '/images/activities/whale_watching_2.jpg', 1, 1),
+(13, 'Blue Whale Spotting', 'Whale surfacing in ocean', '/images/activities/blue-whale-spotting.jpg', 1, 1),
+(13, 'Whale Watching Boat', 'Tourists on boat spotting whales', '/images/activities/whale-watching-boat.webp', 1, 1),
 
 -- Activity 14: Mirissa Dolphin Cruise
-(14, 'Playful Dolphins', 'Dolphins jumping near the boat', '/images/activities/mirissa_dolphins_1.jpg', 1, 1),
-(14, 'Dolphin Tour', 'Cruise enjoying marine wildlife', '/images/activities/mirissa_dolphins_2.jpg', 1, 1),
+(14, 'Playful Dolphins', 'Dolphins jumping near the boat', '/images/activities/playful-dolphins.webp', 1, 1),
+(14, 'Dolphin Tour', 'Cruise enjoying marine wildlife', '/images/activities/dolphin-tour.webp', 1, 1),
 
 -- Activity 15: Pigeon Island Snorkeling
-(15, 'Coral Reefs', 'Snorkeling among vibrant coral reefs', '/images/activities/pigeon_snorkeling_1.jpg', 1, 1),
-(15, 'Tropical Fish', 'Colorful fish seen while snorkeling', '/images/activities/pigeon_snorkeling_2.jpg', 1, 1),
+(15, 'Coral Reefs', 'Snorkeling among vibrant coral reefs', '/images/activities/coral-reefs.jpg', 1, 1),
+(15, 'Tropical Fish', 'Colorful fish seen while snorkeling', '/images/activities/tropical-fish.webp', 1, 1),
 
 -- Activity 16: Bentota Glass-Bottom Boat
-(16, 'Glass-Bottom View', 'View marine life through glass-bottom boat', '/images/activities/bentota_glassboat_1.jpg', 1, 1),
-(16, 'Marine Species', 'Fish and coral visible under boat', '/images/activities/bentota_glassboat_2.jpg', 1, 1),
+(16, 'Glass-Bottom View', 'View marine life through glass-bottom boat', '/images/activities/glass-bottom-view.jpg', 1, 1),
+(16, 'Marine Species', 'Fish and coral visible under boat', '/images/activities/marine-species.jpg', 1, 1),
 
 -- Activity 17: Nine Arch Bridge Visit
-(17, 'Nine Arch Bridge', 'View of iconic Nine Arch Bridge', '/images/activities/nine_arch_1.jpg', 1, 1),
-(17, 'Train Crossing', 'Train crossing Nine Arch Bridge', '/images/activities/nine_arch_2.jpg', 1, 1),
+(17, 'Nine Arch Bridge', 'View of iconic Nine Arch Bridge', '/images/activities/nine-arch-bridge.jpg', 1, 1),
+(17, 'Train Crossing', 'Train crossing Nine Arch Bridge', '/images/activities/train-crossing.jpg', 1, 1),
 
 -- Activity 18: Galle Fort Tour
-(18, 'Galle Fort Walls', 'UNESCO fort walls and streets', '/images/activities/galle_fort_1.jpg', 1, 1),
-(18, 'Historic Streets', 'Walking tour inside Galle Fort', '/images/activities/galle_fort_2.jpg', 1, 1),
+(18, 'Galle Fort Walls', 'UNESCO fort walls and streets', '/images/activities/galle-fort-walls.jpg', 1, 1),
+(18, 'Historic Streets', 'Walking tour inside Galle Fort', '/images/activities/historic-streets.jpeg', 1, 1),
 
 -- Activity 19: Nuwara Eliya City Tour
-(19, 'Gregory Lake', 'Tourist enjoying boat ride at Gregory Lake', '/images/activities/nuwara_city_1.jpg', 1, 1),
-(19, 'Botanical Gardens', 'Colorful flowers at botanical gardens', '/images/activities/nuwara_city_2.jpg', 1, 1),
+(19, 'Gregory Lake', 'Tourist enjoying boat ride at Gregory Lake', '/images/activities/gregory -lake.webp', 1, 1),
+(19, 'Botanical Gardens', 'Colorful flowers at botanical gardens', '/images/activities/botanical-gardens.jpg', 1, 1),
 
 -- Activity 20: Jaffna Heritage Walk
-(20, 'Jaffna Temple', 'Historic temple in Jaffna city', '/images/activities/jaffna_walk_1.jpg', 1, 1),
-(20, 'Street Exploration', 'Walking along local streets of Jaffna', '/images/activities/jaffna_walk_2.jpg', 1, 1),
+(20, 'Jaffna Temple', 'Historic temple in Jaffna city', '/images/activities/jaffna-temple.webp', 1, 1),
+(20, 'Street Exploration', 'Walking along local streets of Jaffna', '/images/activities/street-exploration.jpg', 1, 1),
 
 -- Activity 21: Little Adams Peak Hike
-(21, 'Little Adams Peak', 'View from top of Little Adams Peak', '/images/activities/little_adams_1.jpg', 1, 1),
-(21, 'Hiking Path', 'Trail leading up Little Adams Peak', '/images/activities/little_adams_2.jpg', 1, 1),
+(21, 'Little Adams Peak', 'View from top of Little Adams Peak', '/images/activities/little-adams-peak.jpg', 1, 1),
+(21, 'Hiking Path', 'Trail leading up Little Adams Peak', '/images/activities/hiking-path.jpg', 1, 1),
 
 -- Activity 22: Pidurangala Rock Hike
-(22, 'Pidurangala Summit', 'View from Pidurangala Rock', '/images/activities/pidurangala_1.jpg', 1, 1),
-(22, 'Climb Path', 'Pathway up Pidurangala Rock', '/images/activities/pidurangala_2.jpg', 1, 1),
+(22, 'Pidurangala Summit', 'View from Pidurangala Rock', '/images/activities/pidurangala-summit.jpg', 1, 1),
+(22, 'Climb Path', 'Pathway up Pidurangala Rock', '/images/activities/climb-path.jpg', 1, 1),
 
 -- Activity 23: Horton Plains Trail
-(23, 'Worlds End View', 'Panoramic view from Horton Plains', '/images/activities/horton_trail_1.jpg', 1, 1),
-(23, 'Baker\'s Falls', 'Waterfall along Horton Plains trail', '/images/activities/horton_trail_2.jpg', 1, 1),
+(23, 'Worlds End View', 'Panoramic view from Horton Plains', '/images/activities/worlds-end-view.jpg', 1, 1),
+(23, 'Baker\'s Falls', 'Waterfall along Horton Plains trail', '/images/activities/bakers-falls.jpg', 1, 1),
 
 -- Activity 24: Ella Rock Hike
-(24, 'Ella Rock Summit', 'Scenic view from Ella Rock', '/images/activities/ella_rock_1.jpg', 1, 1),
-(24, 'Tea Plantation Trail', 'Trail passing through tea plantations', '/images/activities/ella_rock_2.jpg', 1, 1),
+(24, 'Ella Rock Summit', 'Scenic view from Ella Rock', '/images/activities/ella-rock-summit.jpg', 1, 1),
+(24, 'Tea Plantation Trail', 'Trail passing through tea plantations', '/images/activities/tea-plantation-trail.jpg', 1, 1),
 
 -- Activity 25: Kandy Temple of Tooth
-(25, 'Temple of Tooth Exterior', 'Main entrance and exterior of temple', '/images/activities/kandy_temple_1.jpg', 1, 1),
-(25, 'Temple Interior', 'Inner sanctum and sacred relics', '/images/activities/kandy_temple_2.jpg', 1, 1),
+(25, 'Temple of Tooth Exterior', 'Main entrance and exterior of temple', '/images/activities/temple-of-tooth-exterior.jpg', 1, 1),
+(25, 'Temple Interior', 'Inner sanctum and sacred relics', '/images/activities/temple-interior.jpg', 1, 1),
 
 -- Activity 26: Kandy Perahera Experience
-(26, 'Elephant Procession', 'Decorated elephants during Perahera festival', '/images/activities/kandy_perahera_1.jpg', 1, 1),
-(26, 'Cultural Dance', 'Traditional dancers performing', '/images/activities/kandy_perahera_2.jpg', 1, 1),
+(26, 'Elephant Procession', 'Decorated elephants during Perahera festival', '/images/activities/elephant-procession.jpg', 1, 1),
+(26, 'Cultural Dance', 'Traditional dancers performing', '/images/activities/cultural-dance.webp', 1, 1),
 
 -- Activity 27: Polonnaruwa Ancient City
-(27, 'Ancient Ruins', 'Historical ruins in Polonnaruwa', '/images/activities/polonnaruwa_1.jpg', 1, 1),
-(27, 'Temple Site', 'Buddhist temple ruins', '/images/activities/polonnaruwa_2.jpg', 1, 1),
+(27, 'Ancient Ruins', 'Historical ruins in Polonnaruwa', '/images/activities/ancient-ruins.jpg', 1, 1),
+(27, 'Temple Site', 'Buddhist temple ruins', '/images/activities/temple-site.jpg', 1, 1),
 
 -- Activity 28: Dambulla Cave Temples
-(28, 'Cave Temple Interior', 'Buddhist statues inside cave', '/images/activities/dambulla_1.jpg', 1, 1),
-(28, 'Temple Exterior', 'Entrance to Dambulla Cave Temples', '/images/activities/dambulla_2.jpg', 1, 1),
+(28, 'Cave Temple Interior', 'Buddhist statues inside cave', '/images/activities/cave-temple-interior.webp', 1, 1),
+(28, 'Temple Exterior', 'Entrance to Dambulla Cave Temples', '/images/activities/temple-exterior.webp', 1, 1),
 
 -- Activity 29: Bentota Yoga Session
-(29, 'Morning Yoga', 'Yoga session at sunrise on beach', '/images/activities/bentota_yoga_1.jpg', 1, 1),
-(29, 'Yoga Pose', 'Participants performing yoga poses', '/images/activities/bentota_yoga_2.jpg', 1, 1),
+(29, 'Morning Yoga', 'Yoga session at sunrise on beach', '/images/activities/morning-yoga.webp', 1, 1),
+(29, 'Yoga Pose', 'Participants performing yoga poses', '/images/activities/yoga-pose.jpg', 1, 1),
 
 -- Activity 30: Ayurvedic Massage
-(30, 'Massage Room', 'Traditional Ayurvedic massage setup', '/images/activities/ayurvedic_massage_1.jpg', 1, 1),
-(30, 'Massage Therapy', 'Therapist performing massage', '/images/activities/ayurvedic_massage_2.jpg', 1, 1),
+(30, 'Massage Room', 'Traditional Ayurvedic massage setup', '/images/activities/massage-room.jpg', 1, 1),
+(30, 'Massage Therapy', 'Therapist performing massage', '/images/activities/massage-therapy.webp', 1, 1),
 
 -- Activity 31: Dambulla Meditation Retreat
-(31, 'Meditation Hall', 'Indoor meditation session', '/images/activities/dambulla_meditation_1.jpg', 1, 1),
-(31, 'Relaxation Garden', 'Meditation in serene garden', '/images/activities/dambulla_meditation_2.jpg', 1, 1),
+(31, 'Meditation Hall', 'Indoor meditation session', '/images/activities/meditation-hall.jpg', 1, 1),
+(31, 'Relaxation Garden', 'Meditation in serene garden', '/images/activities/relaxation-garden.jpg', 1, 1),
 
 -- Activity 32: Bentota Spa Package
-(32, 'Spa Interior', 'Luxurious spa treatment room', '/images/activities/bentota_spa_1.jpg', 1, 1),
-(32, 'Massage & Therapy', 'Spa therapist with client', '/images/activities/bentota_spa_2.jpg', 1, 1),
+(32, 'Spa Interior', 'Luxurious spa treatment room', '/images/activities/spa-interior.jpg', 1, 1),
+(32, 'Massage & Therapy', 'Spa therapist with client', '/images/activities/massage-therapy.jpg', 1, 1),
 
 -- Activity 33: Ella Sunrise Photography
-(33, 'Sunrise View', 'Sun rising over Ella landscape', '/images/activities/ella_sunrise_1.jpg', 1, 1),
-(33, 'Photography Spot', 'Tourist taking photos at viewpoint', '/images/activities/ella_sunrise_2.jpg', 1, 1),
+(33, 'Sunrise View', 'Sun rising over Ella landscape', '/images/activities/sunrise-view.jpg', 1, 1),
+(33, 'Photography Spot', 'Tourist taking photos at viewpoint', '/images/activities/photography-spot.jpg', 1, 1),
 
 -- Activity 34: Trincomalee Coastal Photography
-(34, 'Trincomalee Beach', 'Photographing pristine coastline', '/images/activities/trinco_coast_1.jpg', 1, 1),
-(34, 'Marine Life Photography', 'Capturing ocean wildlife', '/images/activities/trinco_coast_2.jpg', 1, 1),
+(34, 'Trincomalee Beach', 'Photographing pristine coastline', '/images/activities/trincomalee-beach.jpg', 1, 1),
+(34, 'Marine Life Photography', 'Capturing ocean wildlife', '/images/activities/marine-life-photography.webp', 1, 1),
 
 -- Activity 35: Mirissa Sunset Shoot
-(35, 'Sunset Beach', 'Sunset over Mirissa beach', '/images/activities/mirissa_sunset_1.jpg', 1, 1),
-(35, 'Golden Hour', 'Photographer capturing golden hour', '/images/activities/mirissa_sunset_2.jpg', 1, 1),
+(35, 'Sunset Beach', 'Sunset over Mirissa beach', '/images/activities/sunset-beach.jpg', 1, 1),
+(35, 'Golden Hour', 'Photographer capturing golden hour', '/images/activities/golden-hour.jpg', 1, 1),
 
 -- Activity 36: Nuwara Eliya Landscape Photography
-(36, 'Tea Estate View', 'Photographing tea plantations', '/images/activities/nuwara_landscape_1.jpg', 1, 1),
-(36, 'Waterfall Scene', 'Capturing waterfall scenery', '/images/activities/nuwara_landscape_2.jpg', 1, 1),
+(36, 'Tea Estate View', 'Photographing tea plantations', '/images/activities/tea-estate-view.jpg', 1, 1),
+(36, 'Waterfall Scene', 'Capturing waterfall scenery', '/images/activities/waterfall-scene.jpg', 1, 1),
 
 -- Activity 37: Jaffna Food Tour
-(37, 'Street Food Stall', 'Local cuisine tasting in Jaffna', '/images/activities/jaffna_food_1.jpg', 1, 1),
-(37, 'Food Sampling', 'Tasting traditional dishes', '/images/activities/jaffna_food_2.jpg', 1, 1),
+(37, 'Street Food Stall', 'Local cuisine tasting in Jaffna', '/images/activities/street-food-stall.jpg', 1, 1),
+(37, 'Food Sampling', 'Tasting traditional dishes', '/images/activities/food-sampling.webp', 1, 1),
 
 -- Activity 38: Kandy Street Food Walk
-(38, 'Local Snacks', 'Sampling street food in Kandy', '/images/activities/kandy_food_1.jpg', 1, 1),
-(38, 'Food Vendor', 'Vendor preparing local delicacies', '/images/activities/kandy_food_2.jpg', 1, 1),
+(38, 'Local Snacks', 'Sampling street food in Kandy', '/images/activities/local-snacks.jpg', 1, 1),
+(38, 'Food Vendor', 'Vendor preparing local delicacies', '/images/activities/food-vendor.jpg', 1, 1),
 
 -- Activity 39: Yala Safari Picnic
-(39, 'Safari Picnic', 'Picnic setup during Yala safari', '/images/activities/yala_picnic_1.jpg', 1, 1),
-(39, 'Wildlife Dining', 'Enjoying picnic with wildlife view', '/images/activities/yala_picnic_2.jpg', 1, 1),
+(39, 'Safari Picnic', 'Picnic setup during Yala safari', '/images/activities/safari-picnic.jpg', 1, 1),
+(39, 'Wildlife Dining', 'Enjoying picnic with wildlife view', '/images/activities/wildlife-dining.jpg', 1, 1),
 
 -- Activity 40: Bentota Seafood Tasting
-(40, 'Seafood Platter', 'Fresh seafood served at beachside', '/images/activities/bentota_seafood_1.jpg', 1, 1),
-(40, 'Dining View', 'Table setup with ocean view', '/images/activities/bentota_seafood_2.jpg', 1, 1),
-
--- Activity 41: Bentota Yoga Session
-(41, 'Bentota Yoga Morning', 'Morning yoga by the beach', '/images/activities/bentota_yoga_1.jpg', 1, 1),
-(41, 'Bentota Yoga Group', 'Group yoga session on the sand', '/images/activities/bentota_yoga_2.jpg', 1, 1),
-
--- Activity 42: Ayurvedic Massage
-(42, 'Ayurvedic Massage Treatment', 'Traditional full body massage', '/images/activities/ayurvedic_massage_1.jpg', 1, 1),
-(42, 'Massage Room Setup', 'Ambience of Ayurvedic spa room', '/images/activities/ayurvedic_massage_2.jpg', 1, 1),
-
--- Activity 43: Dambulla Meditation Retreat
-(43, 'Dambulla Meditation Session', 'Guided meditation indoors', '/images/activities/dambulla_meditation_1.jpg', 1, 1),
-(43, 'Outdoor Meditation Area', 'Meditation in nature', '/images/activities/dambulla_meditation_2.jpg', 1, 1),
-
--- Activity 44: Bentota Spa Package
-(44, 'Spa Relaxation', 'Full spa day with treatments', '/images/activities/bentota_spa_1.jpg', 1, 1),
-(44, 'Spa Therapy Room', 'Luxury spa ambience', '/images/activities/bentota_spa_2.jpg', 1, 1),
-
--- Activity 45: Ella Sunrise Photography
-(45, 'Ella Sunrise Photo', 'Capturing sunrise over tea plantations', '/images/activities/ella_sunrise_1.jpg', 1, 1),
-(45, 'Photographers at Work', 'Group photography session', '/images/activities/ella_sunrise_2.jpg', 1, 1),
-
--- Activity 46: Trincomalee Coastal Photography
-(46, 'Trinco Coast Photography', 'Shooting pristine beaches', '/images/activities/trinco_coast_1.jpg', 1, 1),
-(46, 'Marine Life Photography', 'Photographing coral reefs', '/images/activities/trinco_coast_2.jpg', 1, 1),
-
--- Activity 47: Mirissa Sunset Shoot
-(47, 'Mirissa Sunset', 'Capturing sunset over the beach', '/images/activities/mirissa_sunset_1.jpg', 1, 1),
-(47, 'Sunset Silhouettes', 'Photography of silhouettes at sunset', '/images/activities/mirissa_sunset_2.jpg', 1, 1),
-
--- Activity 48: Nuwara Eliya Landscape Photography
-(48, 'Nuwara Eliya Tea Fields', 'Capturing tea estates and hills', '/images/activities/nuwara_eliya_1.jpg', 1, 1),
-(48, 'Waterfall Photography', 'Scenic waterfalls in Nuwara Eliya', '/images/activities/nuwara_eliya_2.jpg', 1, 1);
+(40, 'Seafood Platter', 'Fresh seafood served at beachside', '/images/activities/seafood-platter.jpg', 1, 1),
+(40, 'Dining View', 'Table setup with ocean view', '/images/activities/dining-view.jpg', 1, 1);
 
 
 
