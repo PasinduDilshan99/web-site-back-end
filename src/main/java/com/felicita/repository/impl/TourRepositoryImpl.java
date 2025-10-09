@@ -125,30 +125,41 @@ public class TourRepositoryImpl implements TourRepository {
                 while (rs.next()) {
                     int tourId = rs.getInt("tour_id");
 
-                    // Create or get tour DTO
-                    PopularTourResponseDto tour = tourMap.computeIfAbsent(tourId, id ->
-                            {
-                                try {
-                                    return new PopularTourResponseDto(
-                                            tourId,
-                                            rs.getString("tour_name"),
-                                            rs.getString("tour_description"),
-                                            rs.getObject("tour_duration") != null ? rs.getInt("tour_duration") : null,
-                                            rs.getObject("latitude") != null ? rs.getDouble("latitude") : null,
-                                            rs.getObject("longitude") != null ? rs.getDouble("longitude") : null,
-                                            rs.getString("start_location"),
-                                            rs.getString("end_location"),
-                                            rs.getString("tour_type"),
-                                            rs.getString("tour_category"),
-                                            rs.getString("season"),
-                                            rs.getString("tour_status"),
-                                            new ArrayList<>() // schedules list
-                                    );
-                                } catch (SQLException e) {
-                                    throw new RuntimeException(e);
-                                }
-                            }
-                    );
+                    // Create or get existing tour DTO
+                    PopularTourResponseDto tour = tourMap.computeIfAbsent(tourId, id -> {
+                        try {
+                            return new PopularTourResponseDto(
+                                    tourId,
+                                    rs.getString("tour_name"),
+                                    rs.getString("tour_description"),
+                                    rs.getObject("tour_duration") != null ? rs.getInt("tour_duration") : null,
+                                    rs.getObject("latitude") != null ? rs.getDouble("latitude") : null,
+                                    rs.getObject("longitude") != null ? rs.getDouble("longitude") : null,
+                                    rs.getString("start_location"),
+                                    rs.getString("end_location"),
+                                    rs.getString("tour_type"),
+                                    rs.getString("tour_category"),
+                                    rs.getString("season"),
+                                    rs.getString("tour_status"),
+                                    new ArrayList<>(), // images list
+                                    new ArrayList<>()  // schedules list
+                            );
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+
+                    // Handle images (avoid duplicates)
+                    String imageUrl = rs.getString("tour_image");
+                    String imageName = rs.getString("tour_name"); // careful: this was reused in SQL as ti.name AS tour_name
+                    if (imageUrl != null && imageName != null) {
+                        boolean imageExists = tour.getImages().stream()
+                                .anyMatch(img -> img.getImageUrl().equals(imageUrl));
+                        if (!imageExists) {
+                            PopularTourImagesDto image = new PopularTourImagesDto(imageName, imageUrl);
+                            tour.getImages().add(image);
+                        }
+                    }
 
                     // Handle schedule
                     int scheduleId = rs.getInt("schedule_id");
@@ -157,7 +168,7 @@ public class TourRepositoryImpl implements TourRepository {
                                 .filter(s -> s.getScheduleId() == scheduleId)
                                 .findFirst()
                                 .orElseGet(() -> {
-                                    popularTourScheduleResponseDto s = null;
+                                    popularTourScheduleResponseDto s;
                                     try {
                                         s = new popularTourScheduleResponseDto(
                                                 scheduleId,
@@ -223,5 +234,6 @@ public class TourRepositoryImpl implements TourRepository {
             throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching tours");
         }
     }
+
 
 }

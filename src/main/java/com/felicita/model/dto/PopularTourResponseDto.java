@@ -23,5 +23,6 @@ public class PopularTourResponseDto {
     private String season;
     private String tourStatus;
 
+    private  List<PopularTourImagesDto> images;
     private List<popularTourScheduleResponseDto> schedules; // List of schedules
 }
