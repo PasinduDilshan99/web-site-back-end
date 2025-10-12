@@ -76,7 +76,9 @@ public class TourQueries {
                 tr.description AS review_description,
                 tr.number_of_participate,
                 cs_tr.name AS review_status,
-                tr.created_at AS review_created_at
+                tr.created_at AS review_created_at,
+                ti.image_url AS tour_image,
+                ti.name AS tour_name
             FROM tour t
             LEFT JOIN tour_type tt ON t.tour_type = tt.id
             LEFT JOIN tour_category tc ON t.tour_category = tc.id
@@ -89,6 +91,7 @@ public class TourQueries {
             LEFT JOIN common_status cs_dest ON d.status = cs_dest.id
             LEFT JOIN tour_review tr ON ts.id = tr.tour_schedule_id AND tr.rating > 4.0
             LEFT JOIN common_status cs_tr ON tr.status = cs_tr.id
+            LEFT JOIN tour_images ti ON t.tour_id = ti.tour_id
             WHERE tr.id IS NOT NULL
             ORDER BY tr.rating DESC, t.tour_id
             """;
