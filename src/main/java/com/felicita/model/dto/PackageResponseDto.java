@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -25,6 +26,15 @@ public class PackageResponseDto {
     private Integer maxPersonCount;
     private BigDecimal pricePerPerson;
     private String packageStatus;
+
+    // New fields for audit info
+    private LocalDateTime createdAt;
+    private Integer createdBy;
+
+    // New fields for package type
+    private String packageTypeName;
+    private String packageTypeDescription;
+    private String packageTypeStatus;
 
     // Related Tour Info
     private int tourId;

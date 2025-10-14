@@ -9,4 +9,6 @@ public interface TourRepository {
     List<TourResponseDto> getAllTours();
 
     List<PopularTourResponseDto> getPopularTours();
+
+    TourResponseDto getTourDetailsById(String tourId);
 }

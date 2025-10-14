@@ -311,4 +311,36 @@ public class DestinationServiceImpl implements DestinationService {
         }
     }
 
+    @Override
+    public CommonResponse<List<DestinationResponseDto>> getDestinationDetailsByTourId(String tourId) {
+        LOGGER.info("Start fetching all destinations from repository");
+        try {
+            List<DestinationResponseDto> destinationResponseDtos = destinationRepository.getDestinationDetailsByTourId(tourId);
+
+            if (destinationResponseDtos.isEmpty()) {
+                LOGGER.warn("No destinations found in database");
+                throw new DataNotFoundErrorExceptionHandler("No destinations found");
+            }
+
+            LOGGER.info("Fetched {} destinations successfully", destinationResponseDtos.size());
+            return
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            destinationResponseDtos,
+                            Instant.now()
+            );
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching destinations: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching destinations: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch destinations from database");
+        } finally {
+            LOGGER.info("End fetching all destinations from repository");
+        }
+    }
+
 }

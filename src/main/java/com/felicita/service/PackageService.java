@@ -11,4 +11,6 @@ public interface PackageService {
     ResponseEntity<CommonResponse<List<PackageResponseDto>>> getAllPackages();
 
     ResponseEntity<CommonResponse<List<PackageResponseDto>>> getActivePackages();
+
+    CommonResponse<PackageResponseDto> getPackageDetailsById(String packageId);
 }

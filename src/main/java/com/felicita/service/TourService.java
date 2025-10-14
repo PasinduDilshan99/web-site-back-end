@@ -14,4 +14,6 @@ public interface TourService {
     ResponseEntity<CommonResponse<List<TourResponseDto>>> getActiveTours();
 
     ResponseEntity<CommonResponse<List<PopularTourResponseDto>>> getPopularTours();
+
+    CommonResponse<TourResponseDto> getTourDetailsById(String tourId);
 }

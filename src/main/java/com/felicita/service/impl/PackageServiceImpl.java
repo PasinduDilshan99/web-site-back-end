@@ -101,4 +101,36 @@ public class PackageServiceImpl implements PackageService {
             LOGGER.info("End fetching all active package from repository");
         }
     }
+
+    @Override
+    public CommonResponse<PackageResponseDto> getPackageDetailsById(String packageId) {
+        LOGGER.info("Start fetching all package from repository");
+        try {
+            PackageResponseDto packageResponseDto = packageRepository.getPackageDetailsById(packageId);
+
+            if (packageResponseDto == null) {
+                LOGGER.warn("No package found in database");
+                throw new DataNotFoundErrorExceptionHandler("No package found");
+            }
+
+            return
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            packageResponseDto,
+                            Instant.now()
+                    )
+                    ;
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch package from database");
+        } finally {
+            LOGGER.info("End fetching all package from repository");
+        }
+    }
 }

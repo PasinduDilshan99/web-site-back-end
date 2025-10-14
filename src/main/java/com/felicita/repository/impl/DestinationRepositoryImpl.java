@@ -425,6 +425,94 @@ public class DestinationRepositoryImpl implements DestinationRepository {
         }
     }
 
+    @Override
+    public List<DestinationResponseDto> getDestinationDetailsByTourId(String tourId) {
+        String GET_ALL_DESTINATIONS = DestinationQueries.GET_ALL_DESTINATIONS_BY_TOUR_ID;
+        try {
+            LOGGER.info("Executing query to fetch all destinations for tourId: {}", tourId);
+
+            return jdbcTemplate.query(GET_ALL_DESTINATIONS, new Object[]{tourId}, rs -> {
+                Map<Integer, DestinationResponseDto> destinationMap = new HashMap<>();
+
+                while (rs.next()) {
+                    int destinationId = rs.getInt("destination_id");
+
+                    // Fetch or create destination
+                    DestinationResponseDto destination = destinationMap.computeIfAbsent(destinationId, id -> {
+                        DestinationResponseDto dto = new DestinationResponseDto();
+                        dto.setDestinationId(id);
+                        try {
+                            dto.setDestinationName(rs.getString("destination_name"));
+                            dto.setDestinationDescription(rs.getString("destination_description"));
+                            dto.setLocation(rs.getString("location"));
+                            dto.setLatitude(rs.getObject("latitude", Double.class));
+                            dto.setLongitude(rs.getObject("longitude", Double.class));
+                            dto.setCategoryName(rs.getString("category_name"));
+                            dto.setCategoryDescription(rs.getString("category_description"));
+                            dto.setStatusName(rs.getString("status_name"));
+                            dto.setActivities(new ArrayList<>());
+                            dto.setImages(new ArrayList<>());
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                        return dto;
+                    });
+
+                    // Add activity if exists
+                    int activityId = rs.getInt("activity_id");
+                    if (activityId != 0 && rs.getString("activity_name") != null) {
+                        boolean activityExists = destination.getActivities()
+                                .stream()
+                                .anyMatch(a -> a.getActivityId() == activityId);
+                        if (!activityExists) {
+                            DestinationActivityResponseDto activity = new DestinationActivityResponseDto();
+                            activity.setActivityId(activityId);
+                            activity.setActivityName(rs.getString("activity_name"));
+                            activity.setActivityDescription(rs.getString("activity_description"));
+                            activity.setActivitiesCategory(rs.getString("activities_category"));
+                            activity.setDurationHours(rs.getObject("duration_hours", Double.class));
+                            activity.setAvailableFrom(rs.getString("available_from"));
+                            activity.setAvailableTo(rs.getString("available_to"));
+                            activity.setPriceLocal(rs.getObject("price_local", Double.class));
+                            activity.setPriceForeigners(rs.getObject("price_foreigners", Double.class));
+                            activity.setMinParticipate(rs.getObject("min_participate", Integer.class));
+                            activity.setMaxParticipate(rs.getObject("max_participate", Integer.class));
+                            activity.setSeason(rs.getString("season"));
+
+                            destination.getActivities().add(activity);
+                        }
+                    }
+
+                    // Add image if exists
+                    int imageId = rs.getInt("image_id");
+                    if (imageId != 0 && rs.getString("image_url") != null) {
+                        boolean imageExists = destination.getImages()
+                                .stream()
+                                .anyMatch(i -> i.getImageId() == imageId);
+                        if (!imageExists) {
+                            DestionationImageResponseDto image = new DestionationImageResponseDto();
+                            image.setImageId(imageId);
+                            image.setImageName(rs.getString("image_name"));
+                            image.setImageDescription(rs.getString("image_description"));
+                            image.setImageUrl(rs.getString("image_url"));
+
+                            destination.getImages().add(image);
+                        }
+                    }
+                }
+
+                return new ArrayList<>(destinationMap.values());
+            });
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching destinations: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler("Failed to fetch destinations from database");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching destinations: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching destinations");
+        }
+    }
 
 
 

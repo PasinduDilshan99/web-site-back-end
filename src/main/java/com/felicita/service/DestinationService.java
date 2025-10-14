@@ -22,4 +22,6 @@ public interface DestinationService {
     ResponseEntity<CommonResponse<List<TrendingDestinationResponseDto>>> getTrendingDestinations();
 
     ResponseEntity<CommonResponse<List<DestinationsForTourMapDto>>> getDestinationsForTourMap();
+
+    CommonResponse<List<DestinationResponseDto>> getDestinationDetailsByTourId(String tourId);
 }

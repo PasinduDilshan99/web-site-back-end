@@ -235,5 +235,91 @@ public class TourRepositoryImpl implements TourRepository {
         }
     }
 
+    @Override
+    public TourResponseDto getTourDetailsById(String tourId) {
+        String GET_TOUR_DETAILS_BY_ID = TourQueries.GET_TOUR_DETAILS_BY_ID;
+
+        try {
+            return jdbcTemplate.query(GET_TOUR_DETAILS_BY_ID, new Object[]{tourId}, (ResultSet rs) -> {
+                Map<Integer, TourResponseDto> tourMap = new HashMap<>();
+
+                while (rs.next()) {
+                    int tId = rs.getInt("tour_id");
+
+                    // Create or get existing tour
+                    TourResponseDto tour = tourMap.get(tId);
+                    if (tour == null) {
+                        tour = new TourResponseDto();
+                        tour.setTourId(tId);
+                        tour.setTourName(rs.getString("tour_name"));
+                        tour.setTourDescription(rs.getString("tour_description"));
+                        tour.setDuration(rs.getObject("duration", Integer.class));
+                        tour.setLatitude(rs.getObject("latitude", Double.class));
+                        tour.setLongitude(rs.getObject("longitude", Double.class));
+                        tour.setStartLocation(rs.getString("start_location"));
+                        tour.setEndLocation(rs.getString("end_location"));
+
+                        // Join data
+                        tour.setTourTypeName(rs.getString("tour_type_name"));
+                        tour.setTourTypeDescription(rs.getString("tour_type_description"));
+                        tour.setTourCategoryName(rs.getString("tour_category_name"));
+                        tour.setTourCategoryDescription(rs.getString("tour_category_description"));
+                        tour.setSeasonName(rs.getString("season_name"));
+                        tour.setSeasonDescription(rs.getString("season_description"));
+                        tour.setStatusName(rs.getString("status_name"));
+
+                        // Initialize collections
+                        tour.setSchedules(new ArrayList<>());
+                        tour.setImages(new ArrayList<>());
+
+                        tourMap.put(tId, tour);
+                    }
+
+                    // Handle schedules
+                    int scheduleId = rs.getInt("schedule_id");
+                    if (!rs.wasNull() && rs.getString("schedule_name") != null) {
+                        if (tour.getSchedules().stream().noneMatch(s -> s.getScheduleId() == scheduleId)) {
+                            TourScheduleResponseDto schedule = new TourScheduleResponseDto();
+                            schedule.setScheduleId(scheduleId);
+                            schedule.setScheduleName(rs.getString("schedule_name"));
+                            schedule.setAssumeStartDate(rs.getObject("assume_start_date", LocalDate.class));
+                            schedule.setAssumeEndDate(rs.getObject("assume_end_date", LocalDate.class));
+                            schedule.setDurationStart(rs.getObject("duration_start", Integer.class));
+                            schedule.setDurationEnd(rs.getObject("duration_end", Integer.class));
+                            schedule.setSpecialNote(rs.getString("special_note"));
+                            schedule.setScheduleDescription(rs.getString("schedule_description"));
+                            tour.getSchedules().add(schedule);
+                        }
+                    }
+
+                    // Handle images
+                    int imageId = rs.getInt("image_id");
+                    if (!rs.wasNull() && rs.getString("image_url") != null) {
+                        if (tour.getImages().stream().noneMatch(i -> i.getImageId() == imageId)) {
+                            TourImageResponseDto image = new TourImageResponseDto();
+                            image.setImageId(imageId);
+                            image.setImageName(rs.getString("image_name"));
+                            image.setImageDescription(rs.getString("image_description"));
+                            image.setImageUrl(rs.getString("image_url"));
+                            tour.getImages().add(image);
+                        }
+                    }
+                }
+
+                // Return single tour (or null if not found)
+                return tourMap.values().stream().findFirst().orElse(null);
+            });
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching tour details", ex);
+            throw new DataNotFoundErrorExceptionHandler("Database error while fetching tour details");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching tour details", ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error while fetching tour details");
+        }
+    }
+
+
+
 
 }

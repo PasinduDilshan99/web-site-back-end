@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface PackageRepository {
     List<PackageResponseDto> getAllPackages();
+
+    PackageResponseDto getPackageDetailsById(String packageId);
 }

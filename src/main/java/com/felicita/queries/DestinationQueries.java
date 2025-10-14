@@ -35,6 +35,42 @@ public class DestinationQueries {
             LEFT JOIN activities a ON d.destination_id = a.destination_id
             LEFT JOIN destination_images di ON d.destination_id = di.destination_id
             """;
+    public static final String GET_ALL_DESTINATIONS_BY_TOUR_ID = """
+            SELECT
+                d.destination_id,
+                d.name AS destination_name,
+                d.description AS destination_description,
+                d.location,
+                d.latitude,
+                d.longitude,
+                dc.category AS category_name,
+                dc.description AS category_description,
+                cs.name AS status_name,
+            	a.id AS activity_id,
+                a.name AS activity_name,
+                a.description AS activity_description,
+                a.activities_category,
+                a.duration_hours,
+                a.available_from,
+                a.available_to,
+                a.price_local,
+                a.price_foreigners,
+                a.min_participate,
+                a.max_participate,
+                a.season,
+            	di.id AS image_id,
+                di.name AS image_name,
+                di.description AS image_description,
+                di.image_url
+            FROM tour t
+            JOIN tour_destination td ON t.tour_id = td.tour_id
+            JOIN destination d ON td.destination_id = d.destination_id
+            LEFT JOIN destination_categories dc ON d.destination_category = dc.id
+            LEFT JOIN common_status cs ON d.status = cs.id
+            LEFT JOIN activities a ON d.destination_id = a.destination_id
+            LEFT JOIN destination_images di ON d.destination_id = di.destination_id
+            WHERE t.tour_id = ?
+            """;
 
     public static final String GET_ALL_DESTINATIONS_CATEGORIES = """
             SELECT
