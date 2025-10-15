@@ -4,6 +4,7 @@ import com.felicita.exception.DataAccessErrorExceptionHandler;
 import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
 import com.felicita.model.dto.*;
+import com.felicita.model.response.PackageReviewResponse;
 import com.felicita.queries.PackageQueries;
 import com.felicita.repository.PackageRepository;
 import org.slf4j.Logger;
@@ -256,6 +257,258 @@ public class PackageRepositoryImpl implements PackageRepository {
         }
     }
 
+    @Override
+    public List<PackageReviewResponse> getAllPackageReviewDetails() {
+        String SQL = PackageQueries.GET_PACKAGE_ALL_REVIEWS_DETAILS;
+
+        return jdbcTemplate.query(SQL, rs -> {
+            Map<Long, PackageReviewResponse> reviewMap = new LinkedHashMap<>();
+
+            while (rs.next()) {
+                Long reviewId = rs.getLong("review_id");
+
+                // ------------------- PACKAGE REVIEW -------------------
+                PackageReviewResponse review = reviewMap.get(reviewId);
+                if (review == null) {
+                    review = PackageReviewResponse.builder()
+                            .reviewId(reviewId)
+                            .packageId(rs.getLong("package_id"))
+                            .packageScheduleId(rs.getLong("package_schedule_id"))
+                            .name(rs.getString("review_name"))
+                            .review(rs.getString("review"))
+                            .rating(rs.getDouble("rating"))
+                            .description(rs.getString("description"))
+                            .status(rs.getString("review_status"))
+                            .numberOfParticipate(rs.getInt("number_of_participate"))
+                            .createdBy(rs.getLong("review_created_by"))
+                            .createdAt(rs.getTimestamp("review_created_at") != null
+                                    ? rs.getTimestamp("review_created_at").toLocalDateTime() : null)
+                            .updatedBy(rs.getLong("review_updated_by"))
+                            .updatedAt(rs.getTimestamp("review_updated_at") != null
+                                    ? rs.getTimestamp("review_updated_at").toLocalDateTime() : null)
+                            .images(new ArrayList<>())
+                            .reactions(new ArrayList<>())
+                            .comments(new ArrayList<>())
+                            .build();
+
+                    reviewMap.put(reviewId, review);
+                }
+
+                // ------------------- IMAGES -------------------
+                Long imageId = rs.getLong("image_id");
+                if (imageId != 0 && review.getImages().stream().noneMatch(i -> i.getId().equals(imageId))) {
+                    review.getImages().add(
+                            PackageReviewResponse.Image.builder()
+                                    .id(imageId)
+                                    .name(rs.getString("image_name"))
+                                    .description(rs.getString("image_description"))
+                                    .imageUrl(rs.getString("image_url"))
+                                    .status(rs.getString("image_status"))
+                                    .createdBy(rs.getLong("image_created_by"))
+                                    .createdAt(rs.getTimestamp("image_created_at") != null
+                                            ? rs.getTimestamp("image_created_at").toLocalDateTime() : null)
+                                    .build()
+                    );
+                }
+
+                // ------------------- REVIEW REACTIONS -------------------
+                Long reactionId = rs.getLong("review_reaction_id");
+                if (reactionId != 0 && review.getReactions().stream().noneMatch(r -> r.getId().equals(reactionId))) {
+                    review.getReactions().add(
+                            PackageReviewResponse.Reaction.builder()
+                                    .id(reactionId)
+                                    .packageReviewId(rs.getLong("reaction_review_id"))
+                                    .userId(rs.getLong("reaction_user_id"))
+                                    .userName(rs.getString("reaction_user_name"))
+                                    .reactionType(rs.getString("reaction_type"))
+                                    .status(rs.getString("review_reaction_status"))
+                                    .createdAt(rs.getTimestamp("reaction_created_at") != null
+                                            ? rs.getTimestamp("reaction_created_at").toLocalDateTime() : null)
+                                    .build()
+                    );
+                }
+
+                // ------------------- COMMENTS -------------------
+                Long commentId = rs.getLong("comment_id");
+                PackageReviewResponse.Comment comment = null;
+                if (commentId != 0) {
+                    Optional<PackageReviewResponse.Comment> existingComment = review.getComments()
+                            .stream()
+                            .filter(c -> c.getId().equals(commentId))
+                            .findFirst();
+
+                    if (existingComment.isPresent()) {
+                        comment = existingComment.get();
+                    } else {
+                        comment = PackageReviewResponse.Comment.builder()
+                                .id(commentId)
+                                .packageReviewId(rs.getLong("comment_review_id"))
+                                .userId(rs.getLong("comment_user_id"))
+                                .userName(rs.getString("comment_user_name"))
+                                .parentCommentId(rs.getLong("parent_comment_id"))
+                                .comment(rs.getString("comment"))
+                                .status(rs.getString("comment_status"))
+                                .createdAt(rs.getTimestamp("comment_created_at") != null
+                                        ? rs.getTimestamp("comment_created_at").toLocalDateTime() : null)
+                                .createdBy(rs.getLong("comment_created_by"))
+                                .reactions(new ArrayList<>())
+                                .build();
+
+                        review.getComments().add(comment);
+                    }
+
+                    // ------------------- COMMENT REACTIONS -------------------
+                    Long commentReactionId = rs.getLong("comment_reaction_id");
+                    if (commentReactionId != 0 && comment.getReactions().stream()
+                            .noneMatch(cr -> cr.getId().equals(commentReactionId))) {
+
+                        comment.getReactions().add(
+                                PackageReviewResponse.CommentReaction.builder()
+                                        .id(commentReactionId)
+                                        .commentId(rs.getLong("comment_reaction_comment_id"))
+                                        .userId(rs.getLong("comment_reaction_user_id"))
+                                        .userName(rs.getString("comment_reaction_user_name"))
+                                        .reactionType(rs.getString("comment_reaction_type"))
+                                        .status(rs.getString("comment_reaction_status"))
+                                        .createdBy(rs.getLong("comment_reaction_created_by"))
+                                        .createdAt(rs.getTimestamp("comment_reaction_created_at") != null
+                                                ? rs.getTimestamp("comment_reaction_created_at").toLocalDateTime() : null)
+                                        .build()
+                        );
+                    }
+                }
+            }
+
+            return new ArrayList<>(reviewMap.values());
+        });
+    }
+
+
+    @Override
+    public List<PackageReviewResponse> getPackageReviewDetailsById(String packageId) {
+        String SQL = PackageQueries.GET_PACKAGE_REVIEWS_DETAILS_BY_ID;
+
+        return jdbcTemplate.query(SQL, new Object[]{packageId}, rs -> {
+            Map<Long, PackageReviewResponse> reviewMap = new LinkedHashMap<>();
+
+            while (rs.next()) {
+                Long reviewId = rs.getLong("review_id");
+
+                // ------------------- PACKAGE REVIEW -------------------
+                PackageReviewResponse review = reviewMap.get(reviewId);
+                if (review == null) {
+                    review = PackageReviewResponse.builder()
+                            .reviewId(reviewId)
+                            .packageId(rs.getLong("package_id"))
+                            .packageScheduleId(rs.getLong("package_schedule_id"))
+                            .name(rs.getString("review_name"))
+                            .review(rs.getString("review"))
+                            .rating(rs.getDouble("rating"))
+                            .description(rs.getString("description"))
+                            .status(rs.getString("review_status"))
+                            .numberOfParticipate(rs.getInt("number_of_participate"))
+                            .createdBy(rs.getLong("review_created_by"))
+                            .createdAt(rs.getTimestamp("review_created_at") != null
+                                    ? rs.getTimestamp("review_created_at").toLocalDateTime() : null)
+                            .updatedBy(rs.getLong("review_updated_by"))
+                            .updatedAt(rs.getTimestamp("review_updated_at") != null
+                                    ? rs.getTimestamp("review_updated_at").toLocalDateTime() : null)
+                            .images(new ArrayList<>())
+                            .reactions(new ArrayList<>())
+                            .comments(new ArrayList<>())
+                            .build();
+
+                    reviewMap.put(reviewId, review);
+                }
+
+                // ------------------- IMAGES -------------------
+                Long imageId = rs.getLong("image_id");
+                if (imageId != 0 && review.getImages().stream().noneMatch(i -> i.getId().equals(imageId))) {
+                    review.getImages().add(
+                            PackageReviewResponse.Image.builder()
+                                    .id(imageId)
+                                    .name(rs.getString("image_name"))
+                                    .description(rs.getString("image_description"))
+                                    .imageUrl(rs.getString("image_url"))
+                                    .status(rs.getString("image_status"))
+                                    .createdBy(rs.getLong("image_created_by"))
+                                    .createdAt(rs.getTimestamp("image_created_at") != null
+                                            ? rs.getTimestamp("image_created_at").toLocalDateTime() : null)
+                                    .build()
+                    );
+                }
+
+                // ------------------- REVIEW REACTIONS -------------------
+                Long reactionId = rs.getLong("review_reaction_id");
+                if (reactionId != 0 && review.getReactions().stream().noneMatch(r -> r.getId().equals(reactionId))) {
+                    review.getReactions().add(
+                            PackageReviewResponse.Reaction.builder()
+                                    .id(reactionId)
+                                    .packageReviewId(rs.getLong("reaction_review_id"))
+                                    .userId(rs.getLong("reaction_user_id"))
+                                    .userName(rs.getString("reaction_user_name"))
+                                    .reactionType(rs.getString("reaction_type"))
+                                    .status(rs.getString("review_reaction_status"))
+                                    .createdAt(rs.getTimestamp("reaction_created_at") != null
+                                            ? rs.getTimestamp("reaction_created_at").toLocalDateTime() : null)
+                                    .build()
+                    );
+                }
+
+                // ------------------- COMMENTS -------------------
+                Long commentId = rs.getLong("comment_id");
+                PackageReviewResponse.Comment comment = null;
+                if (commentId != 0) {
+                    Optional<PackageReviewResponse.Comment> existingComment = review.getComments()
+                            .stream()
+                            .filter(c -> c.getId().equals(commentId))
+                            .findFirst();
+
+                    if (existingComment.isPresent()) {
+                        comment = existingComment.get();
+                    } else {
+                        comment = PackageReviewResponse.Comment.builder()
+                                .id(commentId)
+                                .packageReviewId(rs.getLong("comment_review_id"))
+                                .userId(rs.getLong("comment_user_id"))
+                                .userName(rs.getString("comment_user_name"))
+                                .parentCommentId(rs.getLong("parent_comment_id"))
+                                .comment(rs.getString("comment"))
+                                .status(rs.getString("comment_status"))
+                                .createdAt(rs.getTimestamp("comment_created_at") != null
+                                        ? rs.getTimestamp("comment_created_at").toLocalDateTime() : null)
+                                .createdBy(rs.getLong("comment_created_by"))
+                                .reactions(new ArrayList<>())
+                                .build();
+
+                        review.getComments().add(comment);
+                    }
+
+                    // ------------------- COMMENT REACTIONS -------------------
+                    Long commentReactionId = rs.getLong("comment_reaction_id");
+                    if (commentReactionId != 0 && comment.getReactions().stream()
+                            .noneMatch(cr -> cr.getId().equals(commentReactionId))) {
+
+                        comment.getReactions().add(
+                                PackageReviewResponse.CommentReaction.builder()
+                                        .id(commentReactionId)
+                                        .commentId(rs.getLong("comment_reaction_comment_id"))
+                                        .userId(rs.getLong("comment_reaction_user_id"))
+                                        .userName(rs.getString("comment_reaction_user_name"))
+                                        .reactionType(rs.getString("comment_reaction_type"))
+                                        .status(rs.getString("comment_reaction_status"))
+                                        .createdBy(rs.getLong("comment_reaction_created_by"))
+                                        .createdAt(rs.getTimestamp("comment_reaction_created_at") != null
+                                                ? rs.getTimestamp("comment_reaction_created_at").toLocalDateTime() : null)
+                                        .build()
+                        );
+                    }
+                }
+            }
+
+            return new ArrayList<>(reviewMap.values());
+        });
+    }
 
 
 }

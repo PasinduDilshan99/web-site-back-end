@@ -3,6 +3,7 @@ package com.felicita.controller;
 import com.felicita.model.dto.DestinationResponseDto;
 import com.felicita.model.dto.PackageResponseDto;
 import com.felicita.model.response.CommonResponse;
+import com.felicita.model.response.PackageReviewResponse;
 import com.felicita.service.PackageService;
 import com.felicita.util.Constant;
 import org.slf4j.Logger;
@@ -53,5 +54,22 @@ public class PackageController {
         LOGGER.info("{} End execute get package details by id {}", Constant.DOTS, Constant.DOTS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @GetMapping(path = "/reviews")
+    public ResponseEntity<CommonResponse<List<PackageReviewResponse>>> getAllPackageReviewDetails() {
+        LOGGER.info("{} Start execute get all package review details {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<PackageReviewResponse>> response = packageService.getAllPackageReviewDetails();
+        LOGGER.info("{} End execute get all package review details {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/reviews/{packageId}")
+    public ResponseEntity<CommonResponse<List<PackageReviewResponse>>> getPackageReviewDetailsById(@PathVariable String packageId) {
+        LOGGER.info("{} Start execute get all package review details by id {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<PackageReviewResponse>> response = packageService.getPackageReviewDetailsById(packageId);
+        LOGGER.info("{} End execute get all package review details by id {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 
 }
