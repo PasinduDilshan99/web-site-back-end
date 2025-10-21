@@ -2,14 +2,18 @@ package com.felicita.controller;
 
 import com.felicita.model.dto.ActivityCategoryResponseDto;
 import com.felicita.model.dto.ActivityResponseDto;
+import com.felicita.model.response.ActivityReviewDetailsResponse;
 import com.felicita.model.response.CommonResponse;
+import com.felicita.model.response.PackageReviewResponse;
 import com.felicita.service.ActivitiesService;
 import com.felicita.util.Constant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -58,6 +62,30 @@ public class ActivitiesController {
         ResponseEntity<CommonResponse<List<ActivityCategoryResponseDto>>> response = activitiesService.getActiveActivityCategories();
         LOGGER.info("{} End execute get active activities categories {}", Constant.DOTS, Constant.DOTS);
         return response;
+    }
+
+    @GetMapping(path = "/{activityId}")
+    public ResponseEntity<CommonResponse<ActivityResponseDto>> getActivityById(@PathVariable String activityId){
+        LOGGER.info("{} Start execute get activity by id {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<ActivityResponseDto> response = activitiesService.getActivityById(activityId);
+        LOGGER.info("{} End execute get activity by id {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/reviews")
+    public ResponseEntity<CommonResponse<List<ActivityReviewDetailsResponse>>> getAllActivityReviewDetails() {
+        LOGGER.info("{} Start execute get all activity review details {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<ActivityReviewDetailsResponse>> response = activitiesService.getAllActivityReviewDetails();
+        LOGGER.info("{} End execute get all activity review details {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/reviews/{activityId}")
+    public ResponseEntity<CommonResponse<List<ActivityReviewDetailsResponse>>> getActivityReviewDetailsById(@PathVariable String activityId) {
+        LOGGER.info("{} Start execute get all activity review details by id {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<ActivityReviewDetailsResponse>> response = activitiesService.getActivityReviewDetailsById(activityId);
+        LOGGER.info("{} End execute get all activity review details by id {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 

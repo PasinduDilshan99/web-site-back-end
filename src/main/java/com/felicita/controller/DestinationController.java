@@ -7,6 +7,7 @@ import com.felicita.util.Constant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -91,5 +92,38 @@ public class DestinationController {
         LOGGER.info("{} End execute get destinations for tour map {}", Constant.DOTS, Constant.DOTS);
         return response;
     }
+
+    @GetMapping(path = "/tour-id/{tourId}")
+    public ResponseEntity<CommonResponse<List<DestinationResponseDto>>> getDestinationDetailsByTourId(@PathVariable String tourId) {
+        LOGGER.info("{} Start execute get destinations details by id  {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<DestinationResponseDto>> response = destinationService.getDestinationDetailsByTourId(tourId);
+        LOGGER.info("{} End execute get destinations details by id {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/{destinationId}")
+    public ResponseEntity<CommonResponse<DestinationResponseDto>> getDestinationDetailsById(@PathVariable String destinationId) {
+        LOGGER.info("{} Start execute get destination details by id  {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<DestinationResponseDto> response = destinationService.getDestinationDetailsById(destinationId);
+        LOGGER.info("{} End execute get destination details by id {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/reviews")
+    public ResponseEntity<CommonResponse<List<DestinationReviewDetailsResponse>>> getAllDestinationsReviewDetails() {
+        LOGGER.info("{} Start execute get all destination review details {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<DestinationReviewDetailsResponse>> response = destinationService.getAllDestinationsReviewDetails();
+        LOGGER.info("{} End execute get all destination review details {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/reviews/{destinationId}")
+    public ResponseEntity<CommonResponse<List<DestinationReviewDetailsResponse>>> getDestinationReviewDetailsById(@PathVariable String destinationId) {
+        LOGGER.info("{} Start execute get all destination review details by id {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<DestinationReviewDetailsResponse>> response = destinationService.getDestinationReviewDetailsById(destinationId);
+        LOGGER.info("{} End execute get all destination review details by id {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 
 }

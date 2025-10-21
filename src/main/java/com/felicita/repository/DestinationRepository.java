@@ -15,4 +15,12 @@ public interface DestinationRepository {
     List<TrendingDestinationResponseDto> getTrendingDestinations();
 
     List<DestinationsForTourMapDto> getDestinationsForTourMap();
+
+    List<DestinationResponseDto> getDestinationDetailsByTourId(String tourId);
+
+    List<DestinationReviewDetailsResponse> getDestinationReviewDetailsById(String destinationId);
+
+    List<DestinationReviewDetailsResponse> getAllDestinationsReviewDetails();
+
+    DestinationResponseDto getDestinationDetailsById(String destinationId);
 }

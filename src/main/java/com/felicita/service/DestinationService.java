@@ -22,4 +22,12 @@ public interface DestinationService {
     ResponseEntity<CommonResponse<List<TrendingDestinationResponseDto>>> getTrendingDestinations();
 
     ResponseEntity<CommonResponse<List<DestinationsForTourMapDto>>> getDestinationsForTourMap();
+
+    CommonResponse<List<DestinationResponseDto>> getDestinationDetailsByTourId(String tourId);
+
+    CommonResponse<List<DestinationReviewDetailsResponse>> getAllDestinationsReviewDetails();
+
+    CommonResponse<List<DestinationReviewDetailsResponse>> getDestinationReviewDetailsById(String destinationId);
+
+    CommonResponse<DestinationResponseDto> getDestinationDetailsById(String destinationId);
 }

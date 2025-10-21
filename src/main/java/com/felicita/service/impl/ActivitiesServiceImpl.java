@@ -4,8 +4,11 @@ import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
 import com.felicita.model.dto.ActivityCategoryResponseDto;
 import com.felicita.model.dto.ActivityResponseDto;
+import com.felicita.model.dto.PackageResponseDto;
 import com.felicita.model.enums.CommonStatus;
+import com.felicita.model.response.ActivityReviewDetailsResponse;
 import com.felicita.model.response.CommonResponse;
+import com.felicita.model.response.PackageReviewResponse;
 import com.felicita.repository.ActivitiesRepository;
 import com.felicita.service.ActivitiesService;
 import com.felicita.util.CommonResponseMessages;
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ActivitiesServiceImpl implements ActivitiesService {
@@ -165,6 +169,105 @@ public class ActivitiesServiceImpl implements ActivitiesService {
             throw new InternalServerErrorExceptionHandler("Failed to fetch activities from database");
         } finally {
             LOGGER.info("End fetching all activities from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<List<ActivityReviewDetailsResponse>> getAllActivityReviewDetails() {
+        LOGGER.info("Start fetching all active package from repository");
+        try {
+            List<ActivityReviewDetailsResponse> activityReviewDetailsResponses = activitiesRepository.getAllActivityReviewDetails();
+
+            if (activityReviewDetailsResponses.isEmpty()) {
+                LOGGER.warn("No active package found in database");
+                throw new DataNotFoundErrorExceptionHandler("No package found");
+            }
+
+            List<ActivityReviewDetailsResponse> activityReviewDetailsResponseList = activityReviewDetailsResponses.stream()
+                    .filter(data -> CommonStatus.ACTIVE.name().equalsIgnoreCase(data.getReviewStatus()))
+                    .collect(Collectors.toList());
+
+            LOGGER.info("Fetched {} active package successfully", activityReviewDetailsResponseList.size());
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    activityReviewDetailsResponseList,
+                    Instant.now()
+            );
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching active package: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching active package: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch active package from database");
+        } finally {
+            LOGGER.info("End fetching all active package from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<List<ActivityReviewDetailsResponse>> getActivityReviewDetailsById(String activityId) {
+        LOGGER.info("Start fetching all package from repository");
+        try {
+            List<ActivityReviewDetailsResponse> activityReviewDetailsResponseList = activitiesRepository.getActivityReviewDetailsById(activityId);
+
+            if (activityReviewDetailsResponseList.isEmpty()) {
+                LOGGER.warn("No active package found in database");
+                throw new DataNotFoundErrorExceptionHandler("No package found");
+            }
+
+            return
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            activityReviewDetailsResponseList,
+                            Instant.now()
+                    )
+                    ;
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch package from database");
+        } finally {
+            LOGGER.info("End fetching all package from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<ActivityResponseDto> getActivityById(String activityId) {
+        LOGGER.info("Start fetching all package from repository");
+        try {
+            ActivityResponseDto activityResponseDto = activitiesRepository.getActivityById(activityId);
+
+            if (activityResponseDto == null) {
+                LOGGER.warn("No package found in database");
+                throw new DataNotFoundErrorExceptionHandler("No package found");
+            }
+
+            return
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            activityResponseDto,
+                            Instant.now()
+                    )
+                    ;
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch package from database");
+        } finally {
+            LOGGER.info("End fetching all package from repository");
         }
     }
 
