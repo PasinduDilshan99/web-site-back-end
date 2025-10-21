@@ -111,4 +111,171 @@ public class ActivitiesQueries {
             """;
 
 
+    public static final String GET_ACTIVITY_REVIEW_DETAILS = """
+            SELECT
+                ar.id AS review_id,
+                ar.activity_schedule_id,
+                a.id AS activity_id,
+                a.name AS activity_name,
+                ar.name AS review_name,
+                ar.review,
+                ar.rating,
+                ar.description,
+                cs_ar.name AS review_status,
+                ar.number_of_participate,
+                ar.created_by AS review_created_by,
+                ar.created_at AS review_created_at,
+                ar.updated_by AS review_updated_by,
+                ar.updated_at AS review_updated_at,
+                ari.id AS image_id,
+                ari.name AS image_name,
+                ari.description AS image_description,
+                ari.image_url AS image_url,
+                cs_ari.name AS image_status,
+                ari.created_by AS image_created_by,
+                ari.created_at AS image_created_at,
+                arr.id AS review_reaction_id,
+                arr.activity_review_id AS reaction_review_id,
+                arr.user_id AS reaction_user_id,
+                u1.username AS reaction_user_name,
+                rt.name AS reaction_type,
+                cs_arr.name AS review_reaction_status,
+                arr.created_at AS reaction_created_at,
+                arc.id AS comment_id,
+                arc.activity_review_id AS comment_review_id,
+                arc.user_id AS comment_user_id,
+                u2.username AS comment_user_name,
+                arc.parent_comment_id,
+                arc.comment,
+                cs_arc.name AS comment_status,
+                arc.created_at AS comment_created_at,
+                arc.created_by AS comment_created_by,
+                arcr.id AS comment_reaction_id,
+                arcr.comment_id AS comment_reaction_comment_id,
+                arcr.user_id AS comment_reaction_user_id,
+                u3.username AS comment_reaction_user_name,
+                rt2.name AS comment_reaction_type,
+                cs_arcr.name AS comment_reaction_status,
+                arcr.created_by AS comment_reaction_created_by,
+                arcr.created_at AS comment_reaction_created_at
+            FROM activities_review ar
+            LEFT JOIN activities_schedule ars
+                ON ars.id = ar.activity_schedule_id
+            LEFT JOIN activities a
+                ON a.id = ars.activity_id
+            LEFT JOIN common_status cs_ar
+                ON cs_ar.id = ar.status
+            LEFT JOIN activities_review_images ari
+                ON ari.activities_review_id = ar.id
+            LEFT JOIN common_status cs_ari
+                ON cs_ari.id = ari.status
+            LEFT JOIN activity_review_reaction arr
+                ON arr.activity_review_id = ar.id
+            LEFT JOIN reaction_type rt
+                ON rt.id = arr.reaction_type_id
+            LEFT JOIN user u1
+                ON u1.user_id = arr.user_id
+            LEFT JOIN common_status cs_arr
+                ON cs_arr.id = arr.status
+            LEFT JOIN activity_review_comment arc
+                ON arc.activity_review_id = ar.id
+            LEFT JOIN user u2
+                ON u2.user_id = arc.user_id
+            LEFT JOIN common_status cs_arc
+                ON cs_arc.id = arc.status
+            LEFT JOIN activity_review_comment_reaction arcr
+                ON arcr.comment_id = arc.id
+            LEFT JOIN reaction_type rt2
+                ON rt2.id = arcr.reaction_type_id
+            LEFT JOIN user u3
+                ON u3.user_id = arcr.user_id
+            LEFT JOIN common_status cs_arcr
+                ON cs_arcr.id = arcr.status
+            ORDER BY ar.id, arc.id, arcr.id
+            """;
+
+    public static final String GET_ACTIVITY_REVIEW_DETAILS_BY_ID = """
+            SELECT
+                ar.id AS review_id,
+                ar.activity_schedule_id,
+                a.id AS activity_id,
+                a.name AS activity_name,
+                ar.name AS review_name,
+                ar.review,
+                ar.rating,
+                ar.description,
+                cs_ar.name AS review_status,
+                ar.number_of_participate,
+                ar.created_by AS review_created_by,
+                ar.created_at AS review_created_at,
+                ar.updated_by AS review_updated_by,
+                ar.updated_at AS review_updated_at,
+                ari.id AS image_id,
+                ari.name AS image_name,
+                ari.description AS image_description,
+                ari.image_url AS image_url,
+                cs_ari.name AS image_status,
+                ari.created_by AS image_created_by,
+                ari.created_at AS image_created_at,
+                arr.id AS review_reaction_id,
+                arr.activity_review_id AS reaction_review_id,
+                arr.user_id AS reaction_user_id,
+                u1.username AS reaction_user_name,
+                rt.name AS reaction_type,
+                cs_arr.name AS review_reaction_status,
+                arr.created_at AS reaction_created_at,
+                arc.id AS comment_id,
+                arc.activity_review_id AS comment_review_id,
+                arc.user_id AS comment_user_id,
+                u2.username AS comment_user_name,
+                arc.parent_comment_id,
+                arc.comment,
+                cs_arc.name AS comment_status,
+                arc.created_at AS comment_created_at,
+                arc.created_by AS comment_created_by,
+                arcr.id AS comment_reaction_id,
+                arcr.comment_id AS comment_reaction_comment_id,
+                arcr.user_id AS comment_reaction_user_id,
+                u3.username AS comment_reaction_user_name,
+                rt2.name AS comment_reaction_type,
+                cs_arcr.name AS comment_reaction_status,
+                arcr.created_by AS comment_reaction_created_by,
+                arcr.created_at AS comment_reaction_created_at
+            FROM activities_review ar
+            LEFT JOIN activities_schedule ars
+                ON ars.id = ar.activity_schedule_id
+            LEFT JOIN activities a
+                ON a.id = ars.activity_id
+            LEFT JOIN common_status cs_ar
+                ON cs_ar.id = ar.status
+            LEFT JOIN activities_review_images ari
+                ON ari.activities_review_id = ar.id
+            LEFT JOIN common_status cs_ari
+                ON cs_ari.id = ari.status
+            LEFT JOIN activity_review_reaction arr
+                ON arr.activity_review_id = ar.id
+            LEFT JOIN reaction_type rt
+                ON rt.id = arr.reaction_type_id
+            LEFT JOIN user u1
+                ON u1.user_id = arr.user_id
+            LEFT JOIN common_status cs_arr
+                ON cs_arr.id = arr.status
+            LEFT JOIN activity_review_comment arc
+                ON arc.activity_review_id = ar.id
+            LEFT JOIN user u2
+                ON u2.user_id = arc.user_id
+            LEFT JOIN common_status cs_arc
+                ON cs_arc.id = arc.status
+            LEFT JOIN activity_review_comment_reaction arcr
+                ON arcr.comment_id = arc.id
+            LEFT JOIN reaction_type rt2
+                ON rt2.id = arcr.reaction_type_id
+            LEFT JOIN user u3
+                ON u3.user_id = arcr.user_id
+            LEFT JOIN common_status cs_arcr
+                ON cs_arcr.id = arcr.status
+            WHERE a.id = ?
+            ORDER BY ar.id, arc.id, arcr.id
+            """;
+
 }

@@ -3,6 +3,7 @@ package com.felicita.repository.impl;
 import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
 import com.felicita.model.dto.*;
+import com.felicita.model.response.TourReviewDetailsResponse;
 import com.felicita.queries.TourQueries;
 import com.felicita.repository.TourRepository;
 import org.slf4j.Logger;
@@ -14,7 +15,9 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Repository
@@ -319,6 +322,323 @@ public class TourRepositoryImpl implements TourRepository {
         }
     }
 
+    @Override
+    public List<TourReviewDetailsResponse> getAllTourReviewDetails() {
+        String GET_TOUR_REVIEWS_DETAILS = TourQueries.GET_TOUR_REVIEWS_DETAILS;
+
+        try {
+            List<TourReviewDetailsResponse> reviews = jdbcTemplate.query(GET_TOUR_REVIEWS_DETAILS, (ResultSet rs) -> {
+
+                Map<Integer, TourReviewDetailsResponse> reviewMap = new LinkedHashMap<>();
+
+                while (rs.next()) {
+                    int reviewId = rs.getInt("review_id");
+
+                    // 🔹 Get or create main review
+                    TourReviewDetailsResponse review = reviewMap.computeIfAbsent(reviewId, id ->
+                            {
+                                try {
+                                    return TourReviewDetailsResponse.builder()
+                                            .reviewId(rs.getInt("review_id"))
+                                            .tourScheduleId(rs.getInt("tour_schedule_id"))
+                                            .tourId(rs.getInt("tour_id"))
+                                            .tourName(rs.getString("tour_name"))
+                                            .reviewName(rs.getString("review_name"))
+                                            .review(rs.getString("review"))
+                                            .rating(rs.getBigDecimal("rating"))
+                                            .reviewDescription(rs.getString("review_description"))
+                                            .reviewStatus(rs.getString("review_status"))
+                                            .numberOfParticipate(rs.getInt("number_of_participate"))
+                                            .reviewCreatedBy(rs.getInt("review_created_by"))
+                                            .reviewCreatedUser(rs.getString("review_created_user"))
+                                            .reviewCreatedAt(getLocalDateTime(rs, "review_created_at"))
+                                            .reviewUpdatedBy(rs.getObject("review_updated_by") != null ? rs.getInt("review_updated_by") : null)
+                                            .reviewUpdatedAt(getLocalDateTime(rs, "review_updated_at"))
+                                            .images(new ArrayList<>())
+                                            .reactions(new ArrayList<>())
+                                            .comments(new ArrayList<>())
+                                            .build();
+                                } catch (SQLException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }
+                    );
+
+                    // 🔹 Add image if exists
+                    if (rs.getObject("image_id") != null) {
+                        boolean imageExists = review.getImages().stream()
+                                .anyMatch(i -> {
+                                    try {
+                                        return i.getImageId().equals(rs.getInt("image_id"));
+                                    } catch (SQLException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                });
+                        if (!imageExists) {
+                            review.getImages().add(
+                                    TourReviewDetailsResponse.Image.builder()
+                                            .imageId(rs.getInt("image_id"))
+                                            .imageName(rs.getString("image_name"))
+                                            .imageDescription(rs.getString("image_description"))
+                                            .imageUrl(rs.getString("image_url"))
+                                            .imageStatus(rs.getString("image_status"))
+                                            .imageCreatedBy(rs.getInt("image_created_by"))
+                                            .imageCreatedAt(getLocalDateTime(rs, "image_created_at"))
+                                            .build()
+                            );
+                        }
+                    }
+
+                    // 🔹 Add reaction if exists
+                    if (rs.getObject("review_reaction_id") != null) {
+                        boolean reactionExists = review.getReactions().stream()
+                                .anyMatch(r -> {
+                                    try {
+                                        return r.getReviewReactionId().equals(rs.getInt("review_reaction_id"));
+                                    } catch (SQLException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                });
+                        if (!reactionExists) {
+                            review.getReactions().add(
+                                    TourReviewDetailsResponse.Reaction.builder()
+                                            .reviewReactionId(rs.getInt("review_reaction_id"))
+                                            .reactionReviewId(rs.getInt("reaction_review_id"))
+                                            .reactionUserId(rs.getInt("reaction_user_id"))
+                                            .reactionUserName(rs.getString("reaction_user_name"))
+                                            .reactionType(rs.getString("reaction_type"))
+                                            .reviewReactionStatus(rs.getString("review_reaction_status"))
+                                            .reactionCreatedAt(getLocalDateTime(rs, "reaction_created_at"))
+                                            .build()
+                            );
+                        }
+                    }
+
+                    // 🔹 Add comment if exists
+                    if (rs.getObject("comment_id") != null) {
+                        TourReviewDetailsResponse.Comment comment = review.getComments().stream()
+                                .filter(c -> {
+                                    try {
+                                        return c.getCommentId().equals(rs.getInt("comment_id"));
+                                    } catch (SQLException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                })
+                                .findFirst()
+                                .orElseGet(() -> {
+                                    TourReviewDetailsResponse.Comment newComment = null;
+                                    try {
+                                        newComment = TourReviewDetailsResponse.Comment.builder()
+                                                .commentId(rs.getInt("comment_id"))
+                                                .commentReviewId(rs.getInt("comment_review_id"))
+                                                .commentUserId(rs.getInt("comment_user_id"))
+                                                .commentUserName(rs.getString("comment_user_name"))
+                                                .parentCommentId((Integer) rs.getObject("parent_comment_id"))
+                                                .comment(rs.getString("comment"))
+                                                .commentStatus(rs.getString("comment_status"))
+                                                .commentCreatedAt(getLocalDateTime(rs, "comment_created_at"))
+                                                .commentCreatedBy(rs.getInt("comment_created_by"))
+                                                .commentReactions(new ArrayList<>())
+                                                .build();
+                                    } catch (SQLException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                    review.getComments().add(newComment);
+                                    return newComment;
+                                });
+
+                        // 🔹 Add comment reaction if exists
+                        if (rs.getObject("comment_reaction_id") != null) {
+                            boolean commentReactionExists = comment.getCommentReactions().stream()
+                                    .anyMatch(cr -> {
+                                        try {
+                                            return cr.getCommentReactionId().equals(rs.getInt("comment_reaction_id"));
+                                        } catch (SQLException e) {
+                                            throw new RuntimeException(e);
+                                        }
+                                    });
+                            if (!commentReactionExists) {
+                                comment.getCommentReactions().add(
+                                        TourReviewDetailsResponse.CommentReaction.builder()
+                                                .commentReactionId(rs.getInt("comment_reaction_id"))
+                                                .commentReactionCommentId(rs.getInt("comment_reaction_comment_id"))
+                                                .commentReactionUserId(rs.getInt("comment_reaction_user_id"))
+                                                .commentReactionUserName(rs.getString("comment_reaction_user_name"))
+                                                .commentReactionType(rs.getString("comment_reaction_type"))
+                                                .commentReactionStatus(rs.getString("comment_reaction_status"))
+                                                .commentReactionCreatedBy(rs.getInt("comment_reaction_created_by"))
+                                                .commentReactionCreatedAt(getLocalDateTime(rs, "comment_reaction_created_at"))
+                                                .build()
+                                );
+                            }
+                        }
+                    }
+                }
+
+                return new ArrayList<>(reviewMap.values());
+            });
+
+            return reviews;
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching tour details", ex);
+            throw new DataNotFoundErrorExceptionHandler("Database error while fetching tour details");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching tour details", ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error while fetching tour details");
+        }
+    }
+
+    /**
+     * Utility method to safely get LocalDateTime from ResultSet.
+     */
+    private LocalDateTime getLocalDateTime(ResultSet rs, String columnLabel) {
+        try {
+            Timestamp timestamp = rs.getTimestamp(columnLabel);
+            return timestamp != null ? timestamp.toLocalDateTime() : null;
+        } catch (SQLException e) {
+            return null;
+        }
+    }
+
+
+    @Override
+    public List<TourReviewDetailsResponse> getTourReviewDetailsById(String tourId) {
+        String GET_TOUR_REVIEW_DETAILS_BY_ID = TourQueries.GET_TOUR_REVIEW_DETAILS_BY_ID;
+
+        try {
+            return jdbcTemplate.query(con -> {
+                var ps = con.prepareStatement(GET_TOUR_REVIEW_DETAILS_BY_ID);
+                ps.setString(1, tourId);
+                return ps;
+            }, rs -> {
+                Map<Integer, TourReviewDetailsResponse> reviewMap = new LinkedHashMap<>();
+
+                while (rs.next()) {
+                    int reviewId = rs.getInt("review_id");
+
+                    // --- 1️⃣ Create or Get Main Review ---
+                    TourReviewDetailsResponse review = reviewMap.computeIfAbsent(reviewId, id ->
+                            {
+                                try {
+                                    return TourReviewDetailsResponse.builder()
+                                            .reviewId(rs.getInt("review_id"))
+                                            .tourScheduleId(rs.getInt("tour_schedule_id"))
+                                            .tourId(rs.getInt("tour_id"))
+                                            .tourName(rs.getString("tour_name"))
+                                            .reviewName(rs.getString("review_name"))
+                                            .review(rs.getString("review"))
+                                            .rating(rs.getBigDecimal("rating"))
+                                            .reviewDescription(rs.getString("review_description"))
+                                            .reviewStatus(rs.getString("review_status"))
+                                            .numberOfParticipate(rs.getInt("number_of_participate"))
+                                            .reviewCreatedBy(rs.getInt("review_created_by"))
+                                            .reviewCreatedUser(rs.getString("review_created_user"))
+                                            .reviewCreatedAt(rs.getTimestamp("review_created_at") != null ?
+                                                    rs.getTimestamp("review_created_at").toLocalDateTime() : null)
+                                            .reviewUpdatedBy(rs.getInt("review_updated_by"))
+                                            .reviewUpdatedAt(rs.getTimestamp("review_updated_at") != null ?
+                                                    rs.getTimestamp("review_updated_at").toLocalDateTime() : null)
+                                            .images(new ArrayList<>())
+                                            .reactions(new ArrayList<>())
+                                            .comments(new ArrayList<>())
+                                            .build();
+                                } catch (SQLException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }
+                    );
+
+                    // --- 2️⃣ Add Image ---
+                    int imageId = rs.getInt("image_id");
+                    if (imageId > 0 && review.getImages().stream().noneMatch(i -> i.getImageId().equals(imageId))) {
+                        review.getImages().add(TourReviewDetailsResponse.Image.builder()
+                                .imageId(imageId)
+                                .imageName(rs.getString("image_name"))
+                                .imageDescription(rs.getString("image_description"))
+                                .imageUrl(rs.getString("image_url"))
+                                .imageStatus(rs.getString("image_status"))
+                                .imageCreatedBy(rs.getInt("image_created_by"))
+                                .imageCreatedAt(rs.getTimestamp("image_created_at") != null ?
+                                        rs.getTimestamp("image_created_at").toLocalDateTime() : null)
+                                .build());
+                    }
+
+                    // --- 3️⃣ Add Reaction ---
+                    int reactionId = rs.getInt("review_reaction_id");
+                    if (reactionId > 0 && review.getReactions().stream().noneMatch(r -> r.getReviewReactionId().equals(reactionId))) {
+                        review.getReactions().add(TourReviewDetailsResponse.Reaction.builder()
+                                .reviewReactionId(reactionId)
+                                .reactionReviewId(rs.getInt("reaction_review_id"))
+                                .reactionUserId(rs.getInt("reaction_user_id"))
+                                .reactionUserName(rs.getString("reaction_user_name"))
+                                .reactionType(rs.getString("reaction_type"))
+                                .reviewReactionStatus(rs.getString("review_reaction_status"))
+                                .reactionCreatedAt(rs.getTimestamp("reaction_created_at") != null ?
+                                        rs.getTimestamp("reaction_created_at").toLocalDateTime() : null)
+                                .build());
+                    }
+
+                    // --- 4️⃣ Add Comment & Comment Reactions ---
+                    int commentId = rs.getInt("comment_id");
+                    if (commentId > 0) {
+                        // find existing comment
+                        TourReviewDetailsResponse.Comment comment = review.getComments()
+                                .stream()
+                                .filter(c -> c.getCommentId().equals(commentId))
+                                .findFirst()
+                                .orElseGet(() -> {
+                                    TourReviewDetailsResponse.Comment newComment = null;
+                                    try {
+                                        newComment = TourReviewDetailsResponse.Comment.builder()
+                                                .commentId(commentId)
+                                                .commentReviewId(rs.getInt("comment_review_id"))
+                                                .commentUserId(rs.getInt("comment_user_id"))
+                                                .commentUserName(rs.getString("comment_user_name"))
+                                                .parentCommentId(rs.getInt("parent_comment_id"))
+                                                .comment(rs.getString("comment"))
+                                                .commentStatus(rs.getString("comment_status"))
+                                                .commentCreatedAt(rs.getTimestamp("comment_created_at") != null ?
+                                                        rs.getTimestamp("comment_created_at").toLocalDateTime() : null)
+                                                .commentCreatedBy(rs.getInt("comment_created_by"))
+                                                .commentReactions(new ArrayList<>())
+                                                .build();
+                                    } catch (SQLException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                    review.getComments().add(newComment);
+                                    return newComment;
+                                });
+
+                        // Add comment reaction
+                        int commentReactionId = rs.getInt("comment_reaction_id");
+                        if (commentReactionId > 0 && comment.getCommentReactions().stream().noneMatch(cr -> cr.getCommentReactionId().equals(commentReactionId))) {
+                            comment.getCommentReactions().add(TourReviewDetailsResponse.CommentReaction.builder()
+                                    .commentReactionId(commentReactionId)
+                                    .commentReactionCommentId(rs.getInt("comment_reaction_comment_id"))
+                                    .commentReactionUserId(rs.getInt("comment_reaction_user_id"))
+                                    .commentReactionUserName(rs.getString("comment_reaction_user_name"))
+                                    .commentReactionType(rs.getString("comment_reaction_type"))
+                                    .commentReactionStatus(rs.getString("comment_reaction_status"))
+                                    .commentReactionCreatedBy(rs.getInt("comment_reaction_created_by"))
+                                    .commentReactionCreatedAt(rs.getTimestamp("comment_reaction_created_at") != null ?
+                                            rs.getTimestamp("comment_reaction_created_at").toLocalDateTime() : null)
+                                    .build());
+                        }
+                    }
+                }
+
+                return new ArrayList<>(reviewMap.values());
+            });
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching tour reviews for ID {}", tourId, ex);
+            throw new DataNotFoundErrorExceptionHandler("Database error while fetching tour reviews");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching tour reviews for ID {}", tourId, ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error while fetching tour reviews");
+        }
+    }
 
 
 

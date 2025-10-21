@@ -2,6 +2,7 @@ package com.felicita.service;
 
 import com.felicita.model.dto.ActivityCategoryResponseDto;
 import com.felicita.model.dto.ActivityResponseDto;
+import com.felicita.model.response.ActivityReviewDetailsResponse;
 import com.felicita.model.response.CommonResponse;
 import org.springframework.http.ResponseEntity;
 
@@ -15,4 +16,8 @@ public interface ActivitiesService {
     ResponseEntity<CommonResponse<List<ActivityCategoryResponseDto>>> getAllActivityCategories();
 
     ResponseEntity<CommonResponse<List<ActivityCategoryResponseDto>>> getActiveActivityCategories();
+
+    CommonResponse<List<ActivityReviewDetailsResponse>> getAllActivityReviewDetails();
+
+    CommonResponse<List<ActivityReviewDetailsResponse>> getActivityReviewDetailsById(String activityId);
 }
