@@ -101,5 +101,29 @@ public class DestinationController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping(path = "/{destinationId}")
+    public ResponseEntity<CommonResponse<DestinationResponseDto>> getDestinationDetailsById(@PathVariable String destinationId) {
+        LOGGER.info("{} Start execute get destination details by id  {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<DestinationResponseDto> response = destinationService.getDestinationDetailsById(destinationId);
+        LOGGER.info("{} End execute get destination details by id {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/reviews")
+    public ResponseEntity<CommonResponse<List<DestinationReviewDetailsResponse>>> getAllDestinationsReviewDetails() {
+        LOGGER.info("{} Start execute get all destination review details {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<DestinationReviewDetailsResponse>> response = destinationService.getAllDestinationsReviewDetails();
+        LOGGER.info("{} End execute get all destination review details {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/reviews/{destinationId}")
+    public ResponseEntity<CommonResponse<List<DestinationReviewDetailsResponse>>> getDestinationReviewDetailsById(@PathVariable String destinationId) {
+        LOGGER.info("{} Start execute get all destination review details by id {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<DestinationReviewDetailsResponse>> response = destinationService.getDestinationReviewDetailsById(destinationId);
+        LOGGER.info("{} End execute get all destination review details by id {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 
 }

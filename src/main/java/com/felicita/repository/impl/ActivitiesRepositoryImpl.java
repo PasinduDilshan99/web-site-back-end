@@ -1,5 +1,6 @@
 package com.felicita.repository.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.felicita.exception.DataAccessErrorExceptionHandler;
@@ -346,6 +347,71 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
         } catch (Exception ex) {
             LOGGER.error("Unexpected error while fetching activity reviews: {}", ex.getMessage(), ex);
             throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching activity reviews");
+        }
+    }
+
+    @Override
+    public ActivityResponseDto getActivityById(String activityId) {
+        String GET_ACTIVITY_DETAILS_BY_ID = ActivitiesQueries.GET_ACTIVITY_DETAILS_BY_ID;
+
+        try {
+            return jdbcTemplate.queryForObject(GET_ACTIVITY_DETAILS_BY_ID, new Object[]{activityId}, (rs, rowNum) -> {
+                ActivityResponseDto activity = new ActivityResponseDto();
+                activity.setId(rs.getInt("id"));
+                activity.setDestinationId(rs.getInt("destination_id"));
+                activity.setName(rs.getString("name"));
+                activity.setDescription(rs.getString("description"));
+                activity.setActivitiesCategory(rs.getString("activities_category"));
+                activity.setDurationHours(rs.getBigDecimal("duration_hours"));
+                activity.setAvailableFrom(rs.getTime("available_from"));
+                activity.setAvailableTo(rs.getTime("available_to"));
+                activity.setPriceLocal(rs.getBigDecimal("price_local"));
+                activity.setPriceForeigners(rs.getBigDecimal("price_foreigners"));
+                activity.setMinParticipate(rs.getInt("min_participate"));
+                activity.setMaxParticipate(rs.getInt("max_participate"));
+                activity.setSeason(rs.getString("season"));
+                activity.setStatus(rs.getString("status_name"));
+                activity.setCreatedAt(rs.getTimestamp("created_at"));
+                activity.setUpdatedAt(rs.getTimestamp("updated_at"));
+                activity.setCategoryName(rs.getString("category_name"));
+                activity.setCategoryDescription(rs.getString("category_description"));
+
+                ObjectMapper mapper = new ObjectMapper();
+
+                // Deserialize JSON arrays into DTO lists
+                String schedulesJson = rs.getString("schedules");
+                try {
+                    activity.setSchedules(schedulesJson != null ?
+                            mapper.readValue(schedulesJson, new TypeReference<List<ActivityScheduleDto>>() {}) : List.of());
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException(e);
+                }
+
+                String requirementsJson = rs.getString("requirements");
+                try {
+                    activity.setRequirements(requirementsJson != null ?
+                            mapper.readValue(requirementsJson, new TypeReference<List<ActivityRequirementDto>>() {}) : List.of());
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException(e);
+                }
+
+                String imagesJson = rs.getString("images");
+                try {
+                    activity.setImages(imagesJson != null ?
+                            mapper.readValue(imagesJson, new TypeReference<List<ActivityImageDto>>() {}) : List.of());
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException(e);
+                }
+
+                return activity;
+            });
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching activity details: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler("Failed to fetch activity details from database");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching activity details: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching activity details");
         }
     }
 

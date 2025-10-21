@@ -15,4 +15,6 @@ public interface ActivitiesRepository {
     List<ActivityReviewDetailsResponse> getActivityReviewDetailsById(String activityId);
 
     List<ActivityReviewDetailsResponse> getAllActivityReviewDetails();
+
+    ActivityResponseDto getActivityById(String activityId);
 }

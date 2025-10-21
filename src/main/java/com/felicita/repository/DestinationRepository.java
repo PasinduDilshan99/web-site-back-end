@@ -17,4 +17,10 @@ public interface DestinationRepository {
     List<DestinationsForTourMapDto> getDestinationsForTourMap();
 
     List<DestinationResponseDto> getDestinationDetailsByTourId(String tourId);
+
+    List<DestinationReviewDetailsResponse> getDestinationReviewDetailsById(String destinationId);
+
+    List<DestinationReviewDetailsResponse> getAllDestinationsReviewDetails();
+
+    DestinationResponseDto getDestinationDetailsById(String destinationId);
 }

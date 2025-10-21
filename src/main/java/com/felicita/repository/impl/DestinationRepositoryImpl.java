@@ -514,6 +514,331 @@ public class DestinationRepositoryImpl implements DestinationRepository {
         }
     }
 
+    @Override
+    public List<DestinationReviewDetailsResponse> getDestinationReviewDetailsById(String destinationId) {
+        String GET_DESTINATIONS_REVIEW_DETAILS_BY_ID = DestinationQueries.GET_DESTINATIONS_REVIEW_DETAILS_BY_ID;
+
+        try {
+            // Map to hold reviews by reviewId to aggregate images, reactions, comments
+            Map<Integer, DestinationReviewDetailsResponse> reviewMap = new LinkedHashMap<>();
+
+            jdbcTemplate.query(GET_DESTINATIONS_REVIEW_DETAILS_BY_ID, new Object[]{destinationId}, rs -> {
+                Integer reviewId = rs.getInt("review_id");
+
+                // Fetch or create review object
+                DestinationReviewDetailsResponse review = reviewMap.get(reviewId);
+                if (review == null) {
+                    review = DestinationReviewDetailsResponse.builder()
+                            .reviewId(reviewId)
+                            .destinationId(rs.getInt("destination_id"))
+                            .destinationName(rs.getString("destination_name"))
+                            .reviewUserId(rs.getInt("review_user_id"))
+                            .reviewUserName(rs.getString("review_user_name"))
+                            .reviewText(rs.getString("review_text"))
+                            .reviewRating(rs.getBigDecimal("review_rating"))
+                            .reviewStatus(rs.getString("review_status"))
+                            .reviewCreatedBy(rs.getInt("review_created_by"))
+                            .reviewCreatedAt(rs.getTimestamp("review_created_at").toLocalDateTime())
+                            .reviewUpdatedBy(rs.getInt("review_updated_by"))
+                            .reviewUpdatedAt(rs.getTimestamp("review_updated_at") != null ?
+                                    rs.getTimestamp("review_updated_at").toLocalDateTime() : null)
+                            .images(new ArrayList<>())
+                            .reactions(new ArrayList<>())
+                            .comments(new ArrayList<>())
+                            .build();
+                    reviewMap.put(reviewId, review);
+                }
+
+                // Add image if exists
+                Integer imageId = rs.getObject("image_id", Integer.class);
+                if (imageId != null && review.getImages().stream().noneMatch(i -> i.getImageId().equals(imageId))) {
+                    DestinationReviewDetailsResponse.Image image = DestinationReviewDetailsResponse.Image.builder()
+                            .imageId(imageId)
+                            .imageName(rs.getString("image_name"))
+                            .imageDescription(rs.getString("image_description"))
+                            .imageUrl(rs.getString("image_url"))
+                            .imageStatus(rs.getString("image_status"))
+                            .imageCreatedBy(rs.getInt("image_created_by"))
+                            .imageCreatedAt(rs.getTimestamp("image_created_at") != null ?
+                                    rs.getTimestamp("image_created_at").toLocalDateTime() : null)
+                            .build();
+                    review.getImages().add(image);
+                }
+
+                // Add reaction if exists
+                Integer reactionId = rs.getObject("review_reaction_id", Integer.class);
+                if (reactionId != null && review.getReactions().stream().noneMatch(r -> r.getReviewReactionId().equals(reactionId))) {
+                    DestinationReviewDetailsResponse.Reaction reaction = DestinationReviewDetailsResponse.Reaction.builder()
+                            .reviewReactionId(reactionId)
+                            .reactionReviewId(rs.getInt("reaction_review_id"))
+                            .reactionUserId(rs.getInt("reaction_user_id"))
+                            .reactionUserName(rs.getString("reaction_user_name"))
+                            .reactionType(rs.getString("reaction_type"))
+                            .reviewReactionStatus(rs.getString("review_reaction_status"))
+                            .reactionCreatedAt(rs.getTimestamp("reaction_created_at") != null ?
+                                    rs.getTimestamp("reaction_created_at").toLocalDateTime() : null)
+                            .build();
+                    review.getReactions().add(reaction);
+                }
+
+                // Add comment if exists
+                Integer commentId = rs.getObject("comment_id", Integer.class);
+                DestinationReviewDetailsResponse.Comment comment = null;
+                if (commentId != null) {
+                    comment = review.getComments().stream()
+                            .filter(c -> c.getCommentId().equals(commentId))
+                            .findFirst()
+                            .orElse(null);
+
+                    if (comment == null) {
+                        comment = DestinationReviewDetailsResponse.Comment.builder()
+                                .commentId(commentId)
+                                .commentReviewId(rs.getInt("comment_review_id"))
+                                .commentUserId(rs.getInt("comment_user_id"))
+                                .commentUserName(rs.getString("comment_user_name"))
+                                .parentCommentId(rs.getObject("parent_comment_id", Integer.class))
+                                .commentText(rs.getString("comment_text"))
+                                .commentStatus(rs.getString("comment_status"))
+                                .commentCreatedAt(rs.getTimestamp("comment_created_at") != null ?
+                                        rs.getTimestamp("comment_created_at").toLocalDateTime() : null)
+                                .commentCreatedBy(rs.getInt("comment_created_by"))
+                                .commentReactions(new ArrayList<>())
+                                .build();
+                        review.getComments().add(comment);
+                    }
+                }
+
+                // Add comment reaction if exists
+                Integer commentReactionId = rs.getObject("comment_reaction_id", Integer.class);
+                if (commentReactionId != null && comment != null &&
+                        comment.getCommentReactions().stream().noneMatch(cr -> cr.getCommentReactionId().equals(commentReactionId))) {
+                    DestinationReviewDetailsResponse.Comment.CommentReaction commentReaction =
+                            DestinationReviewDetailsResponse.Comment.CommentReaction.builder()
+                                    .commentReactionId(commentReactionId)
+                                    .commentReactionCommentId(rs.getInt("comment_reaction_comment_id"))
+                                    .commentReactionUserId(rs.getInt("comment_reaction_user_id"))
+                                    .commentReactionUserName(rs.getString("comment_reaction_user_name"))
+                                    .commentReactionType(rs.getString("comment_reaction_type"))
+                                    .commentReactionStatus(rs.getString("comment_reaction_status"))
+                                    .commentReactionCreatedBy(rs.getInt("comment_reaction_created_by"))
+                                    .commentReactionCreatedAt(rs.getTimestamp("comment_reaction_created_at") != null ?
+                                            rs.getTimestamp("comment_reaction_created_at").toLocalDateTime() : null)
+                                    .build();
+                    comment.getCommentReactions().add(commentReaction);
+                }
+            });
+
+            return new ArrayList<>(reviewMap.values());
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching destinations: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler("Failed to fetch destinations from database");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching destinations: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching destinations");
+        }
+    }
+
+
+    @Override
+    public List<DestinationReviewDetailsResponse> getAllDestinationsReviewDetails() {
+        String GET_DESTINATIONS_REVIEW_DETAILS = DestinationQueries.GET_DESTINATIONS_REVIEW_DETAILS;
+
+        try {
+            // Map to hold reviews by reviewId to aggregate images, reactions, comments
+            Map<Integer, DestinationReviewDetailsResponse> reviewMap = new LinkedHashMap<>();
+
+            jdbcTemplate.query(GET_DESTINATIONS_REVIEW_DETAILS, rs -> {
+                Integer reviewId = rs.getInt("review_id");
+
+                // Fetch or create review object
+                DestinationReviewDetailsResponse review = reviewMap.get(reviewId);
+                if (review == null) {
+                    review = DestinationReviewDetailsResponse.builder()
+                            .reviewId(reviewId)
+                            .destinationId(rs.getInt("destination_id"))
+                            .destinationName(rs.getString("destination_name"))
+                            .reviewUserId(rs.getInt("review_user_id"))
+                            .reviewUserName(rs.getString("review_user_name"))
+                            .reviewText(rs.getString("review_text"))
+                            .reviewRating(rs.getBigDecimal("review_rating"))
+                            .reviewStatus(rs.getString("review_status"))
+                            .reviewCreatedBy(rs.getInt("review_created_by"))
+                            .reviewCreatedAt(rs.getTimestamp("review_created_at").toLocalDateTime())
+                            .reviewUpdatedBy(rs.getInt("review_updated_by"))
+                            .reviewUpdatedAt(rs.getTimestamp("review_updated_at") != null ?
+                                    rs.getTimestamp("review_updated_at").toLocalDateTime() : null)
+                            .images(new ArrayList<>())
+                            .reactions(new ArrayList<>())
+                            .comments(new ArrayList<>())
+                            .build();
+                    reviewMap.put(reviewId, review);
+                }
+
+                // Add image if exists
+                Integer imageId = rs.getObject("image_id", Integer.class);
+                if (imageId != null && review.getImages().stream().noneMatch(i -> i.getImageId().equals(imageId))) {
+                    DestinationReviewDetailsResponse.Image image = DestinationReviewDetailsResponse.Image.builder()
+                            .imageId(imageId)
+                            .imageName(rs.getString("image_name"))
+                            .imageDescription(rs.getString("image_description"))
+                            .imageUrl(rs.getString("image_url"))
+                            .imageStatus(rs.getString("image_status"))
+                            .imageCreatedBy(rs.getInt("image_created_by"))
+                            .imageCreatedAt(rs.getTimestamp("image_created_at") != null ?
+                                    rs.getTimestamp("image_created_at").toLocalDateTime() : null)
+                            .build();
+                    review.getImages().add(image);
+                }
+
+                // Add reaction if exists
+                Integer reactionId = rs.getObject("review_reaction_id", Integer.class);
+                if (reactionId != null && review.getReactions().stream().noneMatch(r -> r.getReviewReactionId().equals(reactionId))) {
+                    DestinationReviewDetailsResponse.Reaction reaction = DestinationReviewDetailsResponse.Reaction.builder()
+                            .reviewReactionId(reactionId)
+                            .reactionReviewId(rs.getInt("reaction_review_id"))
+                            .reactionUserId(rs.getInt("reaction_user_id"))
+                            .reactionUserName(rs.getString("reaction_user_name"))
+                            .reactionType(rs.getString("reaction_type"))
+                            .reviewReactionStatus(rs.getString("review_reaction_status"))
+                            .reactionCreatedAt(rs.getTimestamp("reaction_created_at") != null ?
+                                    rs.getTimestamp("reaction_created_at").toLocalDateTime() : null)
+                            .build();
+                    review.getReactions().add(reaction);
+                }
+
+                // Add comment if exists
+                Integer commentId = rs.getObject("comment_id", Integer.class);
+                DestinationReviewDetailsResponse.Comment comment = null;
+                if (commentId != null) {
+                    comment = review.getComments().stream()
+                            .filter(c -> c.getCommentId().equals(commentId))
+                            .findFirst()
+                            .orElse(null);
+
+                    if (comment == null) {
+                        comment = DestinationReviewDetailsResponse.Comment.builder()
+                                .commentId(commentId)
+                                .commentReviewId(rs.getInt("comment_review_id"))
+                                .commentUserId(rs.getInt("comment_user_id"))
+                                .commentUserName(rs.getString("comment_user_name"))
+                                .parentCommentId(rs.getObject("parent_comment_id", Integer.class))
+                                .commentText(rs.getString("comment_text"))
+                                .commentStatus(rs.getString("comment_status"))
+                                .commentCreatedAt(rs.getTimestamp("comment_created_at") != null ?
+                                        rs.getTimestamp("comment_created_at").toLocalDateTime() : null)
+                                .commentCreatedBy(rs.getInt("comment_created_by"))
+                                .commentReactions(new ArrayList<>())
+                                .build();
+                        review.getComments().add(comment);
+                    }
+                }
+
+                // Add comment reaction if exists
+                Integer commentReactionId = rs.getObject("comment_reaction_id", Integer.class);
+                if (commentReactionId != null && comment != null &&
+                        comment.getCommentReactions().stream().noneMatch(cr -> cr.getCommentReactionId().equals(commentReactionId))) {
+                    DestinationReviewDetailsResponse.Comment.CommentReaction commentReaction =
+                            DestinationReviewDetailsResponse.Comment.CommentReaction.builder()
+                                    .commentReactionId(commentReactionId)
+                                    .commentReactionCommentId(rs.getInt("comment_reaction_comment_id"))
+                                    .commentReactionUserId(rs.getInt("comment_reaction_user_id"))
+                                    .commentReactionUserName(rs.getString("comment_reaction_user_name"))
+                                    .commentReactionType(rs.getString("comment_reaction_type"))
+                                    .commentReactionStatus(rs.getString("comment_reaction_status"))
+                                    .commentReactionCreatedBy(rs.getInt("comment_reaction_created_by"))
+                                    .commentReactionCreatedAt(rs.getTimestamp("comment_reaction_created_at") != null ?
+                                            rs.getTimestamp("comment_reaction_created_at").toLocalDateTime() : null)
+                                    .build();
+                    comment.getCommentReactions().add(commentReaction);
+                }
+            });
+
+            return new ArrayList<>(reviewMap.values());
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching destinations: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler("Failed to fetch destinations from database");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching destinations: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching destinations");
+        }
+    }
+
+    @Override
+    public DestinationResponseDto getDestinationDetailsById(String destinationId) {
+        String GET_DESTINATION_DETAILS_BY_ID = DestinationQueries.GET_DESTINATION_DETAILS_BY_ID;
+
+        try {
+            LOGGER.info("Executing query to fetch destination details...");
+
+            return jdbcTemplate.query(GET_DESTINATION_DETAILS_BY_ID, new Object[]{destinationId}, rs -> {
+                DestinationResponseDto destination = null;
+                Map<Integer, DestinationActivityResponseDto> activityMap = new LinkedHashMap<>();
+                Map<Integer, DestionationImageResponseDto> imageMap = new LinkedHashMap<>();
+
+                while (rs.next()) {
+                    if (destination == null) {
+                        destination = new DestinationResponseDto();
+                        destination.setDestinationId(rs.getInt("destination_id"));
+                        destination.setDestinationName(rs.getString("destination_name"));
+                        destination.setDestinationDescription(rs.getString("destination_description"));
+                        destination.setLocation(rs.getString("location"));
+                        destination.setLatitude(rs.getDouble("latitude"));
+                        destination.setLongitude(rs.getDouble("longitude"));
+                        destination.setCategoryName(rs.getString("category_name"));
+                        destination.setCategoryDescription(rs.getString("category_description"));
+                        destination.setStatusName(rs.getString("status_name"));
+                    }
+
+                    // Map activity
+                    int activityId = rs.getInt("activity_id");
+                    if (activityId != 0 && !activityMap.containsKey(activityId)) {
+                        DestinationActivityResponseDto activity = new DestinationActivityResponseDto();
+                        activity.setActivityId(activityId);
+                        activity.setActivityName(rs.getString("activity_name"));
+                        activity.setActivityDescription(rs.getString("activity_description"));
+                        activity.setActivitiesCategory(rs.getString("activities_category"));
+                        activity.setDurationHours(rs.getDouble("duration_hours"));
+                        activity.setAvailableFrom(rs.getString("available_from"));
+                        activity.setAvailableTo(rs.getString("available_to"));
+                        activity.setPriceLocal(rs.getDouble("price_local"));
+                        activity.setPriceForeigners(rs.getDouble("price_foreigners"));
+                        activity.setMinParticipate(rs.getInt("min_participate"));
+                        activity.setMaxParticipate(rs.getInt("max_participate"));
+                        activity.setSeason(rs.getString("season"));
+                        activityMap.put(activityId, activity);
+                    }
+
+                    // Map image
+                    int imageId = rs.getInt("image_id");
+                    if (imageId != 0 && !imageMap.containsKey(imageId)) {
+                        DestionationImageResponseDto image = new DestionationImageResponseDto();
+                        image.setImageId(imageId);
+                        image.setImageName(rs.getString("image_name"));
+                        image.setImageDescription(rs.getString("image_description"));
+                        image.setImageUrl(rs.getString("image_url"));
+                        imageMap.put(imageId, image);
+                    }
+                }
+
+                if (destination != null) {
+                    destination.setActivities(new ArrayList<>(activityMap.values()));
+                    destination.setImages(new ArrayList<>(imageMap.values()));
+                }
+
+                return destination;
+            });
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching destinations: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler("Failed to fetch destinations from database");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching destinations: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching destinations");
+        }
+    }
+
 
 
 }

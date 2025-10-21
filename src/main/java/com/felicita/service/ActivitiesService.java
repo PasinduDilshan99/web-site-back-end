@@ -20,4 +20,6 @@ public interface ActivitiesService {
     CommonResponse<List<ActivityReviewDetailsResponse>> getAllActivityReviewDetails();
 
     CommonResponse<List<ActivityReviewDetailsResponse>> getActivityReviewDetailsById(String activityId);
+
+    CommonResponse<ActivityResponseDto> getActivityById(String activityId);
 }

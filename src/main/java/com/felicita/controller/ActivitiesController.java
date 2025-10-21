@@ -64,6 +64,14 @@ public class ActivitiesController {
         return response;
     }
 
+    @GetMapping(path = "/{activityId}")
+    public ResponseEntity<CommonResponse<ActivityResponseDto>> getActivityById(@PathVariable String activityId){
+        LOGGER.info("{} Start execute get activity by id {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<ActivityResponseDto> response = activitiesService.getActivityById(activityId);
+        LOGGER.info("{} End execute get activity by id {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @GetMapping(path = "/reviews")
     public ResponseEntity<CommonResponse<List<ActivityReviewDetailsResponse>>> getAllActivityReviewDetails() {
         LOGGER.info("{} Start execute get all activity review details {}", Constant.DOTS, Constant.DOTS);

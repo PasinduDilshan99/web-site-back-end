@@ -398,4 +398,205 @@ public class DestinationQueries {
                 ON cs4.id = dci.status
             """;
 
+
+    public static final String GET_DESTINATIONS_REVIEW_DETAILS = """
+            SELECT
+                dr.review_id,
+                dr.destination_id,
+                d.name AS destination_name,
+                dr.user_id AS review_user_id,
+                u1.username AS review_user_name,
+                dr.review_text AS review_text,
+                dr.rating AS review_rating,
+                cs_dr.name AS review_status,
+                dr.created_by AS review_created_by,
+                dr.created_at AS review_created_at,
+                dr.updated_by AS review_updated_by,
+                dr.updated_at AS review_updated_at,
+                dri.image_id,
+                dri.name AS image_name,
+                dri.description AS image_description,
+                dri.image_url AS image_url,
+                cs_dri.name AS image_status,
+                dri.created_by AS image_created_by,
+                dri.created_at AS image_created_at,
+                drr.review_reaction_id,
+                drr.review_id AS reaction_review_id,
+                drr.user_id AS reaction_user_id,
+                u2.username AS reaction_user_name,
+                rt.name AS reaction_type,
+                cs_drr.name AS review_reaction_status,
+                drr.created_at AS reaction_created_at,
+                drc.comment_id,
+                drc.review_id AS comment_review_id,
+                drc.user_id AS comment_user_id,
+                u3.username AS comment_user_name,
+                drc.parent_comment_id,
+                drc.comment_text AS comment_text,
+                cs_drc.name AS comment_status,
+                drc.created_at AS comment_created_at,
+                drc.created_by AS comment_created_by,
+                drcr.comment_reaction_id,
+                drcr.comment_id AS comment_reaction_comment_id,
+                drcr.user_id AS comment_reaction_user_id,
+                u4.username AS comment_reaction_user_name,
+                rt2.name AS comment_reaction_type,
+                cs_drcr.name AS comment_reaction_status,
+                drcr.created_by AS comment_reaction_created_by,
+                drcr.created_at AS comment_reaction_created_at
+            FROM destination_review dr
+            LEFT JOIN destination d
+                ON dr.destination_id = d.destination_id
+            LEFT JOIN common_status cs_dr
+                ON cs_dr.id = dr.status
+            LEFT JOIN destination_review_images dri
+                ON dri.review_id = dr.review_id
+            LEFT JOIN common_status cs_dri
+                ON cs_dri.id = dri.status
+            LEFT JOIN destination_review_reaction drr
+                ON drr.review_id = dr.review_id
+            LEFT JOIN reaction_type rt
+                ON rt.id = drr.reaction_type_id
+            LEFT JOIN user u1
+                ON u1.user_id = dr.user_id
+            LEFT JOIN user u2
+                ON u2.user_id = drr.user_id
+            LEFT JOIN common_status cs_drr
+                ON cs_drr.id = drr.status
+            LEFT JOIN destination_review_comment drc
+                ON drc.review_id = dr.review_id
+            LEFT JOIN user u3
+                ON u3.user_id = drc.user_id
+            LEFT JOIN common_status cs_drc
+                ON cs_drc.id = drc.status
+            LEFT JOIN destination_review_comment_reaction drcr
+                ON drcr.comment_id = drc.comment_id
+            LEFT JOIN reaction_type rt2
+                ON rt2.id = drcr.reaction_type_id
+            LEFT JOIN user u4
+                ON u4.user_id = drcr.user_id
+            LEFT JOIN common_status cs_drcr
+                ON cs_drcr.id = drcr.status
+            ORDER BY dr.review_id, drc.comment_id, drcr.comment_reaction_id
+            """;
+
+    public static final String GET_DESTINATIONS_REVIEW_DETAILS_BY_ID = """
+            SELECT
+                dr.review_id,
+                dr.destination_id,
+                d.name AS destination_name,
+                dr.user_id AS review_user_id,
+                u1.username AS review_user_name,
+                dr.review_text AS review_text,
+                dr.rating AS review_rating,
+                cs_dr.name AS review_status,
+                dr.created_by AS review_created_by,
+                dr.created_at AS review_created_at,
+                dr.updated_by AS review_updated_by,
+                dr.updated_at AS review_updated_at,
+                dri.image_id,
+                dri.name AS image_name,
+                dri.description AS image_description,
+                dri.image_url AS image_url,
+                cs_dri.name AS image_status,
+                dri.created_by AS image_created_by,
+                dri.created_at AS image_created_at,
+                drr.review_reaction_id,
+                drr.review_id AS reaction_review_id,
+                drr.user_id AS reaction_user_id,
+                u2.username AS reaction_user_name,
+                rt.name AS reaction_type,
+                cs_drr.name AS review_reaction_status,
+                drr.created_at AS reaction_created_at,
+                drc.comment_id,
+                drc.review_id AS comment_review_id,
+                drc.user_id AS comment_user_id,
+                u3.username AS comment_user_name,
+                drc.parent_comment_id,
+                drc.comment_text AS comment_text,
+                cs_drc.name AS comment_status,
+                drc.created_at AS comment_created_at,
+                drc.created_by AS comment_created_by,
+                drcr.comment_reaction_id,
+                drcr.comment_id AS comment_reaction_comment_id,
+                drcr.user_id AS comment_reaction_user_id,
+                u4.username AS comment_reaction_user_name,
+                rt2.name AS comment_reaction_type,
+                cs_drcr.name AS comment_reaction_status,
+                drcr.created_by AS comment_reaction_created_by,
+                drcr.created_at AS comment_reaction_created_at
+            FROM destination_review dr
+            LEFT JOIN destination d
+                ON dr.destination_id = d.destination_id
+            LEFT JOIN common_status cs_dr
+                ON cs_dr.id = dr.status
+            LEFT JOIN destination_review_images dri
+                ON dri.review_id = dr.review_id
+            LEFT JOIN common_status cs_dri
+                ON cs_dri.id = dri.status
+            LEFT JOIN destination_review_reaction drr
+                ON drr.review_id = dr.review_id
+            LEFT JOIN reaction_type rt
+                ON rt.id = drr.reaction_type_id
+            LEFT JOIN user u1
+                ON u1.user_id = dr.user_id
+            LEFT JOIN user u2
+                ON u2.user_id = drr.user_id
+            LEFT JOIN common_status cs_drr
+                ON cs_drr.id = drr.status
+            LEFT JOIN destination_review_comment drc
+                ON drc.review_id = dr.review_id
+            LEFT JOIN user u3
+                ON u3.user_id = drc.user_id
+            LEFT JOIN common_status cs_drc
+                ON cs_drc.id = drc.status
+            LEFT JOIN destination_review_comment_reaction drcr
+                ON drcr.comment_id = drc.comment_id
+            LEFT JOIN reaction_type rt2
+                ON rt2.id = drcr.reaction_type_id
+            LEFT JOIN user u4
+                ON u4.user_id = drcr.user_id
+            LEFT JOIN common_status cs_drcr
+                ON cs_drcr.id = drcr.status
+            WHERE dr.destination_id = ?
+            ORDER BY dr.review_id, drc.comment_id, drcr.comment_reaction_id
+            """;
+
+    public static final String GET_DESTINATION_DETAILS_BY_ID = """
+            SELECT
+            	d.destination_id,
+            	d.name AS destination_name,
+            	d.description AS destination_description,
+            	d.location,
+            	d.latitude,
+            	d.longitude,
+            	dc.category AS category_name,
+            	dc.description AS category_description,
+            	cs.name AS status_name,
+            	a.id AS activity_id,
+            	a.name AS activity_name,
+            	a.description AS activity_description,
+            	a.activities_category,
+            	a.duration_hours,
+            	a.available_from,
+            	a.available_to,
+            	a.price_local,
+            	a.price_foreigners,
+            	a.min_participate,
+            	a.max_participate,
+            	a.season,
+            	di.id AS image_id,
+            	di.name AS image_name,
+            	di.description AS image_description,
+            	di.image_url
+            FROM destination d
+            LEFT JOIN destination_categories dc ON d.destination_category = dc.id
+            LEFT JOIN common_status cs ON d.status = cs.id
+            LEFT JOIN activities a ON d.destination_id = a.destination_id
+            LEFT JOIN destination_images di ON d.destination_id = di.destination_id
+            WHERE d.destination_id=?
+            """;
+
+
+
 }
