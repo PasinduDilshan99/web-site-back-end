@@ -1,8 +1,11 @@
 package com.felicita.repository.impl;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
 import com.felicita.model.dto.*;
+import com.felicita.model.response.TourDestinationsForMapResponse;
+import com.felicita.model.response.TourHistoryResponse;
 import com.felicita.model.response.TourReviewDetailsResponse;
 import com.felicita.queries.TourQueries;
 import com.felicita.repository.TourRepository;
@@ -637,6 +640,264 @@ public class TourRepositoryImpl implements TourRepository {
         } catch (Exception ex) {
             LOGGER.error("Unexpected error while fetching tour reviews for ID {}", tourId, ex);
             throw new InternalServerErrorExceptionHandler("Unexpected error while fetching tour reviews");
+        }
+    }
+
+    @Override
+    public List<TourDestinationsForMapResponse> getTourDestinationsForMap(String tourId) {
+        String GET_TOUR_DESTINATIONS_FOR_MAP = TourQueries.GET_TOUR_DESTINATIONS_FOR_MAP;
+
+        try {
+            return jdbcTemplate.query(connection -> {
+                var ps = connection.prepareStatement(GET_TOUR_DESTINATIONS_FOR_MAP);
+                ps.setString(1, tourId);
+                return ps;
+            }, (ResultSet rs) -> {
+
+                List<TourDestinationsForMapResponse> destinations = new ArrayList<>();
+                Map<Integer, TourDestinationsForMapResponse> destinationMap = new LinkedHashMap<>();
+
+                while (rs.next()) {
+                    int destinationId = rs.getInt("id");
+
+                    // Get or create the destination entry
+                    TourDestinationsForMapResponse destination = destinationMap.computeIfAbsent(destinationId, id ->
+                            TourDestinationsForMapResponse.builder()
+                                    .id(id)
+                                    .name(getSafeString(rs, "name"))
+                                    .description(getSafeString(rs, "description"))
+                                    .lat(getSafeDouble(rs, "lat"))
+                                    .lng(getSafeDouble(rs, "lng"))
+                                    .images(new ArrayList<>())
+                                    .build()
+                    );
+
+                    // Add image if available
+                    int imageId = rs.getInt("image_id");
+                    if (imageId > 0) {
+                        destination.getImages().add(
+                                TourDestinationsForMapResponse.Image.builder()
+                                        .id(imageId)
+                                        .url(getSafeString(rs, "image_url"))
+                                        .name(getSafeString(rs, "image_name"))
+                                        .description(getSafeString(rs, "image_description"))
+                                        .build()
+                        );
+                    }
+                }
+
+                destinations.addAll(destinationMap.values());
+                return destinations;
+            });
+
+        } catch (DataAccessException ex) {
+            throw new DataNotFoundErrorExceptionHandler("Database error while fetching tour destinations");
+        } catch (Exception ex) {
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching tour destinations");
+        }
+    }
+
+    @Override
+    public List<TourHistoryResponse> getAllTourHistoryDetails() {
+        String GET_ALL_TOUR_HISTORY_DETAILS = TourQueries.GET_ALL_TOUR_HISTORY_DETAILS;
+
+        try {
+            return jdbcTemplate.query(GET_ALL_TOUR_HISTORY_DETAILS, rs -> {
+                Map<Long, TourHistoryResponse> historyMap = new LinkedHashMap<>();
+
+                while (rs.next()) {
+                    Long historyId = rs.getLong("history_id");
+                    Long scheduleId = rs.getLong("schedule_id");
+                    Long tourId = rs.getLong("tour_id");
+                    Long imageId = rs.getLong("image_id");
+
+                    // Get or create TourHistoryResponse
+                    TourHistoryResponse history = historyMap.get(historyId);
+                    if (history == null) {
+                        history = TourHistoryResponse.builder()
+                                .historyId(historyId)
+                                .historyName(rs.getString("history_name"))
+                                .historyDescription(rs.getString("history_description"))
+                                .numberOfParticipate(rs.getInt("number_of_participate"))
+                                .rating(rs.getBigDecimal("rating"))
+                                .historyDuration(rs.getInt("history_duration"))
+                                .startDate(rs.getDate("start_date"))
+                                .endDate(rs.getDate("end_date"))
+                                .vehicleNumber(rs.getString("vehicle_number"))
+                                .driverId(rs.getInt("driver_id"))
+                                .guideId(rs.getInt("guide_id"))
+                                .historyColor(rs.getString("history_color"))
+                                .hoverColor(rs.getString("hover_color"))
+                                .historyStatus(rs.getInt("history_status"))
+                                .build();
+
+                        // Set TourSchedule
+                        TourHistoryResponse.TourSchedule schedule = new TourHistoryResponse.TourSchedule();
+                        schedule.setScheduleId(scheduleId);
+                        schedule.setScheduleName(rs.getString("schedule_name"));
+                        schedule.setAssumeStartDate(rs.getDate("assume_start_date"));
+                        schedule.setAssumeEndDate(rs.getDate("assume_end_date"));
+                        schedule.setDurationStart(rs.getInt("duration_start"));
+                        schedule.setDurationEnd(rs.getInt("duration_end"));
+                        schedule.setSpecialNote(rs.getString("special_note"));
+                        schedule.setScheduleDescription(rs.getString("schedule_description"));
+                        schedule.setScheduleStatus(rs.getInt("schedule_status"));
+
+                        // Set Tour
+                        TourHistoryResponse.Tour tour = new TourHistoryResponse.Tour();
+                        tour.setTourId(tourId);
+                        tour.setTourName(rs.getString("tour_name"));
+                        tour.setTourDescription(rs.getString("tour_description"));
+                        tour.setTourDuration(rs.getInt("tour_duration"));
+                        tour.setLatitude(rs.getBigDecimal("latitude"));
+                        tour.setLongitude(rs.getBigDecimal("longitude"));
+                        tour.setStartLocation(rs.getString("start_location"));
+                        tour.setEndLocation(rs.getString("end_location"));
+                        tour.setTourStatus(rs.getInt("tour_status"));
+                        tour.setTourType(rs.getInt("tour_type"));
+                        tour.setTourCategory(rs.getInt("tour_category"));
+                        tour.setSeason(rs.getInt("season"));
+
+                        schedule.setTour(tour);
+                        schedule.setImages(new ArrayList<>());
+
+                        history.setTourSchedule(schedule);
+                        historyMap.put(historyId, history);
+                    }
+
+                    // Add image if exists
+                    if (imageId != 0) {
+                        TourHistoryResponse.TourHistoryImage image = new TourHistoryResponse.TourHistoryImage();
+                        image.setImageId(imageId);
+                        image.setImageName(rs.getString("image_name"));
+                        image.setImageDescription(rs.getString("image_description"));
+                        image.setImageUrl(rs.getString("image_url"));
+                        image.setImageColor(rs.getString("image_color"));
+                        image.setImageStatus(rs.getInt("image_status"));
+
+                        history.getTourSchedule().getImages().add(image);
+                    }
+                }
+
+                return new ArrayList<>(historyMap.values());
+            });
+
+        } catch (DataAccessException ex) {
+            throw new DataNotFoundErrorExceptionHandler("Database error while fetching tours");
+        } catch (Exception ex) {
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching tours");
+        }
+    }
+
+
+    @Override
+    public List<TourHistoryResponse> getTourHistoryDetailsById(String tourId) {
+        String GET_TOUR_HISTORY_DETAILS_BY_ID = TourQueries.GET_TOUR_HISTORY_DETAILS_BY_ID;
+
+        try {
+            return jdbcTemplate.query(GET_TOUR_HISTORY_DETAILS_BY_ID, ps -> ps.setString(1, tourId), rs -> {
+                Map<Long, TourHistoryResponse> historyMap = new LinkedHashMap<>();
+
+                while (rs.next()) {
+                    Long historyId = rs.getLong("history_id");
+                    Long scheduleId = rs.getLong("schedule_id");
+                    Long tId = rs.getLong("tour_id");
+                    Long imageId = rs.getLong("image_id");
+
+                    // Get or create TourHistoryResponse
+                    TourHistoryResponse history = historyMap.get(historyId);
+                    if (history == null) {
+                        history = TourHistoryResponse.builder()
+                                .historyId(historyId)
+                                .historyName(rs.getString("history_name"))
+                                .historyDescription(rs.getString("history_description"))
+                                .numberOfParticipate(rs.getInt("number_of_participate"))
+                                .rating(rs.getBigDecimal("rating"))
+                                .historyDuration(rs.getInt("history_duration"))
+                                .startDate(rs.getDate("start_date"))
+                                .endDate(rs.getDate("end_date"))
+                                .vehicleNumber(rs.getString("vehicle_number"))
+                                .driverId(rs.getInt("driver_id"))
+                                .guideId(rs.getInt("guide_id"))
+                                .historyColor(rs.getString("history_color"))
+                                .hoverColor(rs.getString("hover_color"))
+                                .historyStatus(rs.getInt("history_status"))
+                                .build();
+
+                        // Set TourSchedule
+                        TourHistoryResponse.TourSchedule schedule = new TourHistoryResponse.TourSchedule();
+                        schedule.setScheduleId(scheduleId);
+                        schedule.setScheduleName(rs.getString("schedule_name"));
+                        schedule.setAssumeStartDate(rs.getDate("assume_start_date"));
+                        schedule.setAssumeEndDate(rs.getDate("assume_end_date"));
+                        schedule.setDurationStart(rs.getInt("duration_start"));
+                        schedule.setDurationEnd(rs.getInt("duration_end"));
+                        schedule.setSpecialNote(rs.getString("special_note"));
+                        schedule.setScheduleDescription(rs.getString("schedule_description"));
+                        schedule.setScheduleStatus(rs.getInt("schedule_status"));
+
+                        // Set Tour
+                        TourHistoryResponse.Tour tour = new TourHistoryResponse.Tour();
+                        tour.setTourId(tId);
+                        tour.setTourName(rs.getString("tour_name"));
+                        tour.setTourDescription(rs.getString("tour_description"));
+                        tour.setTourDuration(rs.getInt("tour_duration"));
+                        tour.setLatitude(rs.getBigDecimal("latitude"));
+                        tour.setLongitude(rs.getBigDecimal("longitude"));
+                        tour.setStartLocation(rs.getString("start_location"));
+                        tour.setEndLocation(rs.getString("end_location"));
+                        tour.setTourStatus(rs.getInt("tour_status"));
+                        tour.setTourType(rs.getInt("tour_type"));
+                        tour.setTourCategory(rs.getInt("tour_category"));
+                        tour.setSeason(rs.getInt("season"));
+
+                        schedule.setTour(tour);
+                        schedule.setImages(new ArrayList<>());
+
+                        history.setTourSchedule(schedule);
+                        historyMap.put(historyId, history);
+                    }
+
+                    // Add image if exists
+                    if (imageId != 0) {
+                        TourHistoryResponse.TourHistoryImage image = new TourHistoryResponse.TourHistoryImage();
+                        image.setImageId(imageId);
+                        image.setImageName(rs.getString("image_name"));
+                        image.setImageDescription(rs.getString("image_description"));
+                        image.setImageUrl(rs.getString("image_url"));
+                        image.setImageColor(rs.getString("image_color"));
+                        image.setImageStatus(rs.getInt("image_status"));
+
+                        history.getTourSchedule().getImages().add(image);
+                    }
+                }
+
+                return new ArrayList<>(historyMap.values());
+            });
+
+        } catch (DataAccessException ex) {
+            throw new DataNotFoundErrorExceptionHandler("Database error while fetching tour history for tourId: " + tourId);
+        } catch (Exception ex) {
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching tour history for tourId: " + tourId);
+        }
+    }
+
+
+    // ✅ Helper methods (avoid null pointer issues)
+    private String getSafeString(ResultSet rs, String column) {
+        try {
+            return rs.getString(column);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private Double getSafeDouble(ResultSet rs, String column) {
+        try {
+            double value = rs.getDouble(column);
+            return rs.wasNull() ? null : value;
+        } catch (Exception e) {
+            return null;
         }
     }
 
