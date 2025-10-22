@@ -2,10 +2,7 @@ package com.felicita.service;
 
 import com.felicita.model.dto.PopularTourResponseDto;
 import com.felicita.model.dto.TourResponseDto;
-import com.felicita.model.response.CommonResponse;
-import com.felicita.model.response.TourDestinationsForMapResponse;
-import com.felicita.model.response.TourHistoryResponse;
-import com.felicita.model.response.TourReviewDetailsResponse;
+import com.felicita.model.response.*;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -29,4 +26,8 @@ public interface TourService {
     CommonResponse<List<TourHistoryResponse>> getAllTourHistoryDetails();
 
     CommonResponse<List<TourHistoryResponse>> getTourHistoryDetailsById(String tourId);
+
+    CommonResponse<List<TourHistoryImageResponse>> getAllTourHistoryImages();
+
+    CommonResponse<List<TourHistoryImageResponse>> getTourHistoryImagesById(String tourId);
 }

@@ -5,6 +5,7 @@ import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
 import com.felicita.model.dto.*;
 import com.felicita.model.response.TourDestinationsForMapResponse;
+import com.felicita.model.response.TourHistoryImageResponse;
 import com.felicita.model.response.TourHistoryResponse;
 import com.felicita.model.response.TourReviewDetailsResponse;
 import com.felicita.queries.TourQueries;
@@ -881,6 +882,80 @@ public class TourRepositoryImpl implements TourRepository {
             throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching tour history for tourId: " + tourId);
         }
     }
+
+    @Override
+    public List<TourHistoryImageResponse> getTourHistoryImagesById(String tourId) {
+        String GET_ALL_TOUR_HISTORY_IMAGES_BY_ID = TourQueries.GET_ALL_TOUR_HISTORY_IMAGES_BY_ID;
+
+        try {
+            return jdbcTemplate.query(GET_ALL_TOUR_HISTORY_IMAGES_BY_ID, ps -> ps.setString(1, tourId), rs -> {
+                List<TourHistoryImageResponse> images = new ArrayList<>();
+                while (rs.next()) {
+                    TourHistoryImageResponse image = TourHistoryImageResponse.builder()
+                            .imageId(rs.getInt("image_id"))
+                            .name(rs.getString("name"))
+                            .description(rs.getString("description"))
+                            .imageUrl(rs.getString("image_url"))
+                            .color(rs.getString("color"))
+                            .status(rs.getString("status"))
+                            .createdAt(rs.getTimestamp("created_at") != null ? rs.getTimestamp("created_at").toLocalDateTime() : null)
+                            .createdBy(rs.getObject("created_by") != null ? rs.getInt("created_by") : null)
+                            .updatedAt(rs.getTimestamp("updated_at") != null ? rs.getTimestamp("updated_at").toLocalDateTime() : null)
+                            .updatedBy(rs.getObject("updated_by") != null ? rs.getInt("updated_by") : null)
+                            .terminatedAt(rs.getTimestamp("terminated_at") != null ? rs.getTimestamp("terminated_at").toLocalDateTime() : null)
+                            .terminatedBy(rs.getObject("terminated_by") != null ? rs.getInt("terminated_by") : null)
+                            .build();
+
+                    images.add(image);
+                }
+                return images;
+            });
+
+        } catch (DataAccessException ex) {
+            throw new DataNotFoundErrorExceptionHandler(
+                    "Database error while fetching tour history for tourId: ");
+        } catch (Exception ex) {
+            throw new InternalServerErrorExceptionHandler(
+                    "Unexpected error occurred while fetching tour history for tourId: ");
+        }
+    }
+
+
+    @Override
+    public List<TourHistoryImageResponse> getAllTourHistoryImages() {
+        String GET_ALL_TOUR_HISTORY_IMAGES = TourQueries.GET_ALL_TOUR_HISTORY_IMAGES;
+
+        try {
+            return jdbcTemplate.query(GET_ALL_TOUR_HISTORY_IMAGES, (rs) -> {
+                List<TourHistoryImageResponse> images = new ArrayList<>();
+                while (rs.next()) {
+                    TourHistoryImageResponse image = TourHistoryImageResponse.builder()
+                            .imageId(rs.getInt("image_id"))
+                            .name(rs.getString("name"))
+                            .description(rs.getString("description"))
+                            .imageUrl(rs.getString("image_url"))
+                            .color(rs.getString("color"))
+                            .status(rs.getString("status"))
+                            .createdAt(rs.getTimestamp("created_at") != null ? rs.getTimestamp("created_at").toLocalDateTime() : null)
+                            .createdBy(rs.getObject("created_by") != null ? rs.getInt("created_by") : null)
+                            .updatedAt(rs.getTimestamp("updated_at") != null ? rs.getTimestamp("updated_at").toLocalDateTime() : null)
+                            .updatedBy(rs.getObject("updated_by") != null ? rs.getInt("updated_by") : null)
+                            .terminatedAt(rs.getTimestamp("terminated_at") != null ? rs.getTimestamp("terminated_at").toLocalDateTime() : null)
+                            .terminatedBy(rs.getObject("terminated_by") != null ? rs.getInt("terminated_by") : null)
+                            .build();
+
+                    images.add(image);
+                }
+                return images;
+            });
+
+        } catch (DataAccessException ex) {
+            throw new DataNotFoundErrorExceptionHandler("Database error while fetching tours");
+        } catch (Exception ex) {
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching tours");
+        }
+    }
+
 
 
     // ✅ Helper methods (avoid null pointer issues)

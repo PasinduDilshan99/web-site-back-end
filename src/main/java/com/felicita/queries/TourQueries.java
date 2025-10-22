@@ -441,5 +441,45 @@ public class TourQueries {
             ORDER BY th.id, thimg.id
             """;
 
+    public static final String GET_ALL_TOUR_HISTORY_IMAGES = """
+            SELECT
+                thi.id AS image_id,
+                thi.name,
+                thi.description,
+                thi.image_url,
+                thi.color,
+                cs.name AS status,
+                thi.created_at,
+                thi.created_by,
+                thi.updated_at,
+                thi.updated_by,
+                thi.terminated_at,
+                thi.terminated_by
+            FROM tour_history_images thi
+            LEFT JOIN common_status cs ON thi.status = cs.id
+            ORDER BY thi.created_at DESC
+            """;
+
+    public static final String GET_ALL_TOUR_HISTORY_IMAGES_BY_ID = """
+            SELECT
+                thi.id AS image_id,
+                thi.name,
+                thi.description,
+                thi.image_url,
+                thi.color,
+                cs.name AS status,
+                thi.created_at,
+                thi.created_by,
+                thi.updated_at,
+                thi.updated_by,
+                thi.terminated_at,
+                thi.terminated_by
+            FROM tour_history_images thi
+            INNER JOIN tour_schedule ts ON thi.tour_schedule_id = ts.id
+            INNER JOIN tour t ON ts.tour_id = t.tour_id
+            LEFT JOIN common_status cs ON thi.status = cs.id
+            WHERE t.tour_id = ?
+            ORDER BY thi.created_at DESC
+            """;
 
 }
