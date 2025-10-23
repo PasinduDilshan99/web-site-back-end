@@ -4,8 +4,7 @@ import com.felicita.model.dto.DestinationResponseDto;
 import com.felicita.model.dto.PackageResponseDto;
 import com.felicita.model.dto.PopularTourResponseDto;
 import com.felicita.model.dto.TourResponseDto;
-import com.felicita.model.response.CommonResponse;
-import com.felicita.model.response.TourReviewDetailsResponse;
+import com.felicita.model.response.*;
 import com.felicita.service.TourService;
 import com.felicita.util.Constant;
 import org.slf4j.Logger;
@@ -80,4 +79,45 @@ public class TourController {
         LOGGER.info("{} End execute get all tour review details by id {}", Constant.DOTS, Constant.DOTS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @GetMapping(path = "/history")
+    public ResponseEntity<CommonResponse<List<TourHistoryResponse>>> getAllTourHistoryDetails() {
+        LOGGER.info("{} Start execute get all tour review details {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<TourHistoryResponse>> response = tourService.getAllTourHistoryDetails();
+        LOGGER.info("{} End execute get all tour review details {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/history/{tourId}")
+    public ResponseEntity<CommonResponse<List<TourHistoryResponse>>> getTourHistoryDetailsById(@PathVariable String tourId) {
+        LOGGER.info("{} Start execute get all tour review details by id {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<TourHistoryResponse>> response = tourService.getTourHistoryDetailsById(tourId);
+        LOGGER.info("{} End execute get all tour review details by id {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/tour-map/{tourId}")
+    public ResponseEntity<CommonResponse<List<TourDestinationsForMapResponse>>> getTourDestinationsForMap(@PathVariable String tourId) {
+        LOGGER.info("{} Start execute get tour details by id  {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<TourDestinationsForMapResponse>> response = tourService.getTourDestinationsForMap(tourId);
+        LOGGER.info("{} End execute get package details by id {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/history-images")
+    public ResponseEntity<CommonResponse<List<TourHistoryImageResponse>>> getAllTourHistoryImages() {
+        LOGGER.info("{} Start execute get all tour review details {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<TourHistoryImageResponse>> response = tourService.getAllTourHistoryImages();
+        LOGGER.info("{} End execute get all tour review details {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/history-images/{tourId}")
+    public ResponseEntity<CommonResponse<List<TourHistoryImageResponse>>> getTourHistoryImagesById(@PathVariable String tourId) {
+        LOGGER.info("{} Start execute get all tour review details by id {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<TourHistoryImageResponse>> response = tourService.getTourHistoryImagesById(tourId);
+        LOGGER.info("{} End execute get all tour review details by id {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 }

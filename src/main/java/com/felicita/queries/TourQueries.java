@@ -40,43 +40,43 @@ public class TourQueries {
             LEFT JOIN tour_images img ON t.tour_id = img.tour_id
             """;
 
-    public static final String GET_TOUR_DETAILS_BY_ID  = """
-            SELECT
-                t.tour_id,
-                t.name AS tour_name,
-                t.description AS tour_description,
-                t.duration,
-                t.latitude,
-                t.longitude,
-                t.start_location,
-                t.end_location,
-                tt.name AS tour_type_name,
-                tt.description AS tour_type_description,
-                tc.name AS tour_category_name,
-                tc.description AS tour_category_description,
-                s.name AS season_name,
-                s.description AS season_description,
-                cs.name AS status_name,
-                sch.id AS schedule_id,
-                sch.name AS schedule_name,
-                sch.assume_start_date,
-                sch.assume_end_date,
-                sch.duration_start,
-                sch.duration_end,
-                sch.special_note,
-                sch.description AS schedule_description,
-                img.id AS image_id,
-                img.name AS image_name,
-                img.description AS image_description,
-                img.image_url
-            FROM tour t
-            LEFT JOIN tour_type tt ON t.tour_type = tt.id
-            LEFT JOIN tour_category tc ON t.tour_category = tc.id
-            LEFT JOIN seasons s ON t.season = s.id
-            LEFT JOIN common_status cs ON t.status = cs.id
-            LEFT JOIN tour_schedule sch ON t.tour_id = sch.tour_id
-            LEFT JOIN tour_images img ON t.tour_id = img.tour_id
-    WHERE t.tour_id=?
+    public static final String GET_TOUR_DETAILS_BY_ID = """
+                    SELECT
+                        t.tour_id,
+                        t.name AS tour_name,
+                        t.description AS tour_description,
+                        t.duration,
+                        t.latitude,
+                        t.longitude,
+                        t.start_location,
+                        t.end_location,
+                        tt.name AS tour_type_name,
+                        tt.description AS tour_type_description,
+                        tc.name AS tour_category_name,
+                        tc.description AS tour_category_description,
+                        s.name AS season_name,
+                        s.description AS season_description,
+                        cs.name AS status_name,
+                        sch.id AS schedule_id,
+                        sch.name AS schedule_name,
+                        sch.assume_start_date,
+                        sch.assume_end_date,
+                        sch.duration_start,
+                        sch.duration_end,
+                        sch.special_note,
+                        sch.description AS schedule_description,
+                        img.id AS image_id,
+                        img.name AS image_name,
+                        img.description AS image_description,
+                        img.image_url
+                    FROM tour t
+                    LEFT JOIN tour_type tt ON t.tour_type = tt.id
+                    LEFT JOIN tour_category tc ON t.tour_category = tc.id
+                    LEFT JOIN seasons s ON t.season = s.id
+                    LEFT JOIN common_status cs ON t.status = cs.id
+                    LEFT JOIN tour_schedule sch ON t.tour_id = sch.tour_id
+                    LEFT JOIN tour_images img ON t.tour_id = img.tour_id
+            WHERE t.tour_id=?
             """;
 
 
@@ -315,5 +315,171 @@ public class TourQueries {
                 trcr.id
             """;
 
+
+    public static final String GET_TOUR_DESTINATIONS_FOR_MAP = """
+            SELECT
+                d.destination_id AS id,
+                d.name,
+                d.description,
+                d.latitude AS lat,
+                d.longitude AS lng,
+                di.id AS image_id,
+                di.image_url AS image_url,
+                di.name AS image_name,
+                di.description AS image_description
+            FROM
+                tour_destination td
+            JOIN
+                destination d ON td.destination_id = d.destination_id
+            LEFT JOIN
+                destination_images di ON d.destination_id = di.destination_id
+            WHERE
+                td.tour_id = ?
+            ORDER BY
+                d.destination_id;
+            """;
+
+
+    public static final String GET_ALL_TOUR_HISTORY_DETAILS = """
+            SELECT
+                th.id AS history_id,
+                th.name AS history_name,
+                th.description AS history_description,
+                th.number_of_participate,
+                th.rating,
+                th.duration AS history_duration,
+                th.start_date,
+                th.end_date,
+                th.vehicle_number,
+                th.driver_id,
+                th.guide_id,
+                th.color AS history_color,
+                th.hover_color,
+                th.status AS history_status,
+                ts.id AS schedule_id,
+                ts.name AS schedule_name,
+                ts.assume_start_date,
+                ts.assume_end_date,
+                ts.duration_start,
+                ts.duration_end,
+                ts.special_note,
+                ts.description AS schedule_description,
+                ts.status AS schedule_status,
+                t.tour_id,
+                t.name AS tour_name,
+                t.description AS tour_description,
+                t.duration AS tour_duration,
+                t.latitude,
+                t.longitude,
+                t.start_location,
+                t.end_location,
+                t.status AS tour_status,
+                t.tour_type,
+                t.tour_category,
+                t.season,
+                thimg.id AS image_id,
+                thimg.name AS image_name,
+                thimg.description AS image_description,
+                thimg.image_url,
+                thimg.color AS image_color,
+                thimg.status AS image_status
+            FROM tour_history th
+            INNER JOIN tour_schedule ts ON th.tour_schedule_id = ts.id
+            INNER JOIN tour t ON ts.tour_id = t.tour_id
+            LEFT JOIN tour_history_images thimg ON ts.id = thimg.tour_schedule_id
+            ORDER BY th.id, thimg.id;
+            """;
+
+    public static final String GET_TOUR_HISTORY_DETAILS_BY_ID = """
+            SELECT
+                th.id AS history_id,
+                th.name AS history_name,
+                th.description AS history_description,
+                th.number_of_participate,
+                th.rating,
+                th.duration AS history_duration,
+                th.start_date,
+                th.end_date,
+                th.vehicle_number,
+                th.driver_id,
+                th.guide_id,
+                th.color AS history_color,
+                th.hover_color,
+                th.status AS history_status,
+                ts.id AS schedule_id,
+                ts.name AS schedule_name,
+                ts.assume_start_date,
+                ts.assume_end_date,
+                ts.duration_start,
+                ts.duration_end,
+                ts.special_note,
+                ts.description AS schedule_description,
+                ts.status AS schedule_status,
+                t.tour_id,
+                t.name AS tour_name,
+                t.description AS tour_description,
+                t.duration AS tour_duration,
+                t.latitude,
+                t.longitude,
+                t.start_location,
+                t.end_location,
+                t.status AS tour_status,
+                t.tour_type,
+                t.tour_category,
+                t.season,
+                thimg.id AS image_id,
+                thimg.name AS image_name,
+                thimg.description AS image_description,
+                thimg.image_url,
+                thimg.color AS image_color,
+                thimg.status AS image_status
+            FROM tour_history th
+            INNER JOIN tour_schedule ts ON th.tour_schedule_id = ts.id
+            INNER JOIN tour t ON ts.tour_id = t.tour_id
+            LEFT JOIN tour_history_images thimg ON ts.id = thimg.tour_schedule_id
+            WHERE t.tour_id =?
+            ORDER BY th.id, thimg.id
+            """;
+
+    public static final String GET_ALL_TOUR_HISTORY_IMAGES = """
+            SELECT
+                thi.id AS image_id,
+                thi.name,
+                thi.description,
+                thi.image_url,
+                thi.color,
+                cs.name AS status,
+                thi.created_at,
+                thi.created_by,
+                thi.updated_at,
+                thi.updated_by,
+                thi.terminated_at,
+                thi.terminated_by
+            FROM tour_history_images thi
+            LEFT JOIN common_status cs ON thi.status = cs.id
+            ORDER BY thi.created_at DESC
+            """;
+
+    public static final String GET_ALL_TOUR_HISTORY_IMAGES_BY_ID = """
+            SELECT
+                thi.id AS image_id,
+                thi.name,
+                thi.description,
+                thi.image_url,
+                thi.color,
+                cs.name AS status,
+                thi.created_at,
+                thi.created_by,
+                thi.updated_at,
+                thi.updated_by,
+                thi.terminated_at,
+                thi.terminated_by
+            FROM tour_history_images thi
+            INNER JOIN tour_schedule ts ON thi.tour_schedule_id = ts.id
+            INNER JOIN tour t ON ts.tour_id = t.tour_id
+            LEFT JOIN common_status cs ON thi.status = cs.id
+            WHERE t.tour_id = ?
+            ORDER BY thi.created_at DESC
+            """;
 
 }
