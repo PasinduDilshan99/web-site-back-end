@@ -1,9 +1,14 @@
 package com.felicita.repository.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.felicita.exception.DataAccessErrorExceptionHandler;
 import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
 import com.felicita.model.dto.*;
+import com.felicita.model.response.PackageHistoryDetailsResponse;
+import com.felicita.model.response.PackageHistoryImageResponse;
 import com.felicita.model.response.PackageReviewResponse;
 import com.felicita.queries.PackageQueries;
 import com.felicita.repository.PackageRepository;
@@ -509,6 +514,278 @@ public class PackageRepositoryImpl implements PackageRepository {
             return new ArrayList<>(reviewMap.values());
         });
     }
+
+    @Override
+    public List<PackageHistoryImageResponse> getPackageHistoryImagesById(String packageId) {
+        try {
+            return jdbcTemplate.query(PackageQueries.GET_PACKAGE_HISTORY_IMAGES_BY_ID, ps -> {
+                ps.setString(1, packageId);
+            }, (ResultSet rs) -> {
+                List<PackageHistoryImageResponse> result = new ArrayList<>();
+                while (rs.next()) {
+                    PackageHistoryImageResponse.PackageInfo packageInfo = PackageHistoryImageResponse.PackageInfo.builder()
+                            .packageId(rs.getInt("package_id"))
+                            .packageName(rs.getString("package_name"))
+                            .tourId(rs.getInt("tour_id"))
+                            .build();
+
+                    PackageHistoryImageResponse.PackageScheduleInfo scheduleInfo = PackageHistoryImageResponse.PackageScheduleInfo.builder()
+                            .packageScheduleId(rs.getInt("package_schedule_id"))
+                            .packageScheduleName(rs.getString("package_schedule_name"))
+                            .build();
+
+                    PackageHistoryImageResponse.UserInfo createdByUser = PackageHistoryImageResponse.UserInfo.builder()
+                            .fullName(rs.getString("created_by_user"))
+                            .imageUrl(rs.getString("created_by_image"))
+                            .build();
+
+                    PackageHistoryImageResponse imageResponse = PackageHistoryImageResponse.builder()
+                            .imageId(rs.getInt("image_id"))
+                            .imageName(rs.getString("image_name"))
+                            .imageDescription(rs.getString("image_description"))
+                            .imageUrl(rs.getString("image_url"))
+                            .color(rs.getString("color"))
+                            .imageStatusName(rs.getString("image_status_name"))
+                            .createdAt(rs.getTimestamp("created_at").toLocalDateTime())
+                            .packageInfo(packageInfo)
+                            .packageSchedule(scheduleInfo)
+                            .createdByUser(createdByUser)
+                            .build();
+
+                    result.add(imageResponse);
+                }
+                return result;
+            });
+        } catch (DataAccessException ex) {
+            LOGGER.error(ex.toString());
+            throw new DataNotFoundErrorExceptionHandler("Database error while fetching packages");
+        } catch (Exception ex) {
+            throw new InternalServerErrorExceptionHandler("Unexpected error while fetching packages");
+        }
+    }
+
+
+    @Override
+    public List<PackageHistoryImageResponse> getAllPackageHistoryImages() {
+        try {
+            return jdbcTemplate.query(PackageQueries.GET_PACKAGE_HISTORY_IMAGES, (ResultSet rs) -> {
+                List<PackageHistoryImageResponse> result = new ArrayList<>();
+                while (rs.next()) {
+                    PackageHistoryImageResponse.PackageInfo packageInfo = PackageHistoryImageResponse.PackageInfo.builder()
+                            .packageId(rs.getInt("package_id"))
+                            .packageName(rs.getString("package_name"))
+                            .tourId(rs.getInt("tour_id"))
+                            .build();
+
+                    PackageHistoryImageResponse.PackageScheduleInfo scheduleInfo = PackageHistoryImageResponse.PackageScheduleInfo.builder()
+                            .packageScheduleId(rs.getInt("package_schedule_id"))
+                            .packageScheduleName(rs.getString("package_schedule_name"))
+                            .build();
+
+                    PackageHistoryImageResponse.UserInfo createdByUser = PackageHistoryImageResponse.UserInfo.builder()
+                            .fullName(rs.getString("created_by_user"))
+                            .imageUrl(rs.getString("created_by_image"))
+                            .build();
+
+                    PackageHistoryImageResponse imageResponse = PackageHistoryImageResponse.builder()
+                            .imageId(rs.getInt("image_id"))
+                            .imageName(rs.getString("image_name"))
+                            .imageDescription(rs.getString("image_description"))
+                            .imageUrl(rs.getString("image_url"))
+                            .color(rs.getString("color"))
+                            .imageStatusName(rs.getString("image_status_name"))
+                            .createdAt(rs.getTimestamp("created_at").toLocalDateTime())
+                            .packageInfo(packageInfo)
+                            .packageSchedule(scheduleInfo)
+                            .createdByUser(createdByUser)
+                            .build();
+
+                    result.add(imageResponse);
+                }
+                return result;
+            });
+        } catch (DataAccessException ex) {
+            LOGGER.error(ex.toString());
+            throw new DataNotFoundErrorExceptionHandler("Database error while fetching packages");
+        } catch (Exception ex) {
+            throw new InternalServerErrorExceptionHandler("Unexpected error while fetching packages");
+        }
+    }
+
+
+    @Override
+    public List<PackageHistoryDetailsResponse> getPackageHistoryDetailsById(String packageId) {
+        try {
+            return jdbcTemplate.query(PackageQueries.GET_PACKAGE_HISTORY_DETAILS_BY_ID, ps -> {
+                ps.setString(1, packageId);
+            }, (ResultSet rs) -> {
+                List<PackageHistoryDetailsResponse> result = new ArrayList<>();
+                ObjectMapper objectMapper = new ObjectMapper(); // Jackson mapper
+
+                while (rs.next()) {
+                    // Package info
+                    PackageHistoryDetailsResponse.PackageInfo packageInfo = PackageHistoryDetailsResponse.PackageInfo.builder()
+                            .packageId(rs.getInt("package_id"))
+                            .packageName(rs.getString("package_name"))
+                            .tourId(rs.getInt("tour_id"))
+                            .build();
+
+                    // Users
+                    PackageHistoryDetailsResponse.UserInfo createdByUser = PackageHistoryDetailsResponse.UserInfo.builder()
+                            .fullName(rs.getString("created_by_user"))
+                            .imageUrl(rs.getString("created_by_image"))
+                            .build();
+
+                    PackageHistoryDetailsResponse.UserInfo updatedByUser = PackageHistoryDetailsResponse.UserInfo.builder()
+                            .fullName(rs.getString("updated_by_user"))
+                            .build();
+
+                    PackageHistoryDetailsResponse.UserInfo terminatedByUser = PackageHistoryDetailsResponse.UserInfo.builder()
+                            .fullName(rs.getString("terminated_by_user"))
+                            .build();
+
+                    // Images JSON
+                    List<PackageHistoryDetailsResponse.ImageInfo> images = new ArrayList<>();
+                    String imagesJson = rs.getString("images");
+                    if (imagesJson != null && !imagesJson.isEmpty()) {
+                        try {
+                            images = objectMapper.readValue(
+                                    imagesJson,
+                                    new TypeReference<List<PackageHistoryDetailsResponse.ImageInfo>>() {}
+                            );
+                        } catch (JsonProcessingException e) {
+                            LOGGER.warn("Failed to parse images JSON for packageHistoryId {}: {}",
+                                    rs.getInt("package_history_id"), e.getMessage());
+                            images = new ArrayList<>();
+                        }
+                    }
+
+
+                    // Build final response
+                    PackageHistoryDetailsResponse response = PackageHistoryDetailsResponse.builder()
+                            .packageHistoryId(rs.getInt("package_history_id"))
+                            .packageScheduleId(rs.getInt("package_schedule_id"))
+                            .packageScheduleName(rs.getString("package_schedule_name"))
+                            .assumeStartDate(rs.getDate("assume_start_date") != null ? rs.getDate("assume_start_date").toLocalDate() : null)
+                            .assumeEndDate(rs.getDate("assume_end_date") != null ? rs.getDate("assume_end_date").toLocalDate() : null)
+                            .durationStart(rs.getInt("duration_start"))
+                            .durationEnd(rs.getInt("duration_end"))
+                            .packageInfo(packageInfo)
+                            .numberOfParticipate(rs.getInt("number_of_participate"))
+                            .rating(rs.getBigDecimal("rating"))
+                            .duration(rs.getInt("duration"))
+                            .historyDescription(rs.getString("history_description"))
+                            .color(rs.getString("color"))
+                            .hoverColor(rs.getString("hover_color"))
+                            .startDate(rs.getDate("start_date") != null ? rs.getDate("start_date").toLocalDate() : null)
+                            .endDate(rs.getDate("end_date") != null ? rs.getDate("end_date").toLocalDate() : null)
+                            .historyCreatedAt(rs.getTimestamp("history_created_at").toLocalDateTime())
+                            .createdByUser(createdByUser)
+                            .historyUpdatedAt(rs.getTimestamp("history_updated_at") != null ? rs.getTimestamp("history_updated_at").toLocalDateTime() : null)
+                            .updatedByUser(updatedByUser)
+                            .historyTerminatedAt(rs.getTimestamp("history_terminated_at") != null ? rs.getTimestamp("history_terminated_at").toLocalDateTime() : null)
+                            .terminatedByUser(terminatedByUser)
+                            .images(images)
+                            .build();
+
+                    result.add(response);
+                }
+
+                return result;
+            });
+        } catch (DataAccessException ex) {
+            LOGGER.error(ex.toString());
+            throw new DataNotFoundErrorExceptionHandler("Database error while fetching packages");
+        } catch (Exception ex) {
+            throw new InternalServerErrorExceptionHandler("Unexpected error while fetching packages");
+        }
+    }
+
+
+    @Override
+    public List<PackageHistoryDetailsResponse> getAllPackageHistoryDetails() {
+        try {
+            return jdbcTemplate.query(PackageQueries.GET_PACKAGE_HISTORY_DETAILS, (ResultSet rs) -> {
+                List<PackageHistoryDetailsResponse> result = new ArrayList<>();
+                while (rs.next()) {
+                    // Package info
+                    PackageHistoryDetailsResponse.PackageInfo packageInfo = PackageHistoryDetailsResponse.PackageInfo.builder()
+                            .packageId(rs.getInt("package_id"))
+                            .packageName(rs.getString("package_name"))
+                            .tourId(rs.getInt("tour_id"))
+                            .build();
+
+                    // Users
+                    PackageHistoryDetailsResponse.UserInfo createdByUser = PackageHistoryDetailsResponse.UserInfo.builder()
+                            .fullName(rs.getString("created_by_user"))
+                            .imageUrl(rs.getString("created_by_image"))
+                            .build();
+
+                    PackageHistoryDetailsResponse.UserInfo updatedByUser = PackageHistoryDetailsResponse.UserInfo.builder()
+                            .fullName(rs.getString("updated_by_user"))
+                            .build();
+
+                    PackageHistoryDetailsResponse.UserInfo terminatedByUser = PackageHistoryDetailsResponse.UserInfo.builder()
+                            .fullName(rs.getString("terminated_by_user"))
+                            .build();
+
+                    // Images (JSON array from MySQL)
+                    List<PackageHistoryDetailsResponse.ImageInfo> images = new ArrayList<>();
+                    String imagesJson = rs.getString("images");
+                    if (imagesJson != null && !imagesJson.isEmpty()) {
+                        try {
+                            ObjectMapper objectMapper = new ObjectMapper();
+                            images = objectMapper.readValue(
+                                    imagesJson,
+                                    new TypeReference<List<PackageHistoryDetailsResponse.ImageInfo>>() {}
+                            );
+                        } catch (JsonProcessingException e) {
+                            LOGGER.warn("Failed to parse images JSON for packageHistoryId {}: {}",
+                                    rs.getInt("package_history_id"), e.getMessage());
+                            images = new ArrayList<>();
+                        }
+                    }
+
+
+                    // Build final response
+                    PackageHistoryDetailsResponse response = PackageHistoryDetailsResponse.builder()
+                            .packageHistoryId(rs.getInt("package_history_id"))
+                            .packageScheduleId(rs.getInt("package_schedule_id"))
+                            .packageScheduleName(rs.getString("package_schedule_name"))
+                            .assumeStartDate(rs.getDate("assume_start_date") != null ? rs.getDate("assume_start_date").toLocalDate() : null)
+                            .assumeEndDate(rs.getDate("assume_end_date") != null ? rs.getDate("assume_end_date").toLocalDate() : null)
+                            .durationStart(rs.getInt("duration_start"))
+                            .durationEnd(rs.getInt("duration_end"))
+                            .packageInfo(packageInfo)
+                            .numberOfParticipate(rs.getInt("number_of_participate"))
+                            .rating(rs.getBigDecimal("rating"))
+                            .duration(rs.getInt("duration"))
+                            .historyDescription(rs.getString("history_description"))
+                            .color(rs.getString("color"))
+                            .hoverColor(rs.getString("hover_color"))
+                            .startDate(rs.getDate("start_date") != null ? rs.getDate("start_date").toLocalDate() : null)
+                            .endDate(rs.getDate("end_date") != null ? rs.getDate("end_date").toLocalDate() : null)
+                            .historyCreatedAt(rs.getTimestamp("history_created_at").toLocalDateTime())
+                            .createdByUser(createdByUser)
+                            .historyUpdatedAt(rs.getTimestamp("history_updated_at") != null ? rs.getTimestamp("history_updated_at").toLocalDateTime() : null)
+                            .updatedByUser(updatedByUser)
+                            .historyTerminatedAt(rs.getTimestamp("history_terminated_at") != null ? rs.getTimestamp("history_terminated_at").toLocalDateTime() : null)
+                            .terminatedByUser(terminatedByUser)
+                            .images(images)
+                            .build();
+
+                    result.add(response);
+                }
+                return result;
+            });
+        } catch (DataAccessException ex) {
+            LOGGER.error(ex.toString());
+            throw new DataNotFoundErrorExceptionHandler("Database error while fetching packages");
+        } catch (Exception ex) {
+            throw new InternalServerErrorExceptionHandler("Unexpected error while fetching packages");
+        }
+    }
+
 
 
 }

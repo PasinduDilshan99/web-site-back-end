@@ -308,4 +308,156 @@ public class PackageQueries {
             ORDER BY pr.id, prc.id, prcr.id
             """;
 
+    public static final String GET_PACKAGE_HISTORY_DETAILS = """
+            SELECT
+                ph.id AS package_history_id,
+                ph.package_schedule_id,
+                ps.name AS package_schedule_name,
+                ps.assume_start_date,
+                ps.assume_end_date,
+                ps.duration_start,
+                ps.duration_end,
+                p.package_id,
+                p.name AS package_name,
+                p.tour_id,
+                ph.number_of_participate,
+                ph.rating,
+                ph.duration,
+                ph.description AS history_description,
+                ph.color,
+                ph.hover_color,
+                ph.start_date,
+                ph.end_date,
+                ph.created_at AS history_created_at,
+                CONCAT(uc.first_name, ' ', IFNULL(uc.middle_name, ''), ' ', IFNULL(uc.last_name, '')) AS created_by_user,
+                uc.image_url AS created_by_image,
+                ph.updated_at AS history_updated_at,
+                CONCAT(uu.first_name, ' ', IFNULL(uu.middle_name, ''), ' ', IFNULL(uu.last_name, '')) AS updated_by_user,
+                ph.terminated_at AS history_terminated_at,
+                CONCAT(ut.first_name, ' ', IFNULL(ut.middle_name, ''), ' ', IFNULL(ut.last_name, '')) AS terminated_by_user,
+                COALESCE(
+                    JSON_ARRAYAGG(
+                        JSON_OBJECT(
+                            'image_id', thi.id,
+                            'name', thi.name,
+                            'description', thi.description,
+                            'image_url', thi.image_url,
+                            'color', thi.color
+                        )
+                    ), JSON_ARRAY()
+                ) AS images
+            FROM package_history ph
+            JOIN package_schedule ps ON ph.package_schedule_id = ps.id
+            JOIN packages p ON ps.package_id = p.package_id
+            LEFT JOIN tour_schedule ts ON ts.tour_id = p.tour_id
+            LEFT JOIN tour_history_images thi ON thi.tour_schedule_id = ts.id
+            LEFT JOIN user uc ON ph.created_by = uc.user_id
+            LEFT JOIN user uu ON ph.updated_by = uu.user_id
+            LEFT JOIN user ut ON ph.terminated_by = ut.user_id
+            GROUP BY ph.id
+            ORDER BY ph.created_at DESC
+            """;
+
+    public static final String GET_PACKAGE_HISTORY_DETAILS_BY_ID = """
+            SELECT
+                ph.id AS package_history_id,
+                ph.package_schedule_id,
+                ps.name AS package_schedule_name,
+                ps.assume_start_date,
+                ps.assume_end_date,
+                ps.duration_start,
+                ps.duration_end,
+                p.package_id,
+                p.name AS package_name,
+                p.tour_id,
+                ph.number_of_participate,
+                ph.rating,
+                ph.duration,
+                ph.description AS history_description,
+                ph.color,
+                ph.hover_color,
+                ph.start_date,
+                ph.end_date,
+                ph.created_at AS history_created_at,
+                CONCAT(uc.first_name, ' ', IFNULL(uc.middle_name, ''), ' ', IFNULL(uc.last_name, '')) AS created_by_user,
+                uc.image_url AS created_by_image,
+                ph.updated_at AS history_updated_at,
+                CONCAT(uu.first_name, ' ', IFNULL(uu.middle_name, ''), ' ', IFNULL(uu.last_name, '')) AS updated_by_user,
+                ph.terminated_at AS history_terminated_at,
+                CONCAT(ut.first_name, ' ', IFNULL(ut.middle_name, ''), ' ', IFNULL(ut.last_name, '')) AS terminated_by_user,
+                COALESCE(
+                    JSON_ARRAYAGG(
+                        JSON_OBJECT(
+                            'image_id', thi.id,
+                            'name', thi.name,
+                            'description', thi.description,
+                            'image_url', thi.image_url,
+                            'color', thi.color
+                        )
+                    ), JSON_ARRAY()
+                ) AS images
+            FROM package_history ph
+            JOIN package_schedule ps ON ph.package_schedule_id = ps.id
+            JOIN packages p ON ps.package_id = p.package_id
+            LEFT JOIN tour_schedule ts ON ts.tour_id = p.tour_id
+            LEFT JOIN tour_history_images thi ON thi.tour_schedule_id = ts.id
+            LEFT JOIN user uc ON ph.created_by = uc.user_id
+            LEFT JOIN user uu ON ph.updated_by = uu.user_id
+            LEFT JOIN user ut ON ph.terminated_by = ut.user_id
+            GROUP BY ph.id
+            HAVING p.package_id = ?
+            ORDER BY ph.created_at DESC
+            """;
+
+    public static final String GET_PACKAGE_HISTORY_IMAGES = """
+            SELECT
+                thi.id AS image_id,
+                thi.name AS image_name,
+                thi.description AS image_description,
+                thi.image_url,
+                thi.color,
+                cs.name AS image_status_name,
+                ps.id AS package_schedule_id,
+                ps.name AS package_schedule_name,
+                p.package_id,
+                p.name AS package_name,
+                p.tour_id,
+                thi.created_at AS created_at,
+                CONCAT(uc.first_name, ' ', IFNULL(uc.middle_name, ''), ' ', IFNULL(uc.last_name, '')) AS created_by_user,
+                uc.image_url AS created_by_image
+            FROM tour_history_images thi
+            JOIN tour_schedule ts ON thi.tour_schedule_id = ts.id
+            JOIN packages p ON ts.tour_id = p.tour_id
+            JOIN package_schedule ps ON ps.package_id = p.package_id
+            LEFT JOIN common_status cs ON thi.status = cs.id
+            LEFT JOIN user uc ON thi.created_by = uc.user_id
+            ORDER BY thi.created_at DESC
+            """;
+
+    public static final String GET_PACKAGE_HISTORY_IMAGES_BY_ID = """
+            SELECT
+                thi.id AS image_id,
+                thi.name AS image_name,
+                thi.description AS image_description,
+                thi.image_url,
+                thi.color,
+                cs.name AS image_status_name,
+                ps.id AS package_schedule_id,
+                ps.name AS package_schedule_name,
+                p.package_id,
+                p.name AS package_name,
+                p.tour_id,
+                thi.created_at AS created_at,
+                CONCAT(uc.first_name, ' ', IFNULL(uc.middle_name, ''), ' ', IFNULL(uc.last_name, '')) AS created_by_user,
+                uc.image_url AS created_by_image
+            FROM tour_history_images thi
+            JOIN tour_schedule ts ON thi.tour_schedule_id = ts.id
+            JOIN packages p ON ts.tour_id = p.tour_id
+            JOIN package_schedule ps ON ps.package_id = p.package_id
+            LEFT JOIN common_status cs ON thi.status = cs.id
+            LEFT JOIN user uc ON thi.created_by = uc.user_id
+            WHERE p.package_id = ?
+            ORDER BY thi.created_at DESC
+            """;
+
 }
