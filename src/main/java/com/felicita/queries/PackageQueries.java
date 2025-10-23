@@ -335,17 +335,15 @@ public class PackageQueries {
                 CONCAT(uu.first_name, ' ', IFNULL(uu.middle_name, ''), ' ', IFNULL(uu.last_name, '')) AS updated_by_user,
                 ph.terminated_at AS history_terminated_at,
                 CONCAT(ut.first_name, ' ', IFNULL(ut.middle_name, ''), ' ', IFNULL(ut.last_name, '')) AS terminated_by_user,
-                COALESCE(
-                    JSON_ARRAYAGG(
-                        JSON_OBJECT(
-                            'image_id', thi.id,
-                            'name', thi.name,
-                            'description', thi.description,
-                            'image_url', thi.image_url,
-                            'color', thi.color
-                        )
-                    ), JSON_ARRAY()
-                ) AS images
+                COALESCE(JSON_ARRAYAGG(
+                    JSON_OBJECT(
+                        'imageId', thi.id,
+                        'name', thi.name,
+                        'description', thi.description,
+                        'imageUrl', thi.image_url,
+                        'color', thi.color
+                    )
+                ), JSON_ARRAY()) AS images
             FROM package_history ph
             JOIN package_schedule ps ON ph.package_schedule_id = ps.id
             JOIN packages p ON ps.package_id = p.package_id
@@ -385,17 +383,15 @@ public class PackageQueries {
                 CONCAT(uu.first_name, ' ', IFNULL(uu.middle_name, ''), ' ', IFNULL(uu.last_name, '')) AS updated_by_user,
                 ph.terminated_at AS history_terminated_at,
                 CONCAT(ut.first_name, ' ', IFNULL(ut.middle_name, ''), ' ', IFNULL(ut.last_name, '')) AS terminated_by_user,
-                COALESCE(
-                    JSON_ARRAYAGG(
-                        JSON_OBJECT(
-                            'image_id', thi.id,
-                            'name', thi.name,
-                            'description', thi.description,
-                            'image_url', thi.image_url,
-                            'color', thi.color
-                        )
-                    ), JSON_ARRAY()
-                ) AS images
+                COALESCE(JSON_ARRAYAGG(
+                    JSON_OBJECT(
+                        'imageId', thi.id,
+                        'name', thi.name,
+                        'description', thi.description,
+                        'imageUrl', thi.image_url,
+                        'color', thi.color
+                    )
+                ), JSON_ARRAY()) AS images
             FROM package_history ph
             JOIN package_schedule ps ON ph.package_schedule_id = ps.id
             JOIN packages p ON ps.package_id = p.package_id

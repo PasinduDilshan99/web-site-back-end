@@ -616,21 +616,22 @@ public class PackageRepositoryImpl implements PackageRepository {
     @Override
     public List<PackageHistoryDetailsResponse> getPackageHistoryDetailsById(String packageId) {
         try {
+            ObjectMapper objectMapper = new ObjectMapper(); // Jackson mapper
+
             return jdbcTemplate.query(PackageQueries.GET_PACKAGE_HISTORY_DETAILS_BY_ID, ps -> {
                 ps.setString(1, packageId);
             }, (ResultSet rs) -> {
                 List<PackageHistoryDetailsResponse> result = new ArrayList<>();
-                ObjectMapper objectMapper = new ObjectMapper(); // Jackson mapper
 
                 while (rs.next()) {
-                    // Package info
+                    // --- Package info ---
                     PackageHistoryDetailsResponse.PackageInfo packageInfo = PackageHistoryDetailsResponse.PackageInfo.builder()
                             .packageId(rs.getInt("package_id"))
                             .packageName(rs.getString("package_name"))
                             .tourId(rs.getInt("tour_id"))
                             .build();
 
-                    // Users
+                    // --- Users ---
                     PackageHistoryDetailsResponse.UserInfo createdByUser = PackageHistoryDetailsResponse.UserInfo.builder()
                             .fullName(rs.getString("created_by_user"))
                             .imageUrl(rs.getString("created_by_image"))
@@ -644,7 +645,7 @@ public class PackageRepositoryImpl implements PackageRepository {
                             .fullName(rs.getString("terminated_by_user"))
                             .build();
 
-                    // Images JSON
+                    // --- Images ---
                     List<PackageHistoryDetailsResponse.ImageInfo> images = new ArrayList<>();
                     String imagesJson = rs.getString("images");
                     if (imagesJson != null && !imagesJson.isEmpty()) {
@@ -656,12 +657,10 @@ public class PackageRepositoryImpl implements PackageRepository {
                         } catch (JsonProcessingException e) {
                             LOGGER.warn("Failed to parse images JSON for packageHistoryId {}: {}",
                                     rs.getInt("package_history_id"), e.getMessage());
-                            images = new ArrayList<>();
                         }
                     }
 
-
-                    // Build final response
+                    // --- Build response ---
                     PackageHistoryDetailsResponse response = PackageHistoryDetailsResponse.builder()
                             .packageHistoryId(rs.getInt("package_history_id"))
                             .packageScheduleId(rs.getInt("package_schedule_id"))
@@ -679,7 +678,7 @@ public class PackageRepositoryImpl implements PackageRepository {
                             .hoverColor(rs.getString("hover_color"))
                             .startDate(rs.getDate("start_date") != null ? rs.getDate("start_date").toLocalDate() : null)
                             .endDate(rs.getDate("end_date") != null ? rs.getDate("end_date").toLocalDate() : null)
-                            .historyCreatedAt(rs.getTimestamp("history_created_at").toLocalDateTime())
+                            .historyCreatedAt(rs.getTimestamp("history_created_at") != null ? rs.getTimestamp("history_created_at").toLocalDateTime() : null)
                             .createdByUser(createdByUser)
                             .historyUpdatedAt(rs.getTimestamp("history_updated_at") != null ? rs.getTimestamp("history_updated_at").toLocalDateTime() : null)
                             .updatedByUser(updatedByUser)
@@ -693,13 +692,16 @@ public class PackageRepositoryImpl implements PackageRepository {
 
                 return result;
             });
+
         } catch (DataAccessException ex) {
-            LOGGER.error(ex.toString());
+            LOGGER.error("DataAccessException: {}", ex.toString());
             throw new DataNotFoundErrorExceptionHandler("Database error while fetching packages");
         } catch (Exception ex) {
+            LOGGER.error("Exception: {}", ex.toString());
             throw new InternalServerErrorExceptionHandler("Unexpected error while fetching packages");
         }
     }
+
 
 
     @Override
@@ -707,6 +709,8 @@ public class PackageRepositoryImpl implements PackageRepository {
         try {
             return jdbcTemplate.query(PackageQueries.GET_PACKAGE_HISTORY_DETAILS, (ResultSet rs) -> {
                 List<PackageHistoryDetailsResponse> result = new ArrayList<>();
+                ObjectMapper objectMapper = new ObjectMapper();
+
                 while (rs.next()) {
                     // Package info
                     PackageHistoryDetailsResponse.PackageInfo packageInfo = PackageHistoryDetailsResponse.PackageInfo.builder()
@@ -729,26 +733,22 @@ public class PackageRepositoryImpl implements PackageRepository {
                             .fullName(rs.getString("terminated_by_user"))
                             .build();
 
-                    // Images (JSON array from MySQL)
+                    // Images JSON array
                     List<PackageHistoryDetailsResponse.ImageInfo> images = new ArrayList<>();
                     String imagesJson = rs.getString("images");
                     if (imagesJson != null && !imagesJson.isEmpty()) {
                         try {
-                            ObjectMapper objectMapper = new ObjectMapper();
                             images = objectMapper.readValue(
                                     imagesJson,
                                     new TypeReference<List<PackageHistoryDetailsResponse.ImageInfo>>() {}
                             );
                         } catch (JsonProcessingException e) {
-                            LOGGER.warn("Failed to parse images JSON for packageHistoryId {}: {}",
-                                    rs.getInt("package_history_id"), e.getMessage());
-                            images = new ArrayList<>();
+                            throw new RuntimeException("Failed to parse images JSON", e);
                         }
                     }
 
-
                     // Build final response
-                    PackageHistoryDetailsResponse response = PackageHistoryDetailsResponse.builder()
+                    PackageHistoryDetailsResponse history = PackageHistoryDetailsResponse.builder()
                             .packageHistoryId(rs.getInt("package_history_id"))
                             .packageScheduleId(rs.getInt("package_schedule_id"))
                             .packageScheduleName(rs.getString("package_schedule_name"))
@@ -774,7 +774,7 @@ public class PackageRepositoryImpl implements PackageRepository {
                             .images(images)
                             .build();
 
-                    result.add(response);
+                    result.add(history);
                 }
                 return result;
             });
@@ -782,9 +782,11 @@ public class PackageRepositoryImpl implements PackageRepository {
             LOGGER.error(ex.toString());
             throw new DataNotFoundErrorExceptionHandler("Database error while fetching packages");
         } catch (Exception ex) {
+            LOGGER.error(ex.toString());
             throw new InternalServerErrorExceptionHandler("Unexpected error while fetching packages");
         }
     }
+
 
 
 
