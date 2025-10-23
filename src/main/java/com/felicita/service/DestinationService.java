@@ -30,4 +30,12 @@ public interface DestinationService {
     CommonResponse<List<DestinationReviewDetailsResponse>> getDestinationReviewDetailsById(String destinationId);
 
     CommonResponse<DestinationResponseDto> getDestinationDetailsById(String destinationId);
+
+    CommonResponse<List<DestinationHistoryDetailsResponse>> getAllDestinationHistoryDetails();
+
+    CommonResponse<List<DestinationHistoryDetailsResponse>> getDestinationHistoryDetailsById(String destinationId);
+
+    CommonResponse<List<DestinationHistoryImageResponse>> getAllDestinationHistoryImages();
+
+    CommonResponse<List<DestinationHistoryImageResponse>> getDestinationHistoryImagesById(String destinationId);
 }

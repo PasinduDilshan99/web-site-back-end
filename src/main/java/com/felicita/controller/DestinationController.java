@@ -125,5 +125,37 @@ public class DestinationController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping(path = "/history")
+    public ResponseEntity<CommonResponse<List<DestinationHistoryDetailsResponse>>> getAllDestinationHistoryDetails() {
+        LOGGER.info("{} Start execute get all destinations review details {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<DestinationHistoryDetailsResponse>> response = destinationService.getAllDestinationHistoryDetails();
+        LOGGER.info("{} End execute get all destinations review details {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/history/{destinationId}")
+    public ResponseEntity<CommonResponse<List<DestinationHistoryDetailsResponse>>> getDestinationHistoryDetailsById(@PathVariable String destinationId) {
+        LOGGER.info("{} Start execute get all destinations review details by id {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<DestinationHistoryDetailsResponse>> response = destinationService.getDestinationHistoryDetailsById(destinationId);
+        LOGGER.info("{} End execute get all destinations review details by id {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/history-images")
+    public ResponseEntity<CommonResponse<List<DestinationHistoryImageResponse>>> getAllDestinationHistoryImages() {
+        LOGGER.info("{} Start execute get all destination review details {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<DestinationHistoryImageResponse>> response = destinationService.getAllDestinationHistoryImages();
+        LOGGER.info("{} End execute get all destination review details {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/history-images/{destinationId}")
+    public ResponseEntity<CommonResponse<List<DestinationHistoryImageResponse>>> getDestinationHistoryImagesById(@PathVariable String destinationId) {
+        LOGGER.info("{} Start execute get all destination review details by id {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<DestinationHistoryImageResponse>> response = destinationService.getDestinationHistoryImagesById(destinationId);
+        LOGGER.info("{} End execute get all destination review details by id {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 
 }

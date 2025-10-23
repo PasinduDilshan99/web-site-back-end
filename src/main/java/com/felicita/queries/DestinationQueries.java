@@ -598,5 +598,166 @@ public class DestinationQueries {
             """;
 
 
+    public static final String GET_DESTINATION_REVIEW_DETAILS = """
+            SELECT
+                dh.id AS history_id,
+                d.destination_id,
+                d.name AS destination_name,
+                d.description AS destination_description,
+                d.location AS destination_location,
+                d.latitude,
+                d.longitude,
+                dh.title AS history_title,
+                dh.description AS history_description,
+                dh.event_date,
+                dh.status AS history_status_id,
+                cs_history.name AS history_status_name,
+                u_created.username AS history_created_by_username,
+                u_updated.username AS history_updated_by_username,
+                u_terminated.username AS history_terminated_by_username,
+                dh.created_at AS history_created_at,
+                dh.updated_at AS history_updated_at,
+                dh.terminated_at AS history_terminated_at,
+                dhi.id AS image_id,
+                dhi.name AS image_name,
+                dhi.description AS image_description,
+                dhi.image_url,
+                dhi.status AS image_status_id,
+                cs_image.name AS image_status_name,
+                ui_created.username AS image_created_by_username,
+                ui_updated.username AS image_updated_by_username,
+                ui_terminated.username AS image_terminated_by_username,
+                dhi.created_at AS image_created_at,
+                dhi.updated_at AS image_updated_at,
+                dhi.terminated_at AS image_terminated_at
+            FROM destination_history dh
+            JOIN destination d ON dh.destination_id = d.destination_id
+            LEFT JOIN destination_history_images dhi ON dhi.destination_history_id = dh.id
+            LEFT JOIN common_status cs_history ON dh.status = cs_history.id
+            LEFT JOIN common_status cs_image ON dhi.status = cs_image.id
+            LEFT JOIN user u_created ON dh.created_by = u_created.user_id
+            LEFT JOIN user u_updated ON dh.updated_by = u_updated.user_id
+            LEFT JOIN user u_terminated ON dh.terminated_by = u_terminated.user_id
+            LEFT JOIN user ui_created ON dhi.created_by = ui_created.user_id
+            LEFT JOIN user ui_updated ON dhi.updated_by = ui_updated.user_id
+            LEFT JOIN user ui_terminated ON dhi.terminated_by = ui_terminated.user_id
+            ORDER BY d.destination_id, dh.event_date, dhi.id
+            """;
+
+    public static final String GET_DESTINATION_REVIEW_DETAILS_BY_ID = """
+            SELECT
+                dh.id AS history_id,
+                d.destination_id,
+                d.name AS destination_name,
+                d.description AS destination_description,
+                d.location AS destination_location,
+                d.latitude,
+                d.longitude,
+                dh.title AS history_title,
+                dh.description AS history_description,
+                dh.event_date,
+                dh.status AS history_status_id,
+                cs_history.name AS history_status_name,
+                u_created.username AS history_created_by_username,
+                u_updated.username AS history_updated_by_username,
+                u_terminated.username AS history_terminated_by_username,
+                dh.created_at AS history_created_at,
+                dh.updated_at AS history_updated_at,
+                dh.terminated_at AS history_terminated_at,
+                dhi.id AS image_id,
+                dhi.name AS image_name,
+                dhi.description AS image_description,
+                dhi.image_url,
+                dhi.status AS image_status_id,
+                cs_image.name AS image_status_name,
+                ui_created.username AS image_created_by_username,
+                ui_updated.username AS image_updated_by_username,
+                ui_terminated.username AS image_terminated_by_username,
+                dhi.created_at AS image_created_at,
+                dhi.updated_at AS image_updated_at,
+                dhi.terminated_at AS image_terminated_at
+            FROM destination_history dh
+            JOIN destination d ON dh.destination_id = d.destination_id
+            LEFT JOIN destination_history_images dhi ON dhi.destination_history_id = dh.id
+            LEFT JOIN common_status cs_history ON dh.status = cs_history.id
+            LEFT JOIN common_status cs_image ON dhi.status = cs_image.id
+            LEFT JOIN user u_created ON dh.created_by = u_created.user_id
+            LEFT JOIN user u_updated ON dh.updated_by = u_updated.user_id
+            LEFT JOIN user u_terminated ON dh.terminated_by = u_terminated.user_id
+            LEFT JOIN user ui_created ON dhi.created_by = ui_created.user_id
+            LEFT JOIN user ui_updated ON dhi.updated_by = ui_updated.user_id
+            LEFT JOIN user ui_terminated ON dhi.terminated_by = ui_terminated.user_id
+            WHERE d.destination_id = ?
+            ORDER BY d.destination_id, dh.event_date, dhi.id
+            """;
+
+    public static final String GET_DESTINATION_HISTORY_IMAGES = """
+            SELECT
+                dhi.id AS image_id,
+                dhi.name AS image_name,
+                dhi.description AS image_description,
+                dhi.image_url,
+                cs_image.name AS image_status_name,
+                dhi.created_at AS image_created_at,
+                dhi.updated_at AS image_updated_at,
+                dhi.terminated_at AS image_terminated_at,
+                ui_created.username AS image_created_by_username,
+                ui_updated.username AS image_updated_by_username,
+                ui_terminated.username AS image_terminated_by_username,
+                dh.id AS history_id,
+                dh.title AS history_title,
+                dh.description AS history_description,
+                dh.event_date AS history_event_date,
+                cs_history.name AS history_status_name,
+                d.destination_id,
+                d.name AS destination_name,
+                d.location AS destination_location,
+                d.latitude,
+                d.longitude
+            FROM destination_history_images dhi
+            JOIN destination_history dh ON dhi.destination_history_id = dh.id
+            JOIN destination d ON dh.destination_id = d.destination_id
+            LEFT JOIN common_status cs_image ON dhi.status = cs_image.id
+            LEFT JOIN common_status cs_history ON dh.status = cs_history.id
+            LEFT JOIN user ui_created ON dhi.created_by = ui_created.user_id
+            LEFT JOIN user ui_updated ON dhi.updated_by = ui_updated.user_id
+            LEFT JOIN user ui_terminated ON dhi.terminated_by = ui_terminated.user_id
+            ORDER BY dh.id, dhi.id
+            """;
+
+    public static final String GET_DESTINATION_HISTORY_IMAGES_BY_ID = """
+            SELECT
+                dhi.id AS image_id,
+                dhi.name AS image_name,
+                dhi.description AS image_description,
+                dhi.image_url,
+                cs_image.name AS image_status_name,
+                dhi.created_at AS image_created_at,
+                dhi.updated_at AS image_updated_at,
+                dhi.terminated_at AS image_terminated_at,
+                ui_created.username AS image_created_by_username,
+                ui_updated.username AS image_updated_by_username,
+                ui_terminated.username AS image_terminated_by_username,
+                dh.id AS history_id,
+                dh.title AS history_title,
+                dh.description AS history_description,
+                dh.event_date AS history_event_date,
+                cs_history.name AS history_status_name,
+                d.destination_id,
+                d.name AS destination_name,
+                d.location AS destination_location,
+                d.latitude,
+                d.longitude
+            FROM destination_history_images dhi
+            JOIN destination_history dh ON dhi.destination_history_id = dh.id
+            JOIN destination d ON dh.destination_id = d.destination_id
+            LEFT JOIN common_status cs_image ON dhi.status = cs_image.id
+            LEFT JOIN common_status cs_history ON dh.status = cs_history.id
+            LEFT JOIN user ui_created ON dhi.created_by = ui_created.user_id
+            LEFT JOIN user ui_updated ON dhi.updated_by = ui_updated.user_id
+            LEFT JOIN user ui_terminated ON dhi.terminated_by = ui_terminated.user_id
+            WHERE d.destination_id = ?
+            ORDER BY dh.id, dhi.id
+            """;
 
 }
