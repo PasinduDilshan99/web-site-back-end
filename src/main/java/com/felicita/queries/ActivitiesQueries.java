@@ -352,4 +352,248 @@ public class ActivitiesQueries {
             		 a.status, a.created_at, a.updated_at
             """;
 
+    public static final String GET_ACTIVITY_HISTORY_DETAILS = """
+            SELECT
+                ah.id AS history_id,
+                a.id AS activity_id,
+                a.name AS activity_name,
+                a.description AS activity_description,
+                a.activities_category AS activity_category,
+                a.duration_hours,
+                a.available_from,
+                a.available_to,
+                a.price_local,
+                a.price_foreigners,
+                a.min_participate,
+                a.max_participate,
+                a.season,
+                d.destination_id,
+                d.name AS destination_name,
+                d.description AS destination_description,
+                d.location AS destination_location,
+                d.latitude,
+                d.longitude,
+                asch.id AS schedule_id,
+                asch.name AS schedule_name,
+                asch.description AS schedule_description,
+                asch.assume_start_date,
+                asch.assume_end_date,
+                asch.duration_hours_start,
+                asch.duration_hours_end,
+                asch.special_note AS schedule_special_note,
+                ah.name AS history_name,
+                ah.description AS history_description,
+                ah.number_of_participate,
+                ah.activity_start,
+                ah.activity_end,
+                ah.rating,
+                ah.special_note AS history_special_note,
+                cs_history.name AS history_status_name,
+                u_created.username AS history_created_by_username,
+                u_updated.username AS history_updated_by_username,
+                u_terminated.username AS history_terminated_by_username,
+                ah.created_at AS history_created_at,
+                ah.updated_at AS history_updated_at,
+                ah.terminated_at AS history_terminated_at,
+                ahi.id AS image_id,
+                ahi.name AS image_name,
+                ahi.description AS image_description,
+                ahi.image_url,
+                cs_image.name AS image_status_name,
+                ui_created.username AS image_created_by_username,
+                ui_updated.username AS image_updated_by_username,
+                ui_terminated.username AS image_terminated_by_username,
+                ahi.created_at AS image_created_at,
+                ahi.updated_at AS image_updated_at,
+                ahi.terminated_at AS image_terminated_at
+            FROM activities_history ah
+            JOIN activities_schedule asch ON ah.activity_schedule_id = asch.id
+            JOIN activities a ON asch.activity_id = a.id
+            LEFT JOIN destination d ON a.destination_id = d.destination_id
+            LEFT JOIN common_status cs_history ON ah.status = cs_history.id
+            LEFT JOIN user u_created ON ah.created_by = u_created.user_id
+            LEFT JOIN user u_updated ON ah.updated_by = u_updated.user_id
+            LEFT JOIN user u_terminated ON ah.terminated_by = u_terminated.user_id
+            LEFT JOIN activities_history_images ahi ON ahi.activities_history_id = ah.id
+            LEFT JOIN common_status cs_image ON ahi.status = cs_image.id
+            LEFT JOIN user ui_created ON ahi.created_by = ui_created.user_id
+            LEFT JOIN user ui_updated ON ahi.updated_by = ui_updated.user_id
+            LEFT JOIN user ui_terminated ON ahi.terminated_by = ui_terminated.user_id
+            ORDER BY a.id, asch.id, ah.activity_start, ahi.id
+            """;
+
+    public static final String GET_ACTIVITY_HISTORY_DETAILS_BY_ID = """
+            SELECT
+                ah.id AS history_id,
+                a.id AS activity_id,
+                a.name AS activity_name,
+                a.description AS activity_description,
+                a.activities_category AS activity_category,
+                a.duration_hours,
+                a.available_from,
+                a.available_to,
+                a.price_local,
+                a.price_foreigners,
+                a.min_participate,
+                a.max_participate,
+                a.season,
+                d.destination_id,
+                d.name AS destination_name,
+                d.description AS destination_description,
+                d.location AS destination_location,
+                d.latitude,
+                d.longitude,
+                asch.id AS schedule_id,
+                asch.name AS schedule_name,
+                asch.description AS schedule_description,
+                asch.assume_start_date,
+                asch.assume_end_date,
+                asch.duration_hours_start,
+                asch.duration_hours_end,
+                asch.special_note AS schedule_special_note,
+                ah.name AS history_name,
+                ah.description AS history_description,
+                ah.number_of_participate,
+                ah.activity_start,
+                ah.activity_end,
+                ah.rating,
+                ah.special_note AS history_special_note,
+                cs_history.name AS history_status_name,
+                u_created.username AS history_created_by_username,
+                u_updated.username AS history_updated_by_username,
+                u_terminated.username AS history_terminated_by_username,
+                ah.created_at AS history_created_at,
+                ah.updated_at AS history_updated_at,
+                ah.terminated_at AS history_terminated_at,
+                ahi.id AS image_id,
+                ahi.name AS image_name,
+                ahi.description AS image_description,
+                ahi.image_url,
+                cs_image.name AS image_status_name,
+                ui_created.username AS image_created_by_username,
+                ui_updated.username AS image_updated_by_username,
+                ui_terminated.username AS image_terminated_by_username,
+                ahi.created_at AS image_created_at,
+                ahi.updated_at AS image_updated_at,
+                ahi.terminated_at AS image_terminated_at
+            FROM activities_history ah
+            JOIN activities_schedule asch ON ah.activity_schedule_id = asch.id
+            JOIN activities a ON asch.activity_id = a.id
+            LEFT JOIN destination d ON a.destination_id = d.destination_id
+            LEFT JOIN common_status cs_history ON ah.status = cs_history.id
+            LEFT JOIN user u_created ON ah.created_by = u_created.user_id
+            LEFT JOIN user u_updated ON ah.updated_by = u_updated.user_id
+            LEFT JOIN user u_terminated ON ah.terminated_by = u_terminated.user_id
+            LEFT JOIN activities_history_images ahi ON ahi.activities_history_id = ah.id
+            LEFT JOIN common_status cs_image ON ahi.status = cs_image.id
+            LEFT JOIN user ui_created ON ahi.created_by = ui_created.user_id
+            LEFT JOIN user ui_updated ON ahi.updated_by = ui_updated.user_id
+            LEFT JOIN user ui_terminated ON ahi.terminated_by = ui_terminated.user_id
+            WHERE a.id = ?
+            ORDER BY a.id, asch.id, ah.activity_start, ahi.id
+            """;
+
+    public static final String GET_ACTIVITY_HISTORY_IMAGES = """
+            SELECT
+                ahi.id AS image_id,
+                ahi.name AS image_name,
+                ahi.description AS image_description,
+                ahi.image_url,
+                cs_image.name AS image_status_name,
+                ui_created.username AS image_created_by_username,
+                ui_updated.username AS image_updated_by_username,
+                ui_terminated.username AS image_terminated_by_username,
+                ahi.created_at AS image_created_at,
+                ahi.updated_at AS image_updated_at,
+                ahi.terminated_at AS image_terminated_at,
+                ah.id AS history_id,
+                ah.name AS history_name,
+                ah.description AS history_description,
+                ah.number_of_participate,
+                ah.activity_start,
+                ah.activity_end,
+                ah.rating,
+                ah.special_note AS history_special_note,
+                cs_history.name AS history_status_name,
+                asch.id AS schedule_id,
+                asch.name AS schedule_name,
+                asch.description AS schedule_description,
+                asch.assume_start_date,
+                asch.assume_end_date,
+                asch.duration_hours_start,
+                asch.duration_hours_end,
+                asch.special_note AS schedule_special_note,
+                a.id AS activity_id,
+                a.name AS activity_name,
+                a.description AS activity_description,
+                a.activities_category AS activity_category,
+                a.duration_hours,
+                a.price_local,
+                a.price_foreigners,
+                a.min_participate,
+                a.max_participate
+            FROM activities_history_images ahi
+            JOIN activities_history ah ON ahi.activities_history_id = ah.id
+            JOIN activities_schedule asch ON ah.activity_schedule_id = asch.id
+            JOIN activities a ON asch.activity_id = a.id
+            LEFT JOIN common_status cs_image ON ahi.status = cs_image.id
+            LEFT JOIN common_status cs_history ON ah.status = cs_history.id
+            LEFT JOIN user ui_created ON ahi.created_by = ui_created.user_id
+            LEFT JOIN user ui_updated ON ahi.updated_by = ui_updated.user_id
+            LEFT JOIN user ui_terminated ON ahi.terminated_by = ui_terminated.user_id
+            ORDER BY a.id, asch.id, ah.activity_start, ahi.id
+            """;
+
+    public static final String GET_ACTIVITY_HISTORY_IMAGES_BY_ID = """
+            SELECT
+                ahi.id AS image_id,
+                ahi.name AS image_name,
+                ahi.description AS image_description,
+                ahi.image_url,
+                cs_image.name AS image_status_name,
+                ui_created.username AS image_created_by_username,
+                ui_updated.username AS image_updated_by_username,
+                ui_terminated.username AS image_terminated_by_username,
+                ahi.created_at AS image_created_at,
+                ahi.updated_at AS image_updated_at,
+                ahi.terminated_at AS image_terminated_at,
+                ah.id AS history_id,
+                ah.name AS history_name,
+                ah.description AS history_description,
+                ah.number_of_participate,
+                ah.activity_start,
+                ah.activity_end,
+                ah.rating,
+                ah.special_note AS history_special_note,
+                cs_history.name AS history_status_name,
+                asch.id AS schedule_id,
+                asch.name AS schedule_name,
+                asch.description AS schedule_description,
+                asch.assume_start_date,
+                asch.assume_end_date,
+                asch.duration_hours_start,
+                asch.duration_hours_end,
+                asch.special_note AS schedule_special_note,
+                a.id AS activity_id,
+                a.name AS activity_name,
+                a.description AS activity_description,
+                a.activities_category AS activity_category,
+                a.duration_hours,
+                a.price_local,
+                a.price_foreigners,
+                a.min_participate,
+                a.max_participate
+            FROM activities_history_images ahi
+            JOIN activities_history ah ON ahi.activities_history_id = ah.id
+            JOIN activities_schedule asch ON ah.activity_schedule_id = asch.id
+            JOIN activities a ON asch.activity_id = a.id
+            LEFT JOIN common_status cs_image ON ahi.status = cs_image.id
+            LEFT JOIN common_status cs_history ON ah.status = cs_history.id
+            LEFT JOIN user ui_created ON ahi.created_by = ui_created.user_id
+            LEFT JOIN user ui_updated ON ahi.updated_by = ui_updated.user_id
+            LEFT JOIN user ui_terminated ON ahi.terminated_by = ui_terminated.user_id
+            WHERE a.id = ?
+            ORDER BY a.id, asch.id, ah.activity_start, ahi.id
+            """;
+
 }
