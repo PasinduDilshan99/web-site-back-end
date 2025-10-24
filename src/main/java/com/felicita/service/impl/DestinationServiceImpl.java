@@ -442,4 +442,132 @@ public class DestinationServiceImpl implements DestinationService {
         }
     }
 
+    @Override
+    public CommonResponse<List<DestinationHistoryDetailsResponse>> getAllDestinationHistoryDetails() {
+        LOGGER.info("Start fetching all package from repository");
+        try {
+            List<DestinationHistoryDetailsResponse> destinationReviewDetailsResponses = destinationRepository.getAllDestinationHistoryDetails();
+
+            if (destinationReviewDetailsResponses.isEmpty()) {
+                LOGGER.warn("No active package found in database");
+                throw new DataNotFoundErrorExceptionHandler("No package found");
+            }
+
+            return
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            destinationReviewDetailsResponses,
+                            Instant.now()
+                    )
+                    ;
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch package from database");
+        } finally {
+            LOGGER.info("End fetching all package from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<List<DestinationHistoryDetailsResponse>> getDestinationHistoryDetailsById(String destinationId) {
+        LOGGER.info("Start fetching all package from repository");
+        try {
+            List<DestinationHistoryDetailsResponse> destinationReviewDetailsResponses = destinationRepository.getDestinationHistoryDetailsById(destinationId);
+
+            if (destinationReviewDetailsResponses.isEmpty()) {
+                LOGGER.warn("No active package found in database");
+                throw new DataNotFoundErrorExceptionHandler("No package found");
+            }
+
+            return
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            destinationReviewDetailsResponses,
+                            Instant.now()
+                    )
+                    ;
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch package from database");
+        } finally {
+            LOGGER.info("End fetching all package from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<List<DestinationHistoryImageResponse>> getAllDestinationHistoryImages() {
+        LOGGER.info("Start fetching all package from repository");
+        try {
+            List<DestinationHistoryImageResponse> destinationHistoryImageResponses = destinationRepository.getAllDestinationHistoryImages();
+
+            if (destinationHistoryImageResponses.isEmpty()) {
+                LOGGER.warn("No active package found in database");
+                throw new DataNotFoundErrorExceptionHandler("No package found");
+            }
+
+            return
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            destinationHistoryImageResponses,
+                            Instant.now()
+                    )
+                    ;
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch package from database");
+        } finally {
+            LOGGER.info("End fetching all package from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<List<DestinationHistoryImageResponse>> getDestinationHistoryImagesById(String destinationId) {
+        LOGGER.info("Start fetching all package from repository");
+        try {
+            List<DestinationHistoryImageResponse> destinationHistoryImageResponses = destinationRepository.getDestinationHistoryImagesById(destinationId);
+
+            if (destinationHistoryImageResponses.isEmpty()) {
+                LOGGER.warn("No active package found in database");
+                throw new DataNotFoundErrorExceptionHandler("No package found");
+            }
+
+            return
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            destinationHistoryImageResponses,
+                            Instant.now()
+                    )
+                    ;
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch package from database");
+        } finally {
+            LOGGER.info("End fetching all package from repository");
+        }
+    }
+
 }

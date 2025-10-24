@@ -6,9 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.felicita.exception.DataAccessErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
 import com.felicita.model.dto.*;
-import com.felicita.model.response.ActivityCategoryResponse;
-import com.felicita.model.response.ActivityReviewDetailsResponse;
-import com.felicita.model.response.PartnerResponse;
+import com.felicita.model.response.*;
 import com.felicita.queries.ActivitiesQueries;
 import com.felicita.queries.PartnerQueries;
 import com.felicita.repository.ActivitiesRepository;
@@ -23,6 +21,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Repository
@@ -415,6 +414,385 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
         }
     }
 
+    @Override
+    public List<ActivityHistoryDetailsResponse> getActivityHistoryDetailsById(String activityId) {
+        String GET_ACTIVITY_HISTORY_DETAILS_BY_ID = ActivitiesQueries.GET_ACTIVITY_HISTORY_DETAILS_BY_ID;
+
+        try {
+            LOGGER.info("Fetching activity history details for activityId: {}", activityId);
+
+            Map<Long, ActivityHistoryDetailsResponse> historyMap = new LinkedHashMap<>();
+
+            jdbcTemplate.query(GET_ACTIVITY_HISTORY_DETAILS_BY_ID, new Object[]{activityId}, rs -> {
+                Long historyId = rs.getLong("history_id");
+                ActivityHistoryDetailsResponse response = historyMap.get(historyId);
+
+                if (response == null) {
+                    response = ActivityHistoryDetailsResponse.builder()
+                            .historyId(historyId)
+                            .activity(ActivityHistoryDetailsResponse.ActivityInfo.builder()
+                                    .activityId(rs.getLong("activity_id"))
+                                    .activityName(rs.getString("activity_name"))
+                                    .activityDescription(rs.getString("activity_description"))
+                                    .activityCategory(rs.getString("activity_category"))
+                                    .durationHours(rs.getInt("duration_hours"))
+                                    .availableFrom(getLocalDateTime(rs, "available_from"))
+                                    .availableTo(getLocalDateTime(rs, "available_to"))
+                                    .priceLocal(rs.getDouble("price_local"))
+                                    .priceForeigners(rs.getDouble("price_foreigners"))
+                                    .minParticipate(rs.getInt("min_participate"))
+                                    .maxParticipate(rs.getInt("max_participate"))
+                                    .season(rs.getString("season"))
+                                    .destination(ActivityHistoryDetailsResponse.DestinationInfo.builder()
+                                            .destinationId(rs.getString("destination_id"))
+                                            .destinationName(rs.getString("destination_name"))
+                                            .destinationDescription(rs.getString("destination_description"))
+                                            .destinationLocation(rs.getString("destination_location"))
+                                            .latitude(getDouble(rs, "latitude"))
+                                            .longitude(getDouble(rs, "longitude"))
+                                            .build())
+                                    .build())
+                            .schedule(ActivityHistoryDetailsResponse.ScheduleInfo.builder()
+                                    .scheduleId(rs.getLong("schedule_id"))
+                                    .scheduleName(rs.getString("schedule_name"))
+                                    .scheduleDescription(rs.getString("schedule_description"))
+                                    .assumeStartDate(getLocalDateTime(rs, "assume_start_date"))
+                                    .assumeEndDate(getLocalDateTime(rs, "assume_end_date"))
+                                    .durationHoursStart(rs.getInt("duration_hours_start"))
+                                    .durationHoursEnd(rs.getInt("duration_hours_end"))
+                                    .specialNote(rs.getString("schedule_special_note"))
+                                    .build())
+                            .history(ActivityHistoryDetailsResponse.HistoryInfo.builder()
+                                    .historyName(rs.getString("history_name"))
+                                    .historyDescription(rs.getString("history_description"))
+                                    .numberOfParticipate(rs.getInt("number_of_participate"))
+                                    .activityStart(getLocalDateTime(rs, "activity_start"))
+                                    .activityEnd(getLocalDateTime(rs, "activity_end"))
+                                    .rating(rs.getDouble("rating"))
+                                    .specialNote(rs.getString("history_special_note"))
+                                    .statusName(rs.getString("history_status_name"))
+                                    .createdByUsername(rs.getString("history_created_by_username"))
+                                    .updatedByUsername(rs.getString("history_updated_by_username"))
+                                    .terminatedByUsername(rs.getString("history_terminated_by_username"))
+                                    .createdAt(getLocalDateTime(rs, "history_created_at"))
+                                    .updatedAt(getLocalDateTime(rs, "history_updated_at"))
+                                    .terminatedAt(getLocalDateTime(rs, "history_terminated_at"))
+                                    .build())
+                            .images(new ArrayList<>())
+                            .build();
+
+                    historyMap.put(historyId, response);
+                }
+
+                // 🖼️ Add image if exists
+                Long imageId = rs.getLong("image_id");
+                if (imageId != 0) {
+                    ActivityHistoryDetailsResponse.ImageInfo image = ActivityHistoryDetailsResponse.ImageInfo.builder()
+                            .imageId(imageId)
+                            .imageName(rs.getString("image_name"))
+                            .imageDescription(rs.getString("image_description"))
+                            .imageUrl(rs.getString("image_url"))
+                            .statusName(rs.getString("image_status_name"))
+                            .createdByUsername(rs.getString("image_created_by_username"))
+                            .updatedByUsername(rs.getString("image_updated_by_username"))
+                            .terminatedByUsername(rs.getString("image_terminated_by_username"))
+                            .createdAt(getLocalDateTime(rs, "image_created_at"))
+                            .updatedAt(getLocalDateTime(rs, "image_updated_at"))
+                            .terminatedAt(getLocalDateTime(rs, "image_terminated_at"))
+                            .build();
+
+                    response.getImages().add(image);
+                }
+            });
+
+            return new ArrayList<>(historyMap.values());
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching activity details: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler("Failed to fetch activity details from database");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching activity details: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching activity details");
+        }
+    }
+
+
+    @Override
+    public List<ActivityHistoryDetailsResponse> getAllActivityHistoryDetails() {
+        String GET_ACTIVITY_HISTORY_DETAILS = ActivitiesQueries.GET_ACTIVITY_HISTORY_DETAILS;
+
+        try {
+            LOGGER.info("Executing query to fetch all activity history details...");
+
+            Map<Long, ActivityHistoryDetailsResponse> historyMap = new LinkedHashMap<>();
+
+            jdbcTemplate.query(GET_ACTIVITY_HISTORY_DETAILS, rs -> {
+                Long historyId = rs.getLong("history_id");
+                ActivityHistoryDetailsResponse response = historyMap.get(historyId);
+
+                if (response == null) {
+                    // Build base response object
+                    response = ActivityHistoryDetailsResponse.builder()
+                            .historyId(historyId)
+                            .activity(ActivityHistoryDetailsResponse.ActivityInfo.builder()
+                                    .activityId(rs.getLong("activity_id"))
+                                    .activityName(rs.getString("activity_name"))
+                                    .activityDescription(rs.getString("activity_description"))
+                                    .activityCategory(rs.getString("activity_category"))
+                                    .durationHours(rs.getInt("duration_hours"))
+                                    .availableFrom(getLocalDateTime(rs, "available_from"))
+                                    .availableTo(getLocalDateTime(rs, "available_to"))
+                                    .priceLocal(rs.getDouble("price_local"))
+                                    .priceForeigners(rs.getDouble("price_foreigners"))
+                                    .minParticipate(rs.getInt("min_participate"))
+                                    .maxParticipate(rs.getInt("max_participate"))
+                                    .season(rs.getString("season"))
+                                    .destination(ActivityHistoryDetailsResponse.DestinationInfo.builder()
+                                            .destinationId(rs.getString("destination_id"))
+                                            .destinationName(rs.getString("destination_name"))
+                                            .destinationDescription(rs.getString("destination_description"))
+                                            .destinationLocation(rs.getString("destination_location"))
+                                            .latitude(getDouble(rs, "latitude"))
+                                            .longitude(getDouble(rs, "longitude"))
+                                            .build())
+                                    .build())
+                            .schedule(ActivityHistoryDetailsResponse.ScheduleInfo.builder()
+                                    .scheduleId(rs.getLong("schedule_id"))
+                                    .scheduleName(rs.getString("schedule_name"))
+                                    .scheduleDescription(rs.getString("schedule_description"))
+                                    .assumeStartDate(getLocalDateTime(rs, "assume_start_date"))
+                                    .assumeEndDate(getLocalDateTime(rs, "assume_end_date"))
+                                    .durationHoursStart(rs.getInt("duration_hours_start"))
+                                    .durationHoursEnd(rs.getInt("duration_hours_end"))
+                                    .specialNote(rs.getString("schedule_special_note"))
+                                    .build())
+                            .history(ActivityHistoryDetailsResponse.HistoryInfo.builder()
+                                    .historyName(rs.getString("history_name"))
+                                    .historyDescription(rs.getString("history_description"))
+                                    .numberOfParticipate(rs.getInt("number_of_participate"))
+                                    .activityStart(getLocalDateTime(rs, "activity_start"))
+                                    .activityEnd(getLocalDateTime(rs, "activity_end"))
+                                    .rating(rs.getDouble("rating"))
+                                    .specialNote(rs.getString("history_special_note"))
+                                    .statusName(rs.getString("history_status_name"))
+                                    .createdByUsername(rs.getString("history_created_by_username"))
+                                    .updatedByUsername(rs.getString("history_updated_by_username"))
+                                    .terminatedByUsername(rs.getString("history_terminated_by_username"))
+                                    .createdAt(getLocalDateTime(rs, "history_created_at"))
+                                    .updatedAt(getLocalDateTime(rs, "history_updated_at"))
+                                    .terminatedAt(getLocalDateTime(rs, "history_terminated_at"))
+                                    .build())
+                            .images(new ArrayList<>())
+                            .build();
+
+                    historyMap.put(historyId, response);
+                }
+
+                // Add image if exists
+                Long imageId = rs.getLong("image_id");
+                if (imageId != 0) {
+                    ActivityHistoryDetailsResponse.ImageInfo image = ActivityHistoryDetailsResponse.ImageInfo.builder()
+                            .imageId(imageId)
+                            .imageName(rs.getString("image_name"))
+                            .imageDescription(rs.getString("image_description"))
+                            .imageUrl(rs.getString("image_url"))
+                            .statusName(rs.getString("image_status_name"))
+                            .createdByUsername(rs.getString("image_created_by_username"))
+                            .updatedByUsername(rs.getString("image_updated_by_username"))
+                            .terminatedByUsername(rs.getString("image_terminated_by_username"))
+                            .createdAt(getLocalDateTime(rs, "image_created_at"))
+                            .updatedAt(getLocalDateTime(rs, "image_updated_at"))
+                            .terminatedAt(getLocalDateTime(rs, "image_terminated_at"))
+                            .build();
+
+                    response.getImages().add(image);
+                }
+            });
+
+            return new ArrayList<>(historyMap.values());
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching activity history details: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler("Failed to fetch activity history details from database");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching activity history details: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching activity history details");
+        }
+    }
+
+
+    @Override
+    public List<ActivityHistoryImageResponse> getAllActivityHistoryImages() {
+        String GET_ACTIVITY_HISTORY_IMAGES = ActivitiesQueries.GET_ACTIVITY_HISTORY_IMAGES;
+
+        try {
+            LOGGER.info("Executing query to fetch all activity history images...");
+
+            List<ActivityHistoryImageResponse> result = new ArrayList<>();
+
+            jdbcTemplate.query(GET_ACTIVITY_HISTORY_IMAGES, rs -> {
+
+                ActivityHistoryImageResponse.Activity activity = ActivityHistoryImageResponse.Activity.builder()
+                        .activityId(rs.getLong("activity_id"))
+                        .activityName(rs.getString("activity_name"))
+                        .activityDescription(rs.getString("activity_description"))
+                        .activityCategory(rs.getString("activity_category"))
+                        .durationHours(rs.getInt("duration_hours"))
+                        .priceLocal(rs.getDouble("price_local"))
+                        .priceForeigners(rs.getDouble("price_foreigners"))
+                        .minParticipate(rs.getInt("min_participate"))
+                        .maxParticipate(rs.getInt("max_participate"))
+                        .build();
+
+                ActivityHistoryImageResponse.Schedule schedule = ActivityHistoryImageResponse.Schedule.builder()
+                        .scheduleId(rs.getLong("schedule_id"))
+                        .scheduleName(rs.getString("schedule_name"))
+                        .scheduleDescription(rs.getString("schedule_description"))
+                        .assumeStartDate(getLocalDateTime(rs, "assume_start_date"))
+                        .assumeEndDate(getLocalDateTime(rs, "assume_end_date"))
+                        .durationHoursStart(rs.getInt("duration_hours_start"))
+                        .durationHoursEnd(rs.getInt("duration_hours_end"))
+                        .scheduleSpecialNote(rs.getString("schedule_special_note"))
+                        .build();
+
+                ActivityHistoryImageResponse.History history = ActivityHistoryImageResponse.History.builder()
+                        .historyId(rs.getLong("history_id"))
+                        .historyName(rs.getString("history_name"))
+                        .historyDescription(rs.getString("history_description"))
+                        .numberOfParticipate(rs.getInt("number_of_participate"))
+                        .activityStart(getLocalDateTime(rs, "activity_start"))
+                        .activityEnd(getLocalDateTime(rs, "activity_end"))
+                        .rating(rs.getDouble("rating"))
+                        .historySpecialNote(rs.getString("history_special_note"))
+                        .historyStatusName(rs.getString("history_status_name"))
+                        .build();
+
+                ActivityHistoryImageResponse image = ActivityHistoryImageResponse.builder()
+                        .imageId(rs.getLong("image_id"))
+                        .imageName(rs.getString("image_name"))
+                        .imageDescription(rs.getString("image_description"))
+                        .imageUrl(rs.getString("image_url"))
+                        .imageStatusName(rs.getString("image_status_name"))
+                        .imageCreatedByUsername(rs.getString("image_created_by_username"))
+                        .imageUpdatedByUsername(rs.getString("image_updated_by_username"))
+                        .imageTerminatedByUsername(rs.getString("image_terminated_by_username"))
+                        .imageCreatedAt(getLocalDateTime(rs, "image_created_at"))
+                        .imageUpdatedAt(getLocalDateTime(rs, "image_updated_at"))
+                        .imageTerminatedAt(getLocalDateTime(rs, "image_terminated_at"))
+                        .activity(activity)
+                        .schedule(schedule)
+                        .history(history)
+                        .build();
+
+                result.add(image);
+            });
+
+            return result;
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching activity history images: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler("Failed to fetch activity history images from database");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching activity history images: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching activity history images");
+        }
+    }
+
+    @Override
+    public List<ActivityHistoryImageResponse> getActivityHistoryImagesById(String activityId) {
+        String GET_ACTIVITY_HISTORY_IMAGES_BY_ID = ActivitiesQueries.GET_ACTIVITY_HISTORY_IMAGES_BY_ID;
+
+        try {
+            LOGGER.info("Fetching activity history images for activityId: {}", activityId);
+
+            List<ActivityHistoryImageResponse> result = new ArrayList<>();
+
+            jdbcTemplate.query(GET_ACTIVITY_HISTORY_IMAGES_BY_ID, new Object[]{activityId}, rs -> {
+
+                ActivityHistoryImageResponse.Activity activity = ActivityHistoryImageResponse.Activity.builder()
+                        .activityId(rs.getLong("activity_id"))
+                        .activityName(rs.getString("activity_name"))
+                        .activityDescription(rs.getString("activity_description"))
+                        .activityCategory(rs.getString("activity_category"))
+                        .durationHours(rs.getInt("duration_hours"))
+                        .priceLocal(rs.getDouble("price_local"))
+                        .priceForeigners(rs.getDouble("price_foreigners"))
+                        .minParticipate(rs.getInt("min_participate"))
+                        .maxParticipate(rs.getInt("max_participate"))
+                        .build();
+
+                ActivityHistoryImageResponse.Schedule schedule = ActivityHistoryImageResponse.Schedule.builder()
+                        .scheduleId(rs.getLong("schedule_id"))
+                        .scheduleName(rs.getString("schedule_name"))
+                        .scheduleDescription(rs.getString("schedule_description"))
+                        .assumeStartDate(getLocalDateTime(rs, "assume_start_date"))
+                        .assumeEndDate(getLocalDateTime(rs, "assume_end_date"))
+                        .durationHoursStart(rs.getInt("duration_hours_start"))
+                        .durationHoursEnd(rs.getInt("duration_hours_end"))
+                        .scheduleSpecialNote(rs.getString("schedule_special_note"))
+                        .build();
+
+                ActivityHistoryImageResponse.History history = ActivityHistoryImageResponse.History.builder()
+                        .historyId(rs.getLong("history_id"))
+                        .historyName(rs.getString("history_name"))
+                        .historyDescription(rs.getString("history_description"))
+                        .numberOfParticipate(rs.getInt("number_of_participate"))
+                        .activityStart(getLocalDateTime(rs, "activity_start"))
+                        .activityEnd(getLocalDateTime(rs, "activity_end"))
+                        .rating(rs.getDouble("rating"))
+                        .historySpecialNote(rs.getString("history_special_note"))
+                        .historyStatusName(rs.getString("history_status_name"))
+                        .build();
+
+                ActivityHistoryImageResponse image = ActivityHistoryImageResponse.builder()
+                        .imageId(rs.getLong("image_id"))
+                        .imageName(rs.getString("image_name"))
+                        .imageDescription(rs.getString("image_description"))
+                        .imageUrl(rs.getString("image_url"))
+                        .imageStatusName(rs.getString("image_status_name"))
+                        .imageCreatedByUsername(rs.getString("image_created_by_username"))
+                        .imageUpdatedByUsername(rs.getString("image_updated_by_username"))
+                        .imageTerminatedByUsername(rs.getString("image_terminated_by_username"))
+                        .imageCreatedAt(getLocalDateTime(rs, "image_created_at"))
+                        .imageUpdatedAt(getLocalDateTime(rs, "image_updated_at"))
+                        .imageTerminatedAt(getLocalDateTime(rs, "image_terminated_at"))
+                        .activity(activity)
+                        .schedule(schedule)
+                        .history(history)
+                        .build();
+
+                result.add(image);
+            });
+
+            return result;
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching activity history images: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler("Failed to fetch activity history images from database");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching activity history images: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching activity history images");
+        }
+    }
+
+
+    private LocalDateTime getLocalDateTime(ResultSet rs, String column) {
+        try {
+            Timestamp ts = rs.getTimestamp(column);
+            return ts != null ? ts.toLocalDateTime() : null;
+        } catch (SQLException e) {
+            return null;
+        }
+    }
+
+    private Double getDouble(ResultSet rs, String column) {
+        try {
+            double value = rs.getDouble(column);
+            return rs.wasNull() ? null : value;
+        } catch (SQLException e) {
+            return null;
+        }
+    }
 
 
     private class ActivityRowMapper implements RowMapper<ActivityResponseDto> {

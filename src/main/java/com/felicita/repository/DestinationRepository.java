@@ -23,4 +23,12 @@ public interface DestinationRepository {
     List<DestinationReviewDetailsResponse> getAllDestinationsReviewDetails();
 
     DestinationResponseDto getDestinationDetailsById(String destinationId);
+
+    List<DestinationHistoryDetailsResponse> getAllDestinationHistoryDetails();
+
+    List<DestinationHistoryDetailsResponse> getDestinationHistoryDetailsById(String destinationId);
+
+    List<DestinationHistoryImageResponse> getAllDestinationHistoryImages();
+
+    List<DestinationHistoryImageResponse> getDestinationHistoryImagesById(String destinationId);
 }

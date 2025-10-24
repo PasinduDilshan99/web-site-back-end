@@ -16,6 +16,8 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -836,6 +838,401 @@ public class DestinationRepositoryImpl implements DestinationRepository {
         } catch (Exception ex) {
             LOGGER.error("Unexpected error while fetching destinations: {}", ex.getMessage(), ex);
             throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching destinations");
+        }
+    }
+
+    @Override
+    public List<DestinationHistoryDetailsResponse> getAllDestinationHistoryDetails() {
+        String GET_DESTINATION_REVIEW_DETAILS = DestinationQueries.GET_DESTINATION_REVIEW_DETAILS;
+
+        try {
+            // Map to collect historyId -> DestinationHistoryDetailsResponse
+            Map<Integer, DestinationHistoryDetailsResponse> historyMap = new LinkedHashMap<>();
+
+            jdbcTemplate.query(GET_DESTINATION_REVIEW_DETAILS, rs -> {
+                Integer historyId = rs.getInt("history_id");
+
+                // If the history record is not already in the map, create it
+                historyMap.computeIfAbsent(historyId, id -> {
+                    DestinationHistoryDetailsResponse.Destination destination = null;
+                    try {
+                        destination = new DestinationHistoryDetailsResponse.Destination(
+                                rs.getInt("destination_id"),
+                                rs.getString("destination_name"),
+                                rs.getString("destination_description"),
+                                rs.getString("destination_location"),
+                                rs.getBigDecimal("latitude"),
+                                rs.getBigDecimal("longitude")
+                        );
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    DestinationHistoryDetailsResponse.Status historyStatus = null;
+                    try {
+                        historyStatus = new DestinationHistoryDetailsResponse.Status(
+                                rs.getInt("history_status_id"),
+                                rs.getString("history_status_name")
+                        );
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    DestinationHistoryDetailsResponse.UserSummary createdBy = null;
+                    try {
+                        createdBy = new DestinationHistoryDetailsResponse.UserSummary(
+                                nullSafeInteger(rs.getString("history_created_by_username")),
+                                rs.getString("history_created_by_username")
+                        );
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    DestinationHistoryDetailsResponse.UserSummary updatedBy = null;
+                    try {
+                        updatedBy = new DestinationHistoryDetailsResponse.UserSummary(
+                                nullSafeInteger(rs.getString("history_updated_by_username")),
+                                rs.getString("history_updated_by_username")
+                        );
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    DestinationHistoryDetailsResponse.UserSummary terminatedBy = null;
+                    try {
+                        terminatedBy = new DestinationHistoryDetailsResponse.UserSummary(
+                                nullSafeInteger(rs.getString("history_terminated_by_username")),
+                                rs.getString("history_terminated_by_username")
+                        );
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    try {
+                        return DestinationHistoryDetailsResponse.builder()
+                                .historyId(historyId)
+                                .destination(destination)
+                                .title(rs.getString("history_title"))
+                                .description(rs.getString("history_description"))
+                                .eventDate(rs.getDate("event_date") != null ? rs.getDate("event_date").toLocalDate() : null)
+                                .historyStatus(historyStatus)
+                                .createdBy(createdBy)
+                                .updatedBy(updatedBy)
+                                .terminatedBy(terminatedBy)
+                                .createdAt(rs.getTimestamp("history_created_at") != null ? rs.getTimestamp("history_created_at").toLocalDateTime() : null)
+                                .updatedAt(rs.getTimestamp("history_updated_at") != null ? rs.getTimestamp("history_updated_at").toLocalDateTime() : null)
+                                .terminatedAt(rs.getTimestamp("history_terminated_at") != null ? rs.getTimestamp("history_terminated_at").toLocalDateTime() : null)
+                                .images(new ArrayList<>())
+                                .build();
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+
+                // Add image if exists
+                Integer imageId = rs.getInt("image_id");
+                if (imageId != 0) { // image_id is not null
+                    DestinationHistoryDetailsResponse.HistoryImage image = new DestinationHistoryDetailsResponse.HistoryImage();
+                    image.setImageId(imageId);
+                    image.setName(rs.getString("image_name"));
+                    image.setDescription(rs.getString("image_description"));
+                    image.setImageUrl(rs.getString("image_url"));
+                    image.setImageStatus(new DestinationHistoryDetailsResponse.Status(
+                            rs.getInt("image_status_id"),
+                            rs.getString("image_status_name")
+                    ));
+                    image.setCreatedBy(new DestinationHistoryDetailsResponse.UserSummary(
+                            nullSafeInteger(rs.getString("image_created_by_username")),
+                            rs.getString("image_created_by_username")
+                    ));
+                    image.setUpdatedBy(new DestinationHistoryDetailsResponse.UserSummary(
+                            nullSafeInteger(rs.getString("image_updated_by_username")),
+                            rs.getString("image_updated_by_username")
+                    ));
+                    image.setTerminatedBy(new DestinationHistoryDetailsResponse.UserSummary(
+                            nullSafeInteger(rs.getString("image_terminated_by_username")),
+                            rs.getString("image_terminated_by_username")
+                    ));
+                    image.setCreatedAt(rs.getTimestamp("image_created_at") != null ? rs.getTimestamp("image_created_at").toLocalDateTime() : null);
+                    image.setUpdatedAt(rs.getTimestamp("image_updated_at") != null ? rs.getTimestamp("image_updated_at").toLocalDateTime() : null);
+                    image.setTerminatedAt(rs.getTimestamp("image_terminated_at") != null ? rs.getTimestamp("image_terminated_at").toLocalDateTime() : null);
+
+                    historyMap.get(historyId).getImages().add(image);
+                }
+            });
+
+            return new ArrayList<>(historyMap.values());
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching destinations: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler("Failed to fetch destinations from database");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching destinations: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching destinations");
+        }
+    }
+
+    // Helper to convert null usernames to null userId
+    private Integer nullSafeInteger(String username) {
+        return (username != null && !username.isEmpty()) ? 0 : null; // replace 0 if you want a default id
+    }
+
+
+    @Override
+    public List<DestinationHistoryDetailsResponse> getDestinationHistoryDetailsById(String destinationId) {
+        String GET_DESTINATION_REVIEW_DETAILS_BY_ID = DestinationQueries.GET_DESTINATION_REVIEW_DETAILS_BY_ID;
+
+        try {
+            LOGGER.info("Executing query to fetch destination history for ID: {}", destinationId);
+
+            // Map to collect historyId -> DestinationHistoryDetailsResponse
+            Map<Integer, DestinationHistoryDetailsResponse> historyMap = new LinkedHashMap<>();
+
+            jdbcTemplate.query(GET_DESTINATION_REVIEW_DETAILS_BY_ID, new Object[]{destinationId}, rs -> {
+                Integer historyId = rs.getInt("history_id");
+
+                // Create history record if not already in map
+                historyMap.computeIfAbsent(historyId, id -> {
+                    DestinationHistoryDetailsResponse.Destination destination = null;
+                    try {
+                        destination = new DestinationHistoryDetailsResponse.Destination(
+                                rs.getInt("destination_id"),
+                                rs.getString("destination_name"),
+                                rs.getString("destination_description"),
+                                rs.getString("destination_location"),
+                                rs.getBigDecimal("latitude"),
+                                rs.getBigDecimal("longitude")
+                        );
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    DestinationHistoryDetailsResponse.Status historyStatus = null;
+                    try {
+                        historyStatus = new DestinationHistoryDetailsResponse.Status(
+                                rs.getInt("history_status_id"),
+                                rs.getString("history_status_name")
+                        );
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    DestinationHistoryDetailsResponse.UserSummary createdBy = null;
+                    try {
+                        createdBy = new DestinationHistoryDetailsResponse.UserSummary(
+                                nullSafeInteger(rs.getString("history_created_by_username")),
+                                rs.getString("history_created_by_username")
+                        );
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    DestinationHistoryDetailsResponse.UserSummary updatedBy = null;
+                    try {
+                        updatedBy = new DestinationHistoryDetailsResponse.UserSummary(
+                                nullSafeInteger(rs.getString("history_updated_by_username")),
+                                rs.getString("history_updated_by_username")
+                        );
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    DestinationHistoryDetailsResponse.UserSummary terminatedBy = null;
+                    try {
+                        terminatedBy = new DestinationHistoryDetailsResponse.UserSummary(
+                                nullSafeInteger(rs.getString("history_terminated_by_username")),
+                                rs.getString("history_terminated_by_username")
+                        );
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    try {
+                        return DestinationHistoryDetailsResponse.builder()
+                                .historyId(historyId)
+                                .destination(destination)
+                                .title(rs.getString("history_title"))
+                                .description(rs.getString("history_description"))
+                                .eventDate(rs.getDate("event_date") != null ? rs.getDate("event_date").toLocalDate() : null)
+                                .historyStatus(historyStatus)
+                                .createdBy(createdBy)
+                                .updatedBy(updatedBy)
+                                .terminatedBy(terminatedBy)
+                                .createdAt(rs.getTimestamp("history_created_at") != null ? rs.getTimestamp("history_created_at").toLocalDateTime() : null)
+                                .updatedAt(rs.getTimestamp("history_updated_at") != null ? rs.getTimestamp("history_updated_at").toLocalDateTime() : null)
+                                .terminatedAt(rs.getTimestamp("history_terminated_at") != null ? rs.getTimestamp("history_terminated_at").toLocalDateTime() : null)
+                                .images(new ArrayList<>())
+                                .build();
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+
+                // Add image if exists
+                Integer imageId = rs.getInt("image_id");
+                if (imageId != 0) { // image_id is not null
+                    DestinationHistoryDetailsResponse.HistoryImage image = new DestinationHistoryDetailsResponse.HistoryImage();
+                    image.setImageId(imageId);
+                    image.setName(rs.getString("image_name"));
+                    image.setDescription(rs.getString("image_description"));
+                    image.setImageUrl(rs.getString("image_url"));
+                    image.setImageStatus(new DestinationHistoryDetailsResponse.Status(
+                            rs.getInt("image_status_id"),
+                            rs.getString("image_status_name")
+                    ));
+                    image.setCreatedBy(new DestinationHistoryDetailsResponse.UserSummary(
+                            nullSafeInteger(rs.getString("image_created_by_username")),
+                            rs.getString("image_created_by_username")
+                    ));
+                    image.setUpdatedBy(new DestinationHistoryDetailsResponse.UserSummary(
+                            nullSafeInteger(rs.getString("image_updated_by_username")),
+                            rs.getString("image_updated_by_username")
+                    ));
+                    image.setTerminatedBy(new DestinationHistoryDetailsResponse.UserSummary(
+                            nullSafeInteger(rs.getString("image_terminated_by_username")),
+                            rs.getString("image_terminated_by_username")
+                    ));
+                    image.setCreatedAt(rs.getTimestamp("image_created_at") != null ? rs.getTimestamp("image_created_at").toLocalDateTime() : null);
+                    image.setUpdatedAt(rs.getTimestamp("image_updated_at") != null ? rs.getTimestamp("image_updated_at").toLocalDateTime() : null);
+                    image.setTerminatedAt(rs.getTimestamp("image_terminated_at") != null ? rs.getTimestamp("image_terminated_at").toLocalDateTime() : null);
+
+                    historyMap.get(historyId).getImages().add(image);
+                }
+            });
+
+            return new ArrayList<>(historyMap.values());
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching destination history: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler("Failed to fetch destination history from database");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching destination history: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching destination history");
+        }
+    }
+
+    @Override
+    public List<DestinationHistoryImageResponse> getAllDestinationHistoryImages() {
+        String GET_DESTINATION_HISTORY_IMAGES = DestinationQueries.GET_DESTINATION_HISTORY_IMAGES;
+
+        try {
+            return jdbcTemplate.query(GET_DESTINATION_HISTORY_IMAGES, (rs, rowNum) -> {
+
+                // Map User info for image
+                DestinationHistoryImageResponse.UserDto imageCreatedBy =
+                        new DestinationHistoryImageResponse.UserDto(rs.getString("image_created_by_username"));
+
+                DestinationHistoryImageResponse.UserDto imageUpdatedBy =
+                        new DestinationHistoryImageResponse.UserDto(rs.getString("image_updated_by_username"));
+
+                DestinationHistoryImageResponse.UserDto imageTerminatedBy =
+                        rs.getString("image_terminated_by_username") != null ?
+                                new DestinationHistoryImageResponse.UserDto(rs.getString("image_terminated_by_username")) : null;
+
+                // Map History info
+                DestinationHistoryImageResponse.HistoryDto history = new DestinationHistoryImageResponse.HistoryDto(
+                        rs.getLong("history_id"),
+                        rs.getString("history_title"),
+                        rs.getString("history_description"),
+                        rs.getObject("history_event_date", LocalDate.class),
+                        rs.getString("history_status_name")
+                );
+
+                // Map Destination info
+                DestinationHistoryImageResponse.DestinationDto destination = new DestinationHistoryImageResponse.DestinationDto(
+                        rs.getLong("destination_id"),
+                        rs.getString("destination_name"),
+                        rs.getString("destination_location"),
+                        rs.getBigDecimal("latitude"),
+                        rs.getBigDecimal("longitude")
+                );
+
+                // Map top-level image info
+                return DestinationHistoryImageResponse.builder()
+                        .imageId(rs.getLong("image_id"))
+                        .imageName(rs.getString("image_name"))
+                        .imageDescription(rs.getString("image_description"))
+                        .imageUrl(rs.getString("image_url"))
+                        .imageStatusName(rs.getString("image_status_name"))
+                        .imageCreatedAt(rs.getObject("image_created_at", LocalDateTime.class))
+                        .imageUpdatedAt(rs.getObject("image_updated_at", LocalDateTime.class))
+                        .imageTerminatedAt(rs.getObject("image_terminated_at", LocalDateTime.class))
+                        .imageCreatedBy(imageCreatedBy)
+                        .imageUpdatedBy(imageUpdatedBy)
+                        .imageTerminatedBy(imageTerminatedBy)
+                        .history(history)
+                        .destination(destination)
+                        .build();
+            });
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching destination history images: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler("Failed to fetch destination history images from database");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching destination history images: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching destination history images");
+        }
+    }
+
+
+    @Override
+    public List<DestinationHistoryImageResponse> getDestinationHistoryImagesById(String destinationId) {
+        String GET_DESTINATION_HISTORY_IMAGES_BY_ID = DestinationQueries.GET_DESTINATION_HISTORY_IMAGES_BY_ID;
+
+        try {
+            return jdbcTemplate.query(GET_DESTINATION_HISTORY_IMAGES_BY_ID, new Object[]{destinationId}, (rs, rowNum) -> {
+
+                // Map User info for image
+                DestinationHistoryImageResponse.UserDto imageCreatedBy =
+                        new DestinationHistoryImageResponse.UserDto(rs.getString("image_created_by_username"));
+
+                DestinationHistoryImageResponse.UserDto imageUpdatedBy =
+                        new DestinationHistoryImageResponse.UserDto(rs.getString("image_updated_by_username"));
+
+                DestinationHistoryImageResponse.UserDto imageTerminatedBy =
+                        rs.getString("image_terminated_by_username") != null ?
+                                new DestinationHistoryImageResponse.UserDto(rs.getString("image_terminated_by_username")) : null;
+
+                // Map History info
+                DestinationHistoryImageResponse.HistoryDto history = new DestinationHistoryImageResponse.HistoryDto(
+                        rs.getLong("history_id"),
+                        rs.getString("history_title"),
+                        rs.getString("history_description"),
+                        rs.getObject("history_event_date", LocalDate.class),
+                        rs.getString("history_status_name")
+                );
+
+                // Map Destination info
+                DestinationHistoryImageResponse.DestinationDto destination = new DestinationHistoryImageResponse.DestinationDto(
+                        rs.getLong("destination_id"),
+                        rs.getString("destination_name"),
+                        rs.getString("destination_location"),
+                        rs.getBigDecimal("latitude"),
+                        rs.getBigDecimal("longitude")
+                );
+
+                // Map top-level image info
+                return DestinationHistoryImageResponse.builder()
+                        .imageId(rs.getLong("image_id"))
+                        .imageName(rs.getString("image_name"))
+                        .imageDescription(rs.getString("image_description"))
+                        .imageUrl(rs.getString("image_url"))
+                        .imageStatusName(rs.getString("image_status_name"))
+                        .imageCreatedAt(rs.getObject("image_created_at", LocalDateTime.class))
+                        .imageUpdatedAt(rs.getObject("image_updated_at", LocalDateTime.class))
+                        .imageTerminatedAt(rs.getObject("image_terminated_at", LocalDateTime.class))
+                        .imageCreatedBy(imageCreatedBy)
+                        .imageUpdatedBy(imageUpdatedBy)
+                        .imageTerminatedBy(imageTerminatedBy)
+                        .history(history)
+                        .destination(destination)
+                        .build();
+            });
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching destination history images by ID {}: {}", destinationId, ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler("Failed to fetch destination history images for destination ID " + destinationId);
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching destination history images by ID {}: {}", destinationId, ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching destination history images for destination ID " + destinationId);
         }
     }
 

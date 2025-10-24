@@ -2,6 +2,8 @@ package com.felicita.service;
 
 import com.felicita.model.dto.PackageResponseDto;
 import com.felicita.model.response.CommonResponse;
+import com.felicita.model.response.PackageHistoryImageResponse;
+import com.felicita.model.response.PackageHistoryDetailsResponse;
 import com.felicita.model.response.PackageReviewResponse;
 import org.springframework.http.ResponseEntity;
 
@@ -18,4 +20,12 @@ public interface PackageService {
     CommonResponse<List<PackageReviewResponse>> getAllPackageReviewDetails();
 
     CommonResponse<List<PackageReviewResponse>> getPackageReviewDetailsById(String packageId);
+
+    CommonResponse<List<PackageHistoryDetailsResponse>> getAllPackageHistoryDetails();
+
+    CommonResponse<List<PackageHistoryDetailsResponse>> getPackageHistoryDetailsById(String packageId);
+
+    CommonResponse<List<PackageHistoryImageResponse>> getAllPackageHistoryImages();
+
+    CommonResponse<List<PackageHistoryImageResponse>> getPackageHistoryImagesById(String packageId);
 }

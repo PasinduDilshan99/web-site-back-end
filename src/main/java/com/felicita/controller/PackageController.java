@@ -1,9 +1,7 @@
 package com.felicita.controller;
 
-import com.felicita.model.dto.DestinationResponseDto;
 import com.felicita.model.dto.PackageResponseDto;
-import com.felicita.model.response.CommonResponse;
-import com.felicita.model.response.PackageReviewResponse;
+import com.felicita.model.response.*;
 import com.felicita.service.PackageService;
 import com.felicita.util.Constant;
 import org.slf4j.Logger;
@@ -68,6 +66,38 @@ public class PackageController {
         LOGGER.info("{} Start execute get all package review details by id {}", Constant.DOTS, Constant.DOTS);
         CommonResponse<List<PackageReviewResponse>> response = packageService.getPackageReviewDetailsById(packageId);
         LOGGER.info("{} End execute get all package review details by id {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/history")
+    public ResponseEntity<CommonResponse<List<PackageHistoryDetailsResponse>>> getAllPackageHistoryDetails() {
+        LOGGER.info("{} Start execute get all packages review details {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<PackageHistoryDetailsResponse>> response = packageService.getAllPackageHistoryDetails();
+        LOGGER.info("{} End execute get all packages review details {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/history/{packageId}")
+    public ResponseEntity<CommonResponse<List<PackageHistoryDetailsResponse>>> getPackageHistoryDetailsById(@PathVariable String packageId) {
+        LOGGER.info("{} Start execute get all packages review details by id {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<PackageHistoryDetailsResponse>> response = packageService.getPackageHistoryDetailsById(packageId);
+        LOGGER.info("{} End execute get all packages review details by id {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/history-images")
+    public ResponseEntity<CommonResponse<List<PackageHistoryImageResponse>>> getAllPackageHistoryImages() {
+        LOGGER.info("{} Start execute get all packages review details {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<PackageHistoryImageResponse>> response = packageService.getAllPackageHistoryImages();
+        LOGGER.info("{} End execute get all packages review details {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/history-images/{packageId}")
+    public ResponseEntity<CommonResponse<List<PackageHistoryImageResponse>>> getPackageHistoryImagesById(@PathVariable String packageId) {
+        LOGGER.info("{} Start execute get all packages review details by id {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<PackageHistoryImageResponse>> response = packageService.getPackageHistoryImagesById(packageId);
+        LOGGER.info("{} End execute get all packages review details by id {}", Constant.DOTS, Constant.DOTS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

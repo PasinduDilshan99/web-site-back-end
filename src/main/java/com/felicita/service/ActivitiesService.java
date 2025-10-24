@@ -2,6 +2,8 @@ package com.felicita.service;
 
 import com.felicita.model.dto.ActivityCategoryResponseDto;
 import com.felicita.model.dto.ActivityResponseDto;
+import com.felicita.model.response.ActivityHistoryDetailsResponse;
+import com.felicita.model.response.ActivityHistoryImageResponse;
 import com.felicita.model.response.ActivityReviewDetailsResponse;
 import com.felicita.model.response.CommonResponse;
 import org.springframework.http.ResponseEntity;
@@ -22,4 +24,12 @@ public interface ActivitiesService {
     CommonResponse<List<ActivityReviewDetailsResponse>> getActivityReviewDetailsById(String activityId);
 
     CommonResponse<ActivityResponseDto> getActivityById(String activityId);
+
+    CommonResponse<List<ActivityHistoryDetailsResponse>> getAllActivityHistoryDetails();
+
+    CommonResponse<List<ActivityHistoryDetailsResponse>> getActivityHistoryDetailsById(String activityId);
+
+    CommonResponse<List<ActivityHistoryImageResponse>> getAllActivityHistoryImages();
+
+    CommonResponse<List<ActivityHistoryImageResponse>> getActivityHistoryImagesById(String activityId);
 }

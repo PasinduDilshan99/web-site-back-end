@@ -2,9 +2,7 @@ package com.felicita.controller;
 
 import com.felicita.model.dto.ActivityCategoryResponseDto;
 import com.felicita.model.dto.ActivityResponseDto;
-import com.felicita.model.response.ActivityReviewDetailsResponse;
-import com.felicita.model.response.CommonResponse;
-import com.felicita.model.response.PackageReviewResponse;
+import com.felicita.model.response.*;
 import com.felicita.service.ActivitiesService;
 import com.felicita.util.Constant;
 import org.slf4j.Logger;
@@ -88,5 +86,36 @@ public class ActivitiesController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping(path = "/history")
+    public ResponseEntity<CommonResponse<List<ActivityHistoryDetailsResponse>>> getAllActivityHistoryDetails() {
+        LOGGER.info("{} Start execute get all activities review details {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<ActivityHistoryDetailsResponse>> response = activitiesService.getAllActivityHistoryDetails();
+        LOGGER.info("{} End execute get all activities review details {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/history/{activityId}")
+    public ResponseEntity<CommonResponse<List<ActivityHistoryDetailsResponse>>> getActivityHistoryDetailsById(@PathVariable String activityId) {
+        LOGGER.info("{} Start execute get all activities review details by id {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<ActivityHistoryDetailsResponse>> response = activitiesService.getActivityHistoryDetailsById(activityId);
+        LOGGER.info("{} End execute get all activities review details by id {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/history-images")
+    public ResponseEntity<CommonResponse<List<ActivityHistoryImageResponse>>> getAllActivityHistoryImages() {
+        LOGGER.info("{} Start execute get all activities review details {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<ActivityHistoryImageResponse>> response = activitiesService.getAllActivityHistoryImages();
+        LOGGER.info("{} End execute get all activities review details {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/history-images/{activityId}")
+    public ResponseEntity<CommonResponse<List<ActivityHistoryImageResponse>>> getActivityHistoryImagesById(@PathVariable String activityId) {
+        LOGGER.info("{} Start execute get all activities review details by id {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<ActivityHistoryImageResponse>> response = activitiesService.getActivityHistoryImagesById(activityId);
+        LOGGER.info("{} End execute get all activities review details by id {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
 }
