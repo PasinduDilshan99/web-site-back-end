@@ -2,6 +2,7 @@ package com.felicita.service.impl;
 
 import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
+import com.felicita.model.dto.*;
 import com.felicita.model.enums.AccommodationDataStatus;
 import com.felicita.model.enums.PartnerStatus;
 import com.felicita.model.response.AccommodationResponse;
@@ -106,6 +107,161 @@ public class AccommodationServiceImpl implements AccommodationService {
             throw new InternalServerErrorExceptionHandler("Failed to fetch accommodation data from database");
         } finally {
             LOGGER.info("End fetching all visible accommodation data from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<List<HotelDetailsSectionResponseDto>> getHotelsDetailsForSection() {
+        LOGGER.info("Start fetching all accommodation data from repository");
+        try {
+            List<HotelDetailsSectionResponseDto> hotelDetailsSectionResponseDtos = accommodationRepository.getHotelsDetailsForSection();
+
+            if (hotelDetailsSectionResponseDtos.isEmpty()) {
+                LOGGER.warn("No accommodation data found in database");
+                throw new DataNotFoundErrorExceptionHandler("No accommodation data found");
+            }
+
+            LOGGER.info("Fetched {} accommodation data successfully", hotelDetailsSectionResponseDtos.size());
+            return
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            hotelDetailsSectionResponseDtos, Instant.now()
+                    );
+
+        }catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching accommodation data: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        }catch (Exception e) {
+            LOGGER.error("Error occurred while fetching accommodation data: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch accommodation data from database");
+        } finally {
+            LOGGER.info("End fetching all accommodation data from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<List<ResortDetailsSectionResponseDto>> getResortsDetailsForSection() {
+        LOGGER.info("Start fetching all accommodation data from repository");
+        try {
+            List<ResortDetailsSectionResponseDto> resortDetailsSectionResponseDtos = accommodationRepository.getResortsDetailsForSection();
+
+            if (resortDetailsSectionResponseDtos.isEmpty()) {
+                LOGGER.warn("No accommodation data found in database");
+                throw new DataNotFoundErrorExceptionHandler("No accommodation data found");
+            }
+
+            LOGGER.info("Fetched {} accommodation data successfully", resortDetailsSectionResponseDtos.size());
+            return
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            resortDetailsSectionResponseDtos, Instant.now()
+                    );
+
+        }catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching accommodation data: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        }catch (Exception e) {
+            LOGGER.error("Error occurred while fetching accommodation data: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch accommodation data from database");
+        } finally {
+            LOGGER.info("End fetching all accommodation data from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<List<HostelDetailsSectionResponseDto>> getHostelsDetailsForSection() {
+        LOGGER.info("Start fetching all accommodation data from repository");
+        try {
+            List<HostelDetailsSectionResponseDto> hostelDetailsSectionResponseDtos = accommodationRepository.getHostelsDetailsForSection();
+
+            if (hostelDetailsSectionResponseDtos.isEmpty()) {
+                LOGGER.warn("No accommodation data found in database");
+                throw new DataNotFoundErrorExceptionHandler("No accommodation data found");
+            }
+
+            LOGGER.info("Fetched {} accommodation data successfully", hostelDetailsSectionResponseDtos.size());
+            return
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            hostelDetailsSectionResponseDtos, Instant.now()
+                    );
+
+        }catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching accommodation data: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        }catch (Exception e) {
+            LOGGER.error("Error occurred while fetching accommodation data: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch accommodation data from database");
+        } finally {
+            LOGGER.info("End fetching all accommodation data from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<List<VillaDetailsSectionResponseDto>> getVillasDetailsForSection() {
+        LOGGER.info("Start fetching all accommodation data from repository");
+        try {
+            List<VillaDetailsSectionResponseDto> villaDetailsSectionResponseDtos = accommodationRepository.getVillasDetailsForSection();
+
+            if (villaDetailsSectionResponseDtos.isEmpty()) {
+                LOGGER.warn("No accommodation data found in database");
+                throw new DataNotFoundErrorExceptionHandler("No accommodation data found");
+            }
+
+            LOGGER.info("Fetched {} accommodation data successfully", villaDetailsSectionResponseDtos.size());
+            return
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            villaDetailsSectionResponseDtos, Instant.now()
+                    );
+
+        }catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching accommodation data: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        }catch (Exception e) {
+            LOGGER.error("Error occurred while fetching accommodation data: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch accommodation data from database");
+        } finally {
+            LOGGER.info("End fetching all accommodation data from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<List<RestaurantDetailsSectionResponseDto>> getRestaurantsDetailsForSection() {
+        LOGGER.info("Start fetching all accommodation data from repository");
+        try {
+            List<RestaurantDetailsSectionResponseDto> restaurantDetailsSectionResponseDtos = accommodationRepository.getRestaurantsDetailsForSection();
+
+            if (restaurantDetailsSectionResponseDtos.isEmpty()) {
+                LOGGER.warn("No accommodation data found in database");
+                throw new DataNotFoundErrorExceptionHandler("No accommodation data found");
+            }
+
+            LOGGER.info("Fetched {} accommodation data successfully", restaurantDetailsSectionResponseDtos.size());
+            return
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            restaurantDetailsSectionResponseDtos, Instant.now()
+                    );
+
+        }catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching accommodation data: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        }catch (Exception e) {
+            LOGGER.error("Error occurred while fetching accommodation data: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch accommodation data from database");
+        } finally {
+            LOGGER.info("End fetching all accommodation data from repository");
         }
     }
 }
