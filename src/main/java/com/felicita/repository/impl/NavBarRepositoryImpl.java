@@ -2,9 +2,8 @@ package com.felicita.repository.impl;
 
 import com.felicita.exception.DataAccessErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
-import com.felicita.model.response.LinkBarResponse;
 import com.felicita.model.response.NavBarResponse;
-import com.felicita.queries.LinkBarQueries;
+import com.felicita.model.response.NavBarSubmenuResponse;
 import com.felicita.queries.NavBarQueries;
 import com.felicita.repository.NavBarRepository;
 import org.slf4j.Logger;
@@ -13,8 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
-
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -32,42 +31,27 @@ public class NavBarRepositoryImpl implements NavBarRepository {
 
     @Override
     public List<NavBarResponse> getAllNavBarItems() {
-        String GET_ALL_NAV_BAR = NavBarQueries.GET_ALL_NAV_BAR_DATA;
         try {
-            LOGGER.info("Executing query to fetch all nav bar items...");
+            LOGGER.info("Executing query to fetch all nav bar items with submenus...");
 
-            List<NavBarResponse> results = jdbcTemplate.query(GET_ALL_NAV_BAR, (rs, rowNum) -> {
-                NavBarResponse response = new NavBarResponse();
+            // Step 1: Get all nav bars
+            List<NavBarResponse> navBars = jdbcTemplate.query(
+                    NavBarQueries.GET_ALL_NAV_BAR_DATA,
+                    (rs, rowNum) -> createNavBarResponse(rs)
+            );
 
-                response.setName(rs.getString("NAME"));
-                response.setDescription(rs.getString("DESCRIPTION"));
-                response.setStatus(rs.getString("STATUS"));
-                response.setNavBarStatusStatus(rs.getString("NAV_BAR_STATUS_STATUS"));
-                response.setLinkUrl(rs.getString("LINK_URL"));
+            // Step 2: For each nav bar, get its submenus
+            for (NavBarResponse navBar : navBars) {
+                List<NavBarSubmenuResponse> submenus = jdbcTemplate.query(
+                        NavBarQueries.GET_SUBMENU_BY_NAV_BAR_ID,
+                        new Object[]{navBar.getId()},
+                        (rs, rowNum) -> createSubmenuResponse(rs)
+                );
+                navBar.setSubmenus(submenus);
+            }
 
-                Timestamp createdTs = rs.getTimestamp("CREATED_AT");
-                response.setCreatedAt(createdTs != null ? createdTs.toLocalDateTime() : null);
-
-                Integer createdBy = rs.getObject("CREATED_BY") != null ? rs.getInt("CREATED_BY") : null;
-                response.setCreatedBy(createdBy);
-
-                Timestamp updatedTs = rs.getTimestamp("UPDATED_AT");
-                response.setUpdatedAt(updatedTs != null ? updatedTs.toLocalDateTime() : null);
-
-                Integer updatedBy = rs.getObject("UPDATED_BY") != null ? rs.getInt("UPDATED_BY") : null;
-                response.setUpdatedBy(updatedBy);
-
-                Timestamp terminatedTs = rs.getTimestamp("TERMINATED_AT");
-                response.setTerminatedAt(terminatedTs != null ? terminatedTs.toLocalDateTime() : null);
-
-                Integer terminatedBy = rs.getObject("TERMINATED_BY") != null ? rs.getInt("TERMINATED_BY") : null;
-                response.setTerminatedBy(terminatedBy);
-
-                return response;
-            });
-
-            LOGGER.info("Successfully fetched {} nav bar items.", results.size());
-            return results;
+            LOGGER.info("Successfully fetched {} nav bar items with submenus.", navBars.size());
+            return navBars;
 
         } catch (DataAccessException ex) {
             LOGGER.error("Database error while fetching nav bar items: {}", ex.getMessage(), ex);
@@ -76,6 +60,79 @@ public class NavBarRepositoryImpl implements NavBarRepository {
             LOGGER.error("Unexpected error while fetching nav bar items: {}", ex.getMessage(), ex);
             throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching nav bar items");
         }
+    }
+
+    private NavBarResponse createNavBarResponse(ResultSet rs) throws SQLException {
+        NavBarResponse response = new NavBarResponse();
+
+        response.setId(rs.getInt("NAV_BAR_ID"));
+        response.setName(rs.getString("NAME"));
+        response.setDescription(rs.getString("DESCRIPTION"));
+        response.setStatus(rs.getString("STATUS"));
+        response.setLinkUrl(rs.getString("LINK_URL"));
+
+        // Set timestamps
+        setNavBarTimestamps(response, rs);
+
+        return response;
+    }
+
+    private NavBarSubmenuResponse createSubmenuResponse(ResultSet rs) throws SQLException {
+        NavBarSubmenuResponse submenu = new NavBarSubmenuResponse();
+
+        submenu.setId(rs.getInt("SUBMENU_ID"));
+        submenu.setNavBarId(rs.getInt("NAV_BAR_ID"));
+        submenu.setName(rs.getString("NAME"));
+        submenu.setDescription(rs.getString("DESCRIPTION"));
+        submenu.setLinkUrl(rs.getString("LINK_URL"));
+        submenu.setIconClass(rs.getString("ICON_CLASS"));
+        submenu.setSortOrder(rs.getInt("SORT_ORDER"));
+        submenu.setOpensInNewTab(rs.getBoolean("OPENS_IN_NEW_TAB"));
+        submenu.setIsFeatured(rs.getBoolean("IS_FEATURED"));
+        submenu.setStatus(rs.getString("STATUS"));
+
+        // Set timestamps for submenu
+        setSubmenuTimestamps(submenu, rs);
+
+        return submenu;
+    }
+
+    private void setNavBarTimestamps(NavBarResponse response, ResultSet rs) throws SQLException {
+        Timestamp createdTs = rs.getTimestamp("CREATED_AT");
+        response.setCreatedAt(createdTs != null ? createdTs.toLocalDateTime() : null);
+
+        response.setCreatedBy(getNullableInt(rs, "CREATED_BY"));
+
+        Timestamp updatedTs = rs.getTimestamp("UPDATED_AT");
+        response.setUpdatedAt(updatedTs != null ? updatedTs.toLocalDateTime() : null);
+
+        response.setUpdatedBy(getNullableInt(rs, "UPDATED_BY"));
+
+        Timestamp terminatedTs = rs.getTimestamp("TERMINATED_AT");
+        response.setTerminatedAt(terminatedTs != null ? terminatedTs.toLocalDateTime() : null);
+
+        response.setTerminatedBy(getNullableInt(rs, "TERMINATED_BY"));
+    }
+
+    private void setSubmenuTimestamps(NavBarSubmenuResponse submenu, ResultSet rs) throws SQLException {
+        Timestamp createdTs = rs.getTimestamp("CREATED_AT");
+        submenu.setCreatedAt(createdTs != null ? createdTs.toLocalDateTime() : null);
+
+        submenu.setCreatedBy(getNullableInt(rs, "CREATED_BY"));
+
+        Timestamp updatedTs = rs.getTimestamp("UPDATED_AT");
+        submenu.setUpdatedAt(updatedTs != null ? updatedTs.toLocalDateTime() : null);
+
+        submenu.setUpdatedBy(getNullableInt(rs, "UPDATED_BY"));
+
+        Timestamp terminatedTs = rs.getTimestamp("TERMINATED_AT");
+        submenu.setTerminatedAt(terminatedTs != null ? terminatedTs.toLocalDateTime() : null);
+
+        submenu.setTerminatedBy(getNullableInt(rs, "TERMINATED_BY"));
+    }
+
+    private Integer getNullableInt(ResultSet rs, String column) throws SQLException {
+        return rs.getObject(column) != null ? rs.getInt(column) : null;
     }
 
 

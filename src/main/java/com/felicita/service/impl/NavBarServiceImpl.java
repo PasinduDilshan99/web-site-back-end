@@ -42,7 +42,7 @@ public class NavBarServiceImpl implements NavBarService {
                 throw new DataNotFoundErrorExceptionHandler("No nav bar items found");
             }
 
-            LOGGER.info("Fetched {} nav abr items successfully", navBarResponses.size());
+            LOGGER.info("Fetched {} nav bar items with submenus successfully", navBarResponses.size());
             return ResponseEntity.ok(
                     new CommonResponse<>(
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
@@ -54,7 +54,7 @@ public class NavBarServiceImpl implements NavBarService {
             );
 
         } catch (Exception e) {
-            LOGGER.error("Error occurred while fetching nav abr items: {}", e.getMessage(), e);
+            LOGGER.error("Error occurred while fetching nav bar items: {}", e.getMessage(), e);
             throw new InternalServerErrorExceptionHandler("Failed to fetch nav bar items from database");
         } finally {
             LOGGER.info("End fetching all nav bar items from repository");
