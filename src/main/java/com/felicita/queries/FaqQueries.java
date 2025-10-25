@@ -66,4 +66,42 @@ public class FaqQueries {
             WHERE f.id = ?
             """;
 
+    public static final String GET_FAQ_OPTIONS = """
+            SELECT
+                fo.id AS option_id,
+                fo.option_key,
+                fo.option_value,
+                fot.name AS option_type,
+                fot.description AS option_type_description,
+                fo.description AS option_description,
+                cs.name AS common_status_name,
+                fo.created_at,
+                fo.updated_at,
+                fo.created_by,
+                fo.updated_by
+            FROM
+                faq_options fo
+            INNER JOIN
+                faq_option_type fot ON fo.option_type_id = fot.id
+            INNER JOIN
+                common_status cs ON fo.common_status_id = cs.id
+            ORDER BY
+                fo.id ASC
+            """;
+
+    public static final String INSERT_FAQ_REQUEST = """
+    INSERT INTO faq_contact_requests (
+        ticket_number,
+        name,
+        email,
+        category,
+        subject,
+        message,
+        request_status_id,
+        priority_id,
+        ip_address,
+        created_by
+    ) VALUES (?, ?, ?, ?, ?, ?, 1, 1, ?, ?)
+    """;
+
 }

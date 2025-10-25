@@ -211,6 +211,190 @@ VALUES
  'Bundala is a paradise for birdwatchers.', 
  'answer1', 1, 1);
  
+ -- FAQ Option Type Table
+CREATE TABLE faq_option_type (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(50) NOT NULL UNIQUE,
+    description VARCHAR(255),
+    common_status_id INT NOT NULL DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_by INT,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_by INT,
+    terminated_at TIMESTAMP,
+    terminated_by INT,
+    FOREIGN KEY (common_status_id) REFERENCES common_status(id)
+);
+
+-- Insert FAQ option types
+INSERT INTO faq_option_type (name, description, created_by) VALUES
+('string', 'Text string value', 1),
+('number', 'Numeric value', 1),
+('boolean', 'True/False value', 1),
+('json', 'JSON formatted data', 1),
+('array', 'Array of values', 1);
+
+
+-- FAQ Options Table
+CREATE TABLE faq_options (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    option_key VARCHAR(100) NOT NULL UNIQUE,
+    option_value TEXT,
+    option_type_id INT NOT NULL,
+    description VARCHAR(255),
+    common_status_id INT NOT NULL DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_by INT,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_by INT,
+    terminated_at TIMESTAMP,
+    terminated_by INT,
+    FOREIGN KEY (option_type_id) REFERENCES faq_option_type(id),
+    FOREIGN KEY (common_status_id) REFERENCES common_status(id)
+);
+
+-- Insert default FAQ options
+INSERT INTO faq_options (option_key, option_value, option_type_id, description, created_by) VALUES
+('display_limit_mobile', '5', (SELECT id FROM faq_option_type WHERE name = 'number'), 'Number of FAQs to show on mobile devices', 1),
+('display_limit_tablet', '6', (SELECT id FROM faq_option_type WHERE name = 'number'), 'Number of FAQs to show on tablet devices', 1),
+('display_limit_desktop', '7', (SELECT id FROM faq_option_type WHERE name = 'number'), 'Number of FAQs to show on desktop devices', 1),
+('contact_form_categories', '["general","technical","billing","feature","bug"]', (SELECT id FROM faq_option_type WHERE name = 'json'), 'Available categories for contact form', 1),
+('auto_reply_enabled', 'true', (SELECT id FROM faq_option_type WHERE name = 'boolean'), 'Whether to send auto-reply emails', 1),
+('auto_reply_subject', 'We have received your message', (SELECT id FROM faq_option_type WHERE name = 'string'), 'Subject for auto-reply emails', 1),
+('auto_reply_message', 'Thank you for contacting us. We will get back to you within 24 hours.', (SELECT id FROM faq_option_type WHERE name = 'string'), 'Message for auto-reply emails', 1),
+('support_email', 'support@yourcompany.com', (SELECT id FROM faq_option_type WHERE name = 'string'), 'Default support email address', 1),
+('response_time_hours', '24', (SELECT id FROM faq_option_type WHERE name = 'number'), 'Expected response time in hours', 1),
+('enable_view_tracking', 'true', (SELECT id FROM faq_option_type WHERE name = 'boolean'), 'Enable FAQ view count tracking', 1);
+
+-- Contact Request Status Table
+CREATE TABLE faq_contact_request_status (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(50) NOT NULL UNIQUE,
+    description VARCHAR(255),
+    color VARCHAR(7) DEFAULT '#6B7280', -- Hex color for UI
+    sort_order INT DEFAULT 0,
+    common_status_id INT NOT NULL DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_by INT,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_by INT,
+    terminated_at TIMESTAMP,
+    terminated_by INT,
+    FOREIGN KEY (common_status_id) REFERENCES common_status(id)
+);
+
+-- Insert contact request statuses
+INSERT INTO faq_contact_request_status (name, description, color, sort_order, created_by) VALUES
+('new', 'New request received', '#EF4444', 1, 1),
+('in_progress', 'Request is being handled', '#F59E0B', 2, 1),
+('awaiting_reply', 'Waiting for customer reply', '#8B5CF6', 3, 1),
+('resolved', 'Issue has been resolved', '#10B981', 4, 1),
+('closed', 'Request has been closed', '#6B7280', 5, 1);
+
+-- Contact Priority Table
+CREATE TABLE faq_contact_priority (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(50) NOT NULL UNIQUE,
+    description VARCHAR(255),
+    color VARCHAR(7) DEFAULT '#6B7280', -- Hex color for UI
+    sort_order INT DEFAULT 0,
+    response_time_hours INT, -- Expected response time in hours
+    common_status_id INT NOT NULL DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_by INT,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_by INT,
+    terminated_at TIMESTAMP,
+    terminated_by INT,
+    FOREIGN KEY (common_status_id) REFERENCES common_status(id)
+);
+
+-- Insert contact priorities
+INSERT INTO faq_contact_priority (name, description, color, sort_order, response_time_hours, created_by) VALUES
+('low', 'Low priority', '#6B7280', 1, 72, 1),
+('medium', 'Medium priority', '#10B981', 2, 24, 1),
+('high', 'High priority', '#F59E0B', 3, 4, 1),
+('urgent', 'Urgent priority', '#EF4444', 4, 1, 1);
+
+-- Contact Reply Type Table
+CREATE TABLE faq_contact_reply_type (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(50) NOT NULL UNIQUE,
+    description VARCHAR(255),
+    icon VARCHAR(50), -- Icon name for UI
+    common_status_id INT NOT NULL DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_by INT,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_by INT,
+    terminated_at TIMESTAMP,
+    terminated_by INT,
+    FOREIGN KEY (common_status_id) REFERENCES common_status(id)
+);
+
+-- Insert contact reply types
+INSERT INTO faq_contact_reply_type (name, description, icon, created_by) VALUES
+('customer', 'Reply from customer', 'user', 1),
+('support', 'Reply from support team', 'support_agent', 1),
+('system', 'System generated message', 'auto_message', 1);
+
+-- Contact Requests Table
+CREATE TABLE faq_contact_requests (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    ticket_number VARCHAR(20) UNIQUE NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    category VARCHAR(50) NOT NULL,
+    subject VARCHAR(255) NOT NULL,
+    message TEXT NOT NULL,
+    request_status_id INT NOT NULL,
+    priority_id INT NOT NULL,
+    assigned_to INT,
+    first_response_at TIMESTAMP NULL,
+    resolved_at TIMESTAMP NULL,
+    closed_at TIMESTAMP NULL,
+	auto_reply_sent BOOLEAN DEFAULT FALSE,
+    auto_reply_sent_at TIMESTAMP NULL,
+    reply_count INT DEFAULT 0,
+    last_reply_at TIMESTAMP NULL,
+    ip_address VARCHAR(45),
+    user_agent TEXT,
+    referrer_url VARCHAR(500),
+    common_status_id INT NOT NULL DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_by INT,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_by INT,
+    terminated_at TIMESTAMP,
+    terminated_by INT,
+    FOREIGN KEY (request_status_id) REFERENCES faq_contact_request_status(id),
+    FOREIGN KEY (priority_id) REFERENCES faq_contact_priority(id),
+    FOREIGN KEY (common_status_id) REFERENCES common_status(id),
+    FOREIGN KEY (assigned_to) REFERENCES user(user_id)
+);
+
+-- Contact Request Replies Table
+CREATE TABLE faq_contact_request_replies (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    faq_contact_request_id INT NOT NULL,
+    reply_type_id INT NOT NULL,
+    message TEXT NOT NULL,
+    internal_notes TEXT,
+    replied_by INT,
+    replied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    common_status_id INT NOT NULL DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_by INT,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_by INT,
+    terminated_at TIMESTAMP,
+    terminated_by INT,
+    FOREIGN KEY (faq_contact_request_id) REFERENCES faq_contact_requests(id) ON DELETE CASCADE,
+    FOREIGN KEY (reply_type_id) REFERENCES faq_contact_reply_type(id),
+    FOREIGN KEY (common_status_id) REFERENCES common_status(id),
+    FOREIGN KEY (replied_by) REFERENCES user(user_id)
+);
+
  
 SELECT 
 	f.id AS FAQ_ID,

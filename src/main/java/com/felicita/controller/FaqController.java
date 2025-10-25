@@ -1,9 +1,8 @@
 package com.felicita.controller;
 
 import com.felicita.model.request.FaqViewCountUpdateRequest;
-import com.felicita.model.response.CommonResponse;
-import com.felicita.model.response.FaqResponse;
-import com.felicita.model.response.UpdateResponse;
+import com.felicita.model.request.InsertFaqRequest;
+import com.felicita.model.response.*;
 import com.felicita.service.FaqService;
 import com.felicita.util.Constant;
 import org.slf4j.Logger;
@@ -46,9 +45,27 @@ public class FaqController {
     @PutMapping(path = "/view-count")
     public ResponseEntity<CommonResponse<UpdateResponse>> updateFaqViewCount(@RequestBody FaqViewCountUpdateRequest faqViewCountUpdateRequest){
         LOGGER.info("{} Start execute update faq data {}", Constant.DOTS, Constant.DOTS);
-        LOGGER.info(faqViewCountUpdateRequest.toString());
         ResponseEntity<CommonResponse<UpdateResponse>> response = faqService.updateFaqViewCount(faqViewCountUpdateRequest);
         LOGGER.info("{} End execute update faq data {}", Constant.DOTS, Constant.DOTS);
         return response;
     }
+
+
+    @GetMapping(path = "/options")
+    public ResponseEntity<CommonResponse<List<FaqOptionDetailsResponse>>> getFaqOptions(){
+        LOGGER.info("{} Start execute get faq options data {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<FaqOptionDetailsResponse>> response = faqService.getFaqOptions();
+        LOGGER.info("{} End execute get faq options data {}", Constant.DOTS, Constant.DOTS);
+        return ResponseEntity.ok(response);
+    }
+
+
+    @PostMapping(path = "/insert-faq-request")
+    public ResponseEntity<CommonResponse<InsertResponse>> insertFaqRequest(@RequestBody InsertFaqRequest insertFaqRequest){
+        LOGGER.info("{} Start execute insert faq request data {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<InsertResponse> response = faqService.insertFaqRequest(insertFaqRequest);
+        LOGGER.info("{} End execute insert faq request data {}", Constant.DOTS, Constant.DOTS);
+        return ResponseEntity.ok(response);
+    }
+
 }

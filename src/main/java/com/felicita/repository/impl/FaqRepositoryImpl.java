@@ -1,8 +1,11 @@
 package com.felicita.repository.impl;
 
 import com.felicita.exception.DataAccessErrorExceptionHandler;
+import com.felicita.exception.InsertFailedErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
 import com.felicita.exception.UpdateFailedErrorExceptionHandler;
+import com.felicita.model.request.InsertFaqRequest;
+import com.felicita.model.response.FaqOptionDetailsResponse;
 import com.felicita.model.response.FaqResponse;
 import com.felicita.queries.FaqQueries;
 import com.felicita.repository.FaqRepository;
@@ -143,6 +146,68 @@ public class FaqRepositoryImpl implements FaqRepository {
             throw new InternalServerErrorExceptionHandler(
                     "Database error: Failed to fetch FAQ item with ID " + faqId
             );
+        }
+    }
+
+    @Override
+    public List<FaqOptionDetailsResponse> getFaqOptions() {
+        String GET_FAQ_OPTIONS = FaqQueries.GET_FAQ_OPTIONS;
+
+        try {
+            LOGGER.info("Executing query to fetch all FAQ options...");
+
+            List<FaqOptionDetailsResponse> results = jdbcTemplate.query(GET_FAQ_OPTIONS, (rs, rowNum) -> {
+                return FaqOptionDetailsResponse.builder()
+                        .optionId(rs.getLong("option_id"))
+                        .optionKey(rs.getString("option_key"))
+                        .optionValue(rs.getString("option_value"))
+                        .optionType(rs.getString("option_type"))
+                        .optionTypeDescription(rs.getString("option_type_description"))
+                        .optionDescription(rs.getString("option_description"))
+                        .commonStatusName(rs.getString("common_status_name"))
+                        .createdAt(rs.getTimestamp("created_at") != null ? rs.getTimestamp("created_at").toLocalDateTime() : null)
+                        .updatedAt(rs.getTimestamp("updated_at") != null ? rs.getTimestamp("updated_at").toLocalDateTime() : null)
+                        .createdBy(rs.getObject("created_by") != null ? rs.getLong("created_by") : null)
+                        .updatedBy(rs.getObject("updated_by") != null ? rs.getLong("updated_by") : null)
+                        .build();
+            });
+
+            LOGGER.info("Successfully fetched {} FAQ options.", results.size());
+            return results;
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching FAQ options: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler("Failed to fetch FAQ options from database");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching FAQ options: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching FAQ options");
+        }
+    }
+
+    @Override
+    public void insertFaqRequest(InsertFaqRequest request) {
+        String INSERT_FAQ_REQUEST = FaqQueries.INSERT_FAQ_REQUEST;
+        try {
+            int rowsAffected = jdbcTemplate.update(INSERT_FAQ_REQUEST,
+                    request.getTicketNumber(),
+                    request.getName(),
+                    request.getEmail(),
+                    request.getCategory(),
+                    request.getSubject(),
+                    request.getMessage(),
+                    request.getIpAddress(),
+                    request.getUserId()
+            );
+
+            if (rowsAffected == 0) {
+                throw new InsertFailedErrorExceptionHandler("No rows affected when inserting FAQ");
+            }
+
+        } catch (InsertFailedErrorExceptionHandler e) {
+            LOGGER.error("Failed to insert FAQ for email: {}", request.getEmail(), e);
+            throw new InsertFailedErrorExceptionHandler("Failed to insert FAQ record");
+        } catch (Exception e) {
+            throw new InternalServerErrorExceptionHandler("Something went wrong");
         }
     }
 

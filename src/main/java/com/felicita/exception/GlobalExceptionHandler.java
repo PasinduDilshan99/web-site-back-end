@@ -1,6 +1,7 @@
 package com.felicita.exception;
 
 import com.felicita.model.response.CommonResponse;
+import com.felicita.model.response.ValidationFailedResponse;
 import com.felicita.util.CommonResponseMessages;
 import com.felicita.util.Constant;
 import org.slf4j.Logger;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.time.Instant;
+import java.util.List;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -76,4 +78,35 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
+
+    @ExceptionHandler(InsertFailedErrorExceptionHandler.class)
+    public ResponseEntity<CommonResponse<String>> handleInsertFailedErrorException(InsertFailedErrorExceptionHandler e) {
+        logger.error("{} Insert Failed Error Exception: {} {}", Constant.ERROR_DOTS_START, e.getMessage(), Constant.ERROR_DOTS_END);
+
+        CommonResponse<String> response = new CommonResponse<>(
+                CommonResponseMessages.BAD_REQUEST_CODE,
+                CommonResponseMessages.BAD_REQUEST_STATUS,
+                CommonResponseMessages.BAD_REQUEST_MESSAGES,
+                e.getMessage(),
+                Instant.now()
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(ValidationFailedErrorExceptionHandler.class)
+    public ResponseEntity<CommonResponse<List<ValidationFailedResponse>>> handleValidationFailedErrorException(ValidationFailedErrorExceptionHandler e) {
+        logger.error("{} Validation Failed Error Exception : {} {}", Constant.ERROR_DOTS_START, e.getMessage(), Constant.ERROR_DOTS_END);
+
+        CommonResponse<List<ValidationFailedResponse>> response = new CommonResponse<>(
+                CommonResponseMessages.BAD_REQUEST_CODE,
+                CommonResponseMessages.BAD_REQUEST_STATUS,
+                CommonResponseMessages.BAD_REQUEST_MESSAGES,
+                e.getValidationFailedResponses(),
+                Instant.now()
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
 }
