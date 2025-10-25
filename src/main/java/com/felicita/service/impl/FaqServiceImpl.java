@@ -1,17 +1,18 @@
 package com.felicita.service.impl;
 
 import com.felicita.exception.DataNotFoundErrorExceptionHandler;
+import com.felicita.exception.InsertFailedErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
+import com.felicita.exception.ValidationFailedErrorExceptionHandler;
 import com.felicita.model.enums.FaqItemStatus;
 import com.felicita.model.enums.HeroSectionItemStatus;
 import com.felicita.model.request.FaqViewCountUpdateRequest;
-import com.felicita.model.response.CommonResponse;
-import com.felicita.model.response.FaqResponse;
-import com.felicita.model.response.HeroSectionResponse;
-import com.felicita.model.response.UpdateResponse;
+import com.felicita.model.request.InsertFaqRequest;
+import com.felicita.model.response.*;
 import com.felicita.repository.FaqRepository;
 import com.felicita.service.FaqService;
 import com.felicita.util.CommonResponseMessages;
+import com.felicita.validation.FaqValidationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +28,13 @@ public class FaqServiceImpl implements FaqService {
     private static final Logger LOGGER = LoggerFactory.getLogger(FaqServiceImpl.class);
 
     private final FaqRepository faqRepository;
+    private final FaqValidationService faqValidationService;
 
     @Autowired
-    public FaqServiceImpl(FaqRepository faqRepository) {
+    public FaqServiceImpl(FaqRepository faqRepository,
+                          FaqValidationService faqValidationService) {
         this.faqRepository = faqRepository;
+        this.faqValidationService = faqValidationService;
     }
 
 
@@ -116,7 +120,7 @@ public class FaqServiceImpl implements FaqService {
                 faqResponse.setFaqViewCount(faqResponse.getFaqViewCount() + 1);
                 faqResponse.setFaqLastView(Instant.now().atZone(java.time.ZoneId.systemDefault()).toLocalDateTime());
                 faqRepository.updateFaqViewCount(faqResponse);
-            }else{
+            } else {
                 LOGGER.warn("No faq item found in database");
                 throw new DataNotFoundErrorExceptionHandler("No faq item found");
             }
@@ -139,6 +143,61 @@ public class FaqServiceImpl implements FaqService {
             throw new InternalServerErrorExceptionHandler("Failed to fetch faq items from database");
         } finally {
             LOGGER.info("End updating faq items from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<List<FaqOptionDetailsResponse>> getFaqOptions() {
+        LOGGER.info("Start fetching all package from repository");
+        try {
+            List<FaqOptionDetailsResponse> faqOptionDetailsResponses = faqRepository.getFaqOptions();
+
+            if (faqOptionDetailsResponses.isEmpty()) {
+                LOGGER.warn("No active package found in database");
+                throw new DataNotFoundErrorExceptionHandler("No package found");
+            }
+
+            return
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            faqOptionDetailsResponses,
+                            Instant.now()
+                    )
+                    ;
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch package from database");
+        } finally {
+            LOGGER.info("End fetching all package from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<InsertResponse> insertFaqRequest(InsertFaqRequest insertFaqRequest) {
+        try {
+            faqValidationService.validateInsertFaqRequest(insertFaqRequest);
+            faqRepository.insertFaqRequest(insertFaqRequest);
+            return
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            new InsertResponse("Successfully insert faq request"),
+                            Instant.now()
+                    );
+        } catch (ValidationFailedErrorExceptionHandler vfe) {
+            throw new ValidationFailedErrorExceptionHandler("validation failed in the insert faq request", vfe.getValidationFailedResponses());
+        } catch (InsertFailedErrorExceptionHandler ife) {
+            throw new InsertFailedErrorExceptionHandler(ife.getMessage());
+
+        } catch (Exception e) {
+            throw new InternalServerErrorExceptionHandler("Something went wrong");
         }
     }
 }
