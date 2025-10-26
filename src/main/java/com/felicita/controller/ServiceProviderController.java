@@ -31,9 +31,9 @@ public class ServiceProviderController {
     }
 
     @GetMapping(path = "/{serviceProviderId}")
-    public ResponseEntity<CommonResponse<List<ServiceProviderDetailsResponse>>> getServiceProviderDetailsById(@PathVariable String serviceProviderId){
+    public ResponseEntity<CommonResponse<ServiceProviderDetailsResponse>> getServiceProviderDetailsById(@PathVariable String serviceProviderId){
         LOGGER.info("{} Start execute get service provider details {}", Constant.DOTS, Constant.DOTS);
-        CommonResponse<List<ServiceProviderDetailsResponse>> response = serviceProviderService.getServiceProviderDetailsById(serviceProviderId);
+        CommonResponse<ServiceProviderDetailsResponse> response = serviceProviderService.getServiceProviderDetailsById(serviceProviderId);
         LOGGER.info("{} End execute get service provider details {}", Constant.DOTS, Constant.DOTS);
         return new ResponseEntity<>(response,HttpStatus.OK);
     }

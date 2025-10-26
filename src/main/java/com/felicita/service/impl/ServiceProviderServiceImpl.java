@@ -32,32 +32,55 @@ public class ServiceProviderServiceImpl implements ServiceProviderService {
 
 
     @Override
-    public CommonResponse<List<ServiceProviderDetailsResponse>> getServiceProviderDetailsById(String serviceProviderId) {
+    public CommonResponse<ServiceProviderDetailsResponse> getServiceProviderDetailsById(String serviceProviderId) {
         LOGGER.info("Start fetching all partners from repository");
-        List<ServiceProviderDetailsResponse> serviceProviderDetailsResponses = new ArrayList<>();
+        ServiceProviderDetailsResponse serviceProviderDetailsResponses = new ServiceProviderDetailsResponse();
         try {
-            List<PartnerResponse> partnerResponses = partnerRepository.getAllPartners();
+            ServiceProviderDetailsResponse.ServiceProviderDetails serviceProviderDetails = serviceProviderRepository.getServiceProviderDetails(serviceProviderId);
+            List<ServiceProviderDetailsResponse.NearbyDestination> nearbyDestinations = serviceProviderRepository.getNearByDestiantions(serviceProviderId);
+            List<ServiceProviderDetailsResponse.MealDetail> mealDetails = serviceProviderRepository.getMealDetails(serviceProviderId);
+            List<ServiceProviderDetailsResponse.RoomDetail> roomDetails  = serviceProviderRepository.getRoomDetails(serviceProviderId);
+            List<ServiceProviderDetailsResponse.PackageDetail> packageDetails = serviceProviderRepository.getPackageDetails(serviceProviderId);
+            List<ServiceProviderDetailsResponse.AmenityDetail> amenityDetails = serviceProviderRepository.getAmenityDetails(serviceProviderId);
+            List<ServiceProviderDetailsResponse.FacilityDetail> facilityDetails = serviceProviderRepository.getFacilityDetails(serviceProviderId);
+            List<ServiceProviderDetailsResponse.SeasonalPricing> seasonalPricings = serviceProviderRepository.getSeasonalPricings(serviceProviderId);
+            List<ServiceProviderDetailsResponse.ContactPerson> contactPeoples = serviceProviderRepository.getContactPersons(serviceProviderId);
+            List<ServiceProviderDetailsResponse.BankDetail> bankDetails = serviceProviderRepository.getBankDetails(serviceProviderId);
+            ServiceProviderDetailsResponse.TaxAndCommissionDetails taxAndCommissionDetails = serviceProviderRepository.getTaxAndCommissionDetails(serviceProviderId);
+            List<ServiceProviderDetailsResponse.BookingRestriction> bookingRestrictions = serviceProviderRepository.getBookingRestrictions(serviceProviderId);
+            ServiceProviderDetailsResponse.Statistics statistics = serviceProviderRepository.getStatistics(serviceProviderId);
+            List<ServiceProviderDetailsResponse.SocialMedia> socialMedias = serviceProviderRepository.getSocialMedias(serviceProviderId);
+            List<ServiceProviderDetailsResponse.ReviewDetail> reviewDetails = serviceProviderRepository.getReviewDetails(serviceProviderId);
 
-            if (partnerResponses.isEmpty()) {
-                LOGGER.warn("No partners found in database");
-                throw new DataNotFoundErrorExceptionHandler("No partners found");
-            }
+            serviceProviderDetailsResponses.setServiceProviderDetails(serviceProviderDetails);
+            serviceProviderDetailsResponses.setNearbyDestinations(nearbyDestinations);
+            serviceProviderDetailsResponses.setMealDetails(mealDetails);
+            serviceProviderDetailsResponses.setRoomDetails(roomDetails);
+            serviceProviderDetailsResponses.setPackageDetails(packageDetails);
+            serviceProviderDetailsResponses.setAmenities(amenityDetails);
+            serviceProviderDetailsResponses.setFacilities(facilityDetails);
+            serviceProviderDetailsResponses.setSeasonalPricing(seasonalPricings);
+            serviceProviderDetailsResponses.setContactPersons(contactPeoples);
+            serviceProviderDetailsResponses.setBankDetails(bankDetails);
+            serviceProviderDetailsResponses.setTaxAndCommissionDetails(taxAndCommissionDetails);
+            serviceProviderDetailsResponses.setBookingRestrictions(bookingRestrictions);
+            serviceProviderDetailsResponses.setStatistics(statistics);
+            serviceProviderDetailsResponses.setSocialMedia(socialMedias);
+            serviceProviderDetailsResponses.setReviews(reviewDetails);
 
-            LOGGER.info("Fetched {} partners successfully", partnerResponses.size());
-            return ResponseEntity.ok(
+            return (
                     new CommonResponse<>(
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            partnerResponses,
+                            serviceProviderDetailsResponses,
                             Instant.now()
-                    )
-            );
+                    ));
 
-        }catch (DataNotFoundErrorExceptionHandler e) {
+        } catch (DataNotFoundErrorExceptionHandler e) {
             LOGGER.error("Error occurred while fetching partners: {}", e.getMessage(), e);
             throw new DataNotFoundErrorExceptionHandler(e.getMessage());
-        }catch (Exception e) {
+        } catch (Exception e) {
             LOGGER.error("Error occurred while fetching partners: {}", e.getMessage(), e);
             throw new InternalServerErrorExceptionHandler("Failed to fetch partners from database");
         } finally {
