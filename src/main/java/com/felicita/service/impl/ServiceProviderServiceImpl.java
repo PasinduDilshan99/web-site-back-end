@@ -32,7 +32,7 @@ public class ServiceProviderServiceImpl implements ServiceProviderService {
 
 
     @Override
-    public CommonResponse<ServiceProviderDetailsResponse> getServiceProviderDetailsById(String serviceProviderId) {
+    public CommonResponse<ServiceProviderDetailsResponse>  getServiceProviderDetailsById(String serviceProviderId) {
         LOGGER.info("Start fetching all partners from repository");
         ServiceProviderDetailsResponse serviceProviderDetailsResponses = new ServiceProviderDetailsResponse();
         try {
