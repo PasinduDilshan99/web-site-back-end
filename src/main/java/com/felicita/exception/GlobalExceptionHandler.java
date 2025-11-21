@@ -109,4 +109,30 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
+    @ExceptionHandler(UserRegisterFailedErrorExceptionHandler.class)
+    public ResponseEntity<CommonResponse<String>> handleUserRegisterFailedErrorException(UserRegisterFailedErrorExceptionHandler e) {
+        logger.error("{} Validation Failed Error Exception : {} {}", Constant.ERROR_DOTS_START, e.getMessage(), Constant.ERROR_DOTS_END);
+        CommonResponse<String> response = new CommonResponse<>(
+                CommonResponseMessages.BAD_REQUEST_CODE,
+                CommonResponseMessages.BAD_REQUEST_STATUS,
+                CommonResponseMessages.BAD_REQUEST_MESSAGES,
+                e.getMessage(),
+                Instant.now()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(DataRetrieveFailedErrorExceptionHandler.class)
+    public ResponseEntity<CommonResponse<String>> handleDataRetrieveFailedErrorException(DataRetrieveFailedErrorExceptionHandler e) {
+        logger.error("{} Data Retrieve Failed Error Exception : {} {}", Constant.ERROR_DOTS_START, e.getMessage(), Constant.ERROR_DOTS_END);
+        CommonResponse<String> response = new CommonResponse<>(
+                CommonResponseMessages.DATA_RETRIEVE_FAILED_CODE,
+                CommonResponseMessages.DATA_RETRIEVE_FAILED_STATUS,
+                CommonResponseMessages.DATA_RETRIEVE_FAILED_MESSAGE,
+                e.getMessage(),
+                Instant.now()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
 }
