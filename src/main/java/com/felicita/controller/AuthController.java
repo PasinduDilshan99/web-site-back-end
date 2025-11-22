@@ -35,9 +35,10 @@ public class AuthController {
     }
 
     @PostMapping(path = "/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest,
+    public ResponseEntity<CommonResponse<LoginResponse>> login(@RequestBody LoginRequest loginRequest,
                                                HttpServletResponse response){
-        return ResponseEntity.ok(authService.login(loginRequest, response));
+        CommonResponse<LoginResponse> loginResponse = authService.login(loginRequest, response);
+        return ResponseEntity.ok(loginResponse);
     }
 
     @PostMapping(path = "/logout")

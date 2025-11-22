@@ -2,13 +2,16 @@ package com.felicita.security.service.impl;
 
 
 import com.felicita.security.model.CustomUserDetails;
+import com.felicita.security.model.InsertJwtTokenRequest;
 import com.felicita.security.model.User;
 import com.felicita.security.service.JwtService;
+import com.felicita.security.service.JwtTokenService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -46,10 +49,25 @@ public class JwtServiceImpl implements JwtService {
     @Value("${jwt.refresh.cookie.max-age:900}")
     private long refreshCookieMaxAge;
 
+    private final JwtTokenService jwtTokenService;
+
+    @Autowired
+    public JwtServiceImpl(JwtTokenService jwtTokenService) {
+        this.jwtTokenService = jwtTokenService;
+    }
+
     @Override
     public String generateAccessToken(User user) {
         Map<String, Object> claims = new HashMap<>();
-        return buildToken(claims, user.getUsername(), jwtExpirationMillis);
+        String token = buildToken(claims, user.getUsername(), jwtExpirationMillis);
+        InsertJwtTokenRequest insertJwtTokenRequest = new InsertJwtTokenRequest();
+        insertJwtTokenRequest.setUserId(user.getId());
+        insertJwtTokenRequest.setToken(token);
+        insertJwtTokenRequest.setExpiresAt(Instant.now().plusMillis(jwtExpirationMillis));
+        insertJwtTokenRequest.setIpAddress(null);
+        insertJwtTokenRequest.setUserAgent(null);
+        jwtTokenService.insertJwtToken(insertJwtTokenRequest);
+        return token;
     }
 
     @Override

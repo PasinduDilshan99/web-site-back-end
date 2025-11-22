@@ -11,7 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public interface AuthService {
     CommonResponse<String> signup(RegisterUser registerUser);
 
-    LoginResponse login(LoginRequest loginRequest, HttpServletResponse response);
+    CommonResponse<LoginResponse> login(LoginRequest loginRequest, HttpServletResponse response);
 
     CommonResponse<String> logout(HttpServletRequest request, HttpServletResponse response);
 

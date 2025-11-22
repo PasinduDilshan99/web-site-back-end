@@ -10,6 +10,10 @@ public class CommonResponseMessages {
     public static final String SUCCESSFULLY_LOGOUT_STATUS = "SUCCESSFULLY_LOGOUT";
     public static final String SUCCESSFULLY_LOGOUT_MESSAGE = "SUCCESSFULLY_LOGOUT";
 
+    public static final int SUCCESSFULLY_LOGGING_CODE = 200;
+    public static final String SUCCESSFULLY_LOGGING_STATUS = "SUCCESSFULLY_LOGGING";
+    public static final String SUCCESSFULLY_LOGGING_MESSAGE = "SUCCESSFULLY_LOGGING";
+
     public static final int UNSUCCESSFULLY_LOGOUT_CODE = 500;
     public static final String UNSUCCESSFULLY_LOGOUT_STATUS = "UNSUCCESSFULLY_LOGOUT";
     public static final String UNSUCCESSFULLY_LOGOUT_MESSAGE = "UNSUCCESSFULLY_LOGOUT";

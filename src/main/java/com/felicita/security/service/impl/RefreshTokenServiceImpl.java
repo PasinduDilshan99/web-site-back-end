@@ -27,7 +27,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         refreshTokenRepository.revokeAllForUser(user.getId());
 
         // Clean up expired tokens
-        refreshTokenRepository.deleteExpired(Instant.now());
+//        refreshTokenRepository.deleteExpired(Instant.now());
 
         // Create new refresh token
         RefreshToken refreshToken = RefreshToken.builder()

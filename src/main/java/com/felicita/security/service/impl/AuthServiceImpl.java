@@ -75,7 +75,7 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
-    public LoginResponse login(LoginRequest loginRequest, HttpServletResponse response) {
+    public CommonResponse<LoginResponse> login(LoginRequest loginRequest, HttpServletResponse response) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
         if (authentication.isAuthenticated()) {
@@ -90,13 +90,21 @@ public class AuthServiceImpl implements AuthService {
             response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
             response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
 
-            return LoginResponse.builder()
+            LoginResponse loginSuccessful = LoginResponse.builder()
                     .message("Login successful")
                     .username(domainUser.getUsername())
                     .uniqueCode(helperService.generateUniqueCode())
                     .accessTokenExpiresAt(jwtService.extractExpiration(accessToken).toInstant())
                     .refreshTokenExpiresAt(jwtService.extractExpiration(refreshToken).toInstant())
                     .build();
+
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_LOGGING_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_LOGGING_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_LOGGING_MESSAGE,
+                    loginSuccessful,
+                    Instant.now()
+            );
         }
         throw new RuntimeException("Authentication failed");
     }
