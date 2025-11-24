@@ -1,6 +1,7 @@
 package com.felicita.config;
 
 import com.felicita.filter.JwtFilter;
+import com.felicita.util.PublicEndpoints;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -40,11 +41,10 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // ENABLE CORS
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v0/auth/signup", "/api/v0/auth/login","v0/api/nav-bar/visible","/api/v0/footer/active")
-                        .permitAll()
-                        .anyRequest().authenticated())
+                        .requestMatchers(PublicEndpoints.ENDPOINTS).permitAll()
+                        .anyRequest().permitAll())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
