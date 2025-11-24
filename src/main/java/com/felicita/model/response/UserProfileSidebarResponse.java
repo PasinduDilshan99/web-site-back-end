@@ -19,5 +19,6 @@ public class UserProfileSidebarResponse {
     private String description;
     private String privilegeName;
     private String status;
+    private String url;
     private List<UserProfileSidebarResponse> children;
 }

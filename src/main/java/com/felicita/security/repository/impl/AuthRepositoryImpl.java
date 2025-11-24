@@ -58,7 +58,7 @@ public class AuthRepositoryImpl implements AuthRepository {
                 throw new UserRegisterFailedErrorExceptionHandler("User registration failed.");
             }
 
-            registerUser.setUserId(keyHolder.getKey().intValue());
+            registerUser.setUserId(keyHolder.getKey().longValue());
             Integer roleId = getRoleIdByName("ROLE_USER");
             if (roleId != null) {
                 jdbcTemplate.update(
@@ -90,7 +90,7 @@ public class AuthRepositoryImpl implements AuthRepository {
         }
     }
 
-    private Set<String> fetchRoles(Integer userId) {
+    private Set<String> fetchRoles(Long userId) {
         String sql = """
                 SELECT r.name FROM roles r 
                 INNER JOIN user_roles ur ON r.id = ur.role_id 
@@ -99,7 +99,7 @@ public class AuthRepositoryImpl implements AuthRepository {
         return new HashSet<>(jdbcTemplate.query(sql, (rs, rowNum) -> rs.getString("name"), userId));
     }
 
-    private Set<String> fetchPrivileges(Integer userId) {
+    private Set<String> fetchPrivileges(Long userId) {
         String sql = """
                 SELECT DISTINCT p.name FROM privileges p 
                 INNER JOIN role_privileges rp ON p.id = rp.privilege_id
@@ -114,7 +114,7 @@ public class AuthRepositoryImpl implements AuthRepository {
 
         try {
             User user = jdbcTemplate.queryForObject(sql, new Object[]{username}, (rs, rowNum) -> User.builder()
-                    .id(rs.getInt("user_id"))
+                    .id(rs.getLong("user_id"))
                     .username(rs.getString("username"))
                     .password(rs.getString("password"))
                     .firstName(rs.getString("first_name"))

@@ -11,7 +11,7 @@ public interface RefreshTokenRepository {
 
     Optional<RefreshToken> findByToken(String token);
 
-    void revokeAllForUser(Integer userId);
+    void revokeAllForUser(Long userId);
 
     void revokeToken(String token);
 

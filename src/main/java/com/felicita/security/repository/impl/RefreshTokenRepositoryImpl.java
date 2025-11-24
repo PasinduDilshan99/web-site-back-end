@@ -34,7 +34,7 @@ public class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
                     "INSERT INTO refresh_tokens (user_id, token, expiry_date, revoked) VALUES (?,?,?,?)",
                     Statement.RETURN_GENERATED_KEYS
             );
-            ps.setInt(1, refreshToken.getUserId());
+            ps.setLong(1, refreshToken.getUserId());
             ps.setString(2, refreshToken.getToken());
             ps.setTimestamp(3, Timestamp.from(refreshToken.getExpiryDate()));
             ps.setBoolean(4, refreshToken.isRevoked());
@@ -53,7 +53,7 @@ public class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
         List<RefreshToken> result = jdbcTemplate.query(sql, (rs, rowNum) ->
                 RefreshToken.builder()
                         .id(rs.getLong("id"))
-                        .userId(rs.getInt("user_id"))
+                        .userId(rs.getLong("user_id"))
                         .token(rs.getString("token"))
                         .expiryDate(rs.getTimestamp("expiry_date").toInstant())
                         .revoked(rs.getBoolean("revoked"))
@@ -63,7 +63,7 @@ public class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
     }
 
     @Override
-    public void revokeAllForUser(Integer userId) {
+    public void revokeAllForUser(Long userId) {
         jdbcTemplate.update("UPDATE refresh_tokens SET revoked = true WHERE user_id = ?", userId);
     }
 

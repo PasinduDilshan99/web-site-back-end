@@ -10,7 +10,7 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 public class InsertJwtTokenRequest {
-    private Integer userId;
+    private Long userId;
     private String token;
     private Instant expiresAt;
     private String ipAddress;

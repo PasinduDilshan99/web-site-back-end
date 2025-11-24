@@ -13,7 +13,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 public class User {
-    private Integer id;
+    private Long id;
     private String username;
     private String password;
     private String firstName;

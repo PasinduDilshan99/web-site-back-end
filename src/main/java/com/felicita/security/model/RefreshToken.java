@@ -13,7 +13,7 @@ import java.time.Instant;
 @AllArgsConstructor
 public class RefreshToken {
     private Long id;
-    private Integer userId;
+    private Long userId;
     private String token;
     private Instant expiryDate;
     @Builder.Default
