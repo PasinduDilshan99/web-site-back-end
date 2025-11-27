@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/v0/api/test")
+@RequestMapping("/api/v0/test")
 @Tag(name = "Test", description = "Test API")
 public class TestController {
 
@@ -33,6 +33,12 @@ public class TestController {
     public String test() {
         LOGGER.info("test");
         return "test";
+    }
+
+    @GetMapping("/test")
+    public String test2() {
+        LOGGER.info("test2");
+        return "test2";
     }
 
 }
