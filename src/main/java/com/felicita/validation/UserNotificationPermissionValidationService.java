@@ -1,0 +1,7 @@
+package com.felicita.validation;
+
+import com.felicita.model.request.UpdateUserNotificationPermissionRequest;
+
+public interface UserNotificationPermissionValidationService {
+    void validateUpdateUserNotificationPermissionRequest(UpdateUserNotificationPermissionRequest updateUserNotificationPermissionRequest);
+}

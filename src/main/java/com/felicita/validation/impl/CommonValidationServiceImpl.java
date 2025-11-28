@@ -378,4 +378,25 @@ public class CommonValidationServiceImpl implements CommonValidationService {
                 .build();
     }
 
+    @Override
+    public ValidationResultResponse validateBoolean(String field, String value) {
+        LOGGER.debug("Validating field '{}' for boolean value: {}", field, value);
+
+        // Check if not null or empty
+        ValidationResultResponse nullCheck = validateNotNullOrEmpty(field, value);
+        if (!nullCheck.isValid()) {
+            return nullCheck;
+        }
+
+        boolean isValid = "true".equalsIgnoreCase(value) || "false".equalsIgnoreCase(value);
+
+        return ValidationResultResponse.builder()
+                .valid(isValid)
+                .field(field)
+                .message(isValid ? "Validation successful" : "Field must be a boolean value ('true' or 'false')")
+                .additionalInfo(isValid ? "" : "Invalid boolean value detected")
+                .build();
+    }
+
+
 }
