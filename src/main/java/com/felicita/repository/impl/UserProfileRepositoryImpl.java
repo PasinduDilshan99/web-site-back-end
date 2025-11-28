@@ -103,7 +103,8 @@ public class UserProfileRepositoryImpl implements UserProfileRepository {
         } catch (Exception ex) {
             LOGGER.error("Error fetching sidebar: {}", ex.getMessage(), ex);
             throw new InternalServerErrorExceptionHandler("Failed to fetch sidebar data");
-        }    }
+        }
+    }
 
     @Override
     public List<UserProfileReviewResponse> getUserProfileReviews(Long userId) {
