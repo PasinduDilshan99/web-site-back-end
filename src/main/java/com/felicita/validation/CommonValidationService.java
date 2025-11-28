@@ -16,6 +16,7 @@ public interface CommonValidationService {
     ValidationResultResponse validateNotNull(String field, String value);
     ValidationResultResponse validateNotEmpty(String field, String value);
     ValidationResultResponse validateNotBlank(String field, String value);
+    ValidationResultResponse validateBoolean(String field, String value);
 
     // Pattern validation methods
     ValidationResultResponse validateOnlyAlphabets(String field, String value);
