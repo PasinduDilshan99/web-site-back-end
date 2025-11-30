@@ -7,11 +7,14 @@ import com.felicita.service.CommonService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.security.SecureRandom;
 
 @Service
 public class CommonServiceImpl implements CommonService {
@@ -25,6 +28,8 @@ public class CommonServiceImpl implements CommonService {
         this.commonRepository = commonRepository;
     }
 
+    @Value("${otp.generate.length}")
+    private int otpGeneratedLength;
 
     @Override
     public Long getUserIdBySecurityContext() {
@@ -36,4 +41,16 @@ public class CommonServiceImpl implements CommonService {
         User user = principal.getDomainUser();
         return user.getId();
     }
+
+    @Override
+    public String generateRandomOtp() {
+        SecureRandom secureRandom = new SecureRandom();
+        StringBuilder otp = new StringBuilder();
+
+        for (int i = 0; i < otpGeneratedLength; i++) {
+            otp.append(secureRandom.nextInt(10));
+        }
+        return otp.toString();
+    }
+
 }

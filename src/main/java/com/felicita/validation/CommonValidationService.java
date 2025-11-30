@@ -18,6 +18,10 @@ public interface CommonValidationService {
     ValidationResultResponse validateNotBlank(String field, String value);
     ValidationResultResponse validateBoolean(String field, String value);
 
+    // mobile Number validation methods
+    ValidationResultResponse validateMobileNumber(String countryCode, String value);
+
+
     // Pattern validation methods
     ValidationResultResponse validateOnlyAlphabets(String field, String value);
     ValidationResultResponse validateOnlyNumbers(String field, String value);
