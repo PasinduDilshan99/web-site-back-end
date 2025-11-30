@@ -398,5 +398,32 @@ public class CommonValidationServiceImpl implements CommonValidationService {
                 .build();
     }
 
+    @Override
+    public ValidationResultResponse validateMobileNumber(String countryCode, String number) {
+        LOGGER.debug("Validating mobile number for country {}: {}", countryCode, number);
+
+        ValidationResultResponse nullCheck = validateNotNullOrEmpty("mobileNumber", number);
+        if (!nullCheck.isValid()) {
+            return nullCheck;
+        }
+
+        String cleaned = number.replaceAll("[\\s\\-()]", "");
+
+        if (!cleaned.startsWith("+")) {
+            cleaned = countryCode + cleaned.replaceFirst("^0+", "");
+        }
+
+        boolean isValid = cleaned.matches("^\\+[1-9]\\d{7,14}$");
+
+        return ValidationResultResponse.builder()
+                .valid(isValid)
+                .field("mobileNumber")
+                .message(isValid ? "Validation successful" : "Invalid mobile number format")
+                .additionalInfo(isValid
+                        ? "Valid E.164 mobile number: " + cleaned
+                        : "Expected valid E.164 number (e.g., +94771234567)")
+                .build();
+    }
+
 
 }
