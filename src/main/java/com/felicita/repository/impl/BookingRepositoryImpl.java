@@ -808,6 +808,7 @@ public class BookingRepositoryImpl implements BookingRepository {
             }
 
             // 4. Fetch payments for these bookings
+            // 4. Fetch payments for these bookings (UPDATED MAPPING)
             if (!bookingMap.isEmpty()) {
                 jdbcTemplate.query(GET_CANCELLED_BOOKING_PAYMENTS, new Object[]{userId}, (rs) -> {
                     Long bookingId = rs.getLong("booking_id");
@@ -834,11 +835,17 @@ public class BookingRepositoryImpl implements BookingRepository {
                                 .amountPaid(rs.getBigDecimal("amount_paid"))
                                 .balanceDue(rs.getBigDecimal("balance_due"))
                                 .refundReference(rs.getString("refund_reference"))
+                                .refundAmount(rs.getBigDecimal("refund_amount"))
                                 .refundDate(rs.getTimestamp("refund_date") != null ?
                                         rs.getTimestamp("refund_date").toLocalDateTime() : null)
-                                .refundAmount(rs.getBigDecimal("refund_amount"))
-                                .refundMethod(rs.getString("refund_method"))
-                                .refundTransactionId(rs.getString("refund_transaction_id"))
+                                .refundStatus(rs.getString("refund_status"))  // FIXED: Now matches query
+                                .paymentPriority(rs.getString("payment_priority"))
+                                .depositRequired(rs.getBoolean("deposit_required"))
+                                .depositAmount(rs.getBigDecimal("deposit_amount"))
+                                .refundStatusInfo(rs.getString("refund_status_info"))
+                                .paymentMethodId(rs.getLong("payment_method_id"))
+                                .paymentStatusId(rs.getLong("payment_status_id"))
+                                .refundStatusId(rs.getLong("refund_status_id"))
                                 .build();
 
                         booking.getPayments().add(payment);

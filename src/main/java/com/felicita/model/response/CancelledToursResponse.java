@@ -152,7 +152,7 @@ public class CancelledToursResponse {
         private String refundReference;
         private BigDecimal refundAmount;
         private LocalDateTime refundDate;
-        private String refundStatus;  // Changed from refundMethod to match query
+        private String refundStatus;  // This now matches the query
 
         // Payment info
         private String paymentPriority;
@@ -160,9 +160,10 @@ public class CancelledToursResponse {
         private BigDecimal depositAmount;
         private String refundStatusInfo;
 
-        // Optional fields (will be null)
-        private String refundMethod;
-        private String refundTransactionId;
+        // Optional fields for reference
+        private Long paymentMethodId;
+        private Long paymentStatusId;
+        private Long refundStatusId;
     }
 
     @Data

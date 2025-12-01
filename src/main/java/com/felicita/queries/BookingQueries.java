@@ -735,12 +735,11 @@ public class BookingQueries {
         bi.amount_paid,
         bi.balance_due,
         
-        -- Refund Information
+        -- Refund Information (FIXED: Use consistent naming)
         r.refund_reference,
         r.refund_amount,
         r.processed_date AS refund_date,
-        -- Change refund_status to refund_method if you want that name
-        rs.name AS refund_method,  -- Changed from refund_status
+        rs.name AS refund_status,  -- FIXED: Changed back to refund_status
         
         -- Payment Priority
         CASE 
@@ -760,15 +759,17 @@ public class BookingQueries {
             ELSE p.amount
         END AS deposit_amount,
         
-        -- Cancellation Refund Info
+        -- Cancellation Refund Info (FIXED: This was duplicate, remove or rename)
         CASE 
             WHEN r.refund_id IS NOT NULL THEN 'REFUND_PROCESSED'
             WHEN b.refund_amount > 0 THEN 'REFUND_PENDING'
             ELSE 'NO_REFUND'
         END AS refund_status_info,
         
-        -- Add refund_transaction_id (will be null)
-        NULL AS refund_transaction_id
+        -- Add payment priority fields that were missing in Response
+        p.payment_method_id,
+        p.payment_status_id,
+        r.refund_status_id
         
     FROM payments p
     INNER JOIN payment_methods pm ON p.payment_method_id = pm.id
