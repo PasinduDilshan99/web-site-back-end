@@ -1,9 +1,6 @@
 package com.felicita.controller;
 
-import com.felicita.model.response.AccountSecurityDetailsResponse;
-import com.felicita.model.response.CommonResponse;
-import com.felicita.model.response.CompleteToursResponse;
-import com.felicita.model.response.UpcomingToursResponse;
+import com.felicita.model.response.*;
 import com.felicita.service.BookingService;
 import com.felicita.util.Constant;
 import org.slf4j.Logger;
@@ -46,5 +43,20 @@ public class BookingController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping(path = "/requested")
+    public ResponseEntity<CommonResponse<List<RequestedToursResponse>>> getRequstedToursDetailsById() {
+        LOGGER.info("{} Start execute get requested booking tours details {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<RequestedToursResponse>> response = bookingService.getRequstedToursDetailsById();
+        LOGGER.info("{} End execute get requested booking tours details {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/cancelled")
+    public ResponseEntity<CommonResponse<List<CancelledToursResponse>>> getCancelledToursDetailsById() {
+        LOGGER.info("{} Start execute get cancelled booking tours details {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<CancelledToursResponse>> response = bookingService.getCancelledToursDetailsById();
+        LOGGER.info("{} End execute get cancelled booking tours details {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
 }
