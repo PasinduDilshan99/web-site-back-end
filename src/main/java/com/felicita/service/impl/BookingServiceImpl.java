@@ -3,9 +3,7 @@ package com.felicita.service.impl;
 import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
 import com.felicita.model.dto.ActivityResponseDto;
-import com.felicita.model.response.CommonResponse;
-import com.felicita.model.response.CompleteToursResponse;
-import com.felicita.model.response.UpcomingToursResponse;
+import com.felicita.model.response.*;
 import com.felicita.repository.BookingRepository;
 import com.felicita.service.BookingService;
 import com.felicita.service.CommonService;
@@ -99,6 +97,74 @@ public class BookingServiceImpl implements BookingService {
             throw new InternalServerErrorExceptionHandler("Failed to fetch upcoming booking tours details from database");
         } finally {
             LOGGER.info("End fetching all upcoming booking tours details from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<List<RequestedToursResponse>> getRequstedToursDetailsById() {
+        LOGGER.info("Start fetching all requested  booking tours details from repository");
+        try {
+            Long userId = commonService.getUserIdBySecurityContext();
+            List<RequestedToursResponse> requestedToursResponses = bookingRepository.getRequstedToursDetailsById(userId);
+
+            if (requestedToursResponses.isEmpty()) {
+                LOGGER.warn("No requested booking tours details found in database");
+                throw new DataNotFoundErrorExceptionHandler("No requested booking tours details found");
+            }
+
+            LOGGER.info("Fetched {} requested booking tours details successfully", requestedToursResponses.size());
+            return(
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            requestedToursResponses,
+                            Instant.now()
+                    )
+            );
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching requested booking tours details: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching requested booking tours details: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch requested booking tours details from database");
+        } finally {
+            LOGGER.info("End fetching all requested booking tours details from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<List<CancelledToursResponse>> getCancelledToursDetailsById() {
+        LOGGER.info("Start fetching all cancelled booking tours details from repository");
+        try {
+            Long userId = commonService.getUserIdBySecurityContext();
+            List<CancelledToursResponse> cancelledToursResponses = bookingRepository.getCancelledToursDetailsById(userId);
+
+            if (cancelledToursResponses.isEmpty()) {
+                LOGGER.warn("No cancelled booking tours details found in database");
+                throw new DataNotFoundErrorExceptionHandler("No cancelled booking tours details found");
+            }
+
+            LOGGER.info("Fetched {} cancelled booking tours details successfully", cancelledToursResponses.size());
+            return(
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            cancelledToursResponses,
+                            Instant.now()
+                    )
+            );
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching cancelled booking tours details: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching cancelled booking tours details: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch cancelled booking tours details from database");
+        } finally {
+            LOGGER.info("End fetching all cancelled booking tours details from repository");
         }
     }
 }
