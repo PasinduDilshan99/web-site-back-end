@@ -1,3 +1,5 @@
+use travelagencydb;
+
 -- Booking Status Table
 CREATE TABLE booking_status (
     id INT PRIMARY KEY AUTO_INCREMENT,
