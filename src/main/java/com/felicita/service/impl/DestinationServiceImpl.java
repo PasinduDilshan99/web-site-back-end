@@ -214,7 +214,7 @@ public class DestinationServiceImpl implements DestinationService {
 
             List<PopularDestinationResponseDto> lastMonthDestinations = popularDestinationResponseDtos.stream()
                     .filter(d -> d.getPopularCreatedAt() != null &&
-                            d.getPopularCreatedAt().isAfter(LocalDateTime.now().minusMonths(1)))
+                            d.getPopularCreatedAt().isAfter(LocalDateTime.now().minusMonths(6)))
                     .collect(Collectors.toList());
 
 
