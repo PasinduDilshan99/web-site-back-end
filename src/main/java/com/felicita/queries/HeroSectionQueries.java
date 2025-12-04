@@ -28,4 +28,26 @@ public class HeroSectionQueries {
             lEFT JOIN common_status cs
             ON hss.common_status_id = cs.id
             """;
+
+    public static final String GET_ALL_ABOUT_US_HERO_SECTION_DATA = """
+            SELECT
+               a.id,
+               a.name,
+               a.image_url,
+               a.title,
+               a.subtitle,
+               a.description,
+               a.primary_button_text,
+               a.primary_button_link,
+               a.secondary_button_text,
+               a.secondary_button_link,
+               a.`order`,
+               a.created_at,
+               a.updated_at,
+               s.name AS status_name
+           FROM about_us_hero_section a
+           LEFT JOIN common_status s ON a.status = s.id
+           WHERE a.terminated_at IS NULL
+           ORDER BY a.`order` ASC, a.created_at ASC
+            """;
 }

@@ -2,6 +2,7 @@ package com.felicita.repository.impl;
 
 import com.felicita.exception.DataAccessErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
+import com.felicita.model.response.AboutUsHeroSectionResponse;
 import com.felicita.model.response.HeroSectionResponse;
 import com.felicita.queries.HeroSectionQueries;
 import com.felicita.repository.HeroSectionRepository;
@@ -56,6 +57,50 @@ public class HeroSectionRepositoryImpl implements HeroSectionRepository {
                 hero.setImageTerminatedAt(rs.getTimestamp("IMAGE_TERMINATED_AT") != null ? rs.getTimestamp("IMAGE_TERMINATED_AT").toLocalDateTime() : null);
                 hero.setImageTerminatedBy(rs.getInt("IMAGE_TERMINATED_BY"));
 
+                return hero;
+            });
+
+            LOGGER.info("Successfully fetched {} hero section items.", results.size());
+            return results;
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching hero section items: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler("Failed to fetch hero section items from database");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching hero section items: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching hero section items");
+        }
+    }
+
+    @Override
+    public List<AboutUsHeroSectionResponse> getAboutUsHeroSectionDetails() {
+        String GET_ALL_ABOUT_US_HERO_SECTION_DATA = HeroSectionQueries.GET_ALL_ABOUT_US_HERO_SECTION_DATA;
+        try {
+            LOGGER.info("Executing query to fetch all hero section items...");
+
+            List<AboutUsHeroSectionResponse> results = jdbcTemplate.query(GET_ALL_ABOUT_US_HERO_SECTION_DATA, (rs, rowNum) -> {
+                AboutUsHeroSectionResponse hero = AboutUsHeroSectionResponse.builder()
+                        .id(rs.getLong("id"))
+                        .name(rs.getString("name"))
+                        .imageUrl(rs.getString("image_url"))
+                        .title(rs.getString("title"))
+                        .subtitle(rs.getString("subtitle"))
+                        .description(rs.getString("description"))
+                        .primaryButtonText(rs.getString("primary_button_text"))
+                        .primaryButtonLink(rs.getString("primary_button_link"))
+                        .secondaryButtonText(rs.getString("secondary_button_text"))
+                        .secondaryButtonLink(rs.getString("secondary_button_link"))
+                        .order(rs.getInt("order"))
+                        .createdAt(rs.getTimestamp("created_at") != null ?
+                                rs.getTimestamp("created_at").toLocalDateTime() : null)
+                        .updatedAt(rs.getTimestamp("updated_at") != null ?
+                                rs.getTimestamp("updated_at").toLocalDateTime() : null)
+                        .statusName(rs.getString("status_name")) // Note: This is from common_status table
+                        .build();
+
+                if (rs.wasNull()) {
+                    hero.setOrder(null);
+                }
                 return hero;
             });
 
