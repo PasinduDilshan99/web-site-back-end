@@ -1,0 +1,39 @@
+package com.felicita.queries;
+
+public class EmployeeQueries {
+
+    public static final String GET_EMPLOYEES_WITH_SOCIAL_MEDIA_LINKS = """
+            SELECT
+                e.id as employee_id,
+                e.employee_code,
+                CONCAT(u.first_name, ' ', COALESCE(u.middle_name, ''), ' ', u.last_name) as full_name,
+                u.email,
+                u.image_url,
+                u.mobile_number1 as phone,
+                u.date_of_birth,
+                et.type_name as employee_type,
+                ed.department_name,
+                edg.designation_name,
+                e.hire_date,
+                e.work_location,
+                e.salary,
+                smp.platform_name,
+                esm.username,
+                esm.profile_url,
+                esm.is_primary,
+                esm.is_public,
+                esm.verified,
+                esm.follower_count
+            FROM employees e
+            JOIN user u ON e.user_id = u.user_id
+            JOIN employee_types et ON e.employee_type_id = et.id
+            JOIN employee_departments ed ON e.department_id = ed.id
+            JOIN employee_designations edg ON e.designation_id = edg.id
+            LEFT JOIN employee_social_media esm ON e.id = esm.employee_id
+            LEFT JOIN social_media_platforms smp ON esm.platform_id = smp.id
+            WHERE e.status_id = 1
+            ORDER BY RAND()
+            LIMIT 20
+            """;
+
+}
