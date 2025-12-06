@@ -2,6 +2,7 @@ package com.felicita.controller;
 
 import com.felicita.model.response.CommonResponse;
 import com.felicita.model.response.CouponDetailsResponse;
+import com.felicita.model.response.EmployeeGuideResponse;
 import com.felicita.model.response.EmployeeWithSocialMediaResponse;
 import com.felicita.service.EmployeeService;
 import com.felicita.util.Constant;
@@ -35,6 +36,22 @@ public class EmployeeController {
         LOGGER.info("{} Start execute get employee with social media details {}", Constant.DOTS, Constant.DOTS);
         CommonResponse<List<EmployeeWithSocialMediaResponse>> response = employeeService.getEmployeeWithSocailMedia();
         LOGGER.info("{} End execute get employee with social media details {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/get-all")
+    public ResponseEntity<CommonResponse<List<EmployeeWithSocialMediaResponse>>> getALlEmployeeWithSocailMedia(){
+        LOGGER.info("{} Start execute get all employee with social media details {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<EmployeeWithSocialMediaResponse>> response = employeeService.getALlEmployeeWithSocailMedia();
+        LOGGER.info("{} End execute get all employee with social media details {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/tour-guides")
+    public ResponseEntity<CommonResponse<List<EmployeeGuideResponse>>> getEmployeeGiudeDetails(){
+        LOGGER.info("{} Start execute get employee guide with social media details {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<EmployeeGuideResponse>> response = employeeService.getEmployeeGiudeDetails();
+        LOGGER.info("{} End execute get employee guide with social media details {}", Constant.DOTS, Constant.DOTS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
