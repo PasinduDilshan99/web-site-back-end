@@ -50,4 +50,50 @@ public class HeroSectionQueries {
            WHERE a.terminated_at IS NULL
            ORDER BY a.`order` ASC, a.created_at ASC
             """;
+
+
+    public static final String GET_ALL_CONTACT_US_HERO_SECTION_DATA = """
+            SELECT
+                c.id,
+                c.name,
+                c.image_url,
+                c.title,
+                c.subtitle,
+                c.description,
+                c.primary_button_text,
+                c.primary_button_link,
+                c.secondary_button_text,
+                c.secondary_button_link,
+                c.`order`,
+                c.created_at,
+                c.updated_at,
+                s.name AS status_name
+            FROM contact_us_hero_section c
+            LEFT JOIN common_status s ON c.status = s.id
+            WHERE c.terminated_at IS NULL
+            ORDER BY c.`order` ASC, c.created_at ASC
+            """;
+
+    public static final String GET_ALL_BLOG_HERO_SECTION_DATA = """
+            SELECT
+                b.id,
+                b.name,
+                b.image_url,
+                b.title,
+                b.subtitle,
+                b.description,
+                b.primary_button_text,
+                b.primary_button_link,
+                b.secondary_button_text,
+                b.secondary_button_link,
+                b.`order`,
+                b.created_at,
+                b.updated_at,
+                s.name AS status_name
+            FROM blog_hero_section b
+            LEFT JOIN common_status s ON b.status = s.id
+            WHERE b.terminated_at IS NULL
+            ORDER BY b.`order` ASC, b.created_at ASC
+            """;
+
 }

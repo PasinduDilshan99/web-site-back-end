@@ -1,9 +1,6 @@
 package com.felicita.controller;
 
-import com.felicita.model.response.AboutUsHeroSectionResponse;
-import com.felicita.model.response.CommonResponse;
-import com.felicita.model.response.HeroSectionResponse;
-import com.felicita.model.response.NavBarResponse;
+import com.felicita.model.response.*;
 import com.felicita.service.HeroSectionService;
 import com.felicita.service.NavBarService;
 import com.felicita.util.Constant;
@@ -54,5 +51,22 @@ public class HeroSectionController {
         LOGGER.info("{} End execute get all about us hero section data {}", Constant.DOTS, Constant.DOTS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @GetMapping(path = "/contact-us")
+    public ResponseEntity<CommonResponse<List<ContactUsHeroSectionResponse>>> getContactUsHeroSectionDetails(){
+        LOGGER.info("{} Start execute get all contact us hero section data {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<ContactUsHeroSectionResponse>> response = heroSectionService.getContactUsHeroSectionDetails();
+        LOGGER.info("{} End execute get all contact us hero section data {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/blog")
+    public ResponseEntity<CommonResponse<List<BlogHeroSectionResponse>>> getBlogHeroSectionDetails(){
+        LOGGER.info("{} Start execute get all blog hero section data {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<BlogHeroSectionResponse>> response = heroSectionService.getBlogHeroSectionDetails();
+        LOGGER.info("{} End execute get all blog hero section data {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 
 }
