@@ -3,6 +3,7 @@ package com.felicita.repository.impl;
 import com.felicita.exception.DataAccessErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
 import com.felicita.model.response.AboutUsHeroSectionResponse;
+import com.felicita.model.response.BlogHeroSectionResponse;
 import com.felicita.model.response.ContactUsHeroSectionResponse;
 import com.felicita.model.response.HeroSectionResponse;
 import com.felicita.queries.HeroSectionQueries;
@@ -166,6 +167,60 @@ public class HeroSectionRepositoryImpl implements HeroSectionRepository {
             );
         }
     }
+
+    @Override
+    public List<BlogHeroSectionResponse> getBlogHeroSectionDetails() {
+
+        String GET_ALL_BLOG_HERO_SECTION_DATA = HeroSectionQueries.GET_ALL_BLOG_HERO_SECTION_DATA;
+
+        try {
+            LOGGER.info("Executing query to fetch all blog hero section items...");
+
+            List<BlogHeroSectionResponse> results = jdbcTemplate.query(
+                    GET_ALL_BLOG_HERO_SECTION_DATA,
+                    (rs, rowNum) -> {
+
+                        Integer order = rs.getInt("order");
+                        if (rs.wasNull()) {
+                            order = null;
+                        }
+
+                        return BlogHeroSectionResponse.builder()
+                                .id(rs.getInt("id"))
+                                .name(rs.getString("name"))
+                                .imageUrl(rs.getString("image_url"))
+                                .title(rs.getString("title"))
+                                .subtitle(rs.getString("subtitle"))
+                                .description(rs.getString("description"))
+                                .primaryButtonText(rs.getString("primary_button_text"))
+                                .primaryButtonLink(rs.getString("primary_button_link"))
+                                .secondaryButtonText(rs.getString("secondary_button_text"))
+                                .secondaryButtonLink(rs.getString("secondary_button_link"))
+                                .order(order)
+                                .createdAt(rs.getTimestamp("created_at").toLocalDateTime())
+                                .updatedAt(rs.getTimestamp("updated_at").toLocalDateTime())
+                                .statusName(rs.getString("status_name"))
+                                .build();
+                    }
+            );
+
+            LOGGER.info("Successfully fetched {} blog hero section items.", results.size());
+            return results;
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching blog hero section items: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler(
+                    "Failed to fetch blog hero section items from database"
+            );
+
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching blog hero section items: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler(
+                    "Unexpected error occurred while fetching blog hero section items"
+            );
+        }
+    }
+
 
 
 }

@@ -60,5 +60,13 @@ public class HeroSectionController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping(path = "/blog")
+    public ResponseEntity<CommonResponse<List<BlogHeroSectionResponse>>> getBlogHeroSectionDetails(){
+        LOGGER.info("{} Start execute get all blog hero section data {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<BlogHeroSectionResponse>> response = heroSectionService.getBlogHeroSectionDetails();
+        LOGGER.info("{} End execute get all blog hero section data {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 
 }

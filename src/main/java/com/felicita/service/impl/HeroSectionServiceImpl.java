@@ -182,4 +182,45 @@ public class HeroSectionServiceImpl implements HeroSectionService {
             LOGGER.info("End fetching all contact us hero section items from repository");
         }
     }
+
+    @Override
+    public CommonResponse<List<BlogHeroSectionResponse>> getBlogHeroSectionDetails() {
+        LOGGER.info("Start fetching all blog hero section items from repository");
+
+        try {
+            List<BlogHeroSectionResponse> blogHeroSectionResponses = heroSectionRepository.getBlogHeroSectionDetails();
+
+            if (blogHeroSectionResponses.isEmpty()) {
+                LOGGER.warn("No blog hero section items found in database");
+                throw new DataNotFoundErrorExceptionHandler("No blog hero section items found");
+            }
+
+            List<BlogHeroSectionResponse> blogHeroSectionResponseList = blogHeroSectionResponses.stream()
+                    .filter(item -> CommonStatus.ACTIVE.toString().equalsIgnoreCase(item.getStatusName()))
+                    .toList();
+
+            if (blogHeroSectionResponseList.isEmpty()) {
+                LOGGER.warn("No active blog hero section items found in database");
+                throw new DataNotFoundErrorExceptionHandler("No visible hero section items found");
+            }
+
+            LOGGER.info("Fetched {} active blog hero section items successfully", blogHeroSectionResponseList.size());
+
+            return(
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            blogHeroSectionResponseList,
+                            Instant.now()
+                    )
+            );
+
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching active blog hero section items: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch blog hero section items from database");
+        } finally {
+            LOGGER.info("End fetching all blog hero section items from repository");
+        }
+    }
 }

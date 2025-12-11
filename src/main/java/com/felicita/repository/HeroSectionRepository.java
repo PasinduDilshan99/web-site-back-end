@@ -1,6 +1,7 @@
 package com.felicita.repository;
 
 import com.felicita.model.response.AboutUsHeroSectionResponse;
+import com.felicita.model.response.BlogHeroSectionResponse;
 import com.felicita.model.response.ContactUsHeroSectionResponse;
 import com.felicita.model.response.HeroSectionResponse;
 
@@ -12,4 +13,6 @@ public interface HeroSectionRepository {
     List<AboutUsHeroSectionResponse> getAboutUsHeroSectionDetails();
 
     List<ContactUsHeroSectionResponse> getContactUsHeroSectionDetails();
+
+    List<BlogHeroSectionResponse> getBlogHeroSectionDetails();
 }

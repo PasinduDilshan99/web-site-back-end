@@ -73,4 +73,27 @@ public class HeroSectionQueries {
             WHERE c.terminated_at IS NULL
             ORDER BY c.`order` ASC, c.created_at ASC
             """;
+
+    public static final String GET_ALL_BLOG_HERO_SECTION_DATA = """
+            SELECT
+                b.id,
+                b.name,
+                b.image_url,
+                b.title,
+                b.subtitle,
+                b.description,
+                b.primary_button_text,
+                b.primary_button_link,
+                b.secondary_button_text,
+                b.secondary_button_link,
+                b.`order`,
+                b.created_at,
+                b.updated_at,
+                s.name AS status_name
+            FROM blog_hero_section b
+            LEFT JOIN common_status s ON b.status = s.id
+            WHERE b.terminated_at IS NULL
+            ORDER BY b.`order` ASC, b.created_at ASC
+            """;
+
 }
