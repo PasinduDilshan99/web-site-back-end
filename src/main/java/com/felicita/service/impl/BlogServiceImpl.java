@@ -91,6 +91,7 @@ public class BlogServiceImpl implements BlogService {
 
             List<BlogResponse> blogResponseList = blogResponses.stream()
                     .filter(item -> CommonStatus.ACTIVE.toString().equalsIgnoreCase(item.getBlogStatus()))
+                    .limit(6)   // take only the first 6
                     .toList();
 
             if (blogResponseList.isEmpty()) {
