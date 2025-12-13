@@ -1,8 +1,6 @@
 package com.felicita.service;
 
-import com.felicita.model.request.BlogBookmarkRequest;
-import com.felicita.model.request.BlogDetailsRequest;
-import com.felicita.model.request.CreateBlogRequest;
+import com.felicita.model.request.*;
 import com.felicita.model.response.BlogResponse;
 import com.felicita.model.response.BlogTagResponse;
 import com.felicita.model.response.CommonResponse;
@@ -27,4 +25,10 @@ public interface BlogService {
     CommonResponse<List<BlogTagResponse>> getAllBlogTags();
 
     CommonResponse<InsertResponse> addBookmarkToBlog(BlogBookmarkRequest blogBookmarkRequest);
+
+    CommonResponse<InsertResponse> addReactToBlog(BlogReactRequest blogReactRequest);
+
+    CommonResponse<InsertResponse> addCommentToBlog(BlogCommentRequest blogCommentRequest);
+
+    CommonResponse<InsertResponse> addReactToBlogComment(BlogCommentReactRequest blogCommentReactRequest);
 }

@@ -21,6 +21,8 @@ public interface CommonValidationService {
     // mobile Number validation methods
     ValidationResultResponse validateMobileNumber(String countryCode, String value);
 
+    //validate enums
+    ValidationResultResponse validateRectionType(String field, String value);
 
     // Pattern validation methods
     ValidationResultResponse validateOnlyAlphabets(String field, String value);

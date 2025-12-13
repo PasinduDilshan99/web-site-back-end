@@ -1,8 +1,8 @@
 package com.felicita.repository;
 
-import com.felicita.model.request.BlogBookmarkRequest;
-import com.felicita.model.request.BlogDetailsRequest;
-import com.felicita.model.request.CreateBlogRequest;
+import com.felicita.model.request.*;
+import com.felicita.model.response.BlogAlreadyReactRespose;
+import com.felicita.model.response.BlogCommentAlreadyReactResponse;
 import com.felicita.model.response.BlogResponse;
 import com.felicita.model.response.BlogTagResponse;
 
@@ -32,4 +32,24 @@ public interface BlogRepository {
     Boolean isBlogAlreadyBookmarked(Long blogId, Long userId);
 
     void removeBookmarkToBlog(BlogBookmarkRequest blogBookmarkRequest, Long userId);
+
+    BlogAlreadyReactRespose isBlogAlreadyReacted(Long blogId, Long userId);
+
+    void addReactToBlog(BlogReactRequest blogReactRequest, Long userId);
+
+    void removeReactToBlog(BlogReactRequest blogReactRequest, Long userId);
+
+    void changeReactToBlog(BlogReactRequest blogReactRequest, Long userId);
+
+    void addCommentToBlog(BlogCommentRequest blogCommentRequest, Long userId);
+
+    Boolean isBlogCommentExists(Long commentId);
+
+    BlogCommentAlreadyReactResponse isBlogCommentAlreadyReacted(Long commentId, Long userId);
+
+    void addReactToBlogComment(BlogCommentReactRequest blogCommentReactRequest, Long userId);
+
+    void removeReactToBlogComment(BlogCommentReactRequest blogCommentReactRequest, Long userId);
+
+    void changeReactToBlogComment(BlogCommentReactRequest blogCommentReactRequest, Long userId);
 }

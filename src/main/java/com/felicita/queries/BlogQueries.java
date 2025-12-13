@@ -470,6 +470,93 @@ public class BlogQueries {
     WHERE blog_id = ? AND user_id = ? AND status = 1
 """;
 
+    public static final String GET_BLOG_PREVIOUS_REACT = """
+            SELECT
+            	bl.blog_id,
+                bl.user_id,
+                brt.name
+            FROM blog_likes bl
+            LEFT JOIN blog_reactions_types brt ON bl.reaction_type_id = brt.id
+            WHERE blog_id = ? AND user_id = ? AND status = 1
+            """;
+
+public static final String ADD_REACTION_TO_BLOG = """
+        INSERT INTO blog_likes (blog_id, user_id, reaction_type_id, status, created_by)
+        SELECT
+            ?,
+            ?,
+            brt.id,
+            1,
+            ?
+        FROM blog_reactions_types brt
+        WHERE brt.name = ?
+          AND brt.common_status_id = 1
+        """;
+
+public static final String REMOVE_BLOG_REACTION = """
+        UPDATE blog_likes
+        SET status = 2,
+            terminated_at = CURRENT_TIMESTAMP,
+            terminated_by = ?
+        WHERE blog_id = ? AND user_id = ? AND status = 1
+        """;
 
 
+    public static final String INSERT_BLOG_COMMENT = """
+            INSERT INTO blog_comments (
+                blog_id,
+                user_id,
+                parent_comment_id,
+                comment,
+                status,
+                created_by
+            )
+            VALUES (?, ?, ?, ?, 1, ?)
+            """;
+
+    public static final String CHECK_BLOG_COMMENT_EXISTS = """
+    SELECT COUNT(1)
+    FROM blog_comments
+    WHERE id = ?
+      AND status = 1
+""";
+
+    public static final String IS_BLOG_COMMENT_ALREADY_REACTED = """
+                    SELECT
+                        bcr.comment_id,
+                        bcr.user_id,
+                        brt.name
+                    FROM blog_comment_reactions bcr
+                    LEFT JOIN blog_reactions_types brt
+                        ON bcr.reaction_type_id = brt.id
+                    WHERE bcr.comment_id = ?
+                      AND bcr.user_id = ?
+                      AND bcr.status = 1
+                    """ ;
+    public static final String ADD_REACTION_TO_BLOG_COMMENT = """
+            INSERT INTO blog_comment_reactions (
+                comment_id,
+                user_id,
+                reaction_type_id,
+                status,
+                created_by
+            )
+            SELECT
+                ?,
+                ?,
+                brt.id,
+                1,
+                ?
+            FROM blog_reactions_types brt
+            WHERE brt.name = ?
+              AND brt.common_status_id = 1
+            """;
+
+    public static final String REMOVE_BLOG_COMMENT_REACTION = """
+            UPDATE blog_comment_reactions
+            SET status = 2,
+                terminated_at = CURRENT_TIMESTAMP,
+                terminated_by = ?
+            WHERE comment_id = ? AND user_id = ? AND status = 1
+            """;
 }

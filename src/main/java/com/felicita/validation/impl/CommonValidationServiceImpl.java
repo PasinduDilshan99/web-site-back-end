@@ -1,12 +1,16 @@
 package com.felicita.validation.impl;
 
 import com.felicita.model.enums.IPVersion;
+import com.felicita.model.enums.ReactionTypes;
 import com.felicita.model.response.ValidationResultResponse;
 import com.felicita.util.RegexPatternsForValidations;
 import com.felicita.validation.CommonValidationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 @Service
 public class CommonValidationServiceImpl implements CommonValidationService {
@@ -425,5 +429,35 @@ public class CommonValidationServiceImpl implements CommonValidationService {
                 .build();
     }
 
+    @Override
+    public ValidationResultResponse validateRectionType(String field, String value) {
+        LOGGER.debug("Validating field '{}' for reaction type: {}", field, value);
+
+        ValidationResultResponse nullCheck = validateNotNullOrEmpty(field, value);
+        if (!nullCheck.isValid()) {
+            return nullCheck;
+        }
+
+        boolean isValid = false;
+        try {
+            ReactionTypes reaction = ReactionTypes.valueOf(value.toUpperCase());
+            isValid = true;
+        } catch (IllegalArgumentException e) {
+            isValid = false;
+        }
+
+        String validTypes = Arrays.stream(ReactionTypes.values())
+                .map(Enum::name)
+                .collect(Collectors.joining(", "));
+
+        return ValidationResultResponse.builder()
+                .valid(isValid)
+                .field(field)
+                .message(isValid ? "Validation successful" : "Invalid reaction type")
+                .additionalInfo(isValid ?
+                        String.format("Valid reaction type: %s", value) :
+                        String.format("Invalid reaction type: %s. Valid types are: %s", value, validTypes))
+                .build();
+    }
 
 }

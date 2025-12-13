@@ -6,9 +6,7 @@ import com.felicita.exception.InternalServerErrorExceptionHandler;
 import com.felicita.exception.ValidationFailedErrorExceptionHandler;
 import com.felicita.model.enums.CommonStatus;
 import com.felicita.model.enums.PartnerStatus;
-import com.felicita.model.request.BlogBookmarkRequest;
-import com.felicita.model.request.BlogDetailsRequest;
-import com.felicita.model.request.CreateBlogRequest;
+import com.felicita.model.request.*;
 import com.felicita.model.response.*;
 import com.felicita.repository.BlogRepository;
 import com.felicita.service.BlogService;
@@ -64,10 +62,10 @@ public class BlogServiceImpl implements BlogService {
                     )
             );
 
-        }catch (DataNotFoundErrorExceptionHandler e) {
+        } catch (DataNotFoundErrorExceptionHandler e) {
             LOGGER.error("Error occurred while fetching blogs: {}", e.getMessage(), e);
             throw new DataNotFoundErrorExceptionHandler(e.getMessage());
-        }catch (Exception e) {
+        } catch (Exception e) {
             LOGGER.error("Error occurred while fetching blogs: {}", e.getMessage(), e);
             throw new InternalServerErrorExceptionHandler("Failed to fetch blogs from database");
         } finally {
@@ -109,10 +107,10 @@ public class BlogServiceImpl implements BlogService {
                     )
             );
 
-        }catch (DataNotFoundErrorExceptionHandler e) {
+        } catch (DataNotFoundErrorExceptionHandler e) {
             LOGGER.error("Error occurred while fetching visible blogs: {}", e.getMessage(), e);
             throw new DataNotFoundErrorExceptionHandler(e.getMessage());
-        }catch (Exception e) {
+        } catch (Exception e) {
             LOGGER.error("Error occurred while fetching visible blogs: {}", e.getMessage(), e);
             throw new InternalServerErrorExceptionHandler("Failed to fetch blogs from database");
         } finally {
@@ -128,7 +126,7 @@ public class BlogServiceImpl implements BlogService {
             BlogResponse blogResponse = blogRepository.getBlogDetailsById(blogDetailsRequest);
             blogRepository.updateBlogViewCountByOne(blogDetailsRequest);
             Long userId = commonService.getUserIdBySecurityContextWithOutException();
-            if (userId != null){
+            if (userId != null) {
                 Boolean isBookmarked = blogRepository.isBlogAlreadyBookmarked(blogDetailsRequest.getId(), userId);
                 blogResponse.setIsBookmark(isBookmarked);
             }
@@ -144,10 +142,10 @@ public class BlogServiceImpl implements BlogService {
                             Instant.now()
                     );
 
-        }catch (DataNotFoundErrorExceptionHandler e) {
+        } catch (DataNotFoundErrorExceptionHandler e) {
             LOGGER.error("Error occurred while fetching blog details by id: {}", e.getMessage(), e);
             throw new DataNotFoundErrorExceptionHandler(e.getMessage());
-        }catch (Exception e) {
+        } catch (Exception e) {
             LOGGER.error("Error occurred while fetching blog details by id: {}", e.getMessage(), e);
             throw new InternalServerErrorExceptionHandler("Failed to fetch blog details by id from database");
         } finally {
@@ -200,10 +198,10 @@ public class BlogServiceImpl implements BlogService {
                             blogResponses,
                             Instant.now());
 
-        }catch (DataNotFoundErrorExceptionHandler e) {
+        } catch (DataNotFoundErrorExceptionHandler e) {
             LOGGER.error("Error occurred while fetching blogs from writer: {}", e.getMessage(), e);
             throw new DataNotFoundErrorExceptionHandler(e.getMessage());
-        }catch (Exception e) {
+        } catch (Exception e) {
             LOGGER.error("Error occurred while fetching blogs from writer: {}", e.getMessage(), e);
             throw new InternalServerErrorExceptionHandler("Failed to fetch blogs from writer from database");
         } finally {
@@ -232,10 +230,10 @@ public class BlogServiceImpl implements BlogService {
                             blogResponses,
                             Instant.now());
 
-        }catch (DataNotFoundErrorExceptionHandler e) {
+        } catch (DataNotFoundErrorExceptionHandler e) {
             LOGGER.error("Error occurred while fetching blogs from tag name: {}", e.getMessage(), e);
             throw new DataNotFoundErrorExceptionHandler(e.getMessage());
-        }catch (Exception e) {
+        } catch (Exception e) {
             LOGGER.error("Error occurred while fetching blogs from writer: {}", e.getMessage(), e);
             throw new InternalServerErrorExceptionHandler("Failed to fetch blogs from tag name from database");
         } finally {
@@ -274,12 +272,12 @@ public class BlogServiceImpl implements BlogService {
                             blogResponseList,
                             Instant.now()
 
-            );
+                    );
 
-        }catch (DataNotFoundErrorExceptionHandler e) {
+        } catch (DataNotFoundErrorExceptionHandler e) {
             LOGGER.error("Error occurred while fetching active blog tags: {}", e.getMessage(), e);
             throw new DataNotFoundErrorExceptionHandler(e.getMessage());
-        }catch (Exception e) {
+        } catch (Exception e) {
             LOGGER.error("Error occurred while fetching active blog tags: {}", e.getMessage(), e);
             throw new InternalServerErrorExceptionHandler("Failed to fetch blog tags from database");
         } finally {
@@ -293,7 +291,7 @@ public class BlogServiceImpl implements BlogService {
             Long userId = commonService.getUserIdBySecurityContext();
             blogValidationService.validateBlogBookmarkRequest(blogBookmarkRequest, userId);
             Boolean isBookmarked = blogRepository.isBlogAlreadyBookmarked(blogBookmarkRequest.getBlogId(), userId);
-            if(isBookmarked){
+            if (isBookmarked) {
                 blogRepository.removeBookmarkToBlog(blogBookmarkRequest, userId);
                 return new CommonResponse<>(
                         CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
@@ -302,7 +300,7 @@ public class BlogServiceImpl implements BlogService {
                         new InsertResponse("Successfully remove blog bookmark request"),
                         Instant.now()
                 );
-            }else {
+            } else {
                 blogRepository.addBookmarkToBlog(blogBookmarkRequest, userId);
                 return new CommonResponse<>(
                         CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
@@ -315,6 +313,123 @@ public class BlogServiceImpl implements BlogService {
 
         } catch (ValidationFailedErrorExceptionHandler vfe) {
             throw new ValidationFailedErrorExceptionHandler("validation failed in the insert blog bookmark request", vfe.getValidationFailedResponses());
+        } catch (InsertFailedErrorExceptionHandler ife) {
+            throw new InsertFailedErrorExceptionHandler(ife.getMessage());
+
+        } catch (Exception e) {
+            LOGGER.error(e.toString());
+            throw new InternalServerErrorExceptionHandler("Something went wrong");
+        }
+    }
+
+    @Override
+    public CommonResponse<InsertResponse> addReactToBlog(BlogReactRequest blogReactRequest) {
+        try {
+            blogValidationService.validateBlogReactRequest(blogReactRequest);
+            Long userId = commonService.getUserIdBySecurityContext();
+            BlogAlreadyReactRespose blogAlreadyReactRespose = blogRepository.isBlogAlreadyReacted(blogReactRequest.getBlogId(), userId);
+            if (blogAlreadyReactRespose == null) {
+                blogRepository.addReactToBlog(blogReactRequest, userId);
+                return new CommonResponse<>(
+                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                        new InsertResponse("Successfully add blog react request"),
+                        Instant.now()
+                );
+            } else if (blogAlreadyReactRespose.getReactType().equalsIgnoreCase(blogReactRequest.getReactType())) {
+                blogRepository.removeReactToBlog(blogReactRequest, userId);
+                return new CommonResponse<>(
+                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                        new InsertResponse("Successfully remove blog react request"),
+                        Instant.now()
+                );
+            } else {
+                blogRepository.changeReactToBlog(blogReactRequest, userId);
+                return new CommonResponse<>(
+                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                        new InsertResponse("Successfully change blog react request"),
+                        Instant.now()
+                );
+            }
+
+        } catch (ValidationFailedErrorExceptionHandler vfe) {
+            throw new ValidationFailedErrorExceptionHandler("validation failed in the insert blog reaction request", vfe.getValidationFailedResponses());
+        } catch (InsertFailedErrorExceptionHandler ife) {
+            throw new InsertFailedErrorExceptionHandler(ife.getMessage());
+
+        } catch (Exception e) {
+            LOGGER.error(e.toString());
+            throw new InternalServerErrorExceptionHandler("Something went wrong");
+        }
+    }
+
+    @Override
+    public CommonResponse<InsertResponse> addCommentToBlog(BlogCommentRequest blogCommentRequest) {
+        try {
+            blogValidationService.validateBlogCommentRequest(blogCommentRequest);
+            Long userId = commonService.getUserIdBySecurityContext();
+            blogRepository.addCommentToBlog(blogCommentRequest, userId);
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    new InsertResponse("Successfully add comment to blog"),
+                    Instant.now()
+            );
+
+        } catch (ValidationFailedErrorExceptionHandler vfe) {
+            throw new ValidationFailedErrorExceptionHandler("validation failed in the insert blog comment request", vfe.getValidationFailedResponses());
+        } catch (InsertFailedErrorExceptionHandler ife) {
+            throw new InsertFailedErrorExceptionHandler(ife.getMessage());
+
+        } catch (Exception e) {
+            LOGGER.error(e.toString());
+            throw new InternalServerErrorExceptionHandler("Something went wrong");
+        }
+    }
+
+    @Override
+    public CommonResponse<InsertResponse> addReactToBlogComment(BlogCommentReactRequest blogCommentReactRequest) {
+        try {
+            blogValidationService.validateBlogCommentReactRequest(blogCommentReactRequest);
+            Long userId = commonService.getUserIdBySecurityContext();
+            BlogCommentAlreadyReactResponse blogCommentAlreadyReactResponse = blogRepository.isBlogCommentAlreadyReacted(blogCommentReactRequest.getCommentId(), userId);
+            if (blogCommentAlreadyReactResponse == null) {
+                blogRepository.addReactToBlogComment(blogCommentReactRequest, userId);
+                return new CommonResponse<>(
+                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                        new InsertResponse("Successfully add blog comment react request"),
+                        Instant.now()
+                );
+            } else if (blogCommentAlreadyReactResponse.getReactType().equalsIgnoreCase(blogCommentReactRequest.getReactType())) {
+                blogRepository.removeReactToBlogComment(blogCommentReactRequest, userId);
+                return new CommonResponse<>(
+                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                        new InsertResponse("Successfully remove blog comment react request"),
+                        Instant.now()
+                );
+            } else {
+                blogRepository.changeReactToBlogComment(blogCommentReactRequest, userId);
+                return new CommonResponse<>(
+                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                        new InsertResponse("Successfully change blog comment react request"),
+                        Instant.now()
+                );
+            }
+
+        } catch (ValidationFailedErrorExceptionHandler vfe) {
+            throw new ValidationFailedErrorExceptionHandler("validation failed in the insert blog comment reaction request", vfe.getValidationFailedResponses());
         } catch (InsertFailedErrorExceptionHandler ife) {
             throw new InsertFailedErrorExceptionHandler(ife.getMessage());
 

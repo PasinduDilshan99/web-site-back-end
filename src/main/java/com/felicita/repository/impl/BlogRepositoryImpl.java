@@ -10,13 +10,8 @@ import com.felicita.exception.InternalServerErrorExceptionHandler;
 import com.felicita.model.dto.BlogCommentDto;
 import com.felicita.model.dto.BlogImageDto;
 import com.felicita.model.dto.BlogLikeDto;
-import com.felicita.model.request.BlogBookmarkRequest;
-import com.felicita.model.request.BlogDetailsRequest;
-import com.felicita.model.request.CreateBlogRequest;
-import com.felicita.model.response.BlogResponse;
-import com.felicita.model.response.BlogTagResponse;
-import com.felicita.model.response.DestinationCategoryResponse;
-import com.felicita.model.response.PromotionTourResponse;
+import com.felicita.model.request.*;
+import com.felicita.model.response.*;
 import com.felicita.queries.BlogQueries;
 import com.felicita.queries.DestinationQueries;
 import com.felicita.queries.HistoryManagementQueries;
@@ -596,6 +591,223 @@ public class BlogRepositoryImpl implements BlogRepository {
         }
     }
 
+    @Override
+    public BlogAlreadyReactRespose isBlogAlreadyReacted(Long blogId, Long userId) {
+        try {
+            return jdbcTemplate.queryForObject(
+                    BlogQueries.GET_BLOG_PREVIOUS_REACT,
+                    new Object[]{blogId, userId},
+                    (rs, rowNum) -> BlogAlreadyReactRespose.builder()
+                            .blogId(rs.getLong("blog_id"))
+                            .userId(rs.getLong("user_id"))
+                            .reactType(rs.getString("name"))
+                            .build()
+            );
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public void addReactToBlog(BlogReactRequest blogReactRequest, Long userId) {
+        try {
+            int rowsAffected = jdbcTemplate.update(
+                    BlogQueries.ADD_REACTION_TO_BLOG,
+                    blogReactRequest.getBlogId(),   // blog_id
+                    userId,                         // user_id
+                    userId,                         // created_by
+                    blogReactRequest.getReactType() // reaction name (Like, Love, Haha)
+            );
+
+            if (rowsAffected == 0) {
+                throw new IllegalArgumentException(
+                        "Invalid or inactive reaction type: " + blogReactRequest.getReactType()
+                );
+            }
+
+            LOGGER.info(
+                    "Reaction '{}' added to blog {} by user {}",
+                    blogReactRequest.getReactType(),
+                    blogReactRequest.getBlogId(),
+                    userId
+            );
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Error while adding reaction to blog", ex);
+            throw ex;
+        }
+    }
+
+
+    @Override
+    public void removeReactToBlog(BlogReactRequest blogReactRequest, Long userId) {
+        try {
+            int rowsAffected = jdbcTemplate.update(
+                    BlogQueries.REMOVE_BLOG_REACTION,
+                    userId,                         // terminated_by
+                    blogReactRequest.getBlogId(),   // blog_id
+                    userId                          // user_id
+            );
+
+            if (rowsAffected == 0) {
+                LOGGER.warn(
+                        "No active reaction found to remove for blog {} by user {}",
+                        blogReactRequest.getBlogId(),
+                        userId
+                );
+            } else {
+                LOGGER.info(
+                        "Reaction removed for blog {} by user {}",
+                        blogReactRequest.getBlogId(),
+                        userId
+                );
+            }
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Error while removing reaction from blog", ex);
+            throw ex;
+        }
+    }
+
+    @Override
+    public void changeReactToBlog(BlogReactRequest blogReactRequest, Long userId) {
+        removeReactToBlog(blogReactRequest, userId);
+        addReactToBlog(blogReactRequest, userId);
+    }
+
+    @Override
+    public void addCommentToBlog(BlogCommentRequest blogCommentRequest, Long userId) {
+        try {
+            int rowsAffected = jdbcTemplate.update(
+                    BlogQueries.INSERT_BLOG_COMMENT,
+                    blogCommentRequest.getBlogId(),   // blog_id
+                    userId,                           // user_id
+                    blogCommentRequest.getParentId(), // parent_comment_id (nullable)
+                    blogCommentRequest.getComment(),  // comment text
+                    userId                            // created_by
+            );
+
+            if (rowsAffected == 0) {
+                throw new IllegalStateException("Failed to add comment to blog");
+            }
+
+            LOGGER.info(
+                    "Comment added to blog {} by user {}",
+                    blogCommentRequest.getBlogId(),
+                    userId
+            );
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Error while adding comment to blog", ex);
+            throw ex;
+        }
+    }
+
+    @Override
+    public Boolean isBlogCommentExists(Long commentId) {
+        try {
+            Integer count = jdbcTemplate.queryForObject(
+                    BlogQueries.CHECK_BLOG_COMMENT_EXISTS,
+                    Integer.class,
+                    commentId
+            );
+
+            return count != null && count > 0;
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Error while checking blog comment existence for id {}", commentId, ex);
+            return false;
+        }
+    }
+
+    @Override
+    public BlogCommentAlreadyReactResponse isBlogCommentAlreadyReacted(Long commentId, Long userId) {
+        String IS_BLOG_COMMENT_ALREADY_REACTED = BlogQueries.IS_BLOG_COMMENT_ALREADY_REACTED;
+        try {
+            return jdbcTemplate.queryForObject(
+                    IS_BLOG_COMMENT_ALREADY_REACTED
+                    ,
+                    new Object[]{commentId, userId},
+                    (rs, rowNum) -> BlogCommentAlreadyReactResponse.builder()
+                            .commentId(rs.getLong("comment_id"))
+                            .userId(rs.getLong("user_id"))
+                            .reactType(rs.getString("name"))
+                            .build()
+            );
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public void addReactToBlogComment(BlogCommentReactRequest blogCommentReactRequest, Long userId) {
+        try {
+            int rowsAffected = jdbcTemplate.update(
+                    BlogQueries.ADD_REACTION_TO_BLOG_COMMENT,
+                    blogCommentReactRequest.getCommentId(), // comment_id
+                    userId,                                // user_id
+                    userId,                                // created_by
+                    blogCommentReactRequest.getReactType() // reaction name
+            );
+
+            if (rowsAffected == 0) {
+                throw new IllegalArgumentException(
+                        "Invalid or inactive reaction type: " +
+                                blogCommentReactRequest.getReactType()
+                );
+            }
+
+            LOGGER.info(
+                    "Reaction '{}' added to comment {} by user {}",
+                    blogCommentReactRequest.getReactType(),
+                    blogCommentReactRequest.getCommentId(),
+                    userId
+            );
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Error while reacting to blog comment", ex);
+            throw ex;
+        }
+    }
+
+
+    @Override
+    public void removeReactToBlogComment(BlogCommentReactRequest blogCommentReactRequest, Long userId) {
+        String REMOVE_BLOG_COMMENT_REACTION = BlogQueries.REMOVE_BLOG_COMMENT_REACTION;
+        try {
+            int rowsAffected = jdbcTemplate.update(
+                    REMOVE_BLOG_COMMENT_REACTION,
+                    userId,                                 // terminated_by
+                    blogCommentReactRequest.getCommentId(), // comment_id
+                    userId                                  // user_id
+            );
+
+            if (rowsAffected == 0) {
+                LOGGER.warn(
+                        "No active reaction found to remove for comment {} by user {}",
+                        blogCommentReactRequest.getCommentId(),
+                        userId
+                );
+            } else {
+                LOGGER.info(
+                        "Reaction removed for comment {} by user {}",
+                        blogCommentReactRequest.getCommentId(),
+                        userId
+                );
+            }
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Error while removing reaction from comment", ex);
+            throw ex;
+        }
+    }
+
+
+    @Override
+    public void changeReactToBlogComment(BlogCommentReactRequest blogCommentReactRequest, Long userId) {
+        removeReactToBlogComment(blogCommentReactRequest,userId);
+        addReactToBlogComment(blogCommentReactRequest, userId);
+    }
 
 
     public void insertImages(CreateBlogRequest createBlogRequest, Long userId, Long blogId) {
