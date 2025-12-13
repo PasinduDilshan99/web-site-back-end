@@ -22,6 +22,9 @@ public class BlogResponse {
     private String title;
     private String subtitle;
     private String description;
+    private String blogCategory;
+    private Long views;
+    private Boolean isBookmark;
 
     @JsonProperty("writer_id")
     private Long writerId;

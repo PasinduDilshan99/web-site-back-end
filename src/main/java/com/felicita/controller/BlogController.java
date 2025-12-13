@@ -1,11 +1,9 @@
 package com.felicita.controller;
 
+import com.felicita.model.request.BlogBookmarkRequest;
 import com.felicita.model.request.BlogDetailsRequest;
 import com.felicita.model.request.CreateBlogRequest;
-import com.felicita.model.response.BlogResponse;
-import com.felicita.model.response.CommonResponse;
-import com.felicita.model.response.InsertResponse;
-import com.felicita.model.response.PartnerResponse;
+import com.felicita.model.response.*;
 import com.felicita.service.BlogService;
 import com.felicita.util.Constant;
 import org.slf4j.Logger;
@@ -46,6 +44,30 @@ public class BlogController {
         return response;
     }
 
+    @GetMapping(path = "/tags")
+    public ResponseEntity<CommonResponse<List<BlogTagResponse>>> getAllBlogTags(){
+        LOGGER.info("{} Start execute get all blogs tags {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<BlogTagResponse>> response = blogService.getAllBlogTags();
+        LOGGER.info("{} End execute get all blogs tags {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/writer/{writerName}")
+    public ResponseEntity<CommonResponse<List<BlogResponse>>> getBlogsByWriter(@PathVariable String writerName){
+        LOGGER.info("{} Start execute get all blogs by writer {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<BlogResponse>> response = blogService.getBlogsByWriter(writerName);
+        LOGGER.info("{} End execute get all blogs by writer {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/tag/{tagName}")
+    public ResponseEntity<CommonResponse<List<BlogResponse>>> getBlogsByTagName(@PathVariable String tagName){
+        LOGGER.info("{} Start execute get all blogs by tag {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<BlogResponse>> response = blogService.getBlogsByTagName(tagName);
+        LOGGER.info("{} End execute get all blogs by tag {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @PostMapping(path = "/blog-details")
     public ResponseEntity<CommonResponse<BlogResponse>> getBlogDetailsById(@RequestBody BlogDetailsRequest blogDetailsRequest){
         LOGGER.info("{} Start execute get blog details {}", Constant.DOTS, Constant.DOTS);
@@ -59,6 +81,14 @@ public class BlogController {
         LOGGER.info("{} Start execute create blog {}", Constant.DOTS, Constant.DOTS);
         CommonResponse<InsertResponse> response = blogService.createBlog(createBlogRequest);
         LOGGER.info("{} End execute create blog {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+        @PostMapping(path = "/bookmark")
+    public ResponseEntity<CommonResponse<InsertResponse>> addBookmarkToBlog(@RequestBody BlogBookmarkRequest blogBookmarkRequest){
+        LOGGER.info("{} Start execute add bookmark to blog {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<InsertResponse> response = blogService.addBookmarkToBlog(blogBookmarkRequest);
+        LOGGER.info("{} End execute add bookmark to blog {}", Constant.DOTS, Constant.DOTS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

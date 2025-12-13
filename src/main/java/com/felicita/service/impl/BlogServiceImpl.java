@@ -6,12 +6,10 @@ import com.felicita.exception.InternalServerErrorExceptionHandler;
 import com.felicita.exception.ValidationFailedErrorExceptionHandler;
 import com.felicita.model.enums.CommonStatus;
 import com.felicita.model.enums.PartnerStatus;
+import com.felicita.model.request.BlogBookmarkRequest;
 import com.felicita.model.request.BlogDetailsRequest;
 import com.felicita.model.request.CreateBlogRequest;
-import com.felicita.model.response.BlogResponse;
-import com.felicita.model.response.CommonResponse;
-import com.felicita.model.response.InsertResponse;
-import com.felicita.model.response.PartnerResponse;
+import com.felicita.model.response.*;
 import com.felicita.repository.BlogRepository;
 import com.felicita.service.BlogService;
 import com.felicita.service.CommonService;
@@ -91,7 +89,7 @@ public class BlogServiceImpl implements BlogService {
 
             List<BlogResponse> blogResponseList = blogResponses.stream()
                     .filter(item -> CommonStatus.ACTIVE.toString().equalsIgnoreCase(item.getBlogStatus()))
-                    .limit(6)   // take only the first 6
+//                    .limit(6)   // take only the first 6
                     .toList();
 
             if (blogResponseList.isEmpty()) {
@@ -128,6 +126,12 @@ public class BlogServiceImpl implements BlogService {
 
         try {
             BlogResponse blogResponse = blogRepository.getBlogDetailsById(blogDetailsRequest);
+            blogRepository.updateBlogViewCountByOne(blogDetailsRequest);
+            Long userId = commonService.getUserIdBySecurityContextWithOutException();
+            if (userId != null){
+                Boolean isBookmarked = blogRepository.isBlogAlreadyBookmarked(blogDetailsRequest.getId(), userId);
+                blogResponse.setIsBookmark(isBookmarked);
+            }
 
             LOGGER.info("Fetched blog details by id successfully");
 
@@ -167,6 +171,150 @@ public class BlogServiceImpl implements BlogService {
                     );
         } catch (ValidationFailedErrorExceptionHandler vfe) {
             throw new ValidationFailedErrorExceptionHandler("validation failed in the insert blog request", vfe.getValidationFailedResponses());
+        } catch (InsertFailedErrorExceptionHandler ife) {
+            throw new InsertFailedErrorExceptionHandler(ife.getMessage());
+
+        } catch (Exception e) {
+            LOGGER.error(e.toString());
+            throw new InternalServerErrorExceptionHandler("Something went wrong");
+        }
+    }
+
+    @Override
+    public CommonResponse<List<BlogResponse>> getBlogsByWriter(String writerName) {
+        LOGGER.info("Start fetching all blogs by writer from repository");
+        try {
+            List<BlogResponse> blogResponses = blogRepository.getBlogsByWriter(writerName);
+
+            if (blogResponses.isEmpty()) {
+                LOGGER.warn("No blogs from writer found in database");
+                throw new DataNotFoundErrorExceptionHandler("No blogs from writer found");
+            }
+
+            LOGGER.info("Fetched {} blogs from writer successfully", blogResponses.size());
+            return
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            blogResponses,
+                            Instant.now());
+
+        }catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching blogs from writer: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        }catch (Exception e) {
+            LOGGER.error("Error occurred while fetching blogs from writer: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch blogs from writer from database");
+        } finally {
+            LOGGER.info("End fetching all blogs from writer from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<List<BlogResponse>> getBlogsByTagName(String tagName) {
+        LOGGER.info("Start fetching all blogs by tag name from repository");
+        try {
+            List<Long> blogIds = blogRepository.getAllBlogIdsByTagName(tagName);
+            List<BlogResponse> blogResponses = blogRepository.getBlogsByBlogsIdList(blogIds);
+
+            if (blogResponses.isEmpty()) {
+                LOGGER.warn("No blogs from tag name found in database");
+                throw new DataNotFoundErrorExceptionHandler("No blogs from tag name found");
+            }
+
+            LOGGER.info("Fetched {} blogs from tag name successfully", blogResponses.size());
+            return
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            blogResponses,
+                            Instant.now());
+
+        }catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching blogs from tag name: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        }catch (Exception e) {
+            LOGGER.error("Error occurred while fetching blogs from writer: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch blogs from tag name from database");
+        } finally {
+            LOGGER.info("End fetching all blogs from tag name from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<List<BlogTagResponse>> getAllBlogTags() {
+        LOGGER.info("Start fetching all blog tags from repository");
+
+        try {
+            List<BlogTagResponse> blogTagResponses = blogRepository.getAllBlogTags();
+
+            if (blogTagResponses.isEmpty()) {
+                LOGGER.warn("No blog tags found in database");
+                throw new DataNotFoundErrorExceptionHandler("No blog tags found");
+            }
+
+            List<BlogTagResponse> blogResponseList = blogTagResponses.stream()
+                    .filter(item -> CommonStatus.ACTIVE.toString().equalsIgnoreCase(item.getStatusName()))
+                    .toList();
+
+            if (blogResponseList.isEmpty()) {
+                LOGGER.warn("No active blog tags found in database");
+                throw new DataNotFoundErrorExceptionHandler("No active blog tags found");
+            }
+
+            LOGGER.info("Fetched {} active blog tags successfully", blogResponseList.size());
+
+            return
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            blogResponseList,
+                            Instant.now()
+
+            );
+
+        }catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching active blog tags: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        }catch (Exception e) {
+            LOGGER.error("Error occurred while fetching active blog tags: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch blog tags from database");
+        } finally {
+            LOGGER.info("End fetching all active blog tags from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<InsertResponse> addBookmarkToBlog(BlogBookmarkRequest blogBookmarkRequest) {
+        try {
+            Long userId = commonService.getUserIdBySecurityContext();
+            blogValidationService.validateBlogBookmarkRequest(blogBookmarkRequest, userId);
+            Boolean isBookmarked = blogRepository.isBlogAlreadyBookmarked(blogBookmarkRequest.getBlogId(), userId);
+            if(isBookmarked){
+                blogRepository.removeBookmarkToBlog(blogBookmarkRequest, userId);
+                return new CommonResponse<>(
+                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                        new InsertResponse("Successfully remove blog bookmark request"),
+                        Instant.now()
+                );
+            }else {
+                blogRepository.addBookmarkToBlog(blogBookmarkRequest, userId);
+                return new CommonResponse<>(
+                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                        new InsertResponse("Successfully insert blog bookmark request"),
+                        Instant.now()
+                );
+            }
+
+        } catch (ValidationFailedErrorExceptionHandler vfe) {
+            throw new ValidationFailedErrorExceptionHandler("validation failed in the insert blog bookmark request", vfe.getValidationFailedResponses());
         } catch (InsertFailedErrorExceptionHandler ife) {
             throw new InsertFailedErrorExceptionHandler(ife.getMessage());
 

@@ -43,6 +43,17 @@ public class CommonServiceImpl implements CommonService {
     }
 
     @Override
+    public Long getUserIdBySecurityContextWithOutException() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication.getPrincipal() instanceof CustomUserDetails)) {
+            return null;
+        }
+        CustomUserDetails principal = (CustomUserDetails) authentication.getPrincipal();
+        User user = principal.getDomainUser();
+        return user.getId();
+    }
+
+    @Override
     public String generateRandomOtp() {
         SecureRandom secureRandom = new SecureRandom();
         StringBuilder otp = new StringBuilder();

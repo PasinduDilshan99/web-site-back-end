@@ -1,8 +1,10 @@
 package com.felicita.service;
 
+import com.felicita.model.request.BlogBookmarkRequest;
 import com.felicita.model.request.BlogDetailsRequest;
 import com.felicita.model.request.CreateBlogRequest;
 import com.felicita.model.response.BlogResponse;
+import com.felicita.model.response.BlogTagResponse;
 import com.felicita.model.response.CommonResponse;
 import com.felicita.model.response.InsertResponse;
 import org.springframework.http.ResponseEntity;
@@ -17,4 +19,12 @@ public interface BlogService {
     CommonResponse<BlogResponse> getBlogDetailsById(BlogDetailsRequest blogDetailsRequest);
 
     CommonResponse<InsertResponse> createBlog(CreateBlogRequest createBlogRequest);
+
+    CommonResponse<List<BlogResponse>> getBlogsByWriter(String writerName);
+
+    CommonResponse<List<BlogResponse>> getBlogsByTagName(String tagName);
+
+    CommonResponse<List<BlogTagResponse>> getAllBlogTags();
+
+    CommonResponse<InsertResponse> addBookmarkToBlog(BlogBookmarkRequest blogBookmarkRequest);
 }
