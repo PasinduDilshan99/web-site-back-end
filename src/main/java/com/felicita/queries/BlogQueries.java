@@ -83,6 +83,7 @@ public class BlogQueries {
                                         FROM blog_comment_reactions cr2
                                         LEFT JOIN user u_react2 ON cr2.user_id = u_react2.user_id
                                         WHERE cr2.comment_id = r.id
+                                        AND cr2.status = 1
                                     )
                                 )
                             )
@@ -181,6 +182,7 @@ public class BlogQueries {
                                                     FROM blog_comment_reactions cr2
                                                     LEFT JOIN user u_react2 ON cr2.user_id = u_react2.user_id
                                                     WHERE cr2.comment_id = r.id
+                                                    AND cr2.status = 1
                                                 )
                                             )
                                         )
@@ -203,18 +205,18 @@ public class BlogQueries {
             """;
 
     public static final String INSERT_BLOG = """
-        INSERT INTO blogs 
-            (title, subtitle, description, writer_id, created_by, updated_by) 
-        VALUES 
-            (?, ?, ?, ?, ?, ?)
-        """;
+            INSERT INTO blogs 
+                (title, subtitle, description, writer_id, created_by, updated_by) 
+            VALUES 
+                (?, ?, ?, ?, ?, ?)
+            """;
 
     public static final String INSERT_BLOG_IMAGES = """
-        INSERT INTO blog_images 
-            (blog_id, image_url, created_by, updated_by)
-        VALUES 
-            (?, ?, ?, ?)
-        """;
+            INSERT INTO blog_images 
+                (blog_id, image_url, created_by, updated_by)
+            VALUES 
+                (?, ?, ?, ?)
+            """;
 
     public static final String GET_BLOGS_BY_WRITER = """
             SELECT
@@ -293,6 +295,7 @@ public class BlogQueries {
             							FROM blog_comment_reactions cr2
             							LEFT JOIN user u_react2 ON cr2.user_id = u_react2.user_id
             							WHERE cr2.comment_id = r.id
+            							AND cr2.status = 1
             						)
             					)
             				)
@@ -401,6 +404,7 @@ public class BlogQueries {
             							FROM blog_comment_reactions cr2
             							LEFT JOIN user u_react2 ON cr2.user_id = u_react2.user_id
             							WHERE cr2.comment_id = r.id
+            							AND cr2.status = 1
             						)
             					)
             				)
@@ -446,29 +450,29 @@ public class BlogQueries {
             """;
 
     public static final String IS_BLOG_EXISTS = """
-    SELECT COUNT(*) 
-    FROM blogs 
-    WHERE id = ? AND status = 1
-""";
+                SELECT COUNT(*) 
+                FROM blogs 
+                WHERE id = ? AND status = 1
+            """;
 
     public static final String INSERT_BLOG_BOOKMARK = """
-    INSERT INTO blog_bookmarks (user_id, blog_id, status, created_by)
-    VALUES (?, ?, 1, ?)
-""";
+                INSERT INTO blog_bookmarks (user_id, blog_id, status, created_by)
+                VALUES (?, ?, 1, ?)
+            """;
 
     public static final String IS_BLOG_ALREADY_BOOKMARKED = """
-    SELECT COUNT(*) 
-    FROM blog_bookmarks 
-    WHERE blog_id = ? AND user_id = ? AND status = 1
-""";
+                SELECT COUNT(*) 
+                FROM blog_bookmarks 
+                WHERE blog_id = ? AND user_id = ? AND status = 1
+            """;
 
     public static final String REMOVE_BLOG_BOOKMARK = """
-    UPDATE blog_bookmarks
-    SET status = 2,
-        terminated_at = CURRENT_TIMESTAMP,
-        terminated_by = ?
-    WHERE blog_id = ? AND user_id = ? AND status = 1
-""";
+                UPDATE blog_bookmarks
+                SET status = 2,
+                    terminated_at = CURRENT_TIMESTAMP,
+                    terminated_by = ?
+                WHERE blog_id = ? AND user_id = ? AND status = 1
+            """;
 
     public static final String GET_BLOG_PREVIOUS_REACT = """
             SELECT
@@ -480,26 +484,26 @@ public class BlogQueries {
             WHERE blog_id = ? AND user_id = ? AND status = 1
             """;
 
-public static final String ADD_REACTION_TO_BLOG = """
-        INSERT INTO blog_likes (blog_id, user_id, reaction_type_id, status, created_by)
-        SELECT
-            ?,
-            ?,
-            brt.id,
-            1,
-            ?
-        FROM blog_reactions_types brt
-        WHERE brt.name = ?
-          AND brt.common_status_id = 1
-        """;
+    public static final String ADD_REACTION_TO_BLOG = """
+            INSERT INTO blog_likes (blog_id, user_id, reaction_type_id, status, created_by)
+            SELECT
+                ?,
+                ?,
+                brt.id,
+                1,
+                ?
+            FROM blog_reactions_types brt
+            WHERE brt.name = ?
+              AND brt.common_status_id = 1
+            """;
 
-public static final String REMOVE_BLOG_REACTION = """
-        UPDATE blog_likes
-        SET status = 2,
-            terminated_at = CURRENT_TIMESTAMP,
-            terminated_by = ?
-        WHERE blog_id = ? AND user_id = ? AND status = 1
-        """;
+    public static final String REMOVE_BLOG_REACTION = """
+            UPDATE blog_likes
+            SET status = 2,
+                terminated_at = CURRENT_TIMESTAMP,
+                terminated_by = ?
+            WHERE blog_id = ? AND user_id = ? AND status = 1
+            """;
 
 
     public static final String INSERT_BLOG_COMMENT = """
@@ -515,24 +519,24 @@ public static final String REMOVE_BLOG_REACTION = """
             """;
 
     public static final String CHECK_BLOG_COMMENT_EXISTS = """
-    SELECT COUNT(1)
-    FROM blog_comments
-    WHERE id = ?
-      AND status = 1
-""";
+                SELECT COUNT(1)
+                FROM blog_comments
+                WHERE id = ?
+                  AND status = 1
+            """;
 
     public static final String IS_BLOG_COMMENT_ALREADY_REACTED = """
-                    SELECT
-                        bcr.comment_id,
-                        bcr.user_id,
-                        brt.name
-                    FROM blog_comment_reactions bcr
-                    LEFT JOIN blog_reactions_types brt
-                        ON bcr.reaction_type_id = brt.id
-                    WHERE bcr.comment_id = ?
-                      AND bcr.user_id = ?
-                      AND bcr.status = 1
-                    """ ;
+            SELECT
+                bcr.comment_id,
+                bcr.user_id,
+                brt.name
+            FROM blog_comment_reactions bcr
+            LEFT JOIN blog_reactions_types brt
+                ON bcr.reaction_type_id = brt.id
+            WHERE bcr.comment_id = ?
+              AND bcr.user_id = ?
+              AND bcr.status = 1
+            """;
     public static final String ADD_REACTION_TO_BLOG_COMMENT = """
             INSERT INTO blog_comment_reactions (
                 comment_id,
