@@ -438,4 +438,48 @@ public class BlogServiceImpl implements BlogService {
             throw new InternalServerErrorExceptionHandler("Something went wrong");
         }
     }
+
+    @Override
+    public CommonResponse<List<BlogTagResponse>> getAllBlogTagsByBLogId(Long blogId) {
+        LOGGER.info("Start fetching all blog tags by blog id from repository");
+
+        try {
+            List<BlogTagResponse> blogTagResponses = blogRepository.getAllBlogTagsByBLogId(blogId);
+
+            if (blogTagResponses.isEmpty()) {
+                LOGGER.warn("No blog tags by blog id found in database");
+                throw new DataNotFoundErrorExceptionHandler("No blog tags by blog id found");
+            }
+
+            List<BlogTagResponse> blogResponseList = blogTagResponses.stream()
+                    .filter(item -> CommonStatus.ACTIVE.toString().equalsIgnoreCase(item.getStatusName()))
+                    .toList();
+
+            if (blogResponseList.isEmpty()) {
+                LOGGER.warn("No active blog tags by blog id found in database");
+                throw new DataNotFoundErrorExceptionHandler("No active blog tags by blog id found");
+            }
+
+            LOGGER.info("Fetched {} active blog tags by blog id successfully", blogResponseList.size());
+
+            return
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            blogResponseList,
+                            Instant.now()
+
+                    );
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching active blog tags by blog id: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching active blog tags by blog id: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch blog tags by blog id from database");
+        } finally {
+            LOGGER.info("End fetching all active blog tags by blog id from repository");
+        }
+    }
 }

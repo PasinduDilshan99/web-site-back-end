@@ -31,4 +31,6 @@ public interface BlogService {
     CommonResponse<InsertResponse> addCommentToBlog(BlogCommentRequest blogCommentRequest);
 
     CommonResponse<InsertResponse> addReactToBlogComment(BlogCommentReactRequest blogCommentReactRequest);
+
+    CommonResponse<List<BlogTagResponse>> getAllBlogTagsByBLogId(Long blogId);
 }

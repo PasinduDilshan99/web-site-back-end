@@ -101,8 +101,8 @@ public class BlogResponse {
 
         private String username;
 
-        @JsonProperty("reaction_type_id")
-        private Long reactionTypeId;
+        @JsonProperty("reaction_type")
+        private String reactionType;
     }
 }
 

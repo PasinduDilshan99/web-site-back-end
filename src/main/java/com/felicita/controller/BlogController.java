@@ -50,6 +50,14 @@ public class BlogController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping(path = "/tags/{blogId}")
+    public ResponseEntity<CommonResponse<List<BlogTagResponse>>> getAllBlogTagsByBLogId(@PathVariable Long blogId) {
+        LOGGER.info("{} Start execute get all blogs tags by blog id{}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<BlogTagResponse>> response = blogService.getAllBlogTagsByBLogId(blogId);
+        LOGGER.info("{} End execute get all blogs tags by blog id {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @GetMapping(path = "/writer/{writerName}")
     public ResponseEntity<CommonResponse<List<BlogResponse>>> getBlogsByWriter(@PathVariable String writerName) {
         LOGGER.info("{} Start execute get all blogs by writer {}", Constant.DOTS, Constant.DOTS);

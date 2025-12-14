@@ -52,4 +52,6 @@ public interface BlogRepository {
     void removeReactToBlogComment(BlogCommentReactRequest blogCommentReactRequest, Long userId);
 
     void changeReactToBlogComment(BlogCommentReactRequest blogCommentReactRequest, Long userId);
+
+    List<BlogTagResponse> getAllBlogTagsByBLogId(Long blogId);
 }

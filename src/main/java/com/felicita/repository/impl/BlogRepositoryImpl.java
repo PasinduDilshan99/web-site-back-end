@@ -809,6 +809,33 @@ public class BlogRepositoryImpl implements BlogRepository {
         addReactToBlogComment(blogCommentReactRequest, userId);
     }
 
+    @Override
+    public List<BlogTagResponse> getAllBlogTagsByBLogId(Long blogId) {
+        String GET_ALL_BLOG_TAGS_BY_BLOG_ID = BlogQueries.GET_ALL_BLOG_TAGS_BY_BLOG_ID;
+        try {
+            return jdbcTemplate.query(GET_ALL_BLOG_TAGS_BY_BLOG_ID, new Object[]{blogId},(rs, rowNum) -> {
+                BlogTagResponse blogTag = BlogTagResponse.builder()
+                        .id(rs.getLong("id"))
+                        .name(rs.getString("name"))
+                        .description(rs.getString("description"))
+                        .statusId(rs.getInt("status_id"))
+                        .statusName(rs.getString("status_name"))
+                        .createdAt(rs.getTimestamp("created_at") != null ? rs.getTimestamp("created_at").toLocalDateTime() : null)
+                        .createdBy(rs.getObject("created_by") != null ? rs.getLong("created_by") : null)
+                        .updatedAt(rs.getTimestamp("updated_at") != null ? rs.getTimestamp("updated_at").toLocalDateTime() : null)
+                        .updatedBy(rs.getObject("updated_by") != null ? rs.getLong("updated_by") : null)
+                        .terminatedAt(rs.getTimestamp("terminated_at") != null ? rs.getTimestamp("terminated_at").toLocalDateTime() : null)
+                        .terminatedBy(rs.getObject("terminated_by") != null ? rs.getLong("terminated_by") : null)
+                        .build();
+
+                return blogTag;
+            });
+        } catch (Exception e) {
+            LOGGER.error("Error fetching blog tags: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch blog tags from database");
+        }
+    }
+
 
     public void insertImages(CreateBlogRequest createBlogRequest, Long userId, Long blogId) {
         String INSERT_BLOG_IMAGES = BlogQueries.INSERT_BLOG_IMAGES;

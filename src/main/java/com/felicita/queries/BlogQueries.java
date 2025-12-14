@@ -39,6 +39,7 @@ public class BlogQueries {
                         SELECT bl.reaction_type_id, COUNT(*) AS cnt
                         FROM blog_likes bl
                         WHERE bl.blog_id = b.id
+                        AND bl.status = 1
                         GROUP BY bl.reaction_type_id
                     ) AS t
                     LEFT JOIN blog_reactions_types brt ON t.reaction_type_id = brt.id
@@ -60,11 +61,13 @@ public class BlogQueries {
                             SELECT JSON_ARRAYAGG(JSON_OBJECT(
                                 'user_id', cr.user_id,
                                 'username', u_react.username,
-                                'reaction_type_id', cr.reaction_type_id
+                                'reaction_type', bcrt.name
                             ))
                             FROM blog_comment_reactions cr
                             LEFT JOIN user u_react ON cr.user_id = u_react.user_id
+                            LEFT JOIN blog_reactions_types bcrt ON cr.reaction_type_id = bcrt.id
                             WHERE cr.comment_id = bc.id
+                            AND cr.status = 1
                         ),
                         'replies', (
                             SELECT JSON_ARRAYAGG(
@@ -78,10 +81,11 @@ public class BlogQueries {
                                         SELECT JSON_ARRAYAGG(JSON_OBJECT(
                                             'user_id', cr2.user_id,
                                             'username', u_react2.username,
-                                            'reaction_type_id', cr2.reaction_type_id
+                                            'reaction_type', bcrt2.name
                                         ))
                                         FROM blog_comment_reactions cr2
                                         LEFT JOIN user u_react2 ON cr2.user_id = u_react2.user_id
+                                        LEFT JOIN blog_reactions_types bcrt2 ON cr2.reaction_type_id = bcrt2.id
                                         WHERE cr2.comment_id = r.id
                                         AND cr2.status = 1
                                     )
@@ -139,6 +143,7 @@ public class BlogQueries {
                                     SELECT bl.reaction_type_id, COUNT(*) AS cnt
                                     FROM blog_likes bl
                                     WHERE bl.blog_id = b.id
+                                    AND bl.status = 1
                                     GROUP BY bl.reaction_type_id
                                 ) AS t
                                 LEFT JOIN blog_reactions_types brt ON t.reaction_type_id = brt.id
@@ -159,11 +164,13 @@ public class BlogQueries {
                                         SELECT JSON_ARRAYAGG(JSON_OBJECT(
                                             'user_id', cr.user_id,
                                             'username', u_react.username,
-                                            'reaction_type_id', cr.reaction_type_id
+                                            'reaction_type', bcrt.name
                                         ))
                                         FROM blog_comment_reactions cr
                                         LEFT JOIN user u_react ON cr.user_id = u_react.user_id
+                                        LEFT JOIN blog_reactions_types bcrt ON cr.reaction_type_id = bcrt.id
                                         WHERE cr.comment_id = bc.id
+                                        AND cr.status = 1
                                     ),
                                     'replies', (
                                         SELECT JSON_ARRAYAGG(
@@ -177,10 +184,11 @@ public class BlogQueries {
                                                     SELECT JSON_ARRAYAGG(JSON_OBJECT(
                                                         'user_id', cr2.user_id,
                                                         'username', u_react2.username,
-                                                        'reaction_type_id', cr2.reaction_type_id
+                                                        'reaction_type', bcrt2.name
                                                     ))
                                                     FROM blog_comment_reactions cr2
                                                     LEFT JOIN user u_react2 ON cr2.user_id = u_react2.user_id
+                                                    LEFT JOIN blog_reactions_types bcrt2 ON cr2.reaction_type_id = bcrt2.id
                                                     WHERE cr2.comment_id = r.id
                                                     AND cr2.status = 1
                                                 )
@@ -252,6 +260,7 @@ public class BlogQueries {
             			SELECT bl.reaction_type_id, COUNT(*) AS cnt
             			FROM blog_likes bl
             			WHERE bl.blog_id = b.id
+            			AND bl.status = 1
             			GROUP BY bl.reaction_type_id
             		) AS t
             		LEFT JOIN blog_reactions_types brt ON t.reaction_type_id = brt.id
@@ -272,11 +281,13 @@ public class BlogQueries {
             				SELECT JSON_ARRAYAGG(JSON_OBJECT(
             					'user_id', cr.user_id,
             					'username', u_react.username,
-            					'reaction_type_id', cr.reaction_type_id
+            					'reaction_type', bcrt.name
             				))
             				FROM blog_comment_reactions cr
             				LEFT JOIN user u_react ON cr.user_id = u_react.user_id
+            				LEFT JOIN blog_reactions_types bcrt ON cr.reaction_type_id = bcrt.id
             				WHERE cr.comment_id = bc.id
+            				AND cr.status = 1
             			),
             			'replies', (
             				SELECT JSON_ARRAYAGG(
@@ -290,10 +301,11 @@ public class BlogQueries {
             							SELECT JSON_ARRAYAGG(JSON_OBJECT(
             								'user_id', cr2.user_id,
             								'username', u_react2.username,
-            								'reaction_type_id', cr2.reaction_type_id
+            								'reaction_type', bcrt2.name
             							))
             							FROM blog_comment_reactions cr2
             							LEFT JOIN user u_react2 ON cr2.user_id = u_react2.user_id
+            							LEFT JOIN blog_reactions_types bcrt2 ON cr2.reaction_type_id = bcr2.id
             							WHERE cr2.comment_id = r.id
             							AND cr2.status = 1
             						)
@@ -361,6 +373,7 @@ public class BlogQueries {
             			SELECT bl.reaction_type_id, COUNT(*) AS cnt
             			FROM blog_likes bl
             			WHERE bl.blog_id = b.id
+            			AND bl.status = 1
             			GROUP BY bl.reaction_type_id
             		) AS t
             		LEFT JOIN blog_reactions_types brt ON t.reaction_type_id = brt.id
@@ -381,11 +394,13 @@ public class BlogQueries {
             				SELECT JSON_ARRAYAGG(JSON_OBJECT(
             					'user_id', cr.user_id,
             					'username', u_react.username,
-            					'reaction_type_id', cr.reaction_type_id
+            					'reaction_type', bcrt.name
             				))
             				FROM blog_comment_reactions cr
             				LEFT JOIN user u_react ON cr.user_id = u_react.user_id
+            				LEFT JOIN blog_reactions_types bcrt ON cr.reaction_type_id = bcrt.id
             				WHERE cr.comment_id = bc.id
+            				AND cr.status = 1
             			),
             			'replies', (
             				SELECT JSON_ARRAYAGG(
@@ -399,10 +414,11 @@ public class BlogQueries {
             							SELECT JSON_ARRAYAGG(JSON_OBJECT(
             								'user_id', cr2.user_id,
             								'username', u_react2.username,
-            								'reaction_type_id', cr2.reaction_type_id
+            								'reaction_type', bcrt2.name
             							))
             							FROM blog_comment_reactions cr2
             							LEFT JOIN user u_react2 ON cr2.user_id = u_react2.user_id
+            							LEFT JOIN blog_reactions_types bcrt2 ON cr2.reaction_type_id = bcrt2.id
             							WHERE cr2.comment_id = r.id
             							AND cr2.status = 1
             						)
@@ -562,5 +578,25 @@ public class BlogQueries {
                 terminated_at = CURRENT_TIMESTAMP,
                 terminated_by = ?
             WHERE comment_id = ? AND user_id = ? AND status = 1
+            """;
+
+    public static final String GET_ALL_BLOG_TAGS_BY_BLOG_ID = """
+            SELECT
+                t.id,
+                t.name,
+                t.description,
+                t.status AS status_id,
+                cs.name AS status_name,
+                t.created_at,
+                t.created_by,
+                t.updated_at,
+                t.updated_by,
+                t.terminated_at,
+                t.terminated_by
+            FROM blog_tags bt
+            LEFT JOIN tags t ON bt.tag_id = t.id
+            LEFT JOIN blogs b ON bt.blog_id = b.id
+            LEFT JOIN common_status cs ON t.status = cs.id
+            WHERE b.id = ?
             """;
 }
