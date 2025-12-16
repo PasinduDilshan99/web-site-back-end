@@ -2,10 +2,8 @@ package com.felicita.repository;
 
 import com.felicita.model.dto.ActivityCategoryResponseDto;
 import com.felicita.model.dto.ActivityResponseDto;
-import com.felicita.model.response.ActivityCategoryResponse;
-import com.felicita.model.response.ActivityHistoryDetailsResponse;
-import com.felicita.model.response.ActivityHistoryImageResponse;
-import com.felicita.model.response.ActivityReviewDetailsResponse;
+import com.felicita.model.request.ActivityDataRequest;
+import com.felicita.model.response.*;
 
 import java.util.List;
 
@@ -27,4 +25,6 @@ public interface ActivitiesRepository {
     List<ActivityHistoryImageResponse> getAllActivityHistoryImages();
 
     List<ActivityHistoryImageResponse> getActivityHistoryImagesById(String activityId);
+
+    ActivityWithParamsResponse getActivitiesWithParams(ActivityDataRequest activityDataRequest);
 }

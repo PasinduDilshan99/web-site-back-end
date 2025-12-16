@@ -1,6 +1,7 @@
 package com.felicita.repository;
 
 import com.felicita.model.dto.*;
+import com.felicita.model.request.DestinationDataRequest;
 import com.felicita.model.response.*;
 
 import java.util.List;
@@ -31,4 +32,6 @@ public interface DestinationRepository {
     List<DestinationHistoryImageResponse> getAllDestinationHistoryImages();
 
     List<DestinationHistoryImageResponse> getDestinationHistoryImagesById(String destinationId);
+
+    DestinationsWithParamsResponse getDestinationWithParams(DestinationDataRequest destinationDataRequest);
 }

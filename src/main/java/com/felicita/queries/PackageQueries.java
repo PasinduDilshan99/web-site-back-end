@@ -1,5 +1,7 @@
 package com.felicita.queries;
 
+import com.fasterxml.jackson.databind.deser.impl.BeanPropertyMap;
+
 public class PackageQueries {
 
     public static final String GET_ALL_PACKAGES = """
@@ -456,4 +458,118 @@ public class PackageQueries {
             ORDER BY thi.created_at DESC
             """;
 
+    public static final String GET_PACKAGE_IDS_WITH_FILTERS = """
+            SELECT DISTINCT p.package_id
+            FROM packages p
+            LEFT JOIN tour t ON p.tour_id = t.tour_id
+            LEFT JOIN package_type pt ON pt.id = p.package_type_id
+            LEFT JOIN common_status cs_p ON p.status = cs_p.id
+            LEFT JOIN common_status cs_t ON t.status = cs_t.id
+            WHERE cs_p.name = 'ACTIVE'
+              AND cs_t.name = 'ACTIVE'
+            
+              AND (? IS NULL OR p.name LIKE CONCAT('%', ?, '%'))
+              AND (? IS NULL OR p.total_price >= ?)
+              AND (? IS NULL OR p.total_price <= ?)
+              AND (? IS NULL OR t.duration = ?)
+              AND (? IS NULL OR pt.name = ?)
+              AND (? IS NULL OR (t.start_location LIKE CONCAT('%', ?, '%')
+                   OR t.end_location LIKE CONCAT('%', ?, '%')))
+              AND (? = 0 OR p.min_person_count >= ?)
+              AND (? = 0 OR p.max_person_count <= ?)
+              AND (? IS NULL OR p.start_date >= ?)
+              AND (? IS NULL OR p.end_date <= ?)
+            LIMIT ? OFFSET ?
+            """;
+
+    public static final String COUNT_PACKAGES_WITH_FILTERS = """
+    SELECT COUNT(DISTINCT p.package_id)
+    FROM packages p
+    LEFT JOIN tour t ON p.tour_id = t.tour_id
+    LEFT JOIN package_type pt ON pt.id = p.package_type_id
+    LEFT JOIN common_status cs_p ON p.status = cs_p.id
+    LEFT JOIN common_status cs_t ON t.status = cs_t.id
+    WHERE cs_p.name = 'ACTIVE'
+      AND cs_t.name = 'ACTIVE'
+
+      AND (? IS NULL OR p.name LIKE CONCAT('%', ?, '%'))
+      AND (? IS NULL OR p.total_price >= ?)
+      AND (? IS NULL OR p.total_price <= ?)
+      AND (? IS NULL OR t.duration = ?)
+      AND (? IS NULL OR pt.name = ?)
+      AND (? IS NULL OR (t.start_location LIKE CONCAT('%', ?, '%')
+           OR t.end_location LIKE CONCAT('%', ?, '%')))
+      AND (? = 0 OR p.min_person_count >= ?)
+      AND (? = 0 OR p.max_person_count <= ?)
+      AND (? IS NULL OR p.start_date >= ?)
+      AND (? IS NULL OR p.end_date <= ?)
+""";
+
+
+    public static final String GET_PACKAGES_BY_IDS = """
+            SELECT
+                p.package_id,
+                p.name AS package_name,
+                p.description AS package_description,
+                p.total_price,
+                p.discount_percentage,
+                p.start_date,
+                p.end_date,
+                p.color,
+                p.price_per_person,
+                p.hover_color,
+                p.min_person_count,
+                p.max_person_count,
+                p.created_at,
+                p.created_by,
+            
+                pt.name AS package_type_name,
+                pt.description AS package_type_description,
+                cs3.name AS package_type_status,
+            
+                cs2.name AS package_status,
+            
+                t.tour_id,
+                t.name AS tour_name,
+                t.description AS tour_description,
+                t.duration,
+                t.latitude,
+                t.longitude,
+                t.start_location,
+                t.end_location,
+                 t.status AS tour_status,
+            
+                ps.id AS schedule_id,
+                ps.name AS schedule_name,
+                ps.assume_start_date,
+                ps.assume_end_date,
+                ps.duration_start,
+                ps.duration_end,
+                ps.special_note AS schedule_special_note,
+                ps.description AS schedule_description,
+            
+                f.id AS feature_id,
+                f.name AS feature_name,
+                f.value AS feature_value,
+                f.description AS feature_description,
+                f.color AS feature_color,
+                f.special_note AS feature_special_note,
+            
+                pi.id AS image_id,
+                pi.name AS image_name,
+                pi.description AS image_description,
+                pi.image_url,
+                pi.color AS image_color
+            
+            FROM packages p
+            LEFT JOIN package_type pt ON pt.id = p.package_type_id
+            LEFT JOIN common_status cs2 ON p.status = cs2.id
+            LEFT JOIN common_status cs3 ON pt.status = cs3.id
+            LEFT JOIN tour t ON p.tour_id = t.tour_id
+            LEFT JOIN package_schedule ps ON p.package_id = ps.package_id
+            LEFT JOIN features f ON p.package_id = f.package_id
+            LEFT JOIN package_images pi ON p.package_id = pi.package_id
+            WHERE p.package_id IN (:packageIds)
+            ORDER BY p.package_id
+            """;
 }

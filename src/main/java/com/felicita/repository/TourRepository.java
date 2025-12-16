@@ -2,10 +2,8 @@ package com.felicita.repository;
 
 import com.felicita.model.dto.PopularTourResponseDto;
 import com.felicita.model.dto.TourResponseDto;
-import com.felicita.model.response.TourDestinationsForMapResponse;
-import com.felicita.model.response.TourHistoryImageResponse;
-import com.felicita.model.response.TourHistoryResponse;
-import com.felicita.model.response.TourReviewDetailsResponse;
+import com.felicita.model.request.TourDataRequest;
+import com.felicita.model.response.*;
 
 import java.util.List;
 
@@ -29,4 +27,6 @@ public interface TourRepository {
     List<TourHistoryImageResponse> getTourHistoryImagesById(String tourId);
 
     List<TourHistoryImageResponse> getAllTourHistoryImages();
+
+    ToursDetailsWithParamResponse getToursToShowWithParam(TourDataRequest tourDataRequest);
 }

@@ -1,6 +1,7 @@
 package com.felicita.controller;
 
 import com.felicita.model.dto.*;
+import com.felicita.model.request.DestinationDataRequest;
 import com.felicita.model.response.*;
 import com.felicita.service.DestinationService;
 import com.felicita.util.Constant;
@@ -9,10 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -43,6 +41,14 @@ public class DestinationController {
         ResponseEntity<CommonResponse<List<DestinationResponseDto>>> response = destinationService.getAllActiveDestinations();
         LOGGER.info("{} End execute get all active destinations {}", Constant.DOTS, Constant.DOTS);
         return response;
+    }
+
+    @PostMapping(path = "/destinations")
+    public ResponseEntity<CommonResponse<DestinationsWithParamsResponse>> getDestinationWithParams(@RequestBody DestinationDataRequest destinationDataRequest) {
+        LOGGER.info("{} Start execute get all active destinations with params {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<DestinationsWithParamsResponse> response = destinationService.getDestinationWithParams(destinationDataRequest);
+        LOGGER.info("{} End execute get all active destinations with params {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping(path = "/all-categories")

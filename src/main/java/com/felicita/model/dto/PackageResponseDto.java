@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PackageResponseDto {
-    private int packageId;
+    private Long packageId;
     private String packageName;
     private String packageDescription;
     private BigDecimal totalPrice;

@@ -1,10 +1,8 @@
 package com.felicita.service;
 
 import com.felicita.model.dto.PackageResponseDto;
-import com.felicita.model.response.CommonResponse;
-import com.felicita.model.response.PackageHistoryImageResponse;
-import com.felicita.model.response.PackageHistoryDetailsResponse;
-import com.felicita.model.response.PackageReviewResponse;
+import com.felicita.model.request.PackageDataRequest;
+import com.felicita.model.response.*;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -28,4 +26,6 @@ public interface PackageService {
     CommonResponse<List<PackageHistoryImageResponse>> getAllPackageHistoryImages();
 
     CommonResponse<List<PackageHistoryImageResponse>> getPackageHistoryImagesById(String packageId);
+
+    CommonResponse<PackageWithParamsResponse> getPackagesWithParams(PackageDataRequest packageDataRequest);
 }

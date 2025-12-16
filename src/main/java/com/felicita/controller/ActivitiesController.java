@@ -2,6 +2,7 @@ package com.felicita.controller;
 
 import com.felicita.model.dto.ActivityCategoryResponseDto;
 import com.felicita.model.dto.ActivityResponseDto;
+import com.felicita.model.request.ActivityDataRequest;
 import com.felicita.model.response.*;
 import com.felicita.service.ActivitiesService;
 import com.felicita.util.Constant;
@@ -10,10 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -38,6 +36,14 @@ public class ActivitiesController {
         return response;
     }
 
+    @PostMapping(path = "/activities")
+    public ResponseEntity<CommonResponse<ActivityWithParamsResponse>> getActivitiesWithParams(@RequestBody ActivityDataRequest activityDataRequest){
+        LOGGER.info("{} Start execute get active activities with params {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<ActivityWithParamsResponse> response = activitiesService.getActivitiesWithParams(activityDataRequest);
+        LOGGER.info("{} End execute get active activities with params {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @GetMapping(path = "/active")
     public ResponseEntity<CommonResponse<List<ActivityResponseDto>>> getActiveActivities(){
         LOGGER.info("{} Start execute get active activities {}", Constant.DOTS, Constant.DOTS);
@@ -45,6 +51,7 @@ public class ActivitiesController {
         LOGGER.info("{} End execute get active activities {}", Constant.DOTS, Constant.DOTS);
         return response;
     }
+
 
     @GetMapping(path = "/category")
     public ResponseEntity<CommonResponse<List<ActivityCategoryResponseDto>>> getAllActivityCategories(){

@@ -4,10 +4,8 @@ import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
 import com.felicita.model.dto.PackageResponseDto;
 import com.felicita.model.enums.CommonStatus;
-import com.felicita.model.response.CommonResponse;
-import com.felicita.model.response.PackageHistoryImageResponse;
-import com.felicita.model.response.PackageHistoryDetailsResponse;
-import com.felicita.model.response.PackageReviewResponse;
+import com.felicita.model.request.PackageDataRequest;
+import com.felicita.model.response.*;
 import com.felicita.repository.PackageRepository;
 import com.felicita.service.PackageService;
 import com.felicita.util.CommonResponseMessages;
@@ -328,6 +326,41 @@ public class PackageServiceImpl implements PackageService {
             throw new InternalServerErrorExceptionHandler("Failed to fetch package from database");
         } finally {
             LOGGER.info("End fetching all package from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<PackageWithParamsResponse> getPackagesWithParams(PackageDataRequest packageDataRequest) {
+        LOGGER.info("Start fetching packages with params from repository");
+        try {
+            PackageWithParamsResponse packageWithParamsResponse = packageRepository.getPackagesWithParams(packageDataRequest);
+
+            if (packageWithParamsResponse == null){
+                return new CommonResponse<>(
+                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                        null,
+                        Instant.now()
+                );
+            }
+
+            return new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            packageWithParamsResponse,
+                            Instant.now()
+            );
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching packages with params: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching packages with params: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch packages with params from database");
+        } finally {
+            LOGGER.info("End fetching all packages with params from repository");
         }
     }
 }

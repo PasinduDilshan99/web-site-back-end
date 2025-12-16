@@ -4,6 +4,7 @@ import com.felicita.model.dto.DestinationResponseDto;
 import com.felicita.model.dto.PackageResponseDto;
 import com.felicita.model.dto.PopularTourResponseDto;
 import com.felicita.model.dto.TourResponseDto;
+import com.felicita.model.request.TourDataRequest;
 import com.felicita.model.response.*;
 import com.felicita.service.TourService;
 import com.felicita.util.Constant;
@@ -12,10 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -46,6 +44,15 @@ public class TourController {
         ResponseEntity<CommonResponse<List<TourResponseDto>>> response = tourService.getActiveTours();
         LOGGER.info("{} End execute get all active tours {}", Constant.DOTS, Constant.DOTS);
         return response;
+    }
+
+    @PostMapping(path = "/tours")
+    public ResponseEntity<CommonResponse<ToursDetailsWithParamResponse>> getToursToShowWithParam(@RequestBody TourDataRequest tourDataRequest) {
+        LOGGER.info("{} Start execute get active tours for params {}", Constant.DOTS, Constant.DOTS);
+        LOGGER.info("Request body: {}", tourDataRequest);
+        CommonResponse<ToursDetailsWithParamResponse> response = tourService.getToursToShowWithParam(tourDataRequest);
+        LOGGER.info("{} End execute get active tours for params {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping(path = "/popular")

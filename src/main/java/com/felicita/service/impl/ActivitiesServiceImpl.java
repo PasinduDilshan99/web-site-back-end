@@ -6,6 +6,7 @@ import com.felicita.model.dto.ActivityCategoryResponseDto;
 import com.felicita.model.dto.ActivityResponseDto;
 import com.felicita.model.dto.PackageResponseDto;
 import com.felicita.model.enums.CommonStatus;
+import com.felicita.model.request.ActivityDataRequest;
 import com.felicita.model.response.*;
 import com.felicita.repository.ActivitiesRepository;
 import com.felicita.service.ActivitiesService;
@@ -394,6 +395,41 @@ public class ActivitiesServiceImpl implements ActivitiesService {
             throw new InternalServerErrorExceptionHandler("Failed to fetch package from database");
         } finally {
             LOGGER.info("End fetching all package from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<ActivityWithParamsResponse> getActivitiesWithParams(ActivityDataRequest activityDataRequest) {
+        LOGGER.info("Start fetching all activities with params from repository");
+        try {
+            ActivityWithParamsResponse activityWithParamsResponse = activitiesRepository.getActivitiesWithParams(activityDataRequest);
+
+            if (activityWithParamsResponse == null) {
+                return new CommonResponse<>(
+                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                        null,
+                        Instant.now()
+                );
+            }
+
+            return new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    activityWithParamsResponse,
+                            Instant.now()
+            );
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching activities with params : {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching activities with params : {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch activities with params from database");
+        } finally {
+            LOGGER.info("End fetching all activities with params from repository");
         }
     }
 

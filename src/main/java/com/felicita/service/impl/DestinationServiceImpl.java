@@ -4,6 +4,7 @@ import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
 import com.felicita.model.dto.*;
 import com.felicita.model.enums.CommonStatus;
+import com.felicita.model.request.DestinationDataRequest;
 import com.felicita.model.response.*;
 import com.felicita.repository.DestinationRepository;
 import com.felicita.service.DestinationService;
@@ -567,6 +568,31 @@ public class DestinationServiceImpl implements DestinationService {
             throw new InternalServerErrorExceptionHandler("Failed to fetch package from database");
         } finally {
             LOGGER.info("End fetching all package from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<DestinationsWithParamsResponse> getDestinationWithParams(DestinationDataRequest destinationDataRequest) {
+        LOGGER.info("Start fetching all destinations with params from repository");
+        try {
+            DestinationsWithParamsResponse destinationsWithParamsResponse = destinationRepository.getDestinationWithParams(destinationDataRequest);
+
+            return new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    destinationsWithParamsResponse,
+                            Instant.now()
+            );
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching destinations with params : {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching destinations with params: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch destinations with params from database");
+        } finally {
+            LOGGER.info("End fetching all destinations with params from repository");
         }
     }
 

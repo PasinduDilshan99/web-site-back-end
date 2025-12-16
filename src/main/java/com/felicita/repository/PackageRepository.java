@@ -1,9 +1,11 @@
 package com.felicita.repository;
 
 import com.felicita.model.dto.PackageResponseDto;
+import com.felicita.model.request.PackageDataRequest;
 import com.felicita.model.response.PackageHistoryDetailsResponse;
 import com.felicita.model.response.PackageHistoryImageResponse;
 import com.felicita.model.response.PackageReviewResponse;
+import com.felicita.model.response.PackageWithParamsResponse;
 
 import java.util.List;
 
@@ -23,4 +25,6 @@ public interface PackageRepository {
     List<PackageHistoryDetailsResponse> getPackageHistoryDetailsById(String packageId);
 
     List<PackageHistoryDetailsResponse> getAllPackageHistoryDetails();
+
+    PackageWithParamsResponse getPackagesWithParams(PackageDataRequest packageDataRequest);
 }

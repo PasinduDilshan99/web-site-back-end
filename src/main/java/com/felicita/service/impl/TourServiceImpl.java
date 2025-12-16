@@ -6,6 +6,7 @@ import com.felicita.model.dto.DestinationResponseDto;
 import com.felicita.model.dto.PopularTourResponseDto;
 import com.felicita.model.dto.TourResponseDto;
 import com.felicita.model.enums.CommonStatus;
+import com.felicita.model.request.TourDataRequest;
 import com.felicita.model.response.*;
 import com.felicita.repository.TourRepository;
 import com.felicita.service.DestinationService;
@@ -391,6 +392,42 @@ public class TourServiceImpl implements TourService {
             throw new InternalServerErrorExceptionHandler("Failed to fetch package from database");
         } finally {
             LOGGER.info("End fetching all package from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<ToursDetailsWithParamResponse> getToursToShowWithParam(TourDataRequest tourDataRequest) {
+        LOGGER.info("Start fetching tours for params from repository");
+        try {
+            ToursDetailsWithParamResponse toursDetailsWithParamResponse = tourRepository.getToursToShowWithParam(tourDataRequest);
+
+            if (toursDetailsWithParamResponse == null) {
+                LOGGER.warn("No tours for param found in database");
+                return new CommonResponse<>(
+                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                        null,
+                        Instant.now()
+                );
+            }
+
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    toursDetailsWithParamResponse,
+                    Instant.now()
+            );
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching tours for param: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching tours for param: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch tours for param from database");
+        } finally {
+            LOGGER.info("End fetching all tours for param from repository");
         }
     }
 }

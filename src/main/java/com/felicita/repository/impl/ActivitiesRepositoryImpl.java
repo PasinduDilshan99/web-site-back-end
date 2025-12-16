@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.felicita.exception.DataAccessErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
 import com.felicita.model.dto.*;
+import com.felicita.model.request.ActivityDataRequest;
 import com.felicita.model.response.*;
 import com.felicita.queries.ActivitiesQueries;
 import com.felicita.queries.PartnerQueries;
@@ -772,6 +773,69 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
         } catch (Exception ex) {
             LOGGER.error("Unexpected error while fetching activity history images: {}", ex.getMessage(), ex);
             throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching activity history images");
+        }
+    }
+
+    @Override
+    public ActivityWithParamsResponse getActivitiesWithParams(ActivityDataRequest activityDataRequest) {
+
+        try {
+            LOGGER.info("Executing query to fetch all activity categories...");
+            int offset = (activityDataRequest.getPageNumber() - 1) * activityDataRequest.getPageSize();
+            List<Long> activitiesIds = jdbcTemplate.query(
+                    ActivitiesQueries.GET_ACTIVITY_IDS_WITH_FILTERS,
+                    new Object[]{
+                            activityDataRequest.getName(), activityDataRequest.getName(),
+                            activityDataRequest.getMinPrice(), activityDataRequest.getMinPrice(),
+                            activityDataRequest.getMaxPrice(), activityDataRequest.getMaxPrice(),
+                            activityDataRequest.getDuration(), activityDataRequest.getDuration(),
+                            activityDataRequest.getActivityCategory(), activityDataRequest.getActivityCategory(),
+                            activityDataRequest.getSeason(), activityDataRequest.getSeason(),
+                            activityDataRequest.getStatus(), activityDataRequest.getStatus(),
+                            activityDataRequest.getPageSize(), offset
+                    },
+                    (rs, rowNum) -> rs.getLong("id")
+            );
+
+            Integer totalCount = jdbcTemplate.queryForObject(
+                    ActivitiesQueries.GET_ACTIVITY_COUNT_WITH_FILTERS,
+                    new Object[]{
+                            activityDataRequest.getName(), activityDataRequest.getName(),
+                            activityDataRequest.getMinPrice(), activityDataRequest.getMinPrice(),
+                            activityDataRequest.getMaxPrice(), activityDataRequest.getMaxPrice(),
+                            activityDataRequest.getDuration(), activityDataRequest.getDuration(),
+                            activityDataRequest.getActivityCategory(), activityDataRequest.getActivityCategory(),
+                            activityDataRequest.getSeason(), activityDataRequest.getSeason(),
+                            activityDataRequest.getStatus(), activityDataRequest.getStatus()
+                    },
+                    Integer.class
+            );
+
+
+
+            if (activitiesIds.isEmpty()) {
+                return null;
+            }
+
+            LOGGER.info(activitiesIds.toString());
+
+            String inSql = String.join(",", Collections.nCopies(activitiesIds.size(), "?"));
+            String sql = String.format(ActivitiesQueries.GET_ACTIVITIES_BY_IDS, inSql);
+
+            List<ActivityResponseDto> result = jdbcTemplate.query(
+                    sql,
+                    activitiesIds.toArray(),
+                    new ActivityRowMapper()
+            );
+
+            return new ActivityWithParamsResponse(totalCount,result);
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching activity categories: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler("Failed to fetch activity categories from database");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching activity categories: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching activity categories");
         }
     }
 

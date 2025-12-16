@@ -4,10 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
 import com.felicita.model.dto.*;
-import com.felicita.model.response.TourDestinationsForMapResponse;
-import com.felicita.model.response.TourHistoryImageResponse;
-import com.felicita.model.response.TourHistoryResponse;
-import com.felicita.model.response.TourReviewDetailsResponse;
+import com.felicita.model.request.TourDataRequest;
+import com.felicita.model.response.*;
 import com.felicita.queries.TourQueries;
 import com.felicita.repository.TourRepository;
 import org.slf4j.Logger;
@@ -23,6 +21,9 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+
+import static com.felicita.queries.TourQueries.GET_PAGINATED_TOUR_IDS;
+import static com.felicita.queries.TourQueries.GET_TOURS_BY_IDS;
 
 @Repository
 public class TourRepositoryImpl implements TourRepository {
@@ -956,6 +957,109 @@ public class TourRepositoryImpl implements TourRepository {
         }
     }
 
+    @Override
+    public ToursDetailsWithParamResponse getToursToShowWithParam(TourDataRequest tourDataRequest) {
+        try {
+            int offset = (tourDataRequest.getPageNumber() - 1) * tourDataRequest.getPageSize();
+            List<Integer> tourIds = jdbcTemplate.queryForList(GET_PAGINATED_TOUR_IDS,
+                    new Object[]{
+                            tourDataRequest.getName(), tourDataRequest.getName(),
+                            tourDataRequest.getDuration(), tourDataRequest.getDuration(),
+                            tourDataRequest.getLocation(), tourDataRequest.getLocation(), tourDataRequest.getLocation(),
+                            tourDataRequest.getTourCategory(), tourDataRequest.getTourCategory(),
+                            tourDataRequest.getSeason(), tourDataRequest.getSeason(),
+                            tourDataRequest.getTourType(), tourDataRequest.getTourType(),
+                            tourDataRequest.getPageSize(), offset
+                    }, Integer.class);
+
+            List<Integer> totalTourIds = jdbcTemplate.queryForList(GET_PAGINATED_TOUR_IDS,
+                    new Object[]{
+                            tourDataRequest.getName(), tourDataRequest.getName(),
+                            tourDataRequest.getDuration(), tourDataRequest.getDuration(),
+                            tourDataRequest.getLocation(), tourDataRequest.getLocation(), tourDataRequest.getLocation(),
+                            tourDataRequest.getTourCategory(), tourDataRequest.getTourCategory(),
+                            tourDataRequest.getSeason(), tourDataRequest.getSeason(),
+                            tourDataRequest.getTourType(), tourDataRequest.getTourType(),
+                            1000000000, 1
+                    }, Integer.class);
+
+            if (tourIds.isEmpty()) {
+                return null;
+            }
+            String inSql = String.join(",", Collections.nCopies(tourIds.size(), "?"));
+            String fullQuery = String.format(GET_TOURS_BY_IDS, inSql);
+
+            ArrayList<TourResponseDto> query = jdbcTemplate.query(fullQuery, tourIds.toArray(), (ResultSet rs) -> {
+                Map<Integer, TourResponseDto> tourMap = new HashMap<>();
+
+                while (rs.next()) {
+                    int tourId = rs.getInt("tour_id");
+                    TourResponseDto tour = tourMap.get(tourId);
+                    if (tour == null) {
+                        tour = new TourResponseDto();
+                        tour.setTourId(tourId);
+                        tour.setTourName(rs.getString("tour_name"));
+                        tour.setTourDescription(rs.getString("tour_description"));
+                        tour.setDuration(rs.getObject("duration", Integer.class));
+                        tour.setLatitude(rs.getObject("latitude", Double.class));
+                        tour.setLongitude(rs.getObject("longitude", Double.class));
+                        tour.setStartLocation(rs.getString("start_location"));
+                        tour.setEndLocation(rs.getString("end_location"));
+                        tour.setTourTypeName(rs.getString("tour_type_name"));
+                        tour.setTourTypeDescription(rs.getString("tour_type_description"));
+                        tour.setTourCategoryName(rs.getString("tour_category_name"));
+                        tour.setTourCategoryDescription(rs.getString("tour_category_description"));
+                        tour.setSeasonName(rs.getString("season_name"));
+                        tour.setSeasonDescription(rs.getString("season_description"));
+                        tour.setStatusName(rs.getString("status_name"));
+                        tour.setSchedules(new ArrayList<>());
+                        tour.setImages(new ArrayList<>());
+                        tourMap.put(tourId, tour);
+                    }
+
+                    // Add schedules
+                    int scheduleId = rs.getInt("schedule_id");
+                    if (scheduleId != 0 && rs.getString("schedule_name") != null) {
+                        TourScheduleResponseDto schedule = new TourScheduleResponseDto();
+                        schedule.setScheduleId(scheduleId);
+                        schedule.setScheduleName(rs.getString("schedule_name"));
+                        schedule.setAssumeStartDate(rs.getObject("assume_start_date", LocalDate.class));
+                        schedule.setAssumeEndDate(rs.getObject("assume_end_date", LocalDate.class));
+                        schedule.setDurationStart(rs.getObject("duration_start", Integer.class));
+                        schedule.setDurationEnd(rs.getObject("duration_end", Integer.class));
+                        schedule.setSpecialNote(rs.getString("special_note"));
+                        schedule.setScheduleDescription(rs.getString("schedule_description"));
+                        if (tour.getSchedules().stream().noneMatch(s -> s.getScheduleId() == scheduleId)) {
+                            tour.getSchedules().add(schedule);
+                        }
+                    }
+
+                    // Add images
+                    int imageId = rs.getInt("image_id");
+                    if (imageId != 0 && rs.getString("image_url") != null) {
+                        TourImageResponseDto image = new TourImageResponseDto();
+                        image.setImageId(imageId);
+                        image.setImageName(rs.getString("image_name"));
+                        image.setImageDescription(rs.getString("image_description"));
+                        image.setImageUrl(rs.getString("image_url"));
+                        if (tour.getImages().stream().noneMatch(i -> i.getImageId() == imageId)) {
+                            tour.getImages().add(image);
+                        }
+                    }
+                }
+
+                return new ArrayList<>(tourMap.values());
+            });
+            return new ToursDetailsWithParamResponse(totalTourIds.size(),query);
+
+        } catch (DataAccessException ex) {
+            throw new DataNotFoundErrorExceptionHandler("Database error while fetching tours");
+        } catch (Exception ex) {
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching tours");
+        }
+    }
+
+
 
 
     // ✅ Helper methods (avoid null pointer issues)
@@ -975,7 +1079,6 @@ public class TourRepositoryImpl implements TourRepository {
             return null;
         }
     }
-
 
 
 }

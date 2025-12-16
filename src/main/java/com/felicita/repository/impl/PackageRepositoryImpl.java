@@ -7,9 +7,11 @@ import com.felicita.exception.DataAccessErrorExceptionHandler;
 import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
 import com.felicita.model.dto.*;
+import com.felicita.model.request.PackageDataRequest;
 import com.felicita.model.response.PackageHistoryDetailsResponse;
 import com.felicita.model.response.PackageHistoryImageResponse;
 import com.felicita.model.response.PackageReviewResponse;
+import com.felicita.model.response.PackageWithParamsResponse;
 import com.felicita.queries.PackageQueries;
 import com.felicita.repository.PackageRepository;
 import org.slf4j.Logger;
@@ -43,10 +45,10 @@ public class PackageRepositoryImpl implements PackageRepository {
     public List<PackageResponseDto> getAllPackages() {
         try {
             return jdbcTemplate.query(PackageQueries.GET_ALL_PACKAGES, (ResultSet rs) -> {
-                Map<Integer, PackageResponseDto> packageMap = new HashMap<>();
+                Map<Long, PackageResponseDto> packageMap = new HashMap<>();
 
                 while (rs.next()) {
-                    int packageId = rs.getInt("package_id");
+                    Long packageId = rs.getLong("package_id");
 
                     // Get or create package
                     PackageResponseDto pkg = packageMap.get(packageId);
@@ -154,10 +156,10 @@ public class PackageRepositoryImpl implements PackageRepository {
     public PackageResponseDto getPackageDetailsById(String packageId) {
         try {
             return jdbcTemplate.query(PackageQueries.GET_PACKAGE_DETAILS_BY_PACKAGE_ID, new Object[]{packageId}, (ResultSet rs) -> {
-                Map<Integer, PackageResponseDto> packageMap = new HashMap<>();
+                Map<Long, PackageResponseDto> packageMap = new HashMap<>();
 
                 while (rs.next()) {
-                    int pkgId = rs.getInt("package_id");
+                    Long pkgId = rs.getLong("package_id");
 
                     // Get or create package object
                     PackageResponseDto pkg = packageMap.get(pkgId);
@@ -787,6 +789,176 @@ public class PackageRepositoryImpl implements PackageRepository {
         }
     }
 
+    @Override
+    public PackageWithParamsResponse getPackagesWithParams(PackageDataRequest req) {
+
+        try {
+            int offset = (req.getPageNumber() - 1) * req.getPageSize();
+
+            /* -------------------------------------------------
+             * STEP 1: Get paginated package IDs
+             * ------------------------------------------------- */
+            List<Long> packageIds = jdbcTemplate.queryForList(
+                    PackageQueries.GET_PACKAGE_IDS_WITH_FILTERS,
+                    Long.class,
+
+                    req.getName(), req.getName(),
+                    req.getMinPrice(), req.getMinPrice(),
+                    req.getMaxPrice(), req.getMaxPrice(),
+                    req.getDuration(), req.getDuration(),
+                    req.getPackageType(), req.getPackageType(),
+                    req.getLocation(), req.getLocation(), req.getLocation(),
+                    req.getMinGroupSize(), req.getMinGroupSize(),
+                    req.getMaxGroupSize(), req.getMaxGroupSize(),
+                    req.getFromDate(), req.getFromDate(),
+                    req.getToDate(), req.getToDate(),
+
+                    req.getPageSize(),
+                    offset
+            );
+
+            if (packageIds.isEmpty()) {
+               return null;
+            }
+
+            /* -------------------------------------------------
+             * STEP 2: Get total count (for pagination)
+             * ------------------------------------------------- */
+            Integer totalCount = jdbcTemplate.queryForObject(
+                    PackageQueries.COUNT_PACKAGES_WITH_FILTERS,
+                    Integer.class,
+
+                    req.getName(), req.getName(),
+                    req.getMinPrice(), req.getMinPrice(),
+                    req.getMaxPrice(), req.getMaxPrice(),
+                    req.getDuration(), req.getDuration(),
+                    req.getPackageType(), req.getPackageType(),
+                    req.getLocation(), req.getLocation(), req.getLocation(),
+                    req.getMinGroupSize(), req.getMinGroupSize(),
+                    req.getMaxGroupSize(), req.getMaxGroupSize(),
+                    req.getFromDate(), req.getFromDate(),
+                    req.getToDate(), req.getToDate()
+            );
+
+            /* -------------------------------------------------
+             * STEP 3: Fetch full data by IDs
+             * ------------------------------------------------- */
+            String inSql = String.join(",", Collections.nCopies(packageIds.size(), "?"));
+
+            Map<Long, PackageResponseDto> packageMap = new LinkedHashMap<>();
+
+            jdbcTemplate.query(
+                    PackageQueries.GET_PACKAGES_BY_IDS.replace(":packageIds", inSql),
+                    packageIds.toArray(),
+                    rs -> {
+
+                        Long packageId = rs.getLong("package_id");
+
+                        PackageResponseDto pkg = packageMap.computeIfAbsent(packageId, id -> {
+                            PackageResponseDto p = new PackageResponseDto();
+
+                            p.setPackageId(id);
+                            try {
+                                p.setPackageName(rs.getString("package_name"));
+                                p.setPackageDescription(rs.getString("package_description"));
+                                p.setTotalPrice(rs.getBigDecimal("total_price"));
+                                p.setDiscountPercentage(rs.getBigDecimal("discount_percentage"));
+                                p.setStartDate(rs.getObject("start_date", LocalDate.class));
+                                p.setEndDate(rs.getObject("end_date", LocalDate.class));
+                                p.setColor(rs.getString("color"));
+                                p.setHoverColor(rs.getString("hover_color"));
+                                p.setMinPersonCount(rs.getInt("min_person_count"));
+                                p.setMaxPersonCount(rs.getInt("max_person_count"));
+                                p.setPricePerPerson(rs.getBigDecimal("price_per_person"));
+                                p.setPackageStatus(rs.getString("package_status"));
+
+                                p.setCreatedAt(rs.getObject("created_at", LocalDateTime.class));
+                                p.setCreatedBy(rs.getInt("created_by"));
+
+                                p.setPackageTypeName(rs.getString("package_type_name"));
+                                p.setPackageTypeDescription(rs.getString("package_type_description"));
+                                p.setPackageTypeStatus(rs.getString("package_type_status"));
+
+                                // Tour
+                                p.setTourId(rs.getInt("tour_id"));
+                                p.setTourName(rs.getString("tour_name"));
+                                p.setTourDescription(rs.getString("tour_description"));
+                                p.setDuration(rs.getInt("duration"));
+                                p.setLatitude(rs.getDouble("latitude"));
+                                p.setLongitude(rs.getDouble("longitude"));
+                                p.setStartLocation(rs.getString("start_location"));
+                                p.setEndLocation(rs.getString("end_location"));
+                                p.setTourStatus(rs.getString("tour_status"));
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
+                            }
+
+
+                            p.setSchedules(new ArrayList<>());
+                            p.setFeatures(new ArrayList<>());
+                            p.setImages(new ArrayList<>());
+
+                            return p;
+                        });
+
+                        /* ---------- Schedule ---------- */
+                        int scheduleId = rs.getInt("schedule_id");
+                        if (scheduleId > 0) {
+                            if (pkg.getSchedules().stream().noneMatch(s -> s.getScheduleId() == scheduleId)) {
+                                PackageScheduleResponseDto s = new PackageScheduleResponseDto();
+                                s.setScheduleId(scheduleId);
+                                s.setScheduleName(rs.getString("schedule_name"));
+                                s.setAssumeStartDate(rs.getObject("assume_start_date", LocalDate.class));
+                                s.setAssumeEndDate(rs.getObject("assume_end_date", LocalDate.class));
+                                s.setDurationStart(rs.getInt("duration_start"));
+                                s.setDurationEnd(rs.getInt("duration_end"));
+                                s.setSpecialNote(rs.getString("schedule_special_note"));
+                                s.setScheduleDescription(rs.getString("schedule_description"));
+                                pkg.getSchedules().add(s);
+                            }
+                        }
+
+                        /* ---------- Feature ---------- */
+                        int featureId = rs.getInt("feature_id");
+                        if (featureId > 0) {
+                            if (pkg.getFeatures().stream().noneMatch(f -> f.getFeatureId() == featureId)) {
+                                PackageFeatureResponseDto f = new PackageFeatureResponseDto();
+                                f.setFeatureId(featureId);
+                                f.setFeatureName(rs.getString("feature_name"));
+                                f.setFeatureValue(rs.getString("feature_value"));
+                                f.setFeatureDescription(rs.getString("feature_description"));
+                                f.setColor(rs.getString("feature_color"));
+                                f.setSpecialNote(rs.getString("feature_special_note"));
+                                pkg.getFeatures().add(f);
+                            }
+                        }
+
+                        /* ---------- Image ---------- */
+                        int imageId = rs.getInt("image_id");
+                        if (imageId > 0) {
+                            if (pkg.getImages().stream().noneMatch(i -> i.getImageId() == imageId)) {
+                                PackageImageResponseDto img = new PackageImageResponseDto();
+                                img.setImageId(imageId);
+                                img.setImageName(rs.getString("image_name"));
+                                img.setImageDescription(rs.getString("image_description"));
+                                img.setImageUrl(rs.getString("image_url"));
+                                img.setColor(rs.getString("image_color"));
+                                pkg.getImages().add(img);
+                            }
+                        }
+                    }
+            );
+
+            return new PackageWithParamsResponse(totalCount, new ArrayList<>(packageMap.values()));
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("DB error", ex);
+            throw new DataNotFoundErrorExceptionHandler("Database error while fetching packages");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error", ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error while fetching packages");
+        }
+    }
 
 
 
