@@ -68,5 +68,48 @@ public class HeroSectionController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping(path = "/faq")
+    public ResponseEntity<CommonResponse<List<FaqHeroSectionResponse>>> getFAQHeroSectionDetails(){
+        LOGGER.info("{} Start execute get all faq hero section data {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<FaqHeroSectionResponse>> response = heroSectionService.getFAQHeroSectionDetails();
+        LOGGER.info("{} End execute get all faq hero section data {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/tour")
+    public ResponseEntity<CommonResponse<List<TourHeroSectionResponse>>> getTourHeroSectionDetails(){
+        LOGGER.info("{} Start execute get all tour hero section data {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<TourHeroSectionResponse>> response = heroSectionService.getTourHeroSectionDetails();
+        LOGGER.info("{} End execute get all tour hero section data {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/package")
+    public ResponseEntity<CommonResponse<List<PackageHeroSectionResponse>>> getPackageHeroSectionDetails(){
+        LOGGER.info("{} Start execute get all package hero section data {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<PackageHeroSectionResponse>> response = heroSectionService.getPackageHeroSectionDetails();
+        LOGGER.info("{} End execute get all package hero section data {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
+    @GetMapping(path = "/destination")
+    public ResponseEntity<CommonResponse<List<DestinationHeroSectionResponse>>> getDestinationHeroSectionDetails(){
+        LOGGER.info("{} Start execute get all destination hero section data {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<DestinationHeroSectionResponse>> response = heroSectionService.getDestinationHeroSectionDetails();
+        LOGGER.info("{} End execute get all destination hero section data {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
+    @GetMapping(path = "/activity")
+    public ResponseEntity<CommonResponse<List<ActivityHeroSectionResponse>>> getActivityHeroSectionDetails(){
+        LOGGER.info("{} Start execute get all activity hero section data {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<ActivityHeroSectionResponse>> response = heroSectionService.getActivityHeroSectionDetails();
+        LOGGER.info("{} End execute get all activity hero section data {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
 
 }

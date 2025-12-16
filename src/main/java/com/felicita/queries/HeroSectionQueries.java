@@ -96,4 +96,124 @@ public class HeroSectionQueries {
             ORDER BY b.`order` ASC, b.created_at ASC
             """;
 
+    public static final String GET_ALL_FAQ_HERO_SECTION_DATA = """
+            SELECT
+                fhs.id,
+                fhs.name,
+                fhs.image_url,
+                fhs.title,
+                fhs.subtitle,
+                fhs.description,
+                fhs.primary_button_text,
+                fhs.primary_button_link,
+                fhs.secondary_button_text,
+                fhs.secondary_button_link,
+                cs.name AS status,
+                fhs.`order`,
+                fhs.created_at,
+                fhs.created_by,
+                fhs.updated_at,
+                fhs.updated_by,
+                fhs.terminated_at,
+                fhs.terminated_by
+            FROM faq_hero_section fhs
+            JOIN common_status cs ON fhs.status = cs.id
+            ORDER BY fhs.`order` ASC
+            """;
+    public static final String GET_ALL_TOUR_HERO_SECTION_DATA = """
+            SELECT
+                ths.id,
+                ths.name,
+                ths.image_url,
+                ths.title,
+                ths.subtitle,
+                ths.description,
+                ths.primary_button_text,
+                ths.primary_button_link,
+                ths.secondary_button_text,
+                ths.secondary_button_link,
+                cs.name AS status,
+                ths.`order`,
+                ths.created_at,
+                ths.created_by,
+                ths.updated_at,
+                ths.updated_by,
+                ths.terminated_at,
+                ths.terminated_by
+            FROM tour_hero_section ths
+            JOIN common_status cs ON ths.status = cs.id
+            ORDER BY ths.`order` ASC
+            """;
+    public static final String GET_ALL_DESTINATION_HERO_SECTION_DATA = """
+            SELECT
+                dhs.id,
+                dhs.name,
+                dhs.image_url,
+                dhs.title,
+                dhs.subtitle,
+                dhs.description,
+                dhs.primary_button_text,
+                dhs.primary_button_link,
+                dhs.secondary_button_text,
+                dhs.secondary_button_link,
+                cs.name AS status,
+                dhs.`order`,
+                dhs.created_at,
+                dhs.created_by,
+                dhs.updated_at,
+                dhs.updated_by,
+                dhs.terminated_at,
+                dhs.terminated_by
+            FROM destination_hero_section dhs
+            JOIN common_status cs ON dhs.status = cs.id
+            ORDER BY dhs.`order` ASC
+            """;
+    public static final String GET_ALL_ACTIVITY_HERO_SECTION_DATA = """
+            SELECT
+                ahs.id,
+                ahs.name,
+                ahs.image_url,
+                ahs.title,
+                ahs.subtitle,
+                ahs.description,
+                ahs.primary_button_text,
+                ahs.primary_button_link,
+                ahs.secondary_button_text,
+                ahs.secondary_button_link,
+                cs.name AS status,
+                ahs.`order`,
+                ahs.created_at,
+                ahs.created_by,
+                ahs.updated_at,
+                ahs.updated_by,
+                ahs.terminated_at,
+                ahs.terminated_by
+            FROM activity_hero_section ahs
+            JOIN common_status cs ON ahs.status = cs.id
+            ORDER BY ahs.`order` ASC
+            """;
+    public static final String GET_ALL_PACKAGE_HERO_SECTION_DATA = """
+            SELECT
+                phs.id,
+                phs.name,
+                phs.image_url,
+                phs.title,
+                phs.subtitle,
+                phs.description,
+                phs.primary_button_text,
+                phs.primary_button_link,
+                phs.secondary_button_text,
+                phs.secondary_button_link,
+                cs.name AS status,
+                phs.`order`,
+                phs.created_at,
+                phs.created_by,
+                phs.updated_at,
+                phs.updated_by,
+                phs.terminated_at,
+                phs.terminated_by
+            FROM package_hero_section phs
+            JOIN common_status cs ON phs.status = cs.id
+            ORDER BY phs.`order` ASC
+            """ ;
 }

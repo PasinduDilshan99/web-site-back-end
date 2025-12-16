@@ -1,9 +1,6 @@
 package com.felicita.repository;
 
-import com.felicita.model.response.AboutUsHeroSectionResponse;
-import com.felicita.model.response.BlogHeroSectionResponse;
-import com.felicita.model.response.ContactUsHeroSectionResponse;
-import com.felicita.model.response.HeroSectionResponse;
+import com.felicita.model.response.*;
 
 import java.util.List;
 
@@ -15,4 +12,14 @@ public interface HeroSectionRepository {
     List<ContactUsHeroSectionResponse> getContactUsHeroSectionDetails();
 
     List<BlogHeroSectionResponse> getBlogHeroSectionDetails();
+
+    List<FaqHeroSectionResponse> getFAQHeroSectionDetails();
+
+    List<TourHeroSectionResponse> getTourHeroSectionDetails();
+
+    List<ActivityHeroSectionResponse> getActivityHeroSectionDetails();
+
+    List<DestinationHeroSectionResponse> getDestinationHeroSectionDetails();
+
+    List<PackageHeroSectionResponse> getPackageHeroSectionDetails();
 }
