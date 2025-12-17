@@ -33,4 +33,6 @@ public interface TourService {
     CommonResponse<List<TourHistoryImageResponse>> getTourHistoryImagesById(String tourId);
 
     CommonResponse<ToursDetailsWithParamResponse> getToursToShowWithParam(TourDataRequest tourDataRequest);
+
+    CommonResponse<List<TourDetailsWithDayToDayResponse>> getTourDetailsDayByDay(Long tourId);
 }

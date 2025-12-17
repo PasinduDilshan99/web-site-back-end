@@ -35,6 +35,8 @@ public class DestinationQueries {
             LEFT JOIN activities a ON d.destination_id = a.destination_id
             LEFT JOIN destination_images di ON d.destination_id = di.destination_id
             """;
+
+
     public static final String GET_PAGINATED_DESTINATION_IDS = """
                 SELECT d.destination_id
                 FROM destination d

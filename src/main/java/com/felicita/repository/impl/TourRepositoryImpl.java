@@ -1,11 +1,15 @@
 package com.felicita.repository.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.felicita.exception.DataAccessErrorExceptionHandler;
 import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
 import com.felicita.model.dto.*;
 import com.felicita.model.request.TourDataRequest;
 import com.felicita.model.response.*;
+import com.felicita.queries.DestinationQueries;
 import com.felicita.queries.TourQueries;
 import com.felicita.repository.TourRepository;
 import org.slf4j.Logger;
@@ -21,6 +25,7 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.felicita.queries.TourQueries.GET_PAGINATED_TOUR_IDS;
 import static com.felicita.queries.TourQueries.GET_TOURS_BY_IDS;
@@ -1050,7 +1055,7 @@ public class TourRepositoryImpl implements TourRepository {
 
                 return new ArrayList<>(tourMap.values());
             });
-            return new ToursDetailsWithParamResponse(totalTourIds.size(),query);
+            return new ToursDetailsWithParamResponse(totalTourIds.size(), query);
 
         } catch (DataAccessException ex) {
             throw new DataNotFoundErrorExceptionHandler("Database error while fetching tours");
@@ -1058,6 +1063,176 @@ public class TourRepositoryImpl implements TourRepository {
             throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching tours");
         }
     }
+
+    @Override
+    public List<TourDayDestinationActivityIdsDto> getTourDayDestinationActivityIds(Long tourId) {
+
+        try {
+            return jdbcTemplate.query(
+                    TourQueries.GET_ALL_TOUR_DAY_DESTINATION_ACTIVITY_IDS,
+                    new Object[]{tourId},
+                    (rs, rowNum) -> {
+
+                        List<Integer> activityIds = Arrays.stream(
+                                        rs.getString("activity_ids").split(","))
+                                .map(Integer::valueOf)
+                                .toList();
+
+                        return TourDayDestinationActivityIdsDto.builder()
+                                .day(rs.getInt("day"))
+                                .destinationId(rs.getInt("destination_id"))
+                                .activityIds(activityIds)
+                                .build();
+                    }
+            );
+
+        } catch (DataAccessException ex) {
+            throw new DataNotFoundErrorExceptionHandler(
+                    "Database error while fetching tour day-to-day details for tourId: " + tourId);
+        } catch (Exception ex) {
+            throw new InternalServerErrorExceptionHandler(
+                    "Unexpected error while fetching tour day-to-day details for tourId: " + tourId);
+        }
+    }
+
+    @Override
+    public List<TourDetailsWithDayToDayResponse.DestinationDetailsPerDay> getDestinationsDetailsByIds(List<Long> destinationIdList) {
+        String GET_DESTINATIONS_DETAILS_WITH_FOR_DAY_IDS = TourQueries.GET_DESTINATIONS_DETAILS_WITH_FOR_DAY_IDS;
+        try {
+            LOGGER.info("Executing query to fetch all destinations...");
+            if (destinationIdList == null || destinationIdList.isEmpty()) {
+                return List.of();
+            }
+
+            String placeholders = destinationIdList.stream()
+                    .map(id -> "?")
+                    .collect(Collectors.joining(","));
+
+            String sql = TourQueries.GET_DESTINATIONS_DETAILS_WITH_FOR_DAY_IDS
+                    .replace(":destinationIds", placeholders);
+
+            return jdbcTemplate.query(
+                    sql,
+                    destinationIdList.toArray(),
+                    rs -> {
+                        Map<Long, TourDetailsWithDayToDayResponse.DestinationDetailsPerDay> destinationMap = new HashMap<>();
+
+                        while (rs.next()) {
+                            Long destinationId = rs.getLong("destination_id");
+
+                            // Check if destination already exists
+                            TourDetailsWithDayToDayResponse.DestinationDetailsPerDay destination = destinationMap.get(destinationId);
+                            if (destination == null) {
+                                destination = new TourDetailsWithDayToDayResponse.DestinationDetailsPerDay();
+                                destination.setDestinationId(destinationId);
+                                destination.setDestinationName(rs.getString("destination_name"));
+                                destination.setDestinationDescription(rs.getString("destination_description"));
+                                destination.setLocation(rs.getString("location"));
+                                destination.setLatitude(rs.getObject("latitude", Double.class));
+                                destination.setLongitude(rs.getObject("longitude", Double.class));
+
+                                destination.setCategory(rs.getString("category_name"));
+                                destination.setCategoryDescription(rs.getString("category_description"));
+
+                                destination.setImages(new ArrayList<>());
+
+                                destinationMap.put(destinationId, destination);
+                            }
+
+                            // Add image if exists
+                            int imageId = rs.getInt("image_id");
+                            if (imageId != 0 && rs.getString("image_url") != null) {
+                                TourDetailsWithDayToDayResponse.DestinationImagePerDay image = new TourDetailsWithDayToDayResponse.DestinationImagePerDay();
+                                image.setImageId(imageId);
+                                image.setImageName(rs.getString("image_name"));
+                                image.setImageDescription(rs.getString("image_description"));
+                                image.setImageUrl(rs.getString("image_url"));
+
+                                // Avoid duplicates
+                                if (destination.getImages().stream().noneMatch(i -> i.getImageId() == imageId)) {
+                                    destination.getImages().add(image);
+                                }
+                            }
+                        }
+
+                        return new ArrayList<>(destinationMap.values());
+                    });
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching destinations: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler("Failed to fetch destinations from database");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching destinations: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching destinations");
+        }
+    }
+
+    @Override
+    public List<TourDetailsWithDayToDayResponse.ActivityPerDayResponse> getActivityDetailsByIds(
+            List<Long> activityIdList
+    ) {
+        if (activityIdList == null || activityIdList.isEmpty()) {
+            return List.of();
+        }
+
+        // ---- Build dynamic placeholders for IN clause ----
+        String placeholders = activityIdList.stream()
+                .map(id -> "?")
+                .collect(Collectors.joining(", "));
+
+        // ---- Append IN clause and LIMIT at the end ----
+        String sql = TourQueries.GET_ACTIVITIES_DETAILS_BASE
+                + " AND a.id IN (" + placeholders + ")"
+                + " LIMIT 1000";  // LIMIT goes last
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        return jdbcTemplate.query(sql, activityIdList.toArray(), (rs, rowNum) -> {
+            List<TourDetailsWithDayToDayResponse.ActivityRequirementPerDay> requirements;
+            try {
+                requirements = objectMapper.readValue(
+                        rs.getString("requirements"),
+                        new TypeReference<>() {}
+                );
+            } catch (JsonProcessingException e) {
+                requirements = List.of();
+            }
+
+            List<TourDetailsWithDayToDayResponse.ActivityImagePerDay> images;
+            try {
+                images = objectMapper.readValue(
+                        rs.getString("images"),
+                        new TypeReference<>() {}
+                );
+            } catch (JsonProcessingException e) {
+                images = List.of();
+            }
+
+            return TourDetailsWithDayToDayResponse.ActivityPerDayResponse.builder()
+                    .id(rs.getLong("id"))
+                    .destinationId(rs.getLong("destination_id"))
+                    .name(rs.getString("name"))
+                    .description(rs.getString("description"))
+                    .activitiesCategory(rs.getString("activities_category"))
+                    .durationHours(rs.getBigDecimal("duration_hours"))
+                    .availableFrom(rs.getTime("available_from"))
+                    .availableTo(rs.getTime("available_to"))
+                    .priceLocal(rs.getBigDecimal("price_local"))
+                    .priceForeigners(rs.getBigDecimal("price_foreigners"))
+                    .minParticipate(rs.getInt("min_participate"))
+                    .maxParticipate(rs.getInt("max_participate"))
+                    .season(rs.getString("season"))
+                    .status(rs.getString("status_name"))
+                    .createdAt(rs.getTimestamp("created_at"))
+                    .updatedAt(rs.getTimestamp("updated_at"))
+                    .categoryName(rs.getString("category_name"))
+                    .categoryDescription(rs.getString("category_description"))
+                    .requirements(requirements)
+                    .images(images)
+                    .build();
+        });
+    }
+
 
 
 

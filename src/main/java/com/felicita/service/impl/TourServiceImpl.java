@@ -2,9 +2,7 @@ package com.felicita.service.impl;
 
 import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
-import com.felicita.model.dto.DestinationResponseDto;
-import com.felicita.model.dto.PopularTourResponseDto;
-import com.felicita.model.dto.TourResponseDto;
+import com.felicita.model.dto.*;
 import com.felicita.model.enums.CommonStatus;
 import com.felicita.model.request.TourDataRequest;
 import com.felicita.model.response.*;
@@ -19,8 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -428,6 +425,117 @@ public class TourServiceImpl implements TourService {
             throw new InternalServerErrorExceptionHandler("Failed to fetch tours for param from database");
         } finally {
             LOGGER.info("End fetching all tours for param from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<List<TourDetailsWithDayToDayResponse>> getTourDetailsDayByDay(Long tourId) {
+        LOGGER.info("Start fetching all tours from repository");
+        try {
+            List<TourDayDestinationActivityIdsDto> tourDayDestinationActivityIdsDtos = tourRepository.getTourDayDestinationActivityIds(tourId);
+
+            List<TourDetailsIdDayByDayReponse> tourDetailsIdDayByDayResponses = tourDayDestinationActivityIdsDtos.stream()
+                    .collect(Collectors.groupingBy(TourDayDestinationActivityIdsDto::getDay)) // group by day
+                    .entrySet().stream()
+                    .map(entry -> {
+                        int day = entry.getKey();
+                        List<TourDetailsIdDayByDayReponse.DestinationDetails> destinationDetails = entry.getValue().stream()
+                                .map(dto -> TourDetailsIdDayByDayReponse.DestinationDetails.builder()
+                                        .destinationId(Long.valueOf(dto.getDestinationId()))
+                                        .activityIds(dto.getActivityIds().stream()
+                                                .map(Long::valueOf)
+                                                .toList())
+                                        .build())
+                                .toList();
+
+                        return TourDetailsIdDayByDayReponse.builder()
+                                .day(day)
+                                .destinationDetails(destinationDetails)
+                                .build();
+                    })
+                    .sorted(Comparator.comparingInt(TourDetailsIdDayByDayReponse::getDay)) // optional: sort by day
+                    .toList();
+
+            LOGGER.info("---------------------------");
+            LOGGER.info("tourDetailsIdDayByDayResponses : {}", tourDetailsIdDayByDayResponses);
+            LOGGER.info("---------------------------");
+
+            List<Long> destinationIdList = tourDayDestinationActivityIdsDtos.stream()
+                    .map(TourDayDestinationActivityIdsDto::getDestinationId)
+                    .filter(Objects::nonNull)
+                    .map(Long::valueOf)
+                    .distinct()
+                    .toList();
+
+            List<Long> activityIdList = tourDayDestinationActivityIdsDtos.stream()
+                    .flatMap(dto -> dto.getActivityIds().stream())
+                    .filter(Objects::nonNull)
+                    .map(Long::valueOf)
+                    .distinct()
+                    .toList();
+
+
+                List<TourDetailsWithDayToDayResponse.DestinationDetailsPerDay> destionationsDetailsList =
+                        tourRepository.getDestinationsDetailsByIds(destinationIdList);
+                List<TourDetailsWithDayToDayResponse.ActivityPerDayResponse> activityDetailsList =
+                        tourRepository.getActivityDetailsByIds(activityIdList);
+
+            List<TourDetailsWithDayToDayResponse> response = new ArrayList<>();
+
+            for (TourDetailsIdDayByDayReponse dayDetail : tourDetailsIdDayByDayResponses) {
+                TourDetailsWithDayToDayResponse dayResponse = new TourDetailsWithDayToDayResponse();
+                dayResponse.setDayNumber(dayDetail.getDay());
+
+                List<TourDetailsWithDayToDayResponse.DestinationPerDayResponse> destinationPerDayResponses = new ArrayList<>();
+
+                for (TourDetailsIdDayByDayReponse.DestinationDetails dest : dayDetail.getDestinationDetails()) {
+                    TourDetailsWithDayToDayResponse.DestinationPerDayResponse destResponse = new TourDetailsWithDayToDayResponse.DestinationPerDayResponse();
+
+                    // Find destination details
+                    TourDetailsWithDayToDayResponse.DestinationDetailsPerDay destinationDetails = destionationsDetailsList.stream()
+                            .filter(d -> d.getDestinationId().equals(dest.getDestinationId()))
+                            .findFirst()
+                            .orElse(null);
+
+                    destResponse.setDestination(destinationDetails);
+
+                    // Find activities for this destination
+                    List<TourDetailsWithDayToDayResponse.ActivityPerDayResponse> activitiesForDestination = activityDetailsList.stream()
+                            .filter(a -> dest.getActivityIds().contains(a.getId()))
+                            .toList();
+
+                    destResponse.setActivities(activitiesForDestination);
+
+                    destinationPerDayResponses.add(destResponse);
+                }
+
+                dayResponse.setDestinations(destinationPerDayResponses);
+                response.add(dayResponse);
+            }
+
+
+            if (tourDayDestinationActivityIdsDtos.isEmpty()) {
+                LOGGER.warn("No tours found in database");
+                throw new DataNotFoundErrorExceptionHandler("No tours found");
+            }
+
+            LOGGER.info("Fetched {} tours successfully", tourDayDestinationActivityIdsDtos);
+            return new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            response,
+                            Instant.now()
+            );
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching tours: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching tours: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch tours from database");
+        } finally {
+            LOGGER.info("End fetching all tours from repository");
         }
     }
 }

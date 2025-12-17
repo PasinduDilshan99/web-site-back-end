@@ -1,6 +1,7 @@
 package com.felicita.repository;
 
 import com.felicita.model.dto.PopularTourResponseDto;
+import com.felicita.model.dto.TourDayDestinationActivityIdsDto;
 import com.felicita.model.dto.TourResponseDto;
 import com.felicita.model.request.TourDataRequest;
 import com.felicita.model.response.*;
@@ -29,4 +30,10 @@ public interface TourRepository {
     List<TourHistoryImageResponse> getAllTourHistoryImages();
 
     ToursDetailsWithParamResponse getToursToShowWithParam(TourDataRequest tourDataRequest);
+
+    List<TourDayDestinationActivityIdsDto> getTourDayDestinationActivityIds(Long tourId);
+
+    List<TourDetailsWithDayToDayResponse.DestinationDetailsPerDay> getDestinationsDetailsByIds(List<Long> destinationIdList);
+
+    List<TourDetailsWithDayToDayResponse.ActivityPerDayResponse> getActivityDetailsByIds(List<Long> activityIdList);
 }
