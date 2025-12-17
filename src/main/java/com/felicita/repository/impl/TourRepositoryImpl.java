@@ -1130,6 +1130,12 @@ public class TourRepositoryImpl implements TourRepository {
                                 destination.setLocation(rs.getString("location"));
                                 destination.setLatitude(rs.getObject("latitude", Double.class));
                                 destination.setLongitude(rs.getObject("longitude", Double.class));
+                                destination.setCreatedBy(rs.getString("created_by"));
+                                destination.setCreaterImageUrl(rs.getString("creater_image"));
+                                destination.setUpdatedBy(rs.getString("updated_by"));
+                                destination.setUpdaterImageUrl(rs.getString("updater_image"));
+                                destination.setCreatedAt((rs.getTimestamp("created_at") != null ? rs.getTimestamp("created_at").toLocalDateTime() : null));
+                                destination.setUpdatedAt((rs.getTimestamp("updated_at") != null ? rs.getTimestamp("updated_at").toLocalDateTime() : null));
 
                                 destination.setCategory(rs.getString("category_name"));
                                 destination.setCategoryDescription(rs.getString("category_description"));

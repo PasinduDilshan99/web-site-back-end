@@ -55,11 +55,12 @@ public class TourDetailsWithDayToDayResponse {
         private Double latitude;
         private Double longitude;
         private LocalDateTime createdAt;
-        private Integer createdBy;
+        private String createdBy;
+        private String createrImageUrl;
         private LocalDateTime updatedAt;
-        private Integer updatedBy;
-        private LocalDateTime terminatedAt;
-        private Integer terminatedBy;
+        private String updatedBy;
+        private String updaterImageUrl;
+
 
         private List<DestinationImagePerDay> images;
     }

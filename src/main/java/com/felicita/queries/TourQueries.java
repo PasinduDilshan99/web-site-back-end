@@ -560,6 +560,12 @@ public class TourQueries {
             	d.location,
             	d.latitude,
             	d.longitude,
+            	CONCAT(u1.first_name, ' ',u1.last_name) AS created_by,
+            	u1.image_url AS creater_image,
+            	d.created_at,
+            	d.updated_at,
+            	CONCAT(u2.first_name, ' ',u2.last_name) AS updated_by,
+            	u2.image_url AS updater_image,
             	dc.category AS category_name,
             	dc.description AS category_description,
             	cs.name AS status_name,
@@ -571,6 +577,8 @@ public class TourQueries {
             LEFT JOIN destination_categories dc ON d.destination_category = dc.id
             LEFT JOIN common_status cs ON d.status = cs.id
             LEFT JOIN destination_images di ON d.destination_id = di.destination_id
+            LEFT JOIN user u1 ON u1.user_id = d.created_by
+            LEFT JOIN user u2 ON u2.user_id = d.updated_by
             WHERE d.destination_id IN (:destinationIds)
             """;
 
