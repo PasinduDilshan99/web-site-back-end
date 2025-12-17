@@ -36,4 +36,6 @@ public interface TourRepository {
     List<TourDetailsWithDayToDayResponse.DestinationDetailsPerDay> getDestinationsDetailsByIds(List<Long> destinationIdList);
 
     List<TourDetailsWithDayToDayResponse.ActivityPerDayResponse> getActivityDetailsByIds(List<Long> activityIdList);
+
+    List<TourDetailsWithDayToDayResponse.Accommodations> getAccomadationsListByTourId(Long tourId);
 }

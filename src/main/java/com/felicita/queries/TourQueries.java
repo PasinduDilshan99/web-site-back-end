@@ -664,5 +664,49 @@ public class TourQueries {
         """;
 
 
-
+    public static final String GET_TOUR_ACCOMMODATIONS_BY_TOUR_ID = """
+            SELECT
+                tda.tour_day_accommodation_id,
+                tda.tour_id,
+                tda.day,
+                tda.breakfast,
+                tda.breakfast_description,
+                tda.lunch,
+                tda.lunch_description,
+                tda.dinner,
+                tda.dinner_description,
+                tda.morning_tea,
+                tda.morning_tea_description,
+                tda.evening_tea,
+                tda.evening_tea_description,
+                tda.snacks,
+                tda.snack_note,
+                tda.other_notes,
+                sp.service_provider_id AS hotel_id,
+                sp.name AS hotel_name,
+                sp.description AS hotel_description,
+                sp.star_rating AS hotel_category,
+                sp.address AS hotel_location,
+                spl.latitude AS hotel_latitude,
+                spl.longitude AS hotel_longitude,
+                v.vehicle_id AS transport_id,
+                v.registration_number AS vehicle_registration_number,
+            	vt.name,
+                vs.model AS vehicle_model,
+                vs.seat_capacity,
+                vs.air_condition
+            FROM tour_day_accommodation tda
+            LEFT JOIN service_provider sp
+                ON tda.hotel_id = sp.service_provider_id
+            LEFT JOIN vehicles v
+                ON tda.transport_id = v.vehicle_id
+            LEFT JOIN vehicle_specifications vs
+                ON v.specification_id = vs.specification_id
+            LEFT JOIN service_provider_location spl
+            	ON sp.service_provider_id = spl.service_provider_id
+            LEFT JOIN vehicle_type vt
+            	ON vt.vehicle_type_id = v.vehicle_type_id
+            WHERE tda.tour_id = ?
+            ORDER BY tda.day ASC
+            """;
 }

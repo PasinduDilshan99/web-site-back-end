@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -456,9 +457,6 @@ public class TourServiceImpl implements TourService {
                     .sorted(Comparator.comparingInt(TourDetailsIdDayByDayReponse::getDay)) // optional: sort by day
                     .toList();
 
-            LOGGER.info("---------------------------");
-            LOGGER.info("tourDetailsIdDayByDayResponses : {}", tourDetailsIdDayByDayResponses);
-            LOGGER.info("---------------------------");
 
             List<Long> destinationIdList = tourDayDestinationActivityIdsDtos.stream()
                     .map(TourDayDestinationActivityIdsDto::getDestinationId)
@@ -512,6 +510,20 @@ public class TourServiceImpl implements TourService {
                 dayResponse.setDestinations(destinationPerDayResponses);
                 response.add(dayResponse);
             }
+
+            List<TourDetailsWithDayToDayResponse.Accommodations> accommodations =
+                    tourRepository.getAccomadationsListByTourId(tourId);
+
+// Step 1: Map accommodations by day for fast lookup
+            Map<Integer, TourDetailsWithDayToDayResponse.Accommodations> accMap = accommodations.stream()
+                    .collect(Collectors.toMap(TourDetailsWithDayToDayResponse.Accommodations::getDay, Function.identity()));
+
+// Step 2: Attach accommodation to each day
+            for (TourDetailsWithDayToDayResponse dayResponse : response) {
+                TourDetailsWithDayToDayResponse.Accommodations acc = accMap.get(dayResponse.getDayNumber());
+                dayResponse.setAccommodations(acc);  // set acc (can be null if no data)
+            }
+
 
 
             if (tourDayDestinationActivityIdsDtos.isEmpty()) {

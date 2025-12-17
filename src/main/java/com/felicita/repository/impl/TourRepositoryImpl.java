@@ -1239,7 +1239,73 @@ public class TourRepositoryImpl implements TourRepository {
         });
     }
 
+    @Override
+    public List<TourDetailsWithDayToDayResponse.Accommodations> getAccomadationsListByTourId(Long tourId) {
 
+        String sql = TourQueries.GET_TOUR_ACCOMMODATIONS_BY_TOUR_ID;
+
+        try {
+            return jdbcTemplate.query(sql, new Object[]{tourId}, (rs, rowNum) -> {
+
+                // ---------- HOTEL ----------
+                TourDetailsWithDayToDayResponse.HotelAccommodation hotel = null;
+                if (rs.getLong("hotel_id") != 0) {
+                    hotel = TourDetailsWithDayToDayResponse.HotelAccommodation.builder()
+                            .hotelId(rs.getLong("hotel_id"))
+                            .hotelName(rs.getString("hotel_name"))
+                            .hotelCategory(rs.getString("hotel_category"))
+                            .location(rs.getString("hotel_location"))
+                            .latitude(rs.getDouble("hotel_latitude"))
+                            .longitude(rs.getDouble("hotel_longitude"))
+                            .description(rs.getString("hotel_description"))
+                            .build();
+                }
+
+                // ---------- TRANSPORT ----------
+                TourDetailsWithDayToDayResponse.TransportAccommodation transport = null;
+                if (rs.getLong("transport_id") != 0) {
+                    transport = TourDetailsWithDayToDayResponse.TransportAccommodation.builder()
+                            .transportId(rs.getLong("transport_id"))
+                            .transportType(rs.getString("name")) // vehicle_type.name
+                            .vehicleModel(rs.getString("vehicle_model"))
+                            .seatCount(rs.getInt("seat_capacity"))
+                            .airConditioned(rs.getBoolean("air_condition"))
+                            .build();
+                }
+
+                // ---------- ACCOMMODATIONS ----------
+                return TourDetailsWithDayToDayResponse.Accommodations.builder()
+                        .day(rs.getInt("day"))
+                        .breakfast(rs.getBoolean("breakfast"))
+                        .breakfastDescription(rs.getString("breakfast_description"))
+
+                        .lunch(rs.getBoolean("lunch"))
+                        .lunchDescription(rs.getString("lunch_description"))
+
+                        .dinner(rs.getBoolean("dinner"))
+                        .dinnerDescription(rs.getString("dinner_description"))
+
+                        .morningTea(rs.getBoolean("morning_tea"))
+                        .morningTeaDescription(rs.getString("morning_tea_description"))
+
+                        .eveningTea(rs.getBoolean("evening_tea"))
+                        .eveningTeaDescription(rs.getString("evening_tea_description"))
+
+                        .snacks(rs.getBoolean("snacks"))
+                        .snackNote(rs.getString("snack_note"))
+
+                        .hotel(hotel)
+                        .transport(transport)
+
+                        .otherNotes(rs.getString("other_notes"))
+                        .build();
+            });
+
+        } catch (Exception ex) {
+            LOGGER.error("Error fetching accommodations for tourId={}", tourId, ex);
+            return List.of(); // safe fallback
+        }
+    }
 
 
 
