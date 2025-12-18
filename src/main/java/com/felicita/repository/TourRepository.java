@@ -38,4 +38,12 @@ public interface TourRepository {
     List<TourDetailsWithDayToDayResponse.ActivityPerDayResponse> getActivityDetailsByIds(List<Long> activityIdList);
 
     List<TourDetailsWithDayToDayResponse.Accommodations> getAccomadationsListByTourId(Long tourId);
+
+    List<TourExtrasResponse.TourInclusion> getTourInclusions(Long tourId);
+
+    List<TourExtrasResponse.TourExclusion> getTourExclusions(Long tourId);
+
+    List<TourExtrasResponse.TourCondition> getTourConditions(Long tourId);
+
+    List<TourExtrasResponse.TourTravelTip> getTourTravelTips(Long tourId);
 }

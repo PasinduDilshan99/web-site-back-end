@@ -1307,6 +1307,72 @@ public class TourRepositoryImpl implements TourRepository {
         }
     }
 
+    @Override
+    public List<TourExtrasResponse.TourInclusion> getTourInclusions(Long tourId) {
+        String sql = TourQueries.GET_TOUR_INCLUSIONS_BY_TOUR_ID;
+
+        return jdbcTemplate.query(
+                sql,
+                new Object[]{tourId}, // Bind tourId to the ?
+                (rs, rowNum) -> TourExtrasResponse.TourInclusion.builder()
+                        .id(rs.getLong("tour_inclusion_id"))
+                        .description(rs.getString("description"))
+                        .displayOrder(rs.getInt("display_order"))
+                        .status(rs.getString("status"))
+                        .build()
+        );
+    }
+
+
+    @Override
+    public List<TourExtrasResponse.TourExclusion> getTourExclusions(Long tourId) {
+        String sql = TourQueries.GET_TOUR_EXCLUSIONS_BY_TOUR_ID;
+
+        return jdbcTemplate.query(
+                sql,
+                new Object[]{tourId},
+                (rs, rowNum) -> TourExtrasResponse.TourExclusion.builder()
+                        .id(rs.getLong("tour_exclusion_id"))
+                        .description(rs.getString("description"))
+                        .displayOrder(rs.getInt("display_order"))
+                        .status(rs.getString("status"))
+                        .build()
+        );
+    }
+
+    @Override
+    public List<TourExtrasResponse.TourCondition> getTourConditions(Long tourId) {
+        String sql = TourQueries.GET_TOUR_CONDITIONS_BY_TOUR_ID;
+
+        return jdbcTemplate.query(
+                sql,
+                new Object[]{tourId},
+                (rs, rowNum) -> TourExtrasResponse.TourCondition.builder()
+                        .id(rs.getLong("tour_condition_id"))
+                        .description(rs.getString("description"))
+                        .displayOrder(rs.getInt("display_order"))
+                        .status(rs.getString("status"))
+                        .build()
+        );
+    }
+
+    @Override
+    public List<TourExtrasResponse.TourTravelTip> getTourTravelTips(Long tourId) {
+        String sql = TourQueries.GET_TOUR_TRAVEL_TIPS_BY_TOUR_ID;
+
+        return jdbcTemplate.query(
+                sql,
+                new Object[]{tourId},
+                (rs, rowNum) -> TourExtrasResponse.TourTravelTip.builder()
+                        .id(rs.getLong("tour_travel_tip_id"))
+                        .title(rs.getString("tip_title"))
+                        .description(rs.getString("tip_description"))
+                        .displayOrder(rs.getInt("display_order"))
+                        .status(rs.getString("status"))
+                        .build()
+        );
+    }
+
 
 
     // ✅ Helper methods (avoid null pointer issues)

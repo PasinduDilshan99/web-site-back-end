@@ -709,4 +709,53 @@ public class TourQueries {
             WHERE tda.tour_id = ?
             ORDER BY tda.day ASC
             """;
+    public static final String GET_TOUR_INCLUSIONS_BY_TOUR_ID = """
+            SELECT
+                ti.tour_inclusion_id,
+                ti.inclusion_text AS description,
+                ti.display_order,
+                cs.name AS status
+            FROM tour_inclusion ti
+            JOIN common_status cs ON cs.id = ti.status_id
+            WHERE ti.tour_id = ?
+              AND cs.name = 'ACTIVE'
+            ORDER BY ti.display_order ASC
+            """;
+    public static final String GET_TOUR_EXCLUSIONS_BY_TOUR_ID = """
+            SELECT
+                te.tour_exclusion_id,
+                te.exclusion_text AS description,
+                te.display_order,
+                cs.name AS status
+            FROM tour_exclusion te
+            JOIN common_status cs ON cs.id = te.status_id
+            WHERE te.tour_id = ?
+              AND cs.name = 'ACTIVE'
+            ORDER BY te.display_order ASC
+            """;
+    public static final String GET_TOUR_CONDITIONS_BY_TOUR_ID = """
+            SELECT
+                tc.tour_condition_id,
+                tc.condition_text AS description,
+                tc.display_order,
+                cs.name AS status
+            FROM tour_condition tc
+            JOIN common_status cs ON cs.id = tc.status_id
+            WHERE tc.tour_id = ?
+              AND cs.name = 'ACTIVE'
+            ORDER BY tc.display_order ASC
+            """;
+    public static final String GET_TOUR_TRAVEL_TIPS_BY_TOUR_ID = """
+            SELECT
+                ttt.tour_travel_tip_id,
+                ttt.tip_title,
+                ttt.tip_description,
+                ttt.display_order,
+                cs.name AS status
+            FROM tour_travel_tips ttt
+            JOIN common_status cs ON cs.id = ttt.status_id
+            WHERE ttt.tour_id = ?
+              AND cs.name = 'ACTIVE'
+            ORDER BY ttt.display_order ASC
+            """;
 }

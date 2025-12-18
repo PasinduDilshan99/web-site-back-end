@@ -473,10 +473,10 @@ public class TourServiceImpl implements TourService {
                     .toList();
 
 
-                List<TourDetailsWithDayToDayResponse.DestinationDetailsPerDay> destionationsDetailsList =
-                        tourRepository.getDestinationsDetailsByIds(destinationIdList);
-                List<TourDetailsWithDayToDayResponse.ActivityPerDayResponse> activityDetailsList =
-                        tourRepository.getActivityDetailsByIds(activityIdList);
+            List<TourDetailsWithDayToDayResponse.DestinationDetailsPerDay> destionationsDetailsList =
+                    tourRepository.getDestinationsDetailsByIds(destinationIdList);
+            List<TourDetailsWithDayToDayResponse.ActivityPerDayResponse> activityDetailsList =
+                    tourRepository.getActivityDetailsByIds(activityIdList);
 
             List<TourDetailsWithDayToDayResponse> response = new ArrayList<>();
 
@@ -525,7 +525,6 @@ public class TourServiceImpl implements TourService {
             }
 
 
-
             if (tourDayDestinationActivityIdsDtos.isEmpty()) {
                 LOGGER.warn("No tours found in database");
                 throw new DataNotFoundErrorExceptionHandler("No tours found");
@@ -533,11 +532,11 @@ public class TourServiceImpl implements TourService {
 
             LOGGER.info("Fetched {} tours successfully", tourDayDestinationActivityIdsDtos);
             return new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            response,
-                            Instant.now()
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    response,
+                    Instant.now()
             );
 
         } catch (DataNotFoundErrorExceptionHandler e) {
@@ -550,4 +549,40 @@ public class TourServiceImpl implements TourService {
             LOGGER.info("End fetching all tours from repository");
         }
     }
+
+    @Override
+    public CommonResponse<TourExtrasResponse> getTourExtraDetailsDayByDay(Long tourId) {
+        LOGGER.info("Start fetching tour extra details by tour id from repository");
+        try {
+            List<TourExtrasResponse.TourInclusion> inclusions = tourRepository.getTourInclusions(tourId);
+            List<TourExtrasResponse.TourExclusion> exclusions = tourRepository.getTourExclusions(tourId);
+            List<TourExtrasResponse.TourCondition> conditions = tourRepository.getTourConditions(tourId);
+            List<TourExtrasResponse.TourTravelTip> travelTips = tourRepository.getTourTravelTips(tourId);
+
+            TourExtrasResponse tourExtrasResponse = new TourExtrasResponse(
+                    inclusions,
+                    exclusions,
+                    conditions,
+                    travelTips
+            );
+
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    tourExtrasResponse,
+                    Instant.now()
+            );
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching tour extra details by tour id: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching tour extra details by tour id: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch tour extra details by tour id from database");
+        } finally {
+            LOGGER.info("End fetching all tour extra details by tour id from repository");
+        }
+    }
+
 }

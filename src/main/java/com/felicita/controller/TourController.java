@@ -135,5 +135,12 @@ public class TourController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping(path = "/tour-extra-details/{tourId}")
+    public ResponseEntity<CommonResponse<TourExtrasResponse>> getTourExtraDetailsDayByDay(@PathVariable Long tourId) {
+        LOGGER.info("{} Start execute get tour extra details day by day with given id {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<TourExtrasResponse> response = tourService.getTourExtraDetailsDayByDay(tourId);
+        LOGGER.info("{} End execute get all tour extra details day by day with given id {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
 }

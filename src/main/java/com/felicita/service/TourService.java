@@ -35,4 +35,6 @@ public interface TourService {
     CommonResponse<ToursDetailsWithParamResponse> getToursToShowWithParam(TourDataRequest tourDataRequest);
 
     CommonResponse<List<TourDetailsWithDayToDayResponse>> getTourDetailsDayByDay(Long tourId);
+
+    CommonResponse<TourExtrasResponse> getTourExtraDetailsDayByDay(Long tourId);
 }
