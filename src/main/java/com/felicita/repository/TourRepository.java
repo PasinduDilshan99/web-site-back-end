@@ -46,4 +46,8 @@ public interface TourRepository {
     List<TourExtrasResponse.TourCondition> getTourConditions(Long tourId);
 
     List<TourExtrasResponse.TourTravelTip> getTourTravelTips(Long tourId);
+
+    List<TourSchedulesResponse.TourScheduleDetails> getTourSchedulesById(Long tourId);
+
+    TourSchedulesResponse.TourBasicDetails getTourBasicDetails(Long tourId);
 }

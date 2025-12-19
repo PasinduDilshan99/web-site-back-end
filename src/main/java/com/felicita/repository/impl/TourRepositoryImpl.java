@@ -1373,6 +1373,107 @@ public class TourRepositoryImpl implements TourRepository {
         );
     }
 
+    @Override
+    public List<TourSchedulesResponse.TourScheduleDetails> getTourSchedulesById(Long tourId) {
+
+        String sql = TourQueries.GET_TOUR_SCHEDULES_BY_TOUR_ID;
+
+        return jdbcTemplate.query(sql, (rs, rowNum) ->
+                        TourSchedulesResponse.TourScheduleDetails.builder()
+                                .scheduleId(rs.getLong("schedule_id"))
+                                .scheduleName(rs.getString("schedule_name"))
+                                .assumeStartDate(
+                                        rs.getDate("assume_start_date") != null
+                                                ? rs.getDate("assume_start_date").toLocalDate()
+                                                : null
+                                )
+                                .assumeEndDate(
+                                        rs.getDate("assume_end_date") != null
+                                                ? rs.getDate("assume_end_date").toLocalDate()
+                                                : null
+                                )
+                                .durationStart(rs.getInt("duration_start"))
+                                .durationEnd(rs.getInt("duration_end"))
+                                .specialNote(rs.getString("special_note"))
+                                .description(rs.getString("description"))
+                                .statusId(rs.getLong("status_id"))
+                                .statusName(rs.getString("status_name"))
+                                .createdAt(
+                                        rs.getTimestamp("created_at") != null
+                                                ? rs.getTimestamp("created_at").toLocalDateTime()
+                                                : null
+                                )
+                                .updatedAt(
+                                        rs.getTimestamp("updated_at") != null
+                                                ? rs.getTimestamp("updated_at").toLocalDateTime()
+                                                : null
+                                )
+                                .build(),
+                tourId
+        );
+    }
+
+
+    @Override
+    public TourSchedulesResponse.TourBasicDetails getTourBasicDetails(Long tourId) {
+
+        String sql = TourQueries.GET_TOUR_BASIC_DETAILS_BY_TOUR_ID;
+
+        try {
+            List<TourSchedulesResponse.TourBasicDetails> result =
+                    jdbcTemplate.query(sql, rs -> {
+
+                        TourSchedulesResponse.TourBasicDetails.TourBasicDetailsBuilder tourBuilder = null;
+                        List<TourSchedulesResponse.TourImageDetails> images = new ArrayList<>();
+
+                        while (rs.next()) {
+
+                            // Build tour only once
+                            if (tourBuilder == null) {
+                                tourBuilder = TourSchedulesResponse.TourBasicDetails.builder()
+                                        .tourId(rs.getLong("tour_id"))
+                                        .tourName(rs.getString("tour_name"))
+                                        .tourDescription(rs.getString("tour_description"))
+                                        .duration(rs.getInt("duration"))
+                                        .latitude(rs.getDouble("latitude"))
+                                        .longitude(rs.getDouble("longitude"))
+                                        .startLocation(rs.getString("start_location"))
+                                        .endLocation(rs.getString("end_location"))
+                                        .status(rs.getString("tour_status"));
+                            }
+
+                            // Add image if exists
+                            Long imageId = rs.getLong("image_id");
+                            if (!rs.wasNull()) {
+                                images.add(
+                                        TourSchedulesResponse.TourImageDetails.builder()
+                                                .imageId(imageId)
+                                                .imageName(rs.getString("image_name"))
+                                                .imageDescription(rs.getString("image_description"))
+                                                .imageUrl(rs.getString("image_url"))
+                                                .imageStatus(rs.getString("image_status"))
+                                                .build()
+                                );
+                            }
+                        }
+
+                        if (tourBuilder == null) {
+                            return List.of();
+                        }
+
+                        return List.of(
+                                tourBuilder.images(images).build()
+                        );
+                    }, tourId);
+
+            return result.isEmpty() ? null : result.get(0);
+
+        } catch (Exception ex) {
+            LOGGER.error("Error fetching tour basic details for tourId={}", tourId, ex);
+            return null;
+        }
+    }
+
 
 
     // ✅ Helper methods (avoid null pointer issues)

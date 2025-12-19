@@ -37,4 +37,6 @@ public interface TourService {
     CommonResponse<List<TourDetailsWithDayToDayResponse>> getTourDetailsDayByDay(Long tourId);
 
     CommonResponse<TourExtrasResponse> getTourExtraDetailsDayByDay(Long tourId);
+
+    CommonResponse<TourSchedulesResponse> getTourSchedules(Long tourId);
 }

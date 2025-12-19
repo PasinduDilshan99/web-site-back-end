@@ -585,4 +585,38 @@ public class TourServiceImpl implements TourService {
         }
     }
 
+    @Override
+    public CommonResponse<TourSchedulesResponse> getTourSchedules(Long tourId) {
+        LOGGER.info("Start fetching tour schedules from the repository");
+        try {
+            List<TourSchedulesResponse.TourScheduleDetails> scheduleDetails =
+                    tourRepository.getTourSchedulesById(tourId);
+            TourSchedulesResponse.TourBasicDetails tourBasicDetails =
+                    tourRepository.getTourBasicDetails(tourId);
+
+
+            TourSchedulesResponse tourSchedulesResponse = new TourSchedulesResponse(
+                    tourBasicDetails,
+                    scheduleDetails
+                    );
+
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    tourSchedulesResponse,
+                    Instant.now()
+            );
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching tour schedules by tour id: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching tour schedules by tour id: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch tour schedules by tour id from database");
+        } finally {
+            LOGGER.info("End fetching all tour schedules by tour id from repository");
+        }
+    }
+
 }

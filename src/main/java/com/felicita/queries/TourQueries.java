@@ -758,4 +758,53 @@ public class TourQueries {
               AND cs.name = 'ACTIVE'
             ORDER BY ttt.display_order ASC
             """;
+    public static final String GET_TOUR_SCHEDULES_BY_TOUR_ID = """
+            SELECT
+                ts.id AS schedule_id,
+                ts.name AS schedule_name,
+                ts.assume_start_date,
+                ts.assume_end_date,
+                ts.duration_start,
+                ts.duration_end,
+                ts.special_note,
+                ts.description,
+                cs.id AS status_id,
+                cs.name AS status_name,
+                ts.created_at,
+                ts.updated_at
+            FROM tour_schedule ts
+            JOIN common_status cs ON ts.status = cs.id
+            WHERE ts.tour_id = ?
+              AND cs.name = 'ACTIVE'
+            """;
+
+    public static final String GET_TOUR_BASIC_DETAILS_BY_TOUR_ID = """
+            SELECT
+                t.tour_id,
+                t.name AS tour_name,
+                t.description AS tour_description,
+                t.duration,
+                t.latitude,
+                t.longitude,
+                t.start_location,
+                t.end_location,
+                ti.id AS image_id,
+                ti.name AS image_name,
+                ti.description AS image_description,
+                ti.image_url,
+                cs_tour.name AS tour_status,
+                cs_img.name AS image_status
+            FROM tour t
+            LEFT JOIN tour_images ti
+                   ON t.tour_id = ti.tour_id
+                   AND ti.status = (
+                       SELECT id FROM common_status WHERE name = 'ACTIVE'
+                   )
+            JOIN common_status cs_tour
+                   ON t.status = cs_tour.id
+            LEFT JOIN common_status cs_img
+                   ON ti.status = cs_img.id
+            WHERE t.tour_id = ?
+              AND cs_tour.name = 'ACTIVE'
+            """;
 }

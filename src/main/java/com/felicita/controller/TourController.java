@@ -1,7 +1,5 @@
 package com.felicita.controller;
 
-import com.felicita.model.dto.DestinationResponseDto;
-import com.felicita.model.dto.PackageResponseDto;
 import com.felicita.model.dto.PopularTourResponseDto;
 import com.felicita.model.dto.TourResponseDto;
 import com.felicita.model.request.TourDataRequest;
@@ -143,4 +141,11 @@ public class TourController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping(path = "/tour-schedules/{tourId}")
+    public ResponseEntity<CommonResponse<TourSchedulesResponse>> getTourSchedules(@PathVariable Long tourId) {
+        LOGGER.info("{} Start execute get tour schedules with given id {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<TourSchedulesResponse> response = tourService.getTourSchedules(tourId);
+        LOGGER.info("{} End execute get all tour schedules with given id {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }
