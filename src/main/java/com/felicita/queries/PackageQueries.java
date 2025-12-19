@@ -572,4 +572,230 @@ public class PackageQueries {
             WHERE p.package_id IN (:packageIds)
             ORDER BY p.package_id
             """;
+    public static final String GET_PACKAGE_DAY_TO_DAY_DETAILS_BY_ID = """
+            SELECT
+                p.package_id,
+                p.name AS package_name,
+                p.description AS package_description,
+                p.total_price,
+                p.price_per_person,
+                p.discount_percentage,
+                p.color,
+                p.hover_color,
+                pda.package_day_accommodation_id,
+                pda.day_number,
+                pda.breakfast,
+                pda.breakfast_description,
+                pda.lunch,
+                pda.lunch_description,
+                pda.dinner,
+                pda.dinner_description,
+                pda.morning_tea,
+                pda.morning_tea_description,
+                pda.evening_tea,
+                pda.evening_tea_description,
+                pda.snacks,
+                pda.snack_note,
+                pda.other_notes,
+                sp.service_provider_id AS hotel_id,
+                sp.name AS hotel_name,
+                sp.description AS hotel_description,
+                sp.website_url AS hotel_website,
+                sp.star_rating AS hotel_category,
+                spt.name AS hotel_type,
+                sp.address AS hotel_location,
+                spl.latitude AS hotel_latitude,
+                spl.longitude AS hotel_longitude,
+                v.vehicle_id AS transport_id,
+                v.registration_number AS vehicle_registration_number,
+                vt.name AS vehicle_type_name,
+                vs.model AS vehicle_model,
+                vs.seat_capacity,
+                vs.air_condition
+            FROM packages p
+            INNER JOIN package_day_accommodation pda
+                ON p.package_id = pda.package_id
+            LEFT JOIN service_provider sp
+                ON pda.hotel_id = sp.service_provider_id
+            LEFT JOIN service_provider_type spt
+            	ON spt.service_provider_type_id = sp.service_provider_type_id
+            LEFT JOIN vehicles v
+                ON pda.transport_id = v.vehicle_id
+            LEFT JOIN vehicle_specifications vs
+                ON v.specification_id = vs.specification_id
+            LEFT JOIN vehicle_type vt
+                ON vt.vehicle_type_id = v.vehicle_type_id
+            LEFT JOIN service_provider_location spl
+                ON sp.service_provider_id = spl.service_provider_id
+            WHERE p.package_id = ?
+            ORDER BY pda.day_number ASC
+            """;
+    public static final String GET_DAY_TO_PACKAGE_DETAILS_BY_ID = """
+            SELECT
+            	p.package_id,
+                pt.name,
+                p.name,
+                p.description,
+                p.discount_percentage,
+                p.total_price,
+                p.color,
+                p.hover_color,
+                p.price_per_person
+            FROM packages p
+            LEFT JOIN package_type pt
+            ON pt.id = p.package_type_id
+            WHERE p.tour_id = ?
+            """ ;
+    public static final String GET_PACKAGES_ACCOMMODATIONS_BY_IDS = """
+            SELECT
+                p.package_id,
+                pda.package_day_accommodation_id,
+                pda.day_number,
+                pda.breakfast,
+                pda.breakfast_description,
+                pda.lunch,
+                pda.lunch_description,
+                pda.dinner,
+                pda.dinner_description,
+                pda.morning_tea,
+                pda.morning_tea_description,
+                pda.evening_tea,
+                pda.evening_tea_description,
+                pda.snacks,
+                pda.snack_note,
+                pda.other_notes,
+                sp.service_provider_id AS hotel_id,
+                sp.name AS hotel_name,
+                sp.description AS hotel_description,
+                sp.website_url AS hotel_website,
+                sp.star_rating AS hotel_category,
+                spt.name AS hotel_type,
+                sp.address AS hotel_location,
+                spl.latitude AS hotel_latitude,
+                spl.longitude AS hotel_longitude,
+                v.vehicle_id AS transport_id,
+                v.registration_number AS vehicle_registration_number,
+                vt.name AS vehicle_type_name,
+                vs.model AS vehicle_model,
+                vs.seat_capacity,
+                vs.air_condition
+            FROM packages p
+            INNER JOIN package_day_accommodation pda
+                ON p.package_id = pda.package_id
+            LEFT JOIN service_provider sp
+                ON pda.hotel_id = sp.service_provider_id
+            LEFT JOIN service_provider_type spt
+            	ON spt.service_provider_type_id = sp.service_provider_type_id
+            LEFT JOIN vehicles v
+                ON pda.transport_id = v.vehicle_id
+            LEFT JOIN vehicle_specifications vs
+                ON v.specification_id = vs.specification_id
+            LEFT JOIN vehicle_type vt
+                ON vt.vehicle_type_id = v.vehicle_type_id
+            LEFT JOIN service_provider_location spl
+                ON sp.service_provider_id = spl.service_provider_id
+            WHERE p.package_id IN (%s)
+            ORDER BY pda.day_number ASC
+            """;
+
+    public static final String GET_PACKAGE_IDS_BY_TOUR_ID = """
+            SELECT package_id FROM packages WHERE tour_id = ?
+            """;
+    public static final String GET_PACKAGE_EXCLUSIONS_BY_PACKAGE_ID = """
+            SELECT
+                pe.package_exclusion_id,
+                pe.package_id,
+                pe.exclusion_text,
+                pe.display_order,
+                cs.name AS status_name,
+                pe.created_at,
+                pe.created_by,
+                pe.updated_at,
+                pe.updated_by
+            FROM package_exclusion pe
+            JOIN common_status cs ON pe.status_id = cs.id
+            WHERE pe.package_id = ?
+            ORDER BY pe.display_order
+            """;
+    public static final String GET_PACKAGE_INCLUSIONS_BY_PACKAGE_ID = """
+            SELECT
+                pi.package_inclusion_id,
+                pi.package_id,
+                pi.inclusion_text,
+                pi.display_order,
+                cs.name AS status_name,
+                pi.created_at,
+                pi.created_by,
+                pi.updated_at,
+                pi.updated_by
+            FROM package_inclusion pi
+            JOIN common_status cs ON pi.status_id = cs.id
+            WHERE pi.package_id = ?
+            ORDER BY pi.display_order
+            """ ;
+    public static final String GET_PACKAGE_CONDITIONS_BY_PACKAGE_ID = """
+            SELECT
+                pc.package_condition_id,
+                pc.package_id,
+                pc.condition_text,
+                pc.display_order,
+                cs.name AS status_name,
+                pc.created_at,
+                pc.created_by,
+                pc.updated_at,
+                pc.updated_by
+            FROM package_condition pc
+            JOIN common_status cs ON pc.status_id = cs.id
+            WHERE pc.package_id = ?  
+            ORDER BY pc.display_order
+            """;
+    public static final String GET_PACKAGE_TRAVEL_TIPS_BY_PACKAGE_ID = """
+            SELECT
+                ptt.package_travel_tip_id,
+                ptt.package_id,
+                ptt.tip_title,
+                ptt.tip_description,
+                ptt.display_order,
+                cs.name AS status_name,
+                ptt.created_at,
+                ptt.created_by,
+                ptt.updated_at,
+                ptt.updated_by,
+                ptt.terminated_at,
+                ptt.terminated_by
+            FROM package_travel_tips ptt
+            JOIN common_status cs ON ptt.status_id = cs.id
+            WHERE ptt.package_id = ?
+            ORDER BY ptt.display_order
+            """;
+    public static final String GET_PACKAGE_SCHEDULE_IDS_BY_TOUR_ID = """
+        SELECT
+            ps.id
+        FROM package_schedule ps
+        LEFT JOIN packages p
+            ON p.package_id = ps.package_id
+        LEFT JOIN tour t
+            ON t.tour_id = p.tour_id
+        WHERE t.tour_id = ?
+        """;
+
+    public static final String GET_PACKAGE_SCHEDULE_DETAILS_BY_ID = """
+            SELECT
+            	ps.id,
+                p.package_id,
+            	ps.name,
+                ps.assume_start_date,
+                ps.assume_end_date,
+                ps.description,
+                ps.special_note,
+                cs.name AS status,
+                ps.duration_start,
+                ps.duration_end
+            FROM package_schedule ps
+            LEFT JOIN packages p
+            	ON p.package_id = ps.package_id
+            LEFT JOIN common_status cs
+            	ON cs.id = ps.status
+            WHERE p.package_id = ?
+            """;
 }

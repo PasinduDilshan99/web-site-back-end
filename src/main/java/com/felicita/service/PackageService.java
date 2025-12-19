@@ -28,4 +28,10 @@ public interface PackageService {
     CommonResponse<List<PackageHistoryImageResponse>> getPackageHistoryImagesById(String packageId);
 
     CommonResponse<PackageWithParamsResponse> getPackagesWithParams(PackageDataRequest packageDataRequest);
+
+    CommonResponse<List<PackageDayAccommodationResponse>> getDayToPackageDetailsByTourId(Long tourId);
+
+    CommonResponse<List<PackageExtrasResponse>> getPackageExtraDetailsDayByDay(Long tourId);
+
+    CommonResponse<List<PackageScheduleResponse>> getPackageSchedulesByTourId(Long tourId);
 }

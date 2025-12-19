@@ -1,15 +1,18 @@
 package com.felicita.repository.impl;
 
+import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
 import com.felicita.model.response.CouponDetailsResponse;
 import com.felicita.model.response.EmployeeGuideResponse;
 import com.felicita.model.response.EmployeeWithSocialMediaResponse;
+import com.felicita.model.response.TourAssignedEmployeeResponse;
 import com.felicita.queries.CouponQueries;
 import com.felicita.queries.EmployeeQueries;
 import com.felicita.repository.EmployeeRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -296,7 +299,48 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
         }
     }
 
+    @Override
+    public TourAssignedEmployeeResponse getEmployeeAssignToTourId(Long tourId) {
+        String sql = EmployeeQueries.GET_EMPLOYEE_ASSIGNED_TO_TOUR_ID;
 
+        try {
+            return jdbcTemplate.queryForObject(sql, new Object[]{tourId}, (rs, rowNum) ->
+                    TourAssignedEmployeeResponse.builder()
+                            .firstName(rs.getString("first_name"))
+                            .lastName(rs.getString("last_name"))
+                            .imageUrl(rs.getString("image_url"))
+                            .email(rs.getString("email"))
+                            .mobileNumber(rs.getString("mobile_number1"))
+                            .designationName(rs.getString("designation_name"))
+                            .assignMessage(rs.getString("assign_message"))
+                            .build()
+            );
+        } catch (EmptyResultDataAccessException ex) {
+            throw new DataNotFoundErrorExceptionHandler("No employee assigned to tour found");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching employee assigned to tour", ex);
+            throw new InternalServerErrorExceptionHandler(
+                    "Unexpected error occurred while fetching employee assigned to tour"
+            );
+        }
+    }
+
+    @Override
+    public List<TourAssignedEmployeeResponse.RelatedOtherTours> getOtherRelatedToursByTourId(Long tourId) {
+        String sql = EmployeeQueries.GET_OTHER_RELATED_TOURS_BY_TOUR_ID;
+        try {
+            return jdbcTemplate.query(
+                    sql,
+                    new Object[]{tourId},
+                    (rs, rowNum) -> TourAssignedEmployeeResponse.RelatedOtherTours.builder()
+                            .tourId(rs.getLong("tour_id"))
+                            .tourName(rs.getString("name"))
+                            .build()
+            );
+        } catch (Exception e) {
+            return List.of();
+        }
+    }
 
 
 

@@ -21,7 +21,6 @@ public class TourDetailsWithDayToDayResponse {
 
     /** Day number (1, 2, 3...) */
     private Integer dayNumber;
-    private Accommodations accommodations;
     /** Destinations for the given day */
     private List<DestinationPerDayResponse> destinations;
 
@@ -148,61 +147,5 @@ public class TourDetailsWithDayToDayResponse {
         private String imageUrl;
         private Integer status;
     }
-
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class Accommodations {
-        private Integer day;
-        private Boolean breakfast;
-        private String breakfastDescription;
-        private Boolean lunch;
-        private String lunchDescription;
-        private Boolean dinner;
-        private String dinnerDescription;
-        private Boolean morningTea;
-        private String morningTeaDescription;
-        private Boolean eveningTea;
-        private String eveningTeaDescription;
-        private Boolean snacks;
-        private String snackNote;
-        private HotelAccommodation hotel;
-        private TransportAccommodation transport;
-        private String otherNotes;
-    }
-
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class HotelAccommodation {
-
-        private Long hotelId;
-        private String hotelName;
-        private String hotelType;       // Resort, Villa, Hotel
-        private String hotelCategory;   // 3 Star, 4 Star, Luxury
-        private Double longitude;
-        private Double latitude;
-        private String location;
-        private String description;
-        private List<String> facilities; // WiFi, Pool, AC, Gym
-    }
-
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class TransportAccommodation {
-        private Long transportId;
-        private String transportType;   // Car, Van, Bus, Train
-        private String vehicleModel;
-        private Integer seatCount;
-        private Boolean airConditioned;
-        private Boolean driverIncluded;
-        private Boolean fuelIncluded;
-        private String description;
-    }
-
 
 }

@@ -2,6 +2,8 @@ package com.felicita.service.impl;
 
 import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
+import com.felicita.model.dto.PackageDayByDayDto;
+import com.felicita.model.dto.PackageDetailsDto;
 import com.felicita.model.dto.PackageResponseDto;
 import com.felicita.model.enums.CommonStatus;
 import com.felicita.model.request.PackageDataRequest;
@@ -16,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -361,6 +364,144 @@ public class PackageServiceImpl implements PackageService {
             throw new InternalServerErrorExceptionHandler("Failed to fetch packages with params from database");
         } finally {
             LOGGER.info("End fetching all packages with params from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<List<PackageDayAccommodationResponse>> getDayToPackageDetailsByTourId(Long tourId) {
+        LOGGER.info("Start fetching all package from repository");
+        try {
+            List<PackageDetailsDto> packageDetailsDtos = packageRepository.getDayToPackageDetailsById(tourId);
+            LOGGER.info(packageDetailsDtos.toString());
+            List<Long> packgeIds = packageDetailsDtos.stream()
+                    .map(PackageDetailsDto::getPackageId)
+                    .toList();
+
+            List<PackageDayByDayDto> packageDayByDayDtos = packageRepository.getPackagesAccoamdationsByIds(packgeIds);
+
+            List<PackageDayAccommodationResponse>  responses = new ArrayList<>();
+
+            for (PackageDetailsDto packageDetailsDto : packageDetailsDtos){
+                PackageDayAccommodationResponse packageDayAccommodationResponse = new PackageDayAccommodationResponse();
+                packageDayAccommodationResponse.setPackageId(packageDetailsDto.getPackageId());
+                packageDayAccommodationResponse.setPackageName(packageDetailsDto.getPackageName());
+                packageDayAccommodationResponse.setPackageDescription(packageDetailsDto.getPackageDescription());
+                packageDayAccommodationResponse.setTotalPrice(packageDetailsDto.getTotalPrice());
+                packageDayAccommodationResponse.setPricePerPerson(packageDetailsDto.getPricePerPerson());
+                packageDayAccommodationResponse.setDiscount(packageDetailsDto.getDiscount());
+                packageDayAccommodationResponse.setColor(packageDetailsDto.getColor());
+                packageDayAccommodationResponse.setHoverColor(packageDetailsDto.getHoverColor());
+
+                List<PackageDayByDayDto> packageDayByDayDtoList = new ArrayList<>();
+                for (PackageDayByDayDto packageDayByDayDto : packageDayByDayDtos){
+                    if (packageDayByDayDto.getPackageId().equals(packageDetailsDto.getPackageId())){
+                        packageDayByDayDtoList.add(packageDayByDayDto);
+                    }
+                }
+                packageDayAccommodationResponse.setPackageDayByDayDtoList(packageDayByDayDtoList);
+                responses.add(packageDayAccommodationResponse);
+            }
+
+            return
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            responses,
+                            Instant.now()
+                    )
+                    ;
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch package from database");
+        } finally {
+            LOGGER.info("End fetching all package from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<List<PackageExtrasResponse>> getPackageExtraDetailsDayByDay(Long tourId) {
+        LOGGER.info("Start fetching package extra details by tour id from repository");
+        try {
+
+            List<Long> packageIds = packageRepository.getPackageIdsByTourId(tourId);
+
+            List<PackageExtrasResponse> responses = new ArrayList<>();
+            for (Long packageId : packageIds){
+                List<PackageExtrasResponse.PackageInclusion> inclusions = packageRepository.getPackageInclusions(packageId);
+                List<PackageExtrasResponse.PackageExclusion> exclusions = packageRepository.getPackageExclusions(packageId);
+                List<PackageExtrasResponse.PackageCondition> conditions = packageRepository.getPackageConditions(packageId);
+                List<PackageExtrasResponse.PackageTravelTip> travelTips = packageRepository.getPackageTravelTips(packageId);
+
+                PackageExtrasResponse packageExtrasResponse = new PackageExtrasResponse(
+                        packageId,
+                        inclusions,
+                        exclusions,
+                        conditions,
+                        travelTips
+                );
+
+                responses.add(packageExtrasResponse);
+            }
+
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    responses,
+                    Instant.now()
+            );
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching package extra details by tour id: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching package extra details by tour id: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch package extra details by tour id from database");
+        } finally {
+            LOGGER.info("End fetching all package extra details by tour id from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<List<PackageScheduleResponse>> getPackageSchedulesByTourId(Long tourId) {
+        LOGGER.info("Start fetching all package schedules from repository");
+        try {
+            List<Long> packageIds = packageRepository.getPackageIdsByTourId(tourId);
+
+            List<PackageScheduleResponse> responses = new ArrayList<>();
+            for (Long packageId : packageIds){
+                List<PackageScheduleResponse.PackageScheduleDetails> scheduleDetails =
+                        packageRepository.getPackageSchedulesById(packageId);
+
+                PackageScheduleResponse packageScheduleResponse = new PackageScheduleResponse(
+                        packageId,
+                        scheduleDetails
+                );
+
+                responses.add(packageScheduleResponse);
+            }
+
+            return new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            responses,
+                            Instant.now()
+                    );
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch package from database");
+        } finally {
+            LOGGER.info("End fetching all package from repository");
         }
     }
 }

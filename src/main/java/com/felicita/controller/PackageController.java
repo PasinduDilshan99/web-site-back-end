@@ -107,5 +107,37 @@ public class PackageController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping(path = "/package-details/{tourId}")
+    public ResponseEntity<CommonResponse<List<PackageDayAccommodationResponse>>> getDayToPackageDetailsByTourId(@PathVariable Long tourId) {
+        LOGGER.info("{} Start execute get day to day package details by tour Id {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<PackageDayAccommodationResponse>> response = packageService.getDayToPackageDetailsByTourId(tourId);
+        LOGGER.info("{} End execute get day to day package details by tour Id {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
+    @GetMapping(path = "/package-extra-details/{tourId}")
+    public ResponseEntity<CommonResponse<List<PackageExtrasResponse>>> getPackageExtraDetailsDayByDay(@PathVariable Long tourId) {
+        LOGGER.info("{} Start execute get package extra details day by day with given id {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<PackageExtrasResponse>> response = packageService.getPackageExtraDetailsDayByDay(tourId);
+        LOGGER.info("{} End execute get all package extra details day by day with given id {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/package-schedules/{tourId}")
+    public ResponseEntity<CommonResponse<List<PackageScheduleResponse>>> getPackageSchedulesByTourId(@PathVariable Long tourId) {
+        LOGGER.info("{} Start execute get package schedules with given tour id {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<PackageScheduleResponse>> response = packageService.getPackageSchedulesByTourId(tourId);
+        LOGGER.info("{} End execute get all package schedules with given tour id {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/tour-schedules/{tourId}")
+    public ResponseEntity<CommonResponse<TourSchedulesResponse>> getTourSchedules(@PathVariable Long tourId) {
+        LOGGER.info("{} Start execute get tour schedules with given id {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<TourSchedulesResponse> response = tourService.getTourSchedules(tourId);
+        LOGGER.info("{} End execute get all tour schedules with given id {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
 }

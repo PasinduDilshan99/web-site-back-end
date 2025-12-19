@@ -511,19 +511,6 @@ public class TourServiceImpl implements TourService {
                 response.add(dayResponse);
             }
 
-            List<TourDetailsWithDayToDayResponse.Accommodations> accommodations =
-                    tourRepository.getAccomadationsListByTourId(tourId);
-
-// Step 1: Map accommodations by day for fast lookup
-            Map<Integer, TourDetailsWithDayToDayResponse.Accommodations> accMap = accommodations.stream()
-                    .collect(Collectors.toMap(TourDetailsWithDayToDayResponse.Accommodations::getDay, Function.identity()));
-
-// Step 2: Attach accommodation to each day
-            for (TourDetailsWithDayToDayResponse dayResponse : response) {
-                TourDetailsWithDayToDayResponse.Accommodations acc = accMap.get(dayResponse.getDayNumber());
-                dayResponse.setAccommodations(acc);  // set acc (can be null if no data)
-            }
-
 
             if (tourDayDestinationActivityIdsDtos.isEmpty()) {
                 LOGGER.warn("No tours found in database");
