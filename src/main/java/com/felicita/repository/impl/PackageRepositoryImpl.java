@@ -1183,6 +1183,118 @@ public class PackageRepositoryImpl implements PackageRepository {
         }
     }
 
+    @Override
+    public List<PackageScheduleDetailsResponse.PackageScheduleDetails> getPackageSchedulesForId(Long packageId) {
+        String sql = PackageQueries.GET_PACKAGE_SCHEDULE_DETAILS_BY_PACKAGE_ID;
+
+        try {
+            return jdbcTemplate.query(sql, new Object[]{packageId}, (ResultSet rs) -> {
+                List<PackageScheduleDetailsResponse.PackageScheduleDetails> schedules = new ArrayList<>();
+
+                while (rs.next()) {
+                    PackageScheduleDetailsResponse.PackageScheduleDetails schedule =
+                            PackageScheduleDetailsResponse.PackageScheduleDetails.builder()
+                                    .scheduleId(rs.getLong("schedule_id"))
+                                    .scheduleName(rs.getString("schedule_name"))
+                                    .assumeStartDate(
+                                            rs.getDate("assume_start_date") != null
+                                                    ? rs.getDate("assume_start_date").toLocalDate()
+                                                    : null
+                                    )
+                                    .assumeEndDate(
+                                            rs.getDate("assume_end_date") != null
+                                                    ? rs.getDate("assume_end_date").toLocalDate()
+                                                    : null
+                                    )
+                                    .durationStart(rs.getObject("duration_start", Integer.class))
+                                    .durationEnd(rs.getObject("duration_end", Integer.class))
+                                    .specialNote(rs.getString("special_note"))
+                                    .description(rs.getString("description"))
+                                    .status(rs.getString("status_name"))
+                                    .createdAt(
+                                            rs.getTimestamp("created_at") != null
+                                                    ? rs.getTimestamp("created_at").toLocalDateTime()
+                                                    : null
+                                    )
+                                    .updatedAt(
+                                            rs.getTimestamp("updated_at") != null
+                                                    ? rs.getTimestamp("updated_at").toLocalDateTime()
+                                                    : null
+                                    )
+                                    .build();
+
+                    schedules.add(schedule);
+                }
+                return schedules;
+            });
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching package schedule details", ex);
+            throw new DataNotFoundErrorExceptionHandler("Database error while fetching package schedule details");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching package schedule details", ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error while fetching package schedule details");
+        }
+    }
+
+
+    @Override
+    public PackageScheduleDetailsResponse.PackageBasicDetails getPackageBasicDetails(Long packageId) {
+        String sql = PackageQueries.GET_PACKAGE_BASIC_DETAILS_BY_PACKAGE_ID;
+
+        try {
+            return jdbcTemplate.query(sql, new Object[]{packageId}, (ResultSet rs) -> {
+
+                PackageScheduleDetailsResponse.PackageBasicDetails.PackageBasicDetailsBuilder packageBuilder = null;
+                List<PackageScheduleDetailsResponse.PackageImageDetails> images = new ArrayList<>();
+
+                while (rs.next()) {
+
+                    // Initialize package details only once
+                    if (packageBuilder == null) {
+                        packageBuilder = PackageScheduleDetailsResponse.PackageBasicDetails.builder()
+                                .packageId(rs.getLong("package_id"))
+                                .packageName(rs.getString("name"))
+                                .packageDescription(rs.getString("description"))
+                                .totalPrice(rs.getObject("total_price", Double.class))
+                                .pricePerPerson(rs.getObject("price_per_person", Double.class))
+                                .discount(rs.getObject("discount_percentage", Double.class))
+                                .color(rs.getString("color"))
+                                .hoverColor(rs.getString("hover_color"))
+                                .minPersonCount(rs.getObject("min_person_count", Integer.class))
+                                .maxPersonCount(rs.getObject("max_person_count", Integer.class))
+                                .status(rs.getString("status"));
+                    }
+
+                    // Add image if exists
+                    Long imageId = rs.getObject("image_id", Long.class);
+                    if (imageId != null) {
+                        images.add(
+                                PackageScheduleDetailsResponse.PackageImageDetails.builder()
+                                        .imageId(imageId)
+                                        .imageName(rs.getString("image_name"))
+                                        .imageDescription(rs.getString("image_description"))
+                                        .imageUrl(rs.getString("image_url"))
+                                        .build()
+                        );
+                    }
+                }
+
+                if (packageBuilder == null) {
+                    return null; // no package found
+                }
+
+                return packageBuilder.images(images).build();
+            });
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching package basic details", ex);
+            throw new DataNotFoundErrorExceptionHandler("Database error while fetching package basic details");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching package basic details", ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error while fetching package basic details");
+        }
+    }
+
 
 
 }

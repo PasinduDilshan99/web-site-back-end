@@ -798,4 +798,46 @@ public class PackageQueries {
             	ON cs.id = ps.status
             WHERE p.package_id = ?
             """;
+    public static final String GET_PACKAGE_SCHEDULE_DETAILS_BY_PACKAGE_ID = """
+            SELECT
+            	ps.id AS schedule_id,
+            	ps.name AS schedule_name,
+            	ps.assume_start_date,
+            	ps.assume_end_date,
+            	ps.duration_start,
+            	ps.duration_end,
+            	ps.special_note,
+            	ps.description,
+            	cs.name AS status_name,
+            	ps.created_at,
+            	ps.updated_at
+            FROM package_schedule ps
+            JOIN common_status cs ON ps.status = cs.id
+            WHERE ps.package_id = ?
+              AND cs.name = 'ACTIVE'
+            """;
+    public static final String GET_PACKAGE_BASIC_DETAILS_BY_PACKAGE_ID = """
+            SELECT
+            	p.package_id,
+                p.name,
+                p.description,
+                p.total_price,
+                p.price_per_person,
+                p.discount_percentage,
+                p.color,
+                p.hover_color,
+                p.min_person_count,
+                p.max_person_count,
+                cs.name AS status,
+                pi.id AS image_id,
+                pi.name AS image_name,
+                pi.description AS image_description,
+                pi.image_url
+            FROM packages p
+            LEFT JOIN common_status cs
+            	ON cs.id = p.status
+            LEFT JOIN package_images pi
+            	ON pi.package_id = p.package_id
+            WHERE p.package_id =?
+            """ ;
 }

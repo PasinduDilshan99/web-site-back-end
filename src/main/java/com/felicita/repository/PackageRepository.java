@@ -44,4 +44,8 @@ public interface PackageRepository {
     List<Long> getPackageSchedulesIdsByTourId(Long tourId);
 
     List<PackageScheduleResponse.PackageScheduleDetails> getPackageSchedulesById(Long packageId);
+
+    List<PackageScheduleDetailsResponse.PackageScheduleDetails> getPackageSchedulesForId(Long packageId);
+
+    PackageScheduleDetailsResponse.PackageBasicDetails getPackageBasicDetails(Long packageId);
 }

@@ -34,4 +34,6 @@ public interface PackageService {
     CommonResponse<List<PackageExtrasResponse>> getPackageExtraDetailsDayByDay(Long tourId);
 
     CommonResponse<List<PackageScheduleResponse>> getPackageSchedulesByTourId(Long tourId);
+
+    CommonResponse<PackageScheduleDetailsResponse> getPackageSchedulesForId(Long packageId);
 }

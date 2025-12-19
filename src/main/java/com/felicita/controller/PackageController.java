@@ -132,11 +132,11 @@ public class PackageController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping(path = "/tour-schedules/{tourId}")
-    public ResponseEntity<CommonResponse<TourSchedulesResponse>> getTourSchedules(@PathVariable Long tourId) {
-        LOGGER.info("{} Start execute get tour schedules with given id {}", Constant.DOTS, Constant.DOTS);
-        CommonResponse<TourSchedulesResponse> response = tourService.getTourSchedules(tourId);
-        LOGGER.info("{} End execute get all tour schedules with given id {}", Constant.DOTS, Constant.DOTS);
+    @GetMapping(path = "/package-schedules-details/{packageId}")
+    public ResponseEntity<CommonResponse<PackageScheduleDetailsResponse>> getPackageSchedulesForId(@PathVariable Long packageId) {
+        LOGGER.info("{} Start execute get package schedules with given id {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<PackageScheduleDetailsResponse> response = packageService.getPackageSchedulesForId(packageId);
+        LOGGER.info("{} End execute get package schedules with given id {}", Constant.DOTS, Constant.DOTS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

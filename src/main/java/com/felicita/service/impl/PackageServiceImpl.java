@@ -504,4 +504,38 @@ public class PackageServiceImpl implements PackageService {
             LOGGER.info("End fetching all package from repository");
         }
     }
+
+    @Override
+    public CommonResponse<PackageScheduleDetailsResponse> getPackageSchedulesForId(Long packageId) {
+        LOGGER.info("Start fetching tour schedules from the repository");
+        try {
+            List<PackageScheduleDetailsResponse.PackageScheduleDetails> scheduleDetails =
+                    packageRepository.getPackageSchedulesForId(packageId);
+            PackageScheduleDetailsResponse.PackageBasicDetails packageBasicDetails =
+                    packageRepository.getPackageBasicDetails(packageId);
+
+
+            PackageScheduleDetailsResponse response = new PackageScheduleDetailsResponse(
+                    packageBasicDetails,
+                    scheduleDetails
+            );
+
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    response,
+                    Instant.now()
+            );
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching package schedules by package id: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching package schedules by package id: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch package schedules by package id from database");
+        } finally {
+            LOGGER.info("End fetching all package schedules by package id from repository");
+        }
+    }
 }

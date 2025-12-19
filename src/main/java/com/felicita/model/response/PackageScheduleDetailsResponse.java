@@ -24,11 +24,13 @@ public class PackageScheduleDetailsResponse {
         private Long packageId;
         private String packageName;
         private String packageDescription;
-        private Integer duration;
-        private Double latitude;
-        private Double longitude;
-        private String startLocation;
-        private String endLocation;
+        private Double totalPrice;
+        private Double pricePerPerson;
+        private Double discount;
+        private String color;
+        private String hoverColor;
+        private Integer minPersonCount;
+        private Integer maxPersonCount;
         private String status;
         private List<PackageImageDetails> images;
 
@@ -49,8 +51,7 @@ public class PackageScheduleDetailsResponse {
         private Integer durationEnd;
         private String specialNote;
         private String description;
-        private Long statusId;
-        private String statusName;
+        private String status;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
     }
@@ -66,6 +67,5 @@ public class PackageScheduleDetailsResponse {
         private String imageName;
         private String imageDescription;
         private String imageUrl;
-        private String imageStatus;
     }
 }
