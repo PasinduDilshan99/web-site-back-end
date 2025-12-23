@@ -343,5 +343,70 @@ public class BookingServiceImpl implements BookingService {
         }
     }
 
+    @Override
+    public CommonResponse<List<BookingFilterResponse>> getBookingFilter() {
+        LOGGER.info("Start fetching booking filters from repository");
+        try {
+            List<BookingFilterResponse> bookingFilterResponses = bookingRepository.getBookingFilter();
+
+            if (bookingFilterResponses.isEmpty()) {
+                LOGGER.warn("No requested booking filters found in database");
+                throw new DataNotFoundErrorExceptionHandler("No requested booking tours details found");
+            }
+
+            LOGGER.info("Fetched {} requested booking filters details successfully", bookingFilterResponses.size());
+            return (
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            bookingFilterResponses,
+                            Instant.now()
+                    )
+            );
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching requested booking filters details: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching requested booking filters details: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch requested booking filetrs details from database");
+        } finally {
+            LOGGER.info("End fetching all requested booking filters details from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<List<UserBookingSummaryResponse>> getBookedTours() {
+        LOGGER.info("Start fetching booked tours from repository");
+        try {
+            Long userId = commonService.getUserIdBySecurityContext();
+            List<UserBookingSummaryResponse> userBookingSummaryResponses = bookingRepository.getBookedTours(userId);
+
+            if (userBookingSummaryResponses.isEmpty()) {
+                LOGGER.warn("No requested booked tours found in database");
+                throw new DataNotFoundErrorExceptionHandler("No requested booked tours details found");
+            }
+
+            LOGGER.info("Fetched {} booked tours details successfully", userBookingSummaryResponses.size());
+            return new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    userBookingSummaryResponses,
+                            Instant.now()
+            );
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching booked tours filters details: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching booked tours details: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch booked tours from database");
+        } finally {
+            LOGGER.info("End fetching booked tours from repository");
+        }
+    }
+
 
 }

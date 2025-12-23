@@ -17,4 +17,8 @@ public interface BookingService {
     CommonResponse<BookInsertResponse> bookingTour(BookingRequest bookingRequest);
 
     CommonResponse<PrintReceiptForBookingResponse> createReceiptForBooking(Long bookingId);
+
+    CommonResponse<List<BookingFilterResponse>> getBookingFilter();
+
+    CommonResponse<List<UserBookingSummaryResponse>> getBookedTours();
 }

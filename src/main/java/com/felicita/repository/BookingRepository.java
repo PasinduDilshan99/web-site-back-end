@@ -2,10 +2,7 @@ package com.felicita.repository;
 
 import com.felicita.model.dto.*;
 import com.felicita.model.request.BookingRequest;
-import com.felicita.model.response.CancelledToursResponse;
-import com.felicita.model.response.CompleteToursResponse;
-import com.felicita.model.response.RequestedToursResponse;
-import com.felicita.model.response.UpcomingToursResponse;
+import com.felicita.model.response.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -40,4 +37,8 @@ public interface BookingRepository {
     List<BookingActivityDto> getBookingActivityByBookingId(Long bookingId);
 
     List<BookingParticipantDto> getBookingParticipantByBookingId(Long bookingId);
+
+    List<BookingFilterResponse> getBookingFilter();
+
+    List<UserBookingSummaryResponse> getBookedTours(Long userId);
 }

@@ -58,6 +58,22 @@ public class BookingController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping(path = "/book-tour-filter")
+    public ResponseEntity<CommonResponse<List<BookingFilterResponse>>> getBookingFilter() {
+        LOGGER.info("{} Start execute get filters in the booking {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<BookingFilterResponse>> response = bookingService.getBookingFilter();
+        LOGGER.info("{} End execute get filters in the booking {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/booked-tours")
+    public ResponseEntity<CommonResponse<List<UserBookingSummaryResponse>>> getBookedTours() {
+        LOGGER.info("{} Start execute get booked tours {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<UserBookingSummaryResponse>> response = bookingService.getBookedTours();
+        LOGGER.info("{} End execute get booked tours {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @PostMapping(path = "/book-tour")
     public ResponseEntity<CommonResponse<BookInsertResponse>> bookingTour(@RequestBody BookingRequest bookingRequest) {
         LOGGER.info("{} Start execute booking a tour {}", Constant.DOTS, Constant.DOTS);

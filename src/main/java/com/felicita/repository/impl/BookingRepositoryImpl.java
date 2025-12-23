@@ -4,10 +4,7 @@ import com.felicita.exception.DataAccessErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
 import com.felicita.model.dto.*;
 import com.felicita.model.request.BookingRequest;
-import com.felicita.model.response.CancelledToursResponse;
-import com.felicita.model.response.CompleteToursResponse;
-import com.felicita.model.response.RequestedToursResponse;
-import com.felicita.model.response.UpcomingToursResponse;
+import com.felicita.model.response.*;
 import com.felicita.queries.ActivitiesQueries;
 import com.felicita.queries.BookingQueries;
 import com.felicita.repository.BookingRepository;
@@ -1362,6 +1359,77 @@ public class BookingRepositoryImpl implements BookingRepository {
             throw new InternalServerErrorExceptionHandler("Unexpected error while fetching booking participants");
         }
     }
+
+    @Override
+    public List<BookingFilterResponse> getBookingFilter() {
+        List<Map<String, Object>> rows = jdbcTemplate.queryForList(BookingQueries.GET_BOOKING_FILTER);
+
+        // Use a map to group by tour
+        Map<Long, BookingFilterResponse> tourMap = new LinkedHashMap<>();
+
+        for (Map<String, Object> row : rows) {
+            Long tourId = ((Number) row.get("tour_id")).longValue();
+            BookingFilterResponse tour = tourMap.getOrDefault(tourId,
+                    BookingFilterResponse.builder()
+                            .tourId(tourId)
+                            .tourName((String) row.get("tour_name"))
+                            .tourDescription((String) row.get("tour_description"))
+                            .packageDetails(new ArrayList<>())
+                            .build()
+            );
+
+            // Package
+            Long packageId = row.get("package_id") != null ? ((Number) row.get("package_id")).longValue() : null;
+            if (packageId != null) {
+                BookingFilterResponse.PackageDetails packageDetails = tour.getPackageDetails().stream()
+                        .filter(p -> p.getPackageId().equals(packageId))
+                        .findFirst()
+                        .orElseGet(() -> {
+                            BookingFilterResponse.PackageDetails p = BookingFilterResponse.PackageDetails.builder()
+                                    .packageId(packageId)
+                                    .packageName((String) row.get("package_name"))
+                                    .packageDescription((String) row.get("package_description"))
+                                    .packageSchedulesDetails(new ArrayList<>())
+                                    .build();
+                            tour.getPackageDetails().add(p);
+                            return p;
+                        });
+
+                // Package Schedule
+                Long packageScheduleId = row.get("package_schedule_id") != null ? ((Number) row.get("package_schedule_id")).longValue() : null;
+                if (packageScheduleId != null) {
+                    BookingFilterResponse.PackageSchedulesDetails schedule = BookingFilterResponse.PackageSchedulesDetails.builder()
+                            .packageScheduleId(packageScheduleId)
+                            .packageScheduleName((String) row.get("package_schedule_name"))
+                            .packageScheduleDescription((String) row.get("package_schedule_description"))
+                            .startDate((Date) row.get("package_schedule_start_date"))
+                            .endDate((Date) row.get("package_schedule_end_date"))
+                            .build();
+                    packageDetails.getPackageSchedulesDetails().add(schedule);
+                }
+            }
+
+            tourMap.put(tourId, tour);
+        }
+
+        return new ArrayList<>(tourMap.values());
+    }
+
+    @Override
+    public List<UserBookingSummaryResponse> getBookedTours(Long userId) {
+        String sql = BookingQueries.GET_BOOKED_TOURS_BY_USER_ID;
+        return jdbcTemplate.query(sql, new Object[]{userId}, (rs, rowNum) ->
+                UserBookingSummaryResponse.builder()
+                        .bookingId(rs.getLong("booking_id"))
+                        .bookingReference(rs.getString("booking_reference"))
+                        .bookingInvoiceNumber(rs.getString("invoice_number"))
+                        .packageName(rs.getString("package_name"))
+                        .packageScheduleName(rs.getString("package_schedule_name"))
+                        .tourName(rs.getString("tour_name"))
+                        .build()
+        );
+    }
+
 
 
 }

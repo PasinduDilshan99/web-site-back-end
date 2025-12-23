@@ -1052,4 +1052,42 @@ public class BookingQueries {
             	ON c.country_id = bp.nationality_country_id
             WHERE bp.booking_id = ?
             """;
+    public static final String GET_BOOKING_FILTER = """
+            SELECT
+            	t.tour_id AS tour_id,
+                t.name AS tour_name,
+                t.description AS tour_description,
+                p.package_id AS package_id,
+                p.name AS package_name,
+                p.description AS package_description,
+                ps.id AS package_schedule_id,
+                ps.name AS package_schedule_name,
+                ps.description AS package_schedule_description,
+                ps.assume_start_date AS package_schedule_start_date,
+                ps.assume_end_date AS package_schedule_end_date
+            FROM tour t
+            LEFT JOIN packages p
+            	ON t.tour_id = p.tour_id
+            LEFT JOIN package_schedule ps
+            	ON ps.package_id = p.package_id
+            """;
+    public static final String GET_BOOKED_TOURS_BY_USER_ID = """
+            SELECT
+            	b.booking_id,
+                bi.invoice_number,
+                b.booking_reference,
+                p.name AS package_name,
+                ps.name AS package_schedule_name,
+                t.name AS tour_name
+            FROM bookings b
+            LEFT JOIN booking_invoices bi
+            	ON b.booking_id = bi.booking_id
+            LEFT JOIN package_schedule ps
+            	ON ps.id = b.package_schedule_id
+            LEFT JOIN packages p
+            	ON p.package_id =  ps.package_id
+            LEFt JOIN tour t
+            	ON t.tour_id = p.tour_id
+            WHERE b.user_id = ?
+            """;
 }
