@@ -115,6 +115,14 @@ public class PackageController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping(path = "/package-compare/{tourId}")
+    public ResponseEntity<CommonResponse<List<PackageComapreResponse>>> getDayToPackageDetailsForComapreByTourId(@PathVariable Long tourId) {
+        LOGGER.info("{} Start execute get day to day package details to compare by tour Id {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<PackageComapreResponse>> response = packageService.getDayToPackageDetailsForComapreByTourId(tourId);
+        LOGGER.info("{} End execute get day to day package details to by tour Id {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 
     @GetMapping(path = "/package-extra-details/{tourId}")
     public ResponseEntity<CommonResponse<List<PackageExtrasResponse>>> getPackageExtraDetailsDayByDay(@PathVariable Long tourId) {

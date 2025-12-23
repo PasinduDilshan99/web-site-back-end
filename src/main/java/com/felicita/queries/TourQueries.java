@@ -807,4 +807,34 @@ public class TourQueries {
             WHERE t.tour_id = ?
               AND cs_tour.name = 'ACTIVE'
             """;
+    public static final String GET_ALL_TOURS_BASIC_DETAILS = """
+            SELECT
+            	t.tour_id,
+                t.name,
+                t.description,
+                tc.name as category,
+                tt.name as type,
+                t.duration,
+                t.latitude,
+                t.longitude,
+                t.start_location,
+                t.end_location,
+                s.name AS status,
+                ti.id AS image_id,
+                ti.name AS image_name,
+                ti.description AS image_description,
+                ti.image_url AS image_url
+            FROM tour t
+            LEFT JOIN common_status cs
+            	ON cs.id = t.status
+            LEFT JOIN tour_category tc
+            	ON tc.id = t.tour_category
+            LEFT JOIN tour_type tt
+            	ON tt.id = t.tour_type
+            LEFT JOIN seasons s
+            	ON s.id = t.season
+            LEFT JOIN tour_images ti
+            	ON ti.tour_id = t.tour_id
+            WHERE cs.name= 'ACTIVE'
+            """;
 }

@@ -483,27 +483,27 @@ public class PackageQueries {
             """;
 
     public static final String COUNT_PACKAGES_WITH_FILTERS = """
-    SELECT COUNT(DISTINCT p.package_id)
-    FROM packages p
-    LEFT JOIN tour t ON p.tour_id = t.tour_id
-    LEFT JOIN package_type pt ON pt.id = p.package_type_id
-    LEFT JOIN common_status cs_p ON p.status = cs_p.id
-    LEFT JOIN common_status cs_t ON t.status = cs_t.id
-    WHERE cs_p.name = 'ACTIVE'
-      AND cs_t.name = 'ACTIVE'
-
-      AND (? IS NULL OR p.name LIKE CONCAT('%', ?, '%'))
-      AND (? IS NULL OR p.total_price >= ?)
-      AND (? IS NULL OR p.total_price <= ?)
-      AND (? IS NULL OR t.duration = ?)
-      AND (? IS NULL OR pt.name = ?)
-      AND (? IS NULL OR (t.start_location LIKE CONCAT('%', ?, '%')
-           OR t.end_location LIKE CONCAT('%', ?, '%')))
-      AND (? = 0 OR p.min_person_count >= ?)
-      AND (? = 0 OR p.max_person_count <= ?)
-      AND (? IS NULL OR p.start_date >= ?)
-      AND (? IS NULL OR p.end_date <= ?)
-""";
+                SELECT COUNT(DISTINCT p.package_id)
+                FROM packages p
+                LEFT JOIN tour t ON p.tour_id = t.tour_id
+                LEFT JOIN package_type pt ON pt.id = p.package_type_id
+                LEFT JOIN common_status cs_p ON p.status = cs_p.id
+                LEFT JOIN common_status cs_t ON t.status = cs_t.id
+                WHERE cs_p.name = 'ACTIVE'
+                  AND cs_t.name = 'ACTIVE'
+            
+                  AND (? IS NULL OR p.name LIKE CONCAT('%', ?, '%'))
+                  AND (? IS NULL OR p.total_price >= ?)
+                  AND (? IS NULL OR p.total_price <= ?)
+                  AND (? IS NULL OR t.duration = ?)
+                  AND (? IS NULL OR pt.name = ?)
+                  AND (? IS NULL OR (t.start_location LIKE CONCAT('%', ?, '%')
+                       OR t.end_location LIKE CONCAT('%', ?, '%')))
+                  AND (? = 0 OR p.min_person_count >= ?)
+                  AND (? = 0 OR p.max_person_count <= ?)
+                  AND (? IS NULL OR p.start_date >= ?)
+                  AND (? IS NULL OR p.end_date <= ?)
+            """;
 
 
     public static final String GET_PACKAGES_BY_IDS = """
@@ -645,7 +645,7 @@ public class PackageQueries {
             LEFT JOIN package_type pt
             ON pt.id = p.package_type_id
             WHERE p.tour_id = ?
-            """ ;
+            """;
     public static final String GET_PACKAGES_ACCOMMODATIONS_BY_IDS = """
             SELECT
                 p.package_id,
@@ -732,7 +732,7 @@ public class PackageQueries {
             JOIN common_status cs ON pi.status_id = cs.id
             WHERE pi.package_id = ?
             ORDER BY pi.display_order
-            """ ;
+            """;
     public static final String GET_PACKAGE_CONDITIONS_BY_PACKAGE_ID = """
             SELECT
                 pc.package_condition_id,
@@ -769,15 +769,15 @@ public class PackageQueries {
             ORDER BY ptt.display_order
             """;
     public static final String GET_PACKAGE_SCHEDULE_IDS_BY_TOUR_ID = """
-        SELECT
-            ps.id
-        FROM package_schedule ps
-        LEFT JOIN packages p
-            ON p.package_id = ps.package_id
-        LEFT JOIN tour t
-            ON t.tour_id = p.tour_id
-        WHERE t.tour_id = ?
-        """;
+            SELECT
+                ps.id
+            FROM package_schedule ps
+            LEFT JOIN packages p
+                ON p.package_id = ps.package_id
+            LEFT JOIN tour t
+                ON t.tour_id = p.tour_id
+            WHERE t.tour_id = ?
+            """;
 
     public static final String GET_PACKAGE_SCHEDULE_DETAILS_BY_ID = """
             SELECT
@@ -839,5 +839,118 @@ public class PackageQueries {
             LEFT JOIN package_images pi
             	ON pi.package_id = p.package_id
             WHERE p.package_id =?
-            """ ;
+            """;
+    public static final String GET_ALL_PACKAGES_IMAGES = """
+            SELECT
+            	p.package_id AS package_id,
+            	pi.id AS image_id,
+            	pi.name AS image_name,
+                pi.description AS image_description,
+                pi.image_url
+            FROM package_images pi
+            LEFT JOIN packages p
+            	ON p.package_id = pi.package_id
+            LEFT JOIN tour t
+            	ON t.tour_id = p.tour_id
+            WHERE t.tour_id = ?
+            """;
+    public static final String GET_PACKAGE_BASIC_DETAILS_BY_PACKAGE_SCHEDULE_ID = """
+            SELECT
+            	p.package_id,
+            	ps.assume_start_date,
+                 ps.assume_end_date,
+            	p.name,
+            	p.description,
+            	p.total_price,
+            	p.price_per_person,
+            	p.discount_percentage,
+            	p.color,
+            	p.hover_color,
+            	p.min_person_count,
+            	p.max_person_count,
+                t.tour_id,
+                t.start_location,
+                t.end_location,
+            	cs.name AS status
+            FROM package_schedule ps
+            LEFT JOIN packages p
+            	ON ps.package_id = p.package_id
+            LEFT JOIN tour t
+            	ON t.tour_id = p.tour_id
+            LEFT JOIN common_status cs
+            	ON cs.id = p.status
+            WHERE ps.id = ?
+            """;
+    public static final String GET_PACKAGE_DAY_ACCOMMODATION_PRICE_BY_PACKAGE_SHECULE_ID = """
+            SELECT DISTINCT
+            	p.package_id,
+            	pda.package_day_accommodation_id,
+            	pda.day_number,
+            	pda.hotel_id,
+                sp.name AS hotel_name,
+            	pda.transport_id,
+            	pda.transport_cost,
+            	pda.local_price,
+            	pda.price,
+            	pda.discount,
+            	pda.service_charge,
+            	pda.tax,
+            	pda.extra_charge,
+            	pda.extra_charge_note,
+                t.name AS tour_name,
+                t.description AS tour_description
+            FROM package_schedule ps
+            JOIN packages p
+            	ON ps.package_id = p.package_id
+            LEFT JOIN tour t
+            	ON t.tour_id = p.tour_id
+            LEFT JOIN package_day_accommodation pda
+            	ON pda.package_id = p.package_id
+            LEFT JOIN service_provider sp
+            	ON sp.service_provider_id = pda.hotel_id
+            JOIN common_status cs
+            	ON cs.id = p.status
+                        WHERE ps.id = ?
+            """;
+    public static final String GET_PACKAGE_DESTINATION_EXTRA_PRICE_BY_PACKAGE_SCHEDULE_ID = """
+            SELECT DISTINCT
+            	p.package_id,
+                td.destination_id,
+                d.extra_price,
+                d.extra_price_note,
+                d.name,
+                d.description
+            FROM package_schedule ps
+            JOIN packages p
+                ON ps.package_id = p.package_id
+            JOIN tour t
+                ON t.tour_id = p.tour_id
+            JOIN tour_destination td
+                ON td.tour_id = t.tour_id
+            JOIN destination d
+                ON d.destination_id = td.destination_id
+            JOIN common_status cs
+                ON cs.id = p.status
+            WHERE ps.id = ?
+            """;
+    public static final String GET_PACKAGE_ACTIVITY_PRICE_BY_PACKAGE_SCHEDULE_ID = """
+            SELECT
+            	p.package_id,
+                td.activities_id,
+                a.price_foreigners,
+                a.name,
+                a.description
+            FROM package_schedule ps
+            LEFT JOIN packages p
+            	ON ps.package_id = p.package_id
+            LEFT JOIN tour t
+            	ON t.tour_id = p.tour_id
+            LEFT JOIN tour_destination td
+            	ON td.tour_id = t.tour_id
+            LEFT JOIN activities a
+            	ON a.id = td.activities_id
+            LEFT JOIN common_status cs
+            	ON cs.id = p.status
+            WHERE ps.id = ?
+            """;
 }

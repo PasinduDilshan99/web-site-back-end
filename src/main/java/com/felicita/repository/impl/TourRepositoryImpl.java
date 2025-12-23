@@ -1406,6 +1406,71 @@ public class TourRepositoryImpl implements TourRepository {
         }
     }
 
+    @Override
+    public List<TourBasicDetailsResponse> getAllToursBasicDetails() {
+
+        String sql = TourQueries.GET_ALL_TOURS_BASIC_DETAILS;
+
+        try {
+            return jdbcTemplate.query(sql, rs -> {
+
+                Map<Long, TourBasicDetailsResponse> tourMap = new LinkedHashMap<>();
+
+                while (rs.next()) {
+
+                    Long tourId = rs.getLong("tour_id");
+
+                    // Create tour object only once per tour_id
+                    TourBasicDetailsResponse response = tourMap.get(tourId);
+                    if (response == null) {
+
+                        TourBasicDetailsResponse.TourBasicDetails tourDetails =
+                                TourBasicDetailsResponse.TourBasicDetails.builder()
+                                        .tourId(tourId)
+                                        .tourName(rs.getString("name"))
+                                        .tourDescription(rs.getString("description"))
+                                        .tourCategory(rs.getString("category"))
+                                        .tourType(rs.getString("type"))
+                                        .duration(rs.getInt("duration"))
+                                        .latitude(rs.getDouble("latitude"))
+                                        .longitude(rs.getDouble("longitude"))
+                                        .startLocation(rs.getString("start_location"))
+                                        .endLocation(rs.getString("end_location"))
+                                        .status(rs.getString("status"))
+                                        .build();
+
+                        response = TourBasicDetailsResponse.builder()
+                                .tourDetails(tourDetails)
+                                .images(new ArrayList<>())
+                                .build();
+
+                        tourMap.put(tourId, response);
+                    }
+
+                    // Add image if exists
+                    Long imageId = rs.getLong("image_id");
+                    if (!rs.wasNull()) {
+                        TourBasicDetailsResponse.TourImageDetails image =
+                                TourBasicDetailsResponse.TourImageDetails.builder()
+                                        .imageId(imageId)
+                                        .imageName(rs.getString("image_name"))
+                                        .imageDescription(rs.getString("image_description"))
+                                        .imageUrl(rs.getString("image_url"))
+                                        .build();
+
+                        response.getImages().add(image);
+                    }
+                }
+
+                return new ArrayList<>(tourMap.values());
+            });
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching all tours", ex);
+            throw new InternalServerErrorExceptionHandler("Database error while fetching tours");
+        }
+    }
+
 
 
     // ✅ Helper methods (avoid null pointer issues)

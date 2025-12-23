@@ -48,4 +48,6 @@ public interface TourRepository {
     List<TourSchedulesResponse.TourScheduleDetails> getTourSchedulesById(Long tourId);
 
     TourSchedulesResponse.TourBasicDetails getTourBasicDetails(Long tourId);
+
+    List<TourBasicDetailsResponse> getAllToursBasicDetails();
 }

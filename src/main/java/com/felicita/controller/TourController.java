@@ -148,4 +148,13 @@ public class TourController {
         LOGGER.info("{} End execute get all tour schedules with given id {}", Constant.DOTS, Constant.DOTS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @GetMapping(path = "/all-tours-basic")
+    public ResponseEntity<CommonResponse<List<TourBasicDetailsResponse>>> getAllToursBasicDetails() {
+        LOGGER.info("{} Start execute get all tours basic details {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<TourBasicDetailsResponse>> response = tourService.getAllToursBasicDetails();
+        LOGGER.info("{} End execute get all tours basic details {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 }

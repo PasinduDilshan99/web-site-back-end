@@ -2,6 +2,7 @@ package com.felicita.service.impl;
 
 import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
+import com.felicita.model.dto.VehicleBasicDetailsDto;
 import com.felicita.model.enums.CommonStatus;
 import com.felicita.model.enums.PartnerStatus;
 import com.felicita.model.response.CommonResponse;
@@ -108,6 +109,25 @@ public class VehicleServiceImpl implements VehicleService {
                             Instant.now()
                     )
             );
+
+        }catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching visible partners: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        }catch (Exception e) {
+            LOGGER.error("Error occurred while fetching visible partners: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch partners from database");
+        } finally {
+            LOGGER.info("End fetching all visible partners from repository");
+        }
+    }
+
+    @Override
+    public VehicleBasicDetailsDto getVehicleBasicDetailsById(Long vehicleId) {
+        LOGGER.info("Start fetching all visible partners from repository");
+
+        try {
+            VehicleBasicDetailsDto vehicleBasicDetailsDto = vehicleRepository.getVehicleBasicDetailsById(vehicleId);
+            return vehicleBasicDetailsDto;
 
         }catch (DataNotFoundErrorExceptionHandler e) {
             LOGGER.error("Error occurred while fetching visible partners: {}", e.getMessage(), e);

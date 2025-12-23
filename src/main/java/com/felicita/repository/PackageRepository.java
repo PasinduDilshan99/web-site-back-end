@@ -1,8 +1,6 @@
 package com.felicita.repository;
 
-import com.felicita.model.dto.PackageDayByDayDto;
-import com.felicita.model.dto.PackageDetailsDto;
-import com.felicita.model.dto.PackageResponseDto;
+import com.felicita.model.dto.*;
 import com.felicita.model.request.PackageDataRequest;
 import com.felicita.model.response.*;
 
@@ -48,4 +46,14 @@ public interface PackageRepository {
     List<PackageScheduleDetailsResponse.PackageScheduleDetails> getPackageSchedulesForId(Long packageId);
 
     PackageScheduleDetailsResponse.PackageBasicDetails getPackageBasicDetails(Long packageId);
+
+    List<PackageComapreResponse.PackageImages> getAllPackagesImages(Long tourId);
+
+    PackageBasicDetailsDto getPackageBasicDetailsByScheduleId(Long packageScheduleId);
+
+    List<PackageDayAccommodationPriceDto> getPackageDayAccommodationPriceByScheduleId(Long packageScheduleId);
+
+    List<PackageDestinationExtraPriceDto> getPackageDestinationExtraPriceByScheduleId(Long packageScheduleId);
+
+    List<PackageActivityPriceDto> getPackageActivityPriceByScheduleId(Long packageScheduleId);
 }

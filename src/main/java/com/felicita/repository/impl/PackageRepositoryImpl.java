@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Repository;
@@ -652,7 +653,8 @@ public class PackageRepositoryImpl implements PackageRepository {
                         try {
                             images = objectMapper.readValue(
                                     imagesJson,
-                                    new TypeReference<List<PackageHistoryDetailsResponse.ImageInfo>>() {}
+                                    new TypeReference<List<PackageHistoryDetailsResponse.ImageInfo>>() {
+                                    }
                             );
                         } catch (JsonProcessingException e) {
                             LOGGER.warn("Failed to parse images JSON for packageHistoryId {}: {}",
@@ -703,7 +705,6 @@ public class PackageRepositoryImpl implements PackageRepository {
     }
 
 
-
     @Override
     public List<PackageHistoryDetailsResponse> getAllPackageHistoryDetails() {
         try {
@@ -740,7 +741,8 @@ public class PackageRepositoryImpl implements PackageRepository {
                         try {
                             images = objectMapper.readValue(
                                     imagesJson,
-                                    new TypeReference<List<PackageHistoryDetailsResponse.ImageInfo>>() {}
+                                    new TypeReference<List<PackageHistoryDetailsResponse.ImageInfo>>() {
+                                    }
                             );
                         } catch (JsonProcessingException e) {
                             throw new RuntimeException("Failed to parse images JSON", e);
@@ -816,7 +818,7 @@ public class PackageRepositoryImpl implements PackageRepository {
             );
 
             if (packageIds.isEmpty()) {
-               return null;
+                return null;
             }
 
             /* -------------------------------------------------
@@ -1295,6 +1297,174 @@ public class PackageRepositoryImpl implements PackageRepository {
         }
     }
 
+    @Override
+    public List<PackageComapreResponse.PackageImages> getAllPackagesImages(Long tourId) {
+
+        String sql = PackageQueries.GET_ALL_PACKAGES_IMAGES;
+
+        try {
+            return jdbcTemplate.query(
+                    sql,
+                    new Object[]{tourId},
+                    (rs, rowNum) -> PackageComapreResponse.PackageImages.builder()
+                            .packageId(rs.getLong("package_id"))
+                            .imageId(rs.getLong("image_id"))
+                            .name(rs.getString("image_name"))
+                            .description(rs.getString("image_description"))
+                            .url(rs.getString("image_url"))
+                            .build()
+            );
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching package images for tourId {}", tourId, ex);
+            throw new InternalServerErrorExceptionHandler(
+                    "Database error while fetching package images"
+            );
+        }
+    }
+
+    @Override
+    public PackageBasicDetailsDto getPackageBasicDetailsByScheduleId(Long packageScheduleId) {
+        String QUERY = PackageQueries.GET_PACKAGE_BASIC_DETAILS_BY_PACKAGE_SCHEDULE_ID;
+
+        try {
+            return jdbcTemplate.queryForObject(
+                    QUERY,
+                    new Object[]{packageScheduleId},
+                    (rs, rowNum) -> PackageBasicDetailsDto.builder()
+                            .packageId(rs.getLong("package_id"))
+                            .assumeStartDate(rs.getDate("assume_start_date"))
+                            .assumeEndDate(rs.getDate("assume_end_date"))
+                            .packageName(rs.getString("name"))
+                            .description(rs.getString("description"))
+                            .totalPrice(rs.getDouble("total_price"))
+                            .pricePerPerson(rs.getDouble("price_per_person"))
+                            .discountPercentage(rs.getDouble("discount_percentage"))
+                            .color(rs.getString("color"))
+                            .hoverColor(rs.getString("hover_color"))
+                            .minPersonCount(rs.getInt("min_person_count"))
+                            .maxPersonCount(rs.getInt("max_person_count"))
+                            .tourId(rs.getLong("tour_id"))
+                            .startLocation(rs.getString("start_location"))
+                            .endLocation(rs.getString("end_location"))
+                            .status(rs.getString("status"))
+                            .build()
+            );
+
+        } catch (EmptyResultDataAccessException ex) {
+            LOGGER.warn("No package found for schedule id {}", packageScheduleId);
+            throw new DataNotFoundErrorExceptionHandler("No package found for given schedule id");
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching package basic details", ex);
+            throw new DataNotFoundErrorExceptionHandler("Database error while fetching package basic details");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching package basic details", ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error while fetching package basic details");
+        }
+    }
+
+    @Override
+    public List<PackageDayAccommodationPriceDto> getPackageDayAccommodationPriceByScheduleId(Long packageScheduleId) {
+        String QUERY = PackageQueries.GET_PACKAGE_DAY_ACCOMMODATION_PRICE_BY_PACKAGE_SHECULE_ID;
+
+        try {
+            return jdbcTemplate.query(QUERY, new Object[]{packageScheduleId}, rs -> {
+                List<PackageDayAccommodationPriceDto> list = new ArrayList<>();
+
+                while (rs.next()) {
+                    list.add(PackageDayAccommodationPriceDto.builder()
+                            .packageId(rs.getLong("package_id"))
+                            .packageDayAccommodationId(rs.getLong("package_day_accommodation_id"))
+                            .dayNumber(rs.getInt("day_number"))
+                            .hotelId(rs.getLong("hotel_id"))
+                            .hotelName(rs.getString("hotel_name"))
+                            .vehicleId(rs.getLong("transport_id"))
+                            .transportPrice(rs.getDouble("transport_cost"))
+                            .localPrice(rs.getObject("local_price", Double.class))
+                            .price(rs.getObject("price", Double.class))
+                            .discount(rs.getObject("discount", Double.class))
+                            .serviceCharge(rs.getObject("service_charge", Double.class))
+                            .tax(rs.getObject("tax", Double.class))
+                            .extraCharge(rs.getObject("extra_charge", Double.class))
+                            .extraChargeNote(rs.getString("extra_charge_note"))
+                            .tourName(rs.getString("tour_name"))
+                            .tourDescription(rs.getString("tour_description"))
+                            .build());
+                }
+                return list;
+            });
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching package day accommodation prices", ex);
+            throw new DataNotFoundErrorExceptionHandler("Database error while fetching package day accommodation prices");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching package day accommodation prices", ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error while fetching package day accommodation prices");
+        }
+    }
+
+    @Override
+    public List<PackageDestinationExtraPriceDto> getPackageDestinationExtraPriceByScheduleId(Long packageScheduleId) {
+        String QUERY = PackageQueries.GET_PACKAGE_DESTINATION_EXTRA_PRICE_BY_PACKAGE_SCHEDULE_ID;
+
+        try {
+            return jdbcTemplate.query(QUERY, new Object[]{packageScheduleId}, rs -> {
+                List<PackageDestinationExtraPriceDto> list = new ArrayList<>();
+
+                while (rs.next()) {
+                    list.add(PackageDestinationExtraPriceDto.builder()
+                            .packageId(rs.getLong("package_id"))
+                            .destinationId(rs.getLong("destination_id"))
+                            .extraPrice(rs.getObject("extra_price", Double.class))
+                            .extraPriceNote(rs.getString("extra_price_note"))
+                            .destinationName(rs.getString("name"))
+                            .destinationDescription(rs.getString("description"))
+                            .build());
+                }
+                return list;
+            });
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching destination extra prices", ex);
+            throw new DataNotFoundErrorExceptionHandler("Database error while fetching destination extra prices");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching destination extra prices", ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error while fetching destination extra prices");
+        }
+    }
+
+
+    @Override
+    public List<PackageActivityPriceDto> getPackageActivityPriceByScheduleId(Long packageScheduleId) {
+        String QUERY = PackageQueries.GET_PACKAGE_ACTIVITY_PRICE_BY_PACKAGE_SCHEDULE_ID;
+
+        try {
+            return jdbcTemplate.query(QUERY, new Object[]{packageScheduleId}, rs -> {
+                List<PackageActivityPriceDto> list = new ArrayList<>();
+
+                while (rs.next()) {
+                    // activities_id can be NULL
+                    if (rs.getObject("activities_id") != null) {
+                        list.add(PackageActivityPriceDto.builder()
+                                .packageId(rs.getLong("package_id"))
+                                .activityId(rs.getLong("activities_id"))
+                                .priceForeigners(rs.getObject("price_foreigners", Double.class))
+                                .name(rs.getString("name"))
+                                .description(rs.getString("description"))
+                                .build());
+                    }
+                }
+                return list;
+            });
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching activity prices", ex);
+            throw new DataNotFoundErrorExceptionHandler("Database error while fetching activity prices");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching activity prices", ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error while fetching activity prices");
+        }
+    }
 
 
 }

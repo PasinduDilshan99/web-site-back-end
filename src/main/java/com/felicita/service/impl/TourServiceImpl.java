@@ -606,4 +606,35 @@ public class TourServiceImpl implements TourService {
         }
     }
 
+    @Override
+    public CommonResponse<List<TourBasicDetailsResponse>> getAllToursBasicDetails() {
+        LOGGER.info("Start fetching all tours basic details from repository");
+        try {
+            List<TourBasicDetailsResponse> tourBasicDetailsResponses = tourRepository.getAllToursBasicDetails();
+
+            if (tourBasicDetailsResponses.isEmpty()) {
+                LOGGER.warn("No tours found in database");
+                throw new DataNotFoundErrorExceptionHandler("No tours found");
+            }
+
+            LOGGER.info("Fetched {} tours basic details successfully", tourBasicDetailsResponses.size());
+            return new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            tourBasicDetailsResponses,
+                            Instant.now()
+            );
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching tours basic details: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching tours basic details: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch tours basic details from database");
+        } finally {
+            LOGGER.info("End fetching all tours basic details from repository");
+        }
+    }
+
 }

@@ -1,6 +1,6 @@
 package com.felicita.service;
 
-import com.felicita.model.dto.PackageResponseDto;
+import com.felicita.model.dto.*;
 import com.felicita.model.request.PackageDataRequest;
 import com.felicita.model.response.*;
 import org.springframework.http.ResponseEntity;
@@ -36,4 +36,14 @@ public interface PackageService {
     CommonResponse<List<PackageScheduleResponse>> getPackageSchedulesByTourId(Long tourId);
 
     CommonResponse<PackageScheduleDetailsResponse> getPackageSchedulesForId(Long packageId);
+
+    CommonResponse<List<PackageComapreResponse>> getDayToPackageDetailsForComapreByTourId(Long tourId);
+
+    PackageBasicDetailsDto getPackageBasicDetailsByScheduleId(Long packageScheduleId);
+
+    List<PackageActivityPriceDto> getPackageActivityPriceByScheduleId(Long packageScheduleId);
+
+    List<PackageDestinationExtraPriceDto> getPackageDestinationExtraPriceByScheduleId(Long packageScheduleId);
+
+    List<PackageDayAccommodationPriceDto> getPackageDayAccommodationPriceByScheduleId(Long packageScheduleId);
 }

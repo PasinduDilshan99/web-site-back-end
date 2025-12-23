@@ -1,5 +1,6 @@
 package com.felicita.controller;
 
+import com.felicita.model.request.BookingRequest;
 import com.felicita.model.response.*;
 import com.felicita.service.BookingService;
 import com.felicita.util.Constant;
@@ -8,9 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -56,6 +55,22 @@ public class BookingController {
         LOGGER.info("{} Start execute get cancelled booking tours details {}", Constant.DOTS, Constant.DOTS);
         CommonResponse<List<CancelledToursResponse>> response = bookingService.getCancelledToursDetailsById();
         LOGGER.info("{} End execute get cancelled booking tours details {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping(path = "/book-tour")
+    public ResponseEntity<CommonResponse<BookInsertResponse>> bookingTour(@RequestBody BookingRequest bookingRequest) {
+        LOGGER.info("{} Start execute booking a tour {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<BookInsertResponse> response = bookingService.bookingTour(bookingRequest);
+        LOGGER.info("{} End execute booking a tour {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/book-receipt/{bookingId}")
+    public ResponseEntity<CommonResponse<PrintReceiptForBookingResponse>> createReceiptForBooking(@PathVariable Long bookingId) {
+        LOGGER.info("{} Start execute create receipt for booking a tour {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<PrintReceiptForBookingResponse> response = bookingService.createReceiptForBooking(bookingId);
+        LOGGER.info("{} End execute create receipt for booking a tour {}", Constant.DOTS, Constant.DOTS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
