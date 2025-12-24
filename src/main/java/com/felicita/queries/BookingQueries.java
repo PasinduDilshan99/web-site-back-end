@@ -1090,4 +1090,22 @@ public class BookingQueries {
             	ON t.tour_id = p.tour_id
             WHERE b.user_id = ?
             """;
+
+    public static final String INSERT_BOOKING_AIRPORT_TRANSPORTATION = """
+    INSERT INTO booking_transportation (
+        booking_id,
+        transport_type,
+        departure_date,
+        departure_time,
+        arrival_date,
+        arrival_time,
+        departure_location,
+        arrival_location,
+        created_by,
+        created_at
+    ) VALUES (
+        ?,?, ?, ?, ?, ?, ?, ?, ?, NOW()
+    )
+    """;
+
 }

@@ -420,4 +420,68 @@ public class HeroSectionServiceImpl implements HeroSectionService {
             LOGGER.info("End fetching all activity hero section items from repository");
         }
     }
+
+    @Override
+    public CommonResponse<List<PackageScheduleHeroSectionResponse>> getPackageScheduleHeroSectionDetails(Long packageScheduleId) {
+        LOGGER.info("Start fetching all package schedule hero section items from repository");
+
+        try {
+            List<PackageScheduleHeroSectionResponse> packageScheduleHeroSectionResponses =
+                    heroSectionRepository.getPackageScheduleHeroSectionDetails(packageScheduleId);
+
+            if (packageScheduleHeroSectionResponses.isEmpty()) {
+                LOGGER.warn("No package schedule hero section items found in database");
+                throw new DataNotFoundErrorExceptionHandler("No package schedule hero section items found");
+            }
+
+
+            LOGGER.info("Fetched {} active package schedule hero section items successfully", packageScheduleHeroSectionResponses.size());
+
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    packageScheduleHeroSectionResponses,
+                    Instant.now()
+            );
+
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching active package schedule hero section items: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch package schedule hero section items from database");
+        } finally {
+            LOGGER.info("End fetching all package schedule hero section items from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<List<BookedTourHeroSectionResponse>> getBookedTourHeroSectionDetails(Long bookingId) {
+        LOGGER.info("Start fetching all booked tour hero section items from repository");
+
+        try {
+            List<BookedTourHeroSectionResponse> bookedTourHeroSectionResponses =
+                    heroSectionRepository.getBookedTourHeroSectionDetails(bookingId);
+
+            if (bookedTourHeroSectionResponses.isEmpty()) {
+                LOGGER.warn("No booked tour hero section items found in database");
+                throw new DataNotFoundErrorExceptionHandler("No booked tour hero section items found");
+            }
+
+
+            LOGGER.info("Fetched {} active booked tour hero section items successfully", bookedTourHeroSectionResponses.size());
+
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    bookedTourHeroSectionResponses,
+                    Instant.now()
+            );
+
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching active booked tour hero section items: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch booked tour hero section items from database");
+        } finally {
+            LOGGER.info("End fetching all booked tour hero section items from repository");
+        }
+    }
 }

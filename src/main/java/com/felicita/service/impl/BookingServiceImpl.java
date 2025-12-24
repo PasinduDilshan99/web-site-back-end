@@ -246,6 +246,8 @@ public class BookingServiceImpl implements BookingService {
             Long bookingId = bookingRepository.bookingTourBasicDetails(insertBookingRequestDto);
             bookInsertResponse.setBookingId(bookingId);
 
+            // insert transport - airport
+            bookingRepository.bookingAirportTransportation(bookingId, bookingRequest.getTransport(), userId);
 
             // insert transport vehicel
             for (PackageDayAccommodationPriceDto p : packageDayAccommodationPriceDto) {

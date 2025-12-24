@@ -31,22 +31,22 @@ public class JwtServiceImpl implements JwtService {
     @Value("${jwt.secret}")
     private String secretKey;
 
-    @Value("${jwt.expiration.time:60000}")
+    @Value("${jwt.expiration.time}")
     private long jwtExpirationMillis;
 
-    @Value("${jwt.refresh.expiration.time:120000}")
+    @Value("${jwt.refresh.expiration.time}")
     private long refreshJwtExpirationMillis;
 
-    @Value("${jwt.cookie.name:auth-token}")
+    @Value("${jwt.cookie.name}")
     private String accessCookieName;
 
-    @Value("${jwt.refresh.cookie.name:refresh-token}")
+    @Value("${jwt.refresh.cookie.name}")
     private String refreshCookieName;
 
-    @Value("${jwt.cookie.max-age:600}")
+    @Value("${jwt.cookie.max-age}")
     private long accessCookieMaxAge;
 
-    @Value("${jwt.refresh.cookie.max-age:900}")
+    @Value("${jwt.refresh.cookie.max-age}")
     private long refreshCookieMaxAge;
 
     private final JwtTokenService jwtTokenService;

@@ -17,10 +17,10 @@ public class BookingRequest {
     private String dietaryRestrictions;
     private Boolean insuranceRequired;
     private Transport transport;
-    private List<BookingPrice> bookingPrices;
+//    private List<BookingPrice> bookingPrices;
     private List<Participant> participants;
     private List<BookingNote> bookingNotes;
-    private List<BookingActivity> activities;
+//    private List<BookingActivity> activities;
     private BookingInvoice invoices;
 
     /* -------------------- TRANSPORT -------------------- */
@@ -38,19 +38,19 @@ public class BookingRequest {
     }
 
     /* -------------------- BOOKING PRICE -------------------- */
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
-    public static class BookingPrice {
-        private Long bookingId;
-        private String itemType;
-        private String itemName;
-        private String itemDescription;
-        private Integer quantity;
-        private Double unitPrice;
-        private Double totalPrice;
-    }
+//    @Data
+//    @NoArgsConstructor
+//    @AllArgsConstructor
+//    @Builder
+//    public static class BookingPrice {
+//        private Long bookingId;
+//        private String itemType;
+//        private String itemName;
+//        private String itemDescription;
+//        private Integer quantity;
+//        private Double unitPrice;
+//        private Double totalPrice;
+//    }
 
     /* -------------------- PARTICIPANT -------------------- */
     @Data
@@ -88,14 +88,14 @@ public class BookingRequest {
 
 
     /* -------------------- ACTIVITIES -------------------- */
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
-    public static class BookingActivity {
-        private Long activityScheduleId;
-        private Integer numberOfParticipants;
-    }
+//    @Data
+//    @NoArgsConstructor
+//    @AllArgsConstructor
+//    @Builder
+//    public static class BookingActivity {
+//        private Long activityScheduleId;
+//        private Integer numberOfParticipants;
+//    }
 
 
     /* -------------------- INVOICE -------------------- */

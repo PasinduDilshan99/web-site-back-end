@@ -26,7 +26,6 @@ public class PackageHeroSectionResponse {
     private String secondaryButtonText;
     private String secondaryButtonLink;
 
-    /** Status name from common_status table */
     private String status;
 
     private Integer order;

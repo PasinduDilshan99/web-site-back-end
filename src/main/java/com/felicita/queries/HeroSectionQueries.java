@@ -30,25 +30,25 @@ public class HeroSectionQueries {
             """;
 
     public static final String GET_ALL_ABOUT_US_HERO_SECTION_DATA = """
-            SELECT
-               a.id,
-               a.name,
-               a.image_url,
-               a.title,
-               a.subtitle,
-               a.description,
-               a.primary_button_text,
-               a.primary_button_link,
-               a.secondary_button_text,
-               a.secondary_button_link,
-               a.`order`,
-               a.created_at,
-               a.updated_at,
-               s.name AS status_name
-           FROM about_us_hero_section a
-           LEFT JOIN common_status s ON a.status = s.id
-           WHERE a.terminated_at IS NULL
-           ORDER BY a.`order` ASC, a.created_at ASC
+             SELECT
+                a.id,
+                a.name,
+                a.image_url,
+                a.title,
+                a.subtitle,
+                a.description,
+                a.primary_button_text,
+                a.primary_button_link,
+                a.secondary_button_text,
+                a.secondary_button_link,
+                a.`order`,
+                a.created_at,
+                a.updated_at,
+                s.name AS status_name
+            FROM about_us_hero_section a
+            LEFT JOIN common_status s ON a.status = s.id
+            WHERE a.terminated_at IS NULL
+            ORDER BY a.`order` ASC, a.created_at ASC
             """;
 
 
@@ -215,5 +215,34 @@ public class HeroSectionQueries {
             FROM package_hero_section phs
             JOIN common_status cs ON phs.status = cs.id
             ORDER BY phs.`order` ASC
-            """ ;
+            """;
+    public static final String GET_ALL_PACKAGE_SCHEDULE_HERO_SECTION_DATA = """
+            SELECT
+                pi.id,
+            	pi.name,
+                pi.description,
+                pi.image_url,
+                pi.color
+            FROM package_images pi
+            LEFT JOIN packages p
+            	ON p.package_id = pi.package_id
+            WHERE p.package_id = ?
+            """;
+    public static final String GET_BOOKED_TOUR_HERO_SECTION_DATA = """
+            SELECT
+            	ti.id,
+            	ti.name,
+                ti.description,
+                ti.image_url
+            FROM bookings b
+            LEFT JOIN package_schedule ps
+            	ON ps.id = b.package_schedule_id
+            LEFT JOIN packages p
+            	ON p.package_id =  ps.package_id
+            LEFt JOIN tour t
+            	ON t.tour_id = p.tour_id
+            LEFT JOIN tour_images ti
+            	ON ti.tour_id = t.tour_id
+            WHERE b.booking_id = ?
+            """;
 }

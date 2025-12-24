@@ -1430,6 +1430,32 @@ public class BookingRepositoryImpl implements BookingRepository {
         );
     }
 
+    @Override
+    public void bookingAirportTransportation(
+            Long bookingId,
+            BookingRequest.Transport transport,
+            Long userId) {
+        String sql = BookingQueries.INSERT_BOOKING_AIRPORT_TRANSPORTATION;
+
+        try {
+            jdbcTemplate.update(
+                    sql,
+                    bookingId,
+                    "FLIGHT",
+                    transport.getDepartureDate(),
+                    transport.getDepartureTime(),
+                    transport.getArrivalDate(),
+                    transport.getArrivalTime(),
+                    transport.getDepartureLocation(),
+                    transport.getArrivalLocation(),
+                    userId
+            );
+        } catch (Exception ex) {
+            LOGGER.error("Error while inserting airport transportation for bookingId: {}", bookingId, ex);
+            throw new RuntimeException("Failed to save airport transportation details", ex);
+        }
+    }
+
 
 
 }

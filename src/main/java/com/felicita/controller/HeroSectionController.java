@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -89,6 +90,22 @@ public class HeroSectionController {
         LOGGER.info("{} Start execute get all package hero section data {}", Constant.DOTS, Constant.DOTS);
         CommonResponse<List<PackageHeroSectionResponse>> response = heroSectionService.getPackageHeroSectionDetails();
         LOGGER.info("{} End execute get all package hero section data {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/package-schedule/{packageScheduleId}")
+    public ResponseEntity<CommonResponse<List<PackageScheduleHeroSectionResponse>>> getPackageScheduleHeroSectionDetails(@PathVariable Long packageScheduleId){
+        LOGGER.info("{} Start execute get all package schedule hero section data {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<PackageScheduleHeroSectionResponse>> response = heroSectionService.getPackageScheduleHeroSectionDetails(packageScheduleId);
+        LOGGER.info("{} End execute get all package schedule hero section data {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/booked-tour/{bookingId}")
+    public ResponseEntity<CommonResponse<List<BookedTourHeroSectionResponse>>> getBookedTourHeroSectionDetails(@PathVariable Long bookingId){
+        LOGGER.info("{} Start execute get all booked tour hero section data {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<BookedTourHeroSectionResponse>> response = heroSectionService.getBookedTourHeroSectionDetails(bookingId);
+        LOGGER.info("{} End execute get all booked tour hero section data {}", Constant.DOTS, Constant.DOTS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

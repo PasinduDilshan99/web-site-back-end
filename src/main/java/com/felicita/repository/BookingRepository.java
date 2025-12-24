@@ -41,4 +41,6 @@ public interface BookingRepository {
     List<BookingFilterResponse> getBookingFilter();
 
     List<UserBookingSummaryResponse> getBookedTours(Long userId);
+
+    void bookingAirportTransportation(Long bookingId, BookingRequest.Transport transport, Long userId);
 }

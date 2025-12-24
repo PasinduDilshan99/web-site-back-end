@@ -533,6 +533,66 @@ public class HeroSectionRepositoryImpl implements HeroSectionRepository {
         }
     }
 
+    @Override
+    public List<PackageScheduleHeroSectionResponse> getPackageScheduleHeroSectionDetails(Long packageScheduleId) {
+        String GET_ALL_PACKAGE_SCHEDULE_HERO_SECTION_DATA = HeroSectionQueries.GET_ALL_PACKAGE_SCHEDULE_HERO_SECTION_DATA;
+
+        try {
+            List<PackageScheduleHeroSectionResponse> results = jdbcTemplate.query(
+                    GET_ALL_PACKAGE_SCHEDULE_HERO_SECTION_DATA,
+                    new Object[]{packageScheduleId},
+                    (rs, rowNum) -> PackageScheduleHeroSectionResponse.builder()
+                            .id(rs.getLong("id"))
+                            .name(rs.getString("name"))
+                            .description(rs.getString("description"))
+                            .imageUrl(rs.getString("image_url"))
+                            .color(rs.getString("color"))
+                            .build()
+            );
+            return results;
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching package hero section items: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler(
+                    "Failed to fetch package hero section items from database"
+            );
+
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching package hero section items: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler(
+                    "Unexpected error occurred while fetching package hero section items"
+            );
+        }
+    }
+
+    @Override
+    public List<BookedTourHeroSectionResponse> getBookedTourHeroSectionDetails(Long bookingId) {
+        String GET_BOOKED_TOUR_HERO_SECTION_DATA = HeroSectionQueries.GET_BOOKED_TOUR_HERO_SECTION_DATA;
+
+        try {
+            List<BookedTourHeroSectionResponse> results = jdbcTemplate.query(
+                    GET_BOOKED_TOUR_HERO_SECTION_DATA,
+                    new Object[]{bookingId},
+                    (rs, rowNum) -> BookedTourHeroSectionResponse.builder()
+                            .id(rs.getLong("id"))
+                            .name(rs.getString("name"))
+                            .description(rs.getString("description"))
+                            .imageUrl(rs.getString("image_url"))
+                            .build()
+            );
+            return results;
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching booked tour hero section items: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler(
+                    "Failed to fetch booked tour hero section items from database"
+            );
+
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching booked tour hero section items: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler(
+                    "Unexpected error occurred while fetching booked tour hero section items"
+            );
+        }
+    }
 
 
 }
