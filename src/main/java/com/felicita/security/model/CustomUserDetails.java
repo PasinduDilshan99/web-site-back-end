@@ -1,5 +1,6 @@
 package com.felicita.security.model;
 
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,6 +9,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+@ToString
 public class CustomUserDetails implements UserDetails {
 
     private final User user;
@@ -19,10 +21,16 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Set<SimpleGrantedAuthority> authorities = new HashSet<>();
-        user.getRoles().forEach(role -> authorities.add(new SimpleGrantedAuthority(role)));
-        user.getPrivileges().forEach(privilege -> authorities.add(new SimpleGrantedAuthority(privilege)));
+        user.getRoles().forEach(role ->
+                authorities.add(new SimpleGrantedAuthority("ROLE_" + role))
+        );
+        user.getPrivileges().forEach(privilege ->
+                authorities.add(new SimpleGrantedAuthority(privilege))
+        );
+
         return authorities;
     }
+
 
     @Override
     public String getPassword() {

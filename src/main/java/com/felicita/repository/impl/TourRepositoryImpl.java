@@ -9,7 +9,6 @@ import com.felicita.exception.InternalServerErrorExceptionHandler;
 import com.felicita.model.dto.*;
 import com.felicita.model.request.TourDataRequest;
 import com.felicita.model.response.*;
-import com.felicita.queries.DestinationQueries;
 import com.felicita.queries.TourQueries;
 import com.felicita.repository.TourRepository;
 import org.slf4j.Logger;

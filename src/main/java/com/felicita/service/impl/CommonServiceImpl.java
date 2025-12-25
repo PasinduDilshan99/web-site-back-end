@@ -1,5 +1,6 @@
 package com.felicita.service.impl;
 
+import com.felicita.exception.UnAuthenticateErrorExceptionHandler;
 import com.felicita.repository.CommonRepository;
 import com.felicita.security.model.CustomUserDetails;
 import com.felicita.security.model.User;
@@ -38,7 +39,7 @@ public class CommonServiceImpl implements CommonService {
     public Long getUserIdBySecurityContext() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !(authentication.getPrincipal() instanceof CustomUserDetails)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No authenticated user");
+            throw new UnAuthenticateErrorExceptionHandler("No authenticated user");
         }
         CustomUserDetails principal = (CustomUserDetails) authentication.getPrincipal();
         User user = principal.getDomainUser();

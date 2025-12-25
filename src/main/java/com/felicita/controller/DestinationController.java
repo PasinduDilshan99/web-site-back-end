@@ -2,6 +2,9 @@ package com.felicita.controller;
 
 import com.felicita.model.dto.*;
 import com.felicita.model.request.DestinationDataRequest;
+import com.felicita.model.request.DestinationInsertRequest;
+import com.felicita.model.request.DestinationTerminateRequest;
+import com.felicita.model.request.DestinationUpdateRequest;
 import com.felicita.model.response.*;
 import com.felicita.service.DestinationService;
 import com.felicita.util.Constant;
@@ -162,6 +165,39 @@ public class DestinationController {
         LOGGER.info("{} End execute get all destination review details by id {}", Constant.DOTS, Constant.DOTS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @GetMapping(path = "/destination-for-terminate")
+    public ResponseEntity<CommonResponse<List<DestinationForTerminateResponse>>> getDestinationsForTerminate() {
+        LOGGER.info("{} Start execute get all active destination for terminate {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<DestinationForTerminateResponse>> response = destinationService.getDestinationsForTerminate();
+        LOGGER.info("{} End execute get all active destination for terminate {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping(path = "/add-destination")
+    public ResponseEntity<CommonResponse<InsertResponse>> insertDestination(@RequestBody DestinationInsertRequest destinationInsertRequest) {
+        LOGGER.info("{} Start execute insert destination {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<InsertResponse> response = destinationService.insertDestination(destinationInsertRequest);
+        LOGGER.info("{} End execute insert destination {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping(path = "/update-destination")
+    public ResponseEntity<CommonResponse<UpdateResponse>> updateDestination(@RequestBody DestinationUpdateRequest destinationUpdateRequest) {
+        LOGGER.info("{} Start execute update destination {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<UpdateResponse> response = destinationService.updateDestination(destinationUpdateRequest);
+        LOGGER.info("{} End execute update destination {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping(path = "/terminate-destination")
+    public ResponseEntity<CommonResponse<TerminateResponse>> terminateDestination(@RequestBody DestinationTerminateRequest destinationTerminateRequest) {
+        LOGGER.info("{} Start execute terminate destination {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<TerminateResponse> response = destinationService.terminateDestination(destinationTerminateRequest);
+        LOGGER.info("{} End execute terminate destination {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 
 
 }

@@ -1,0 +1,7 @@
+package com.felicita.exception;
+
+public class UnAuthenticateErrorExceptionHandler extends RuntimeException{
+    public UnAuthenticateErrorExceptionHandler(String message) {
+        super(message);
+    }
+}

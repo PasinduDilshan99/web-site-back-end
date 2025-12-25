@@ -1,9 +1,15 @@
 package com.felicita.repository.impl;
 
 import com.felicita.exception.DataAccessErrorExceptionHandler;
+import com.felicita.exception.InsertFailedErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
+import com.felicita.exception.TerminateFailedErrorExceptionHandler;
 import com.felicita.model.dto.*;
+import com.felicita.model.enums.CommonStatus;
 import com.felicita.model.request.DestinationDataRequest;
+import com.felicita.model.request.DestinationInsertRequest;
+import com.felicita.model.request.DestinationTerminateRequest;
+import com.felicita.model.request.DestinationUpdateRequest;
 import com.felicita.model.response.*;
 import com.felicita.queries.DestinationQueries;
 import com.felicita.queries.PartnerQueries;
@@ -13,11 +19,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -1362,6 +1368,119 @@ public class DestinationRepositoryImpl implements DestinationRepository {
         }
     }
 
+    @Override
+    public void insertDestination(DestinationInsertRequest request, Long userId) {
+
+        String INSERT_DESTINATION = DestinationQueries.INSERT_DESTINATION_REQUEST;
+        String INSERT_DESTINATION_IMAGE = INSERT_DESTINATION_IMAGES_REQUEST;
+
+        try {
+            KeyHolder keyHolder = new GeneratedKeyHolder();
+
+            jdbcTemplate.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(
+                        INSERT_DESTINATION,
+                        Statement.RETURN_GENERATED_KEYS
+                );
+
+                ps.setString(1, request.getName());
+                ps.setString(2, request.getDescription());
+                ps.setString(3, request.getStatus());               // common_status.name
+                ps.setString(4, request.getDestinationCategory());  // destination_categories.category
+                ps.setString(5, request.getLocation());
+                ps.setDouble(6, request.getLatitude());
+                ps.setDouble(7, request.getLongitude());
+                ps.setLong(8, userId);                              // ✅ created_by
+                ps.setDouble(9, request.getExtraPrice());           // ✅ extra_price
+                ps.setString(10, request.getExtraPriceNote());      // ✅ extra_price_note
+
+                return ps;
+            }, keyHolder);
+
+
+            Long destinationId = keyHolder.getKey().longValue();
+
+            if (request.getImages() != null && !request.getImages().isEmpty()) {
+                for (DestinationInsertRequest.Image image : request.getImages()) {
+                    jdbcTemplate.update(
+                            INSERT_DESTINATION_IMAGE,
+                            destinationId,
+                            image.getName(),
+                            image.getDescription(),
+                            image.getImageUrl(),
+                            image.getStatus(),
+                            userId
+                    );
+                }
+            }
+        } catch (DataAccessException ife) {
+            LOGGER.error(ife.toString());
+            throw new InsertFailedErrorExceptionHandler(ife.getMessage());
+
+        } catch (Exception e) {
+            LOGGER.error("Failed to insert destination : ", e);
+            throw new InternalServerErrorExceptionHandler("Failed to insert destination");
+        }
+    }
+
+    @Override
+    public void terminateDestination(DestinationTerminateRequest destinationTerminateRequest, Long userId) {
+        String DESTINATION_TERMINATE = DestinationQueries.DESTINATION_TERMINATE;
+        try {
+           jdbcTemplate.update(DESTINATION_TERMINATE,new Object[]{CommonStatus.TERMINATED.toString(), userId,destinationTerminateRequest.getDestinationId()});
+        } catch (DataAccessException tfe) {
+            LOGGER.error(tfe.toString());
+            throw new TerminateFailedErrorExceptionHandler(tfe.getMessage());
+
+        } catch (Exception e) {
+            LOGGER.error("Failed to terminate destination : ", e);
+            throw new InternalServerErrorExceptionHandler("Failed to terminate destination");
+        }
+    }
+
+    @Override
+    public List<DestinationForTerminateResponse> getDestinationsForTerminate() {
+        String GET_ACTIVE_DESTINATIONS_FOR_TERMINATE = DestinationQueries.GET_ACTIVE_DESTINATIONS_FOR_TERMINATE;
+
+        try {
+            return jdbcTemplate.query(
+                    GET_ACTIVE_DESTINATIONS_FOR_TERMINATE,
+                    new Object[]{CommonStatus.ACTIVE.toString()}, // parameter for cs.name = ?
+                    (rs, rowNum) -> DestinationForTerminateResponse.builder()
+                            .destinationId(rs.getLong("destination_id"))
+                            .destinationName(rs.getString("name"))
+                            .build()
+            );
+        } catch (DataAccessException e) {
+            LOGGER.error("Failed to fetch destinations for terminate: ", e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch destinations");
+        }
+    }
+
+    @Override
+    public void updateBasicDestinationDetails(DestinationUpdateRequest destinationUpdateRequest, Long userId) {
+        String UPDATE_BASIC_DESTINATION_DETAILS = DestinationQueries.UPDATE_BASIC_DESTINATION_DETAILS;
+    }
+
+    @Override
+    public void removeDestinationImages(List<Long> removeImages, Long userId) {
+
+    }
+
+    @Override
+    public void addNewImagesToDestination(List<DestinationInsertRequest.Image> newImages, Long destinationId, Long userId) {
+
+    }
+
+    @Override
+    public void removeDestinationActivities(List<Long> removeActivities, Long userId) {
+
+    }
+
+    @Override
+    public void addNewActivitiesToDestination(List<DestinationUpdateRequest.Activity> newActivities, Long destinationId, Long userId) {
+
+    }
 
 
 }

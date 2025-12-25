@@ -1,14 +1,18 @@
 package com.felicita.service.impl;
 
-import com.felicita.exception.DataNotFoundErrorExceptionHandler;
-import com.felicita.exception.InternalServerErrorExceptionHandler;
+import com.felicita.exception.*;
 import com.felicita.model.dto.*;
 import com.felicita.model.enums.CommonStatus;
 import com.felicita.model.request.DestinationDataRequest;
+import com.felicita.model.request.DestinationInsertRequest;
+import com.felicita.model.request.DestinationTerminateRequest;
+import com.felicita.model.request.DestinationUpdateRequest;
 import com.felicita.model.response.*;
 import com.felicita.repository.DestinationRepository;
+import com.felicita.service.CommonService;
 import com.felicita.service.DestinationService;
 import com.felicita.util.CommonResponseMessages;
+import com.felicita.validation.DestinationValidationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +23,6 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class DestinationServiceImpl implements DestinationService {
@@ -27,10 +30,16 @@ public class DestinationServiceImpl implements DestinationService {
     private static final Logger LOGGER = LoggerFactory.getLogger(DestinationServiceImpl.class);
 
     private final DestinationRepository destinationRepository;
+    private final DestinationValidationService destinationValidationService;
+    private final CommonService commonService;
 
     @Autowired
-    public DestinationServiceImpl(DestinationRepository destinationRepository) {
+    public DestinationServiceImpl(DestinationRepository destinationRepository,
+                                  DestinationValidationService destinationValidationService,
+                                  CommonService commonService) {
         this.destinationRepository = destinationRepository;
+        this.destinationValidationService = destinationValidationService;
+        this.commonService = commonService;
     }
 
     @Override
@@ -593,6 +602,121 @@ public class DestinationServiceImpl implements DestinationService {
             throw new InternalServerErrorExceptionHandler("Failed to fetch destinations with params from database");
         } finally {
             LOGGER.info("End fetching all destinations with params from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<InsertResponse> insertDestination(DestinationInsertRequest destinationInsertRequest) {
+        LOGGER.info("Start execute insert destination request.");
+        try {
+            destinationValidationService.validateDestinationInsertRequest(destinationInsertRequest);
+            Long userId = commonService.getUserIdBySecurityContext();
+            destinationRepository.insertDestination(destinationInsertRequest, userId);
+            return
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            new InsertResponse("Successfully insert destination request"),
+                            Instant.now()
+                    );
+        } catch (ValidationFailedErrorExceptionHandler vfe) {
+            throw new ValidationFailedErrorExceptionHandler("validation failed in the insert destination request", vfe.getValidationFailedResponses());
+        } catch (InsertFailedErrorExceptionHandler ife) {
+            throw new InsertFailedErrorExceptionHandler(ife.getMessage());
+        }catch (UnAuthenticateErrorExceptionHandler uae) {
+            throw new UnAuthenticateErrorExceptionHandler(uae.getMessage());
+        } catch (Exception e) {
+            throw new InternalServerErrorExceptionHandler("Something went wrong");
+        }
+    }
+
+    @Override
+    public CommonResponse<TerminateResponse> terminateDestination(DestinationTerminateRequest destinationTerminateRequest) {
+        LOGGER.info("Start execute terminate destination request.");
+        try {
+            destinationValidationService.validateTerminateDestinationRequest(destinationTerminateRequest);
+            Long userId = commonService.getUserIdBySecurityContext();
+            destinationRepository.terminateDestination(destinationTerminateRequest, userId);
+            return
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            new TerminateResponse("Successfully terminate destination request"),
+                            Instant.now()
+                    );
+        } catch (ValidationFailedErrorExceptionHandler vfe) {
+            throw new ValidationFailedErrorExceptionHandler("validation failed in the terminate destination request", vfe.getValidationFailedResponses());
+        } catch (TerminateFailedErrorExceptionHandler tfe) {
+            throw new TerminateFailedErrorExceptionHandler(tfe.getMessage());
+        }catch (UnAuthenticateErrorExceptionHandler uae) {
+            throw new UnAuthenticateErrorExceptionHandler(uae.getMessage());
+        } catch (Exception e) {
+            throw new InternalServerErrorExceptionHandler("Something went wrong");
+        }
+    }
+
+    @Override
+    public CommonResponse<List<DestinationForTerminateResponse>> getDestinationsForTerminate() {
+        LOGGER.info("Start fetching active destinations from repository");
+        try {
+            List<DestinationForTerminateResponse> destinationForTerminateResponses =
+                    destinationRepository.getDestinationsForTerminate();
+
+            if (destinationForTerminateResponses.isEmpty()) {
+                LOGGER.warn("No active destinations found in database");
+                throw new DataNotFoundErrorExceptionHandler("No active destinations found");
+            }
+
+            return
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            destinationForTerminateResponses,
+                            Instant.now()
+                    )
+                    ;
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching active destinations: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching active destinations: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch active destinations from database");
+        } finally {
+            LOGGER.info("End fetching active destinations from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<UpdateResponse> updateDestination(DestinationUpdateRequest destinationUpdateRequest) {
+        LOGGER.info("Start execute update destination request.");
+        try {
+            destinationValidationService.validateDestinationUpdateRequest(destinationUpdateRequest);
+            Long userId = commonService.getUserIdBySecurityContext();
+            destinationRepository.updateBasicDestinationDetails(destinationUpdateRequest, userId);
+            destinationRepository.removeDestinationImages(destinationUpdateRequest.getRemoveImages(), userId);
+            destinationRepository.addNewImagesToDestination(destinationUpdateRequest.getNewImages(), destinationUpdateRequest.getDestinationId(),userId);
+            destinationRepository.removeDestinationActivities(destinationUpdateRequest.getRemoveActivities(), userId);
+            destinationRepository.addNewActivitiesToDestination(destinationUpdateRequest.getNewActivities(), destinationUpdateRequest.getDestinationId(), userId);
+            return
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            new UpdateResponse("Successfully update destination request",destinationUpdateRequest.getDestinationId()),
+                            Instant.now()
+                    );
+        } catch (ValidationFailedErrorExceptionHandler vfe) {
+            throw new ValidationFailedErrorExceptionHandler("validation failed in the insert destination request", vfe.getValidationFailedResponses());
+        } catch (InsertFailedErrorExceptionHandler ife) {
+            throw new InsertFailedErrorExceptionHandler(ife.getMessage());
+        }catch (UnAuthenticateErrorExceptionHandler uae) {
+            throw new UnAuthenticateErrorExceptionHandler(uae.getMessage());
+        } catch (Exception e) {
+            throw new InternalServerErrorExceptionHandler("Something went wrong");
         }
     }
 
