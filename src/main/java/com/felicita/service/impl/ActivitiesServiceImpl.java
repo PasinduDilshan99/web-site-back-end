@@ -1,16 +1,18 @@
 package com.felicita.service.impl;
 
-import com.felicita.exception.DataNotFoundErrorExceptionHandler;
-import com.felicita.exception.InternalServerErrorExceptionHandler;
+import com.felicita.exception.*;
 import com.felicita.model.dto.ActivityCategoryResponseDto;
 import com.felicita.model.dto.ActivityResponseDto;
 import com.felicita.model.dto.PackageResponseDto;
 import com.felicita.model.enums.CommonStatus;
 import com.felicita.model.request.ActivityDataRequest;
+import com.felicita.model.request.ActivityTerminateRequest;
 import com.felicita.model.response.*;
 import com.felicita.repository.ActivitiesRepository;
 import com.felicita.service.ActivitiesService;
+import com.felicita.service.CommonService;
 import com.felicita.util.CommonResponseMessages;
+import com.felicita.validation.ActivityValidationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +29,16 @@ public class ActivitiesServiceImpl implements ActivitiesService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ActivitiesServiceImpl.class);
 
     private final ActivitiesRepository activitiesRepository;
+    private final ActivityValidationService activityValidationService;
+    private final CommonService commonService;
 
     @Autowired
-    public ActivitiesServiceImpl(ActivitiesRepository activitiesRepository) {
+    public ActivitiesServiceImpl(ActivitiesRepository activitiesRepository,
+                                 ActivityValidationService activityValidationService,
+                                 CommonService commonService) {
         this.activitiesRepository = activitiesRepository;
+        this.activityValidationService = activityValidationService;
+        this.commonService = commonService;
     }
 
     @Override
@@ -430,6 +438,65 @@ public class ActivitiesServiceImpl implements ActivitiesService {
             throw new InternalServerErrorExceptionHandler("Failed to fetch activities with params from database");
         } finally {
             LOGGER.info("End fetching all activities with params from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<List<ActivityForTerminateResponse>> getActivitiesForTerminate() {
+        LOGGER.info("Start fetching active activities from repository");
+        try {
+            List<ActivityForTerminateResponse> activityForTerminateResponses =
+                    activitiesRepository.getActivitiesForTerminate();
+
+            if (activityForTerminateResponses.isEmpty()) {
+                LOGGER.warn("No active activities found in database");
+                throw new DataNotFoundErrorExceptionHandler("No active activities found");
+            }
+
+            return
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            activityForTerminateResponses,
+                            Instant.now()
+                    )
+                    ;
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching active activities: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching active activities: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch active activities from database");
+        } finally {
+            LOGGER.info("End fetching active activities from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<TerminateResponse> terminateActivity(ActivityTerminateRequest activityTerminateRequest) {
+        LOGGER.info("Start execute terminate destination request.");
+        try {
+            activityValidationService.validateTerminateActivityRequest(activityTerminateRequest);
+            Long userId = commonService.getUserIdBySecurityContext();
+            activitiesRepository.terminateActivity(activityTerminateRequest, userId);
+            return
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            new TerminateResponse("Successfully terminate activity request"),
+                            Instant.now()
+                    );
+        } catch (ValidationFailedErrorExceptionHandler vfe) {
+            throw new ValidationFailedErrorExceptionHandler("validation failed in the terminate activity request", vfe.getValidationFailedResponses());
+        } catch (TerminateFailedErrorExceptionHandler tfe) {
+            throw new TerminateFailedErrorExceptionHandler(tfe.getMessage());
+        }catch (UnAuthenticateErrorExceptionHandler uae) {
+            throw new UnAuthenticateErrorExceptionHandler(uae.getMessage());
+        } catch (Exception e) {
+            throw new InternalServerErrorExceptionHandler("Something went wrong");
         }
     }
 

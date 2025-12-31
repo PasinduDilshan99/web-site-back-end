@@ -837,4 +837,18 @@ public class TourQueries {
             	ON ti.tour_id = t.tour_id
             WHERE cs.name= 'ACTIVE'
             """;
+    public static final String GET_ACTIVE_TOURS_FOR_TERMINATE = """
+            SELECT
+            	t.tour_id,
+                t.name
+            FROM tour t
+            LEFT JOIN common_status cs
+            	ON cs.id = t.status
+            WHERE cs.name = ?
+            """;
+    public static final String TOUR_TERMINATE = """
+            UPDATE tour
+            SET status = (SELECT id FROM common_status WHERE name = ? LIMIT 1),terminated_at = now(), terminated_by = ?
+            WHERE tour_id = ?
+            """;
 }

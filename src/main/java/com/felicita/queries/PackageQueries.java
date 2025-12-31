@@ -1,7 +1,5 @@
 package com.felicita.queries;
 
-import com.fasterxml.jackson.databind.deser.impl.BeanPropertyMap;
-
 public class PackageQueries {
 
     public static final String GET_ALL_PACKAGES = """
@@ -952,5 +950,19 @@ public class PackageQueries {
             LEFT JOIN common_status cs
             	ON cs.id = p.status
             WHERE ps.id = ?
+            """;
+    public static final String PACKAGE_TERMINATE = """
+            UPDATE packages
+            SET status = (SELECT id FROM common_status WHERE name = ? LIMIT 1),terminated_at = now(), terminated_by = ?
+            WHERE package_id = ?
+            """;
+    public static final String GET_ACTIVE_PACKAGES_FOR_TERMINATE = """
+            SELECT
+            	p.package_id,
+                p.name
+            FROM packages p
+            LEFT JOIN common_status cs
+            	ON cs.id = p.status
+            WHERE cs.name = ?
             """;
 }

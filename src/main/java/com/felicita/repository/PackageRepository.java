@@ -2,6 +2,7 @@ package com.felicita.repository;
 
 import com.felicita.model.dto.*;
 import com.felicita.model.request.PackageDataRequest;
+import com.felicita.model.request.PackageTerminateRequest;
 import com.felicita.model.response.*;
 
 import java.util.List;
@@ -56,4 +57,8 @@ public interface PackageRepository {
     List<PackageDestinationExtraPriceDto> getPackageDestinationExtraPriceByScheduleId(Long packageScheduleId);
 
     List<PackageActivityPriceDto> getPackageActivityPriceByScheduleId(Long packageScheduleId);
+
+    List<PackageForTerminateResponse> getPackagesForTerminate();
+
+    void terminatePackage(PackageTerminateRequest packageTerminateRequest, Long userId);
 }

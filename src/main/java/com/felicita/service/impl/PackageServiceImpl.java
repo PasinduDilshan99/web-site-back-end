@@ -1,14 +1,16 @@
 package com.felicita.service.impl;
 
-import com.felicita.exception.DataNotFoundErrorExceptionHandler;
-import com.felicita.exception.InternalServerErrorExceptionHandler;
+import com.felicita.exception.*;
 import com.felicita.model.dto.*;
 import com.felicita.model.enums.CommonStatus;
 import com.felicita.model.request.PackageDataRequest;
+import com.felicita.model.request.PackageTerminateRequest;
 import com.felicita.model.response.*;
 import com.felicita.repository.PackageRepository;
+import com.felicita.service.CommonService;
 import com.felicita.service.PackageService;
 import com.felicita.util.CommonResponseMessages;
+import com.felicita.validation.PackageValidationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +28,15 @@ public class PackageServiceImpl implements PackageService {
     private static final Logger LOGGER = LoggerFactory.getLogger(PackageServiceImpl.class);
 
     private final PackageRepository packageRepository;
+    private final PackageValidationService packageValidationService;
+    private final CommonService commonService;
 
     @Autowired
-    public PackageServiceImpl(PackageRepository packageRepository) {
+    public PackageServiceImpl(PackageRepository packageRepository, PackageValidationService packageValidationService, CommonService commonService) {
         this.packageRepository = packageRepository;
+        this.packageValidationService = packageValidationService;
+        this.commonService = commonService;
     }
-
 
     @Override
     public ResponseEntity<CommonResponse<List<PackageResponseDto>>> getAllPackages() {
@@ -662,6 +667,65 @@ public class PackageServiceImpl implements PackageService {
             throw new InternalServerErrorExceptionHandler("Failed to fetch packages with params from database");
         } finally {
             LOGGER.info("End fetching all packages with params from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<List<PackageForTerminateResponse>> getPackagesForTerminate() {
+        LOGGER.info("Start fetching active package from repository");
+        try {
+            List<PackageForTerminateResponse> packageForTerminateResponses =
+                    packageRepository.getPackagesForTerminate();
+
+            if (packageForTerminateResponses.isEmpty()) {
+                LOGGER.warn("No active package found in database");
+                throw new DataNotFoundErrorExceptionHandler("No active package found");
+            }
+
+            return
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            packageForTerminateResponses,
+                            Instant.now()
+                    )
+                    ;
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching active package: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching active package: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch active package from database");
+        } finally {
+            LOGGER.info("End fetching active package from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<TerminateResponse> terminatePackage(PackageTerminateRequest packageTerminateRequest) {
+        LOGGER.info("Start execute terminate package request.");
+        try {
+            packageValidationService.validateTerminatePackageRequest(packageTerminateRequest);
+            Long userId = commonService.getUserIdBySecurityContext();
+            packageRepository.terminatePackage(packageTerminateRequest, userId);
+            return
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            new TerminateResponse("Successfully terminate package request"),
+                            Instant.now()
+                    );
+        } catch (ValidationFailedErrorExceptionHandler vfe) {
+            throw new ValidationFailedErrorExceptionHandler("validation failed in the terminate package request", vfe.getValidationFailedResponses());
+        } catch (TerminateFailedErrorExceptionHandler tfe) {
+            throw new TerminateFailedErrorExceptionHandler(tfe.getMessage());
+        }catch (UnAuthenticateErrorExceptionHandler uae) {
+            throw new UnAuthenticateErrorExceptionHandler(uae.getMessage());
+        } catch (Exception e) {
+            throw new InternalServerErrorExceptionHandler("Something went wrong");
         }
     }
 }

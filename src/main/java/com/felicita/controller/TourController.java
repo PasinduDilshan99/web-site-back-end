@@ -2,6 +2,7 @@ package com.felicita.controller;
 
 import com.felicita.model.dto.PopularTourResponseDto;
 import com.felicita.model.dto.TourResponseDto;
+import com.felicita.model.request.ActivityTerminateRequest;
 import com.felicita.model.request.TourDataRequest;
 import com.felicita.model.response.*;
 import com.felicita.service.TourService;
@@ -154,6 +155,22 @@ public class TourController {
         LOGGER.info("{} Start execute get all tours basic details {}", Constant.DOTS, Constant.DOTS);
         CommonResponse<List<TourBasicDetailsResponse>> response = tourService.getAllToursBasicDetails();
         LOGGER.info("{} End execute get all tours basic details {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/tour-for-terminate")
+    public ResponseEntity<CommonResponse<List<TourForTerminateResponse>>> getToursForTerminate() {
+        LOGGER.info("{} Start execute get all active tour for terminate {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<TourForTerminateResponse>> response = tourService.getToursForTerminate();
+        LOGGER.info("{} End execute get all active tour for terminate {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping(path = "/terminate-tour")
+    public ResponseEntity<CommonResponse<TerminateResponse>> terminateTour(@RequestBody TourTerminateRequest tourTerminateRequest) {
+        LOGGER.info("{} Start execute terminate activity {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<TerminateResponse> response = tourService.terminateTour(tourTerminateRequest);
+        LOGGER.info("{} End execute terminate activity {}", Constant.DOTS, Constant.DOTS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

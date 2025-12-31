@@ -3,6 +3,7 @@ package com.felicita.repository;
 import com.felicita.model.dto.ActivityCategoryResponseDto;
 import com.felicita.model.dto.ActivityResponseDto;
 import com.felicita.model.request.ActivityDataRequest;
+import com.felicita.model.request.ActivityTerminateRequest;
 import com.felicita.model.response.*;
 
 import java.util.List;
@@ -27,4 +28,8 @@ public interface ActivitiesRepository {
     List<ActivityHistoryImageResponse> getActivityHistoryImagesById(String activityId);
 
     ActivityWithParamsResponse getActivitiesWithParams(ActivityDataRequest activityDataRequest);
+
+    List<ActivityForTerminateResponse> getActivitiesForTerminate();
+
+    void terminateActivity(ActivityTerminateRequest activityTerminateRequest, Long userId);
 }

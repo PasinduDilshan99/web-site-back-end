@@ -5,10 +5,14 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.felicita.exception.DataAccessErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
+import com.felicita.exception.TerminateFailedErrorExceptionHandler;
 import com.felicita.model.dto.*;
+import com.felicita.model.enums.CommonStatus;
 import com.felicita.model.request.ActivityDataRequest;
+import com.felicita.model.request.ActivityTerminateRequest;
 import com.felicita.model.response.*;
 import com.felicita.queries.ActivitiesQueries;
+import com.felicita.queries.DestinationQueries;
 import com.felicita.queries.PartnerQueries;
 import com.felicita.repository.ActivitiesRepository;
 import org.slf4j.Logger;
@@ -836,6 +840,40 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
         } catch (Exception ex) {
             LOGGER.error("Unexpected error while fetching activity categories: {}", ex.getMessage(), ex);
             throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching activity categories");
+        }
+    }
+
+    @Override
+    public List<ActivityForTerminateResponse> getActivitiesForTerminate() {
+        String GET_ACTIVE_ACTIVITIES_FOR_TERMINATE = ActivitiesQueries.GET_ACTIVE_ACTIVITIES_FOR_TERMINATE;
+
+        try {
+            return jdbcTemplate.query(
+                    GET_ACTIVE_ACTIVITIES_FOR_TERMINATE,
+                    new Object[]{CommonStatus.ACTIVE.toString()}, // parameter for cs.name = ?
+                    (rs, rowNum) -> ActivityForTerminateResponse.builder()
+                            .activityId(rs.getLong("id"))
+                            .activityName(rs.getString("name"))
+                            .build()
+            );
+        } catch (DataAccessException e) {
+            LOGGER.error("Failed to fetch activities for terminate: ", e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch activities");
+        }
+    }
+
+    @Override
+    public void terminateActivity(ActivityTerminateRequest activityTerminateRequest, Long userId) {
+        String ACTIVITY_TERMINATE = ActivitiesQueries.ACTIVITY_TERMINATE;
+        try {
+            jdbcTemplate.update(ACTIVITY_TERMINATE, new Object[]{CommonStatus.TERMINATED.toString(), userId, activityTerminateRequest.getActivityId()});
+        } catch (DataAccessException tfe) {
+            LOGGER.error(tfe.toString());
+            throw new TerminateFailedErrorExceptionHandler(tfe.getMessage());
+
+        } catch (Exception e) {
+            LOGGER.error("Failed to terminate activity : ", e);
+            throw new InternalServerErrorExceptionHandler("Failed to terminate activity");
         }
     }
 

@@ -77,6 +77,7 @@ public class BookingController {
     @PostMapping(path = "/book-tour")
     public ResponseEntity<CommonResponse<BookInsertResponse>> bookingTour(@RequestBody BookingRequest bookingRequest) {
         LOGGER.info("{} Start execute booking a tour {}", Constant.DOTS, Constant.DOTS);
+        LOGGER.info("Booking request: {}", bookingRequest);
         CommonResponse<BookInsertResponse> response = bookingService.bookingTour(bookingRequest);
         LOGGER.info("{} End execute booking a tour {}", Constant.DOTS, Constant.DOTS);
         return new ResponseEntity<>(response, HttpStatus.OK);

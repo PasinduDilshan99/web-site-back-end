@@ -2,6 +2,7 @@ package com.felicita.controller;
 
 import com.felicita.model.dto.PackageResponseDto;
 import com.felicita.model.request.PackageDataRequest;
+import com.felicita.model.request.PackageTerminateRequest;
 import com.felicita.model.response.*;
 import com.felicita.service.PackageService;
 import com.felicita.util.Constant;
@@ -145,6 +146,22 @@ public class PackageController {
         LOGGER.info("{} Start execute get package schedules with given id {}", Constant.DOTS, Constant.DOTS);
         CommonResponse<PackageScheduleDetailsResponse> response = packageService.getPackageSchedulesForId(packageId);
         LOGGER.info("{} End execute get package schedules with given id {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/package-for-terminate")
+    public ResponseEntity<CommonResponse<List<PackageForTerminateResponse>>> getPackagesForTerminate() {
+        LOGGER.info("{} Start execute get all active package for terminate {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<PackageForTerminateResponse>> response = packageService.getPackagesForTerminate();
+        LOGGER.info("{} End execute get all active package for terminate {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping(path = "/terminate-package")
+    public ResponseEntity<CommonResponse<TerminateResponse>> terminatePackage(@RequestBody PackageTerminateRequest packageTerminateRequest) {
+        LOGGER.info("{} Start execute terminate package {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<TerminateResponse> response = packageService.terminatePackage(packageTerminateRequest);
+        LOGGER.info("{} End execute terminate package {}", Constant.DOTS, Constant.DOTS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

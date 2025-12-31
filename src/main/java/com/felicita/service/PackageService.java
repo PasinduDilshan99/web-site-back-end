@@ -2,6 +2,7 @@ package com.felicita.service;
 
 import com.felicita.model.dto.*;
 import com.felicita.model.request.PackageDataRequest;
+import com.felicita.model.request.PackageTerminateRequest;
 import com.felicita.model.response.*;
 import org.springframework.http.ResponseEntity;
 
@@ -46,4 +47,8 @@ public interface PackageService {
     List<PackageDestinationExtraPriceDto> getPackageDestinationExtraPriceByScheduleId(Long packageScheduleId);
 
     List<PackageDayAccommodationPriceDto> getPackageDayAccommodationPriceByScheduleId(Long packageScheduleId);
+
+    CommonResponse<List<PackageForTerminateResponse>> getPackagesForTerminate();
+
+    CommonResponse<TerminateResponse> terminatePackage(PackageTerminateRequest packageTerminateRequest);
 }

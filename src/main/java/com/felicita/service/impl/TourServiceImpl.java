@@ -1,15 +1,16 @@
 package com.felicita.service.impl;
 
-import com.felicita.exception.DataNotFoundErrorExceptionHandler;
-import com.felicita.exception.InternalServerErrorExceptionHandler;
+import com.felicita.exception.*;
 import com.felicita.model.dto.*;
 import com.felicita.model.enums.CommonStatus;
 import com.felicita.model.request.TourDataRequest;
 import com.felicita.model.response.*;
 import com.felicita.repository.TourRepository;
+import com.felicita.service.CommonService;
 import com.felicita.service.DestinationService;
 import com.felicita.service.TourService;
 import com.felicita.util.CommonResponseMessages;
+import com.felicita.validation.TourValidationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +29,18 @@ public class TourServiceImpl implements TourService {
 
     private final TourRepository tourRepository;
     private final DestinationService destinationService;
+    private final TourValidationService tourValidationService;
+    private final CommonService commonService;
 
     @Autowired
-    public TourServiceImpl(TourRepository tourRepository, DestinationService destinationService) {
+    public TourServiceImpl(TourRepository tourRepository,
+                           DestinationService destinationService,
+                           TourValidationService tourValidationService,
+                           CommonService commonService) {
         this.tourRepository = tourRepository;
         this.destinationService = destinationService;
+        this.tourValidationService = tourValidationService;
+        this.commonService = commonService;
     }
 
 
@@ -634,6 +642,65 @@ public class TourServiceImpl implements TourService {
             throw new InternalServerErrorExceptionHandler("Failed to fetch tours basic details from database");
         } finally {
             LOGGER.info("End fetching all tours basic details from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<List<TourForTerminateResponse>> getToursForTerminate() {
+        LOGGER.info("Start fetching active tours from repository");
+        try {
+            List<TourForTerminateResponse> tourForTerminateResponses =
+                    tourRepository.getToursForTerminate();
+
+            if (tourForTerminateResponses.isEmpty()) {
+                LOGGER.warn("No active tours found in database");
+                throw new DataNotFoundErrorExceptionHandler("No active tours found");
+            }
+
+            return
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            tourForTerminateResponses,
+                            Instant.now()
+                    )
+                    ;
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching active tours: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching active tours: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch active tours from database");
+        } finally {
+            LOGGER.info("End fetching active tours from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<TerminateResponse> terminateTour(TourTerminateRequest tourTerminateRequest) {
+        LOGGER.info("Start execute terminate tour request.");
+        try {
+            tourValidationService.validateTerminateTourRequest(tourTerminateRequest);
+            Long userId = commonService.getUserIdBySecurityContext();
+            tourRepository.terminateTour(tourTerminateRequest, userId);
+            return
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            new TerminateResponse("Successfully terminate tour request"),
+                            Instant.now()
+                    );
+        } catch (ValidationFailedErrorExceptionHandler vfe) {
+            throw new ValidationFailedErrorExceptionHandler("validation failed in the terminate tour request", vfe.getValidationFailedResponses());
+        } catch (TerminateFailedErrorExceptionHandler tfe) {
+            throw new TerminateFailedErrorExceptionHandler(tfe.getMessage());
+        }catch (UnAuthenticateErrorExceptionHandler uae) {
+            throw new UnAuthenticateErrorExceptionHandler(uae.getMessage());
+        } catch (Exception e) {
+            throw new InternalServerErrorExceptionHandler("Something went wrong");
         }
     }
 

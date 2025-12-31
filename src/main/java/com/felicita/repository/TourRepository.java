@@ -50,4 +50,8 @@ public interface TourRepository {
     TourSchedulesResponse.TourBasicDetails getTourBasicDetails(Long tourId);
 
     List<TourBasicDetailsResponse> getAllToursBasicDetails();
+
+    List<TourForTerminateResponse> getToursForTerminate();
+
+    void terminateTour(TourTerminateRequest tourTerminateRequest, Long userId);
 }

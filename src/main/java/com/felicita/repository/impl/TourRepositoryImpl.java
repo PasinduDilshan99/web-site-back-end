@@ -6,9 +6,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.felicita.exception.DataAccessErrorExceptionHandler;
 import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
+import com.felicita.exception.TerminateFailedErrorExceptionHandler;
 import com.felicita.model.dto.*;
+import com.felicita.model.enums.CommonStatus;
 import com.felicita.model.request.TourDataRequest;
 import com.felicita.model.response.*;
+import com.felicita.queries.ActivitiesQueries;
 import com.felicita.queries.TourQueries;
 import com.felicita.repository.TourRepository;
 import org.slf4j.Logger;
@@ -1470,6 +1473,39 @@ public class TourRepositoryImpl implements TourRepository {
         }
     }
 
+    @Override
+    public List<TourForTerminateResponse> getToursForTerminate() {
+        String GET_ACTIVE_TOURS_FOR_TERMINATE = TourQueries.GET_ACTIVE_TOURS_FOR_TERMINATE;
+
+        try {
+            return jdbcTemplate.query(
+                    GET_ACTIVE_TOURS_FOR_TERMINATE,
+                    new Object[]{CommonStatus.ACTIVE.toString()}, // parameter for cs.name = ?
+                    (rs, rowNum) -> TourForTerminateResponse.builder()
+                            .tourId(rs.getLong("tour_id"))
+                            .tourName(rs.getString("name"))
+                            .build()
+            );
+        } catch (DataAccessException e) {
+            LOGGER.error("Failed to fetch tours for terminate: ", e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch tours");
+        }
+    }
+
+    @Override
+    public void terminateTour(TourTerminateRequest tourTerminateRequest, Long userId) {
+        String TOUR_TERMINATE = TourQueries.TOUR_TERMINATE;
+        try {
+            jdbcTemplate.update(TOUR_TERMINATE, new Object[]{CommonStatus.TERMINATED.toString(), userId, tourTerminateRequest.getTourId()});
+        } catch (DataAccessException tfe) {
+            LOGGER.error(tfe.toString());
+            throw new TerminateFailedErrorExceptionHandler(tfe.getMessage());
+
+        } catch (Exception e) {
+            LOGGER.error("Failed to terminate tour : ", e);
+            throw new InternalServerErrorExceptionHandler("Failed to terminate tour");
+        }
+    }
 
 
     // ✅ Helper methods (avoid null pointer issues)

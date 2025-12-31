@@ -3,6 +3,8 @@ package com.felicita.controller;
 import com.felicita.model.dto.ActivityCategoryResponseDto;
 import com.felicita.model.dto.ActivityResponseDto;
 import com.felicita.model.request.ActivityDataRequest;
+import com.felicita.model.request.ActivityTerminateRequest;
+import com.felicita.model.request.DestinationTerminateRequest;
 import com.felicita.model.response.*;
 import com.felicita.service.ActivitiesService;
 import com.felicita.util.Constant;
@@ -124,5 +126,22 @@ public class ActivitiesController {
         LOGGER.info("{} End execute get all activities review details by id {}", Constant.DOTS, Constant.DOTS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @GetMapping(path = "/activity-for-terminate")
+    public ResponseEntity<CommonResponse<List<ActivityForTerminateResponse>>> getActivitiesForTerminate() {
+        LOGGER.info("{} Start execute get all active activities for terminate {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<ActivityForTerminateResponse>> response = activitiesService.getActivitiesForTerminate();
+        LOGGER.info("{} End execute get all active activities for terminate {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping(path = "/terminate-activity")
+    public ResponseEntity<CommonResponse<TerminateResponse>> terminateActivity(@RequestBody ActivityTerminateRequest activityTerminateRequest) {
+        LOGGER.info("{} Start execute terminate activity {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<TerminateResponse> response = activitiesService.terminateActivity(activityTerminateRequest);
+        LOGGER.info("{} End execute terminate activity {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 
 }

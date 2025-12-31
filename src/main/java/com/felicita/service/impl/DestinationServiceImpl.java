@@ -711,8 +711,8 @@ public class DestinationServiceImpl implements DestinationService {
                     );
         } catch (ValidationFailedErrorExceptionHandler vfe) {
             throw new ValidationFailedErrorExceptionHandler("validation failed in the insert destination request", vfe.getValidationFailedResponses());
-        } catch (InsertFailedErrorExceptionHandler ife) {
-            throw new InsertFailedErrorExceptionHandler(ife.getMessage());
+        } catch (UpdateFailedErrorExceptionHandler ufe) {
+            throw new UpdateFailedErrorExceptionHandler(ufe.getMessage());
         }catch (UnAuthenticateErrorExceptionHandler uae) {
             throw new UnAuthenticateErrorExceptionHandler(uae.getMessage());
         } catch (Exception e) {

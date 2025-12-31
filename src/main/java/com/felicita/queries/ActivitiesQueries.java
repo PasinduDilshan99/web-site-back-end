@@ -615,18 +615,18 @@ public class ActivitiesQueries {
             """;
 
     public static final String GET_ACTIVITY_COUNT_WITH_FILTERS = """
-    SELECT COUNT(*)
-    FROM activities a
-    LEFT JOIN common_status cs ON a.status = cs.id
-    WHERE a.terminated_at IS NULL
-      AND (? IS NULL OR a.name LIKE CONCAT('%', ?, '%'))
-      AND (? IS NULL OR a.price_local >= ?)
-      AND (? IS NULL OR a.price_local <= ?)
-      AND (? IS NULL OR a.duration_hours = ?)
-      AND (? IS NULL OR a.activities_category = ?)
-      AND (? IS NULL OR a.season = ?)
-      AND (? IS NULL OR cs.name = ?)
-""";
+                SELECT COUNT(*)
+                FROM activities a
+                LEFT JOIN common_status cs ON a.status = cs.id
+                WHERE a.terminated_at IS NULL
+                  AND (? IS NULL OR a.name LIKE CONCAT('%', ?, '%'))
+                  AND (? IS NULL OR a.price_local >= ?)
+                  AND (? IS NULL OR a.price_local <= ?)
+                  AND (? IS NULL OR a.duration_hours = ?)
+                  AND (? IS NULL OR a.activities_category = ?)
+                  AND (? IS NULL OR a.season = ?)
+                  AND (? IS NULL OR cs.name = ?)
+            """;
 
 
     public static final String GET_ACTIVITIES_BY_IDS = """
@@ -706,4 +706,19 @@ public class ActivitiesQueries {
                 GROUP BY a.id
             """;
 
+    public static final String GET_ACTIVE_ACTIVITIES_FOR_TERMINATE = """
+                        SELECT
+            	a.id,
+                a.name
+            FROM activities a
+            LEFT JOIN common_status cs
+            	ON cs.id = a.status
+            WHERE cs.name = ?
+            """;
+
+    public static final String ACTIVITY_TERMINATE = """
+            UPDATE activities
+            SET status = (SELECT id FROM common_status WHERE name = ? LIMIT 1),terminated_at = now(), terminated_by = ?
+            WHERE id = ?
+            """;
 }

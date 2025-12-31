@@ -6,10 +6,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.felicita.exception.DataAccessErrorExceptionHandler;
 import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
+import com.felicita.exception.TerminateFailedErrorExceptionHandler;
 import com.felicita.model.dto.*;
+import com.felicita.model.enums.CommonStatus;
 import com.felicita.model.request.PackageDataRequest;
+import com.felicita.model.request.PackageTerminateRequest;
 import com.felicita.model.response.*;
 import com.felicita.queries.PackageQueries;
+import com.felicita.queries.TourQueries;
 import com.felicita.repository.PackageRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1463,6 +1467,40 @@ public class PackageRepositoryImpl implements PackageRepository {
         } catch (Exception ex) {
             LOGGER.error("Unexpected error while fetching activity prices", ex);
             throw new InternalServerErrorExceptionHandler("Unexpected error while fetching activity prices");
+        }
+    }
+
+    @Override
+    public List<PackageForTerminateResponse> getPackagesForTerminate() {
+        String GET_ACTIVE_PACKAGES_FOR_TERMINATE = PackageQueries.GET_ACTIVE_PACKAGES_FOR_TERMINATE;
+
+        try {
+            return jdbcTemplate.query(
+                    GET_ACTIVE_PACKAGES_FOR_TERMINATE,
+                    new Object[]{CommonStatus.ACTIVE.toString()}, // parameter for cs.name = ?
+                    (rs, rowNum) -> PackageForTerminateResponse.builder()
+                            .packageId(rs.getLong("package_id"))
+                            .packageName(rs.getString("name"))
+                            .build()
+            );
+        } catch (DataAccessException e) {
+            LOGGER.error("Failed to fetch tours for terminate: ", e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch tours");
+        }
+    }
+
+    @Override
+    public void terminatePackage(PackageTerminateRequest packageTerminateRequest, Long userId) {
+        String PACKAGE_TERMINATE = PackageQueries.PACKAGE_TERMINATE;
+        try {
+            jdbcTemplate.update(PACKAGE_TERMINATE, new Object[]{CommonStatus.TERMINATED.toString(), userId, packageTerminateRequest.getPackageId()});
+        } catch (DataAccessException tfe) {
+            LOGGER.error(tfe.toString());
+            throw new TerminateFailedErrorExceptionHandler(tfe.getMessage());
+
+        } catch (Exception e) {
+            LOGGER.error("Failed to terminate package : ", e);
+            throw new InternalServerErrorExceptionHandler("Failed to terminate package");
         }
     }
 

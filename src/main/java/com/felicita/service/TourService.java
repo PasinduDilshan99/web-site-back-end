@@ -41,4 +41,8 @@ public interface TourService {
     CommonResponse<TourSchedulesResponse> getTourSchedules(Long tourId);
 
     CommonResponse<List<TourBasicDetailsResponse>> getAllToursBasicDetails();
+
+    CommonResponse<List<TourForTerminateResponse>> getToursForTerminate();
+
+    CommonResponse<TerminateResponse> terminateTour(TourTerminateRequest tourTerminateRequest);
 }
