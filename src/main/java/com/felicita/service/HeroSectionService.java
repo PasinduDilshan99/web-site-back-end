@@ -15,4 +15,18 @@ public interface HeroSectionService {
     CommonResponse<List<ContactUsHeroSectionResponse>> getContactUsHeroSectionDetails();
 
     CommonResponse<List<BlogHeroSectionResponse>> getBlogHeroSectionDetails();
+
+    CommonResponse<List<FaqHeroSectionResponse>> getFAQHeroSectionDetails();
+
+    CommonResponse<List<TourHeroSectionResponse>> getTourHeroSectionDetails();
+
+    CommonResponse<List<PackageHeroSectionResponse>> getPackageHeroSectionDetails();
+
+    CommonResponse<List<DestinationHeroSectionResponse>> getDestinationHeroSectionDetails();
+
+    CommonResponse<List<ActivityHeroSectionResponse>> getActivityHeroSectionDetails();
+
+    CommonResponse<List<PackageScheduleHeroSectionResponse>> getPackageScheduleHeroSectionDetails(Long packageScheduleId);
+
+    CommonResponse<List<BookedTourHeroSectionResponse>> getBookedTourHeroSectionDetails(Long bookingId);
 }

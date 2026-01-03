@@ -255,5 +255,20 @@ public class VehicleQueries {
             LIMIT 10
             """;
 
+    public static final String GET_VEHICLE_BASIC_DETAILS_BY_ID = """
+            SELECT
+            	v.vehicle_id,
+                v.registration_number,
+                vt.name AS type,
+                vs.make,
+                vs.model
+            FROM vehicles v
+            LEFT JOIN vehicle_type vt
+            	ON v.vehicle_type_id = vt.vehicle_type_id
+            LEFT JOIN vehicle_specifications vs
+            	ON vs.specification_id = v.specification_id
+            WHERE v.vehicle_id =?
+            """;
+
 
 }

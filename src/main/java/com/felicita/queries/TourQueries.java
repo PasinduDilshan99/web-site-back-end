@@ -40,6 +40,65 @@ public class TourQueries {
             LEFT JOIN tour_images img ON t.tour_id = img.tour_id
             """;
 
+    public static final String GET_PAGINATED_TOUR_IDS = """
+                SELECT t.tour_id
+                FROM tour t
+                LEFT JOIN common_status cs ON t.status = cs.id
+                LEFT JOIN tour_type tt ON t.tour_type = tt.id
+                LEFT JOIN tour_category tc ON t.tour_category = tc.id
+                LEFT JOIN seasons s ON t.season = s.id
+                WHERE cs.name = 'ACTIVE'
+                  AND (? IS NULL OR t.name LIKE CONCAT('%', ?, '%'))
+                  AND (? IS NULL OR t.duration = ?)
+                  AND (? IS NULL OR (t.start_location LIKE CONCAT('%', ?, '%') 
+                       OR t.end_location LIKE CONCAT('%', ?, '%')))
+                  AND (? IS NULL OR tc.name = ?)
+                  AND (? IS NULL OR s.name = ?)
+                  AND (? IS NULL OR tt.name = ?)
+                LIMIT ? OFFSET ?;
+            """;
+
+
+    public static final String GET_TOURS_BY_IDS = """
+                SELECT
+                    t.tour_id,
+                    t.name AS tour_name,
+                    t.description AS tour_description,
+                    t.duration,
+                    t.latitude,
+                    t.longitude,
+                    t.start_location,
+                    t.end_location,
+                    tt.name AS tour_type_name,
+                    tt.description AS tour_type_description,
+                    tc.name AS tour_category_name,
+                    tc.description AS tour_category_description,
+                    s.name AS season_name,
+                    s.description AS season_description,
+                    cs.name AS status_name,
+                    sch.id AS schedule_id,
+                    sch.name AS schedule_name,
+                    sch.assume_start_date,
+                    sch.assume_end_date,
+                    sch.duration_start,
+                    sch.duration_end,
+                    sch.special_note,
+                    sch.description AS schedule_description,
+                    img.id AS image_id,
+                    img.name AS image_name,
+                    img.description AS image_description,
+                    img.image_url
+                FROM tour t
+                LEFT JOIN tour_type tt ON t.tour_type = tt.id
+                LEFT JOIN tour_category tc ON t.tour_category = tc.id
+                LEFT JOIN seasons s ON t.season = s.id
+                LEFT JOIN common_status cs ON t.status = cs.id
+                LEFT JOIN tour_schedule sch ON t.tour_id = sch.tour_id
+                LEFT JOIN tour_images img ON t.tour_id = img.tour_id
+                WHERE t.tour_id IN (%s)  -- will replace with comma-separated IDs
+            """;
+
+
     public static final String GET_TOUR_DETAILS_BY_ID = """
                     SELECT
                         t.tour_id,
@@ -482,4 +541,314 @@ public class TourQueries {
             ORDER BY thi.created_at DESC
             """;
 
+    public static final String GET_ALL_TOUR_DAY_DESTINATION_ACTIVITY_IDS = """
+            SELECT
+                day,
+                destination_id,
+                GROUP_CONCAT(activities_id ORDER BY activities_id) AS activity_ids
+            FROM tour_destination
+            WHERE tour_id = ?
+            GROUP BY day, destination_id
+            ORDER BY day, destination_id
+            """;
+
+    public static final String GET_DESTINATIONS_DETAILS_WITH_FOR_DAY_IDS = """
+            SELECT
+            	d.destination_id,
+            	d.name AS destination_name,
+            	d.description AS destination_description,
+            	d.location,
+            	d.latitude,
+            	d.longitude,
+            	CONCAT(u1.first_name, ' ',u1.last_name) AS created_by,
+            	u1.image_url AS creater_image,
+            	d.created_at,
+            	d.updated_at,
+            	CONCAT(u2.first_name, ' ',u2.last_name) AS updated_by,
+            	u2.image_url AS updater_image,
+            	dc.category AS category_name,
+            	dc.description AS category_description,
+            	cs.name AS status_name,
+            	di.id AS image_id,
+            	di.name AS image_name,
+            	di.description AS image_description,
+            	di.image_url
+            FROM destination d
+            LEFT JOIN destination_categories dc ON d.destination_category = dc.id
+            LEFT JOIN common_status cs ON d.status = cs.id
+            LEFT JOIN destination_images di ON d.destination_id = di.destination_id
+            LEFT JOIN user u1 ON u1.user_id = d.created_by
+            LEFT JOIN user u2 ON u2.user_id = d.updated_by
+            WHERE d.destination_id IN (:destinationIds)
+            """;
+
+    public static final String GET_ACTIVITIES_DETAILS_BASE = """
+        SELECT
+            a.id,
+            a.destination_id,
+            a.name,
+            a.description,
+            a.activities_category,
+            a.duration_hours,
+            a.available_from,
+            a.available_to,
+            a.price_local,
+            a.price_foreigners,
+            a.min_participate,
+            a.max_participate,
+            a.season,
+            MAX(cs.name) AS status_name,
+            a.created_at,
+            a.updated_at,
+            MAX(ac.name) AS category_name,
+            MAX(ac.description) AS category_description,
+
+            (
+                SELECT COALESCE(
+                    JSON_ARRAYAGG(
+                        JSON_OBJECT(
+                            'id', ar.id,
+                            'name', ar.name,
+                            'value', ar.value,
+                            'description', ar.description,
+                            'color', ar.color,
+                            'status', ar.status
+                        )
+                    ),
+                    JSON_ARRAY()
+                )
+                FROM activities_requirement ar
+                WHERE ar.activity_id = a.id
+                  AND ar.terminated_at IS NULL
+            ) AS requirements,
+
+            (
+                SELECT COALESCE(
+                    JSON_ARRAYAGG(
+                        JSON_OBJECT(
+                            'id', ai.id,
+                            'name', ai.name,
+                            'description', ai.description,
+                            'image_url', ai.image_url,
+                            'status', ai.status
+                        )
+                    ),
+                    JSON_ARRAY()
+                )
+                FROM activities_images ai
+                WHERE ai.activity_id = a.id
+                  AND ai.terminated_at IS NULL
+            ) AS images
+
+        FROM activities a
+        LEFT JOIN common_status cs ON a.status = cs.id
+        LEFT JOIN activity_category ac ON a.activities_category = ac.name
+        WHERE a.terminated_at IS NULL
+        GROUP BY
+            a.id,
+            a.destination_id,
+            a.name,
+            a.description,
+            a.activities_category,
+            a.duration_hours,
+            a.available_from,
+            a.available_to,
+            a.price_local,
+            a.price_foreigners,
+            a.min_participate,
+            a.max_participate,
+            a.season,
+            a.status,
+            a.created_at,
+            a.updated_at
+        """;
+
+
+    public static final String GET_TOUR_ACCOMMODATIONS_BY_TOUR_ID = """
+            SELECT
+                tda.tour_day_accommodation_id,
+                tda.tour_id,
+                tda.day,
+                tda.breakfast,
+                tda.breakfast_description,
+                tda.lunch,
+                tda.lunch_description,
+                tda.dinner,
+                tda.dinner_description,
+                tda.morning_tea,
+                tda.morning_tea_description,
+                tda.evening_tea,
+                tda.evening_tea_description,
+                tda.snacks,
+                tda.snack_note,
+                tda.other_notes,
+                sp.service_provider_id AS hotel_id,
+                sp.name AS hotel_name,
+                sp.description AS hotel_description,
+                sp.star_rating AS hotel_category,
+                sp.address AS hotel_location,
+                spl.latitude AS hotel_latitude,
+                spl.longitude AS hotel_longitude,
+                v.vehicle_id AS transport_id,
+                v.registration_number AS vehicle_registration_number,
+            	vt.name,
+                vs.model AS vehicle_model,
+                vs.seat_capacity,
+                vs.air_condition
+            FROM tour_day_accommodation tda
+            LEFT JOIN service_provider sp
+                ON tda.hotel_id = sp.service_provider_id
+            LEFT JOIN vehicles v
+                ON tda.transport_id = v.vehicle_id
+            LEFT JOIN vehicle_specifications vs
+                ON v.specification_id = vs.specification_id
+            LEFT JOIN service_provider_location spl
+            	ON sp.service_provider_id = spl.service_provider_id
+            LEFT JOIN vehicle_type vt
+            	ON vt.vehicle_type_id = v.vehicle_type_id
+            WHERE tda.tour_id = ?
+            ORDER BY tda.day ASC
+            """;
+    public static final String GET_TOUR_INCLUSIONS_BY_TOUR_ID = """
+            SELECT
+                ti.tour_inclusion_id,
+                ti.inclusion_text AS description,
+                ti.display_order,
+                cs.name AS status
+            FROM tour_inclusion ti
+            JOIN common_status cs ON cs.id = ti.status_id
+            WHERE ti.tour_id = ?
+              AND cs.name = 'ACTIVE'
+            ORDER BY ti.display_order ASC
+            """;
+    public static final String GET_TOUR_EXCLUSIONS_BY_TOUR_ID = """
+            SELECT
+                te.tour_exclusion_id,
+                te.exclusion_text AS description,
+                te.display_order,
+                cs.name AS status
+            FROM tour_exclusion te
+            JOIN common_status cs ON cs.id = te.status_id
+            WHERE te.tour_id = ?
+              AND cs.name = 'ACTIVE'
+            ORDER BY te.display_order ASC
+            """;
+    public static final String GET_TOUR_CONDITIONS_BY_TOUR_ID = """
+            SELECT
+                tc.tour_condition_id,
+                tc.condition_text AS description,
+                tc.display_order,
+                cs.name AS status
+            FROM tour_condition tc
+            JOIN common_status cs ON cs.id = tc.status_id
+            WHERE tc.tour_id = ?
+              AND cs.name = 'ACTIVE'
+            ORDER BY tc.display_order ASC
+            """;
+    public static final String GET_TOUR_TRAVEL_TIPS_BY_TOUR_ID = """
+            SELECT
+                ttt.tour_travel_tip_id,
+                ttt.tip_title,
+                ttt.tip_description,
+                ttt.display_order,
+                cs.name AS status
+            FROM tour_travel_tips ttt
+            JOIN common_status cs ON cs.id = ttt.status_id
+            WHERE ttt.tour_id = ?
+              AND cs.name = 'ACTIVE'
+            ORDER BY ttt.display_order ASC
+            """;
+    public static final String GET_TOUR_SCHEDULES_BY_TOUR_ID = """
+            SELECT
+                ts.id AS schedule_id,
+                ts.name AS schedule_name,
+                ts.assume_start_date,
+                ts.assume_end_date,
+                ts.duration_start,
+                ts.duration_end,
+                ts.special_note,
+                ts.description,
+                cs.id AS status_id,
+                cs.name AS status_name,
+                ts.created_at,
+                ts.updated_at
+            FROM tour_schedule ts
+            JOIN common_status cs ON ts.status = cs.id
+            WHERE ts.tour_id = ?
+              AND cs.name = 'ACTIVE'
+            """;
+
+    public static final String GET_TOUR_BASIC_DETAILS_BY_TOUR_ID = """
+            SELECT
+                t.tour_id,
+                t.name AS tour_name,
+                t.description AS tour_description,
+                t.duration,
+                t.latitude,
+                t.longitude,
+                t.start_location,
+                t.end_location,
+                ti.id AS image_id,
+                ti.name AS image_name,
+                ti.description AS image_description,
+                ti.image_url,
+                cs_tour.name AS tour_status,
+                cs_img.name AS image_status
+            FROM tour t
+            LEFT JOIN tour_images ti
+                   ON t.tour_id = ti.tour_id
+                   AND ti.status = (
+                       SELECT id FROM common_status WHERE name = 'ACTIVE'
+                   )
+            JOIN common_status cs_tour
+                   ON t.status = cs_tour.id
+            LEFT JOIN common_status cs_img
+                   ON ti.status = cs_img.id
+            WHERE t.tour_id = ?
+              AND cs_tour.name = 'ACTIVE'
+            """;
+    public static final String GET_ALL_TOURS_BASIC_DETAILS = """
+            SELECT
+            	t.tour_id,
+                t.name,
+                t.description,
+                tc.name as category,
+                tt.name as type,
+                t.duration,
+                t.latitude,
+                t.longitude,
+                t.start_location,
+                t.end_location,
+                s.name AS status,
+                ti.id AS image_id,
+                ti.name AS image_name,
+                ti.description AS image_description,
+                ti.image_url AS image_url
+            FROM tour t
+            LEFT JOIN common_status cs
+            	ON cs.id = t.status
+            LEFT JOIN tour_category tc
+            	ON tc.id = t.tour_category
+            LEFT JOIN tour_type tt
+            	ON tt.id = t.tour_type
+            LEFT JOIN seasons s
+            	ON s.id = t.season
+            LEFT JOIN tour_images ti
+            	ON ti.tour_id = t.tour_id
+            WHERE cs.name= 'ACTIVE'
+            """;
+    public static final String GET_ACTIVE_TOURS_FOR_TERMINATE = """
+            SELECT
+            	t.tour_id,
+                t.name
+            FROM tour t
+            LEFT JOIN common_status cs
+            	ON cs.id = t.status
+            WHERE cs.name = ?
+            """;
+    public static final String TOUR_TERMINATE = """
+            UPDATE tour
+            SET status = (SELECT id FROM common_status WHERE name = ? LIMIT 1),terminated_at = now(), terminated_by = ?
+            WHERE tour_id = ?
+            """;
 }

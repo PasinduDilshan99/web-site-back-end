@@ -35,6 +35,74 @@ public class DestinationQueries {
             LEFT JOIN activities a ON d.destination_id = a.destination_id
             LEFT JOIN destination_images di ON d.destination_id = di.destination_id
             """;
+
+
+    public static final String GET_PAGINATED_DESTINATION_IDS = """
+                SELECT d.destination_id
+                FROM destination d
+                LEFT JOIN common_status cs ON d.status = cs.id
+                LEFT JOIN activities a ON d.destination_id = a.destination_id
+                WHERE (? IS NULL OR d.name LIKE CONCAT('%', ?, '%'))
+                  AND (? IS NULL OR a.price_local >= ?)
+                  AND (? IS NULL OR a.price_local <= ?)
+                  AND (? IS NULL OR a.duration_hours = ?)
+                  AND (? IS NULL OR a.activities_category = ?)
+                  AND (? IS NULL OR a.season = ?)
+                  AND (? IS NULL OR cs.name = ?)
+                GROUP BY d.destination_id
+                LIMIT ? OFFSET ?;
+            """;
+
+    public static final String GET_DESTINATIONS_BY_IDS = """
+                SELECT
+                    d.destination_id,
+                    d.name AS destination_name,
+                    d.description AS destination_description,
+                    d.location,
+                    d.latitude,
+                    d.longitude,
+                    dc.category AS category_name,
+                    dc.description AS category_description,
+                    cs.name AS status_name,
+                    a.id AS activity_id,
+                    a.name AS activity_name,
+                    a.description AS activity_description,
+                    a.activities_category,
+                    a.duration_hours,
+                    a.available_from,
+                    a.available_to,
+                    a.price_local,
+                    a.price_foreigners,
+                    a.min_participate,
+                    a.max_participate,
+                    a.season,
+                    di.id AS image_id,
+                    di.name AS image_name,
+                    di.description AS image_description,
+                    di.image_url
+                FROM destination d
+                LEFT JOIN destination_categories dc ON d.destination_category = dc.id
+                LEFT JOIN common_status cs ON d.status = cs.id
+                LEFT JOIN activities a ON d.destination_id = a.destination_id
+                LEFT JOIN destination_images di ON d.destination_id = di.destination_id
+                WHERE d.destination_id IN (%s)
+            """;
+
+    public static final String GET_FILTERED_DESTINATION_COUNT = """
+                SELECT COUNT(DISTINCT d.destination_id) 
+                FROM destination d
+                LEFT JOIN common_status cs ON d.status = cs.id
+                LEFT JOIN activities a ON d.destination_id = a.destination_id
+                WHERE (? IS NULL OR d.name LIKE CONCAT('%', ?, '%'))
+                  AND (? IS NULL OR a.price_local >= ?)
+                  AND (? IS NULL OR a.price_local <= ?)
+                  AND (? IS NULL OR a.duration_hours = ?)
+                  AND (? IS NULL OR a.activities_category = ?)
+                  AND (? IS NULL OR a.season = ?)
+                  AND (? IS NULL OR cs.name = ?);
+            """;
+
+
     public static final String GET_ALL_DESTINATIONS_BY_TOUR_ID = """
             SELECT
                 d.destination_id,
@@ -396,6 +464,7 @@ public class DestinationQueries {
                 ON dci.destination_categories_id = dc.id
             LEFT JOIN common_status cs4
                 ON cs4.id = dci.status
+            WHERE cs1.name = 'ACTIVE'
             """;
 
 
@@ -593,7 +662,11 @@ public class DestinationQueries {
             LEFT JOIN destination_categories dc ON d.destination_category = dc.id
             LEFT JOIN common_status cs ON d.status = cs.id
             LEFT JOIN activities a ON d.destination_id = a.destination_id
-            LEFT JOIN destination_images di ON d.destination_id = di.destination_id
+            LEFT JOIN destination_images di
+               ON d.destination_id = di.destination_id
+              AND di.status = (
+                  SELECT id FROM common_status WHERE name = 'ACTIVE' LIMIT 1
+              )
             WHERE d.destination_id=?
             """;
 
@@ -760,4 +833,121 @@ public class DestinationQueries {
             ORDER BY dh.id, dhi.id
             """;
 
+    public static final String INSERT_DESTINATION_REQUEST = """
+            INSERT INTO destination
+            (
+                name,
+                description,
+                status,
+                destination_category,
+                location,
+                latitude,
+                longitude,
+                created_by,
+                extra_price,
+                extra_price_note
+            )
+            VALUES
+            (
+                ?, 
+                ?, 
+                (SELECT cs.id FROM common_status cs WHERE cs.name = ? LIMIT 1),
+                (SELECT dc.id FROM destination_categories dc WHERE dc.category = ? LIMIT 1),
+                ?, 
+                ?, 
+                ?, 
+                ?, 
+                ?, 
+                ?
+            )
+            """;
+
+
+    public static final String INSERT_DESTINATION_IMAGES_REQUEST = """
+            INSERT INTO destination_images
+            (destination_id, name, description, image_url, status, created_by)
+            VALUES (?, ?, ?, ?, (SELECT cs.id FROM common_status cs WHERE cs.name = ? LIMIT 1), ?)
+            """;
+    public static final String DESTINATION_TERMINATE = """
+            UPDATE destination
+            SET status = (SELECT id FROM common_status WHERE name = ? LIMIT 1),terminated_at = now(), terminated_by = ?
+            WHERE destination_id = ?
+            """;
+    public static final String GET_ACTIVE_DESTINATIONS_FOR_TERMINATE = """
+            SELECT
+            	d.destination_id,
+                d.name
+            FROM destination d
+            LEFT JOIN common_status cs
+            	ON cs.id = d.status
+            WHERE cs.name = ?
+            """;
+
+    public static final String UPDATE_BASIC_DESTINATION_DETAILS = """
+            UPDATE destination
+            SET name = ? ,
+            	description = ?,
+                status = (SELECT id FROM common_status WHERE name = ? LIMIT 1),
+                destination_category = (SELECT id FROM destination_categories WHERE category = ? LIMIT 1),
+                location = ?,
+                latitude = ?,
+                longitude = ?,
+                updated_by = ?,
+                updated_at = now(),
+                extra_price = ?,
+                extra_price_note =?
+            WHERE destination_id = ?
+            """;
+    public static final String DESTINATION_IMAGES_REMOVE = """
+            UPDATE destination_images
+            SET status = (SELECT id FROM common_status WHERE name = ? LIMIT 1),
+                terminated_at = now(),
+                terminated_by = ?
+            WHERE id = ?
+            """;
+
+
+    public static final String DESTINATION_ACTIVITIES_REMOVE = """
+            UPDATE activities
+            SET status = ( SELECT id FROM common_status WHERE name = ? LIMIT 1),
+            	terminated_at = now(),
+                terminated_by = ?
+            WHERE id = ?
+            """;
+    public static final String INSERT_DESTINATION_ACTIVITY = """
+                        INSERT INTO activities
+            (
+                destination_id,
+                name,
+                description,
+                activities_category,
+                duration_hours,
+                available_from,
+                available_to,
+                price_local,
+                price_foreigners,
+                min_participate,
+                max_participate,
+                season,
+                status,
+                created_by
+            )
+            VALUES
+            (
+                ?, 
+                ?, 
+                ?, 
+                ?, 
+                ?, 
+                ?, 
+                ?,?,?,?,?,?,
+                (SELECT cs.id FROM common_status cs WHERE cs.name = ? LIMIT 1),
+                ?
+            )
+            """;
+    public static final String INSERT_DESTINATION_ACTIVITY_IMAGE = """
+                        INSERT INTO activities_images
+            (activity_id, name, description, image_url, status, created_by)
+            VALUES (?, ?, ?, ?, (SELECT cs.id FROM common_status cs WHERE cs.name = ? LIMIT 1), ?)
+            """;
 }

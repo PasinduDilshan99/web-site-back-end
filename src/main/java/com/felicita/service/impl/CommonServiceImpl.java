@@ -1,5 +1,6 @@
 package com.felicita.service.impl;
 
+import com.felicita.exception.UnAuthenticateErrorExceptionHandler;
 import com.felicita.repository.CommonRepository;
 import com.felicita.security.model.CustomUserDetails;
 import com.felicita.security.model.User;
@@ -15,6 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.SecureRandom;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 public class CommonServiceImpl implements CommonService {
@@ -35,7 +39,18 @@ public class CommonServiceImpl implements CommonService {
     public Long getUserIdBySecurityContext() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !(authentication.getPrincipal() instanceof CustomUserDetails)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No authenticated user");
+            throw new UnAuthenticateErrorExceptionHandler("No authenticated user");
+        }
+        CustomUserDetails principal = (CustomUserDetails) authentication.getPrincipal();
+        User user = principal.getDomainUser();
+        return user.getId();
+    }
+
+    @Override
+    public Long getUserIdBySecurityContextWithOutException() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication.getPrincipal() instanceof CustomUserDetails)) {
+            return null;
         }
         CustomUserDetails principal = (CustomUserDetails) authentication.getPrincipal();
         User user = principal.getDomainUser();
@@ -52,5 +67,8 @@ public class CommonServiceImpl implements CommonService {
         }
         return otp.toString();
     }
+
+
+
 
 }

@@ -2,10 +2,7 @@ package com.felicita.service.impl;
 
 import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
-import com.felicita.model.response.CommonResponse;
-import com.felicita.model.response.CouponDetailsResponse;
-import com.felicita.model.response.EmployeeGuideResponse;
-import com.felicita.model.response.EmployeeWithSocialMediaResponse;
+import com.felicita.model.response.*;
 import com.felicita.repository.EmployeeRepository;
 import com.felicita.service.EmployeeService;
 import com.felicita.util.CommonResponseMessages;
@@ -105,6 +102,35 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new InternalServerErrorExceptionHandler("Failed to fetch all employee with social media details from database");
         } finally {
             LOGGER.info("End fetching all employee with social media details from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<TourAssignedEmployeeResponse> getEmployeeAssignToTourId(Long tourId) {
+        LOGGER.info("Start fetching employee assign to tour id from repository");
+        try {
+            TourAssignedEmployeeResponse tourAssignedEmployeeResponses =
+                    employeeRepository.getEmployeeAssignToTourId(tourId);
+            List<TourAssignedEmployeeResponse.RelatedOtherTours> relatedOtherTours =
+                    employeeRepository.getOtherRelatedToursByTourId(tourId);
+            tourAssignedEmployeeResponses.setRelatedOtherTours(relatedOtherTours);
+            return (
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            tourAssignedEmployeeResponses,
+                            Instant.now()
+                    )
+            );
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching employee assign to tour id : {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching employee assign to tour id from repository: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch all employee assign to tour id from repository");
+        } finally {
+            LOGGER.info("End fetching employee assign to tour id from repository");
         }
     }
 }

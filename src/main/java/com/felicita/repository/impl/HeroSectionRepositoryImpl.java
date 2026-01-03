@@ -2,10 +2,7 @@ package com.felicita.repository.impl;
 
 import com.felicita.exception.DataAccessErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
-import com.felicita.model.response.AboutUsHeroSectionResponse;
-import com.felicita.model.response.BlogHeroSectionResponse;
-import com.felicita.model.response.ContactUsHeroSectionResponse;
-import com.felicita.model.response.HeroSectionResponse;
+import com.felicita.model.response.*;
 import com.felicita.queries.HeroSectionQueries;
 import com.felicita.repository.HeroSectionRepository;
 import com.felicita.service.impl.HeroSectionServiceImpl;
@@ -221,6 +218,381 @@ public class HeroSectionRepositoryImpl implements HeroSectionRepository {
         }
     }
 
+    @Override
+    public List<FaqHeroSectionResponse> getFAQHeroSectionDetails() {
+        String GET_ALL_FAQ_HERO_SECTION_DATA = HeroSectionQueries.GET_ALL_FAQ_HERO_SECTION_DATA;
+
+        try {
+            LOGGER.info("Executing query to fetch all FAQ hero section items...");
+
+            List<FaqHeroSectionResponse> results = jdbcTemplate.query(
+                    GET_ALL_FAQ_HERO_SECTION_DATA,
+                    (rs, rowNum) -> {
+
+                        Integer order = rs.getInt("order");
+                        if (rs.wasNull()) {
+                            order = null;
+                        }
+
+                        return FaqHeroSectionResponse.builder()
+                                .id(rs.getLong("id"))
+                                .name(rs.getString("name"))
+                                .imageUrl(rs.getString("image_url"))
+                                .title(rs.getString("title"))
+                                .subtitle(rs.getString("subtitle"))
+                                .description(rs.getString("description"))
+                                .primaryButtonText(rs.getString("primary_button_text"))
+                                .primaryButtonLink(rs.getString("primary_button_link"))
+                                .secondaryButtonText(rs.getString("secondary_button_text"))
+                                .secondaryButtonLink(rs.getString("secondary_button_link"))
+                                .status(rs.getString("status"))
+                                .order(order)
+                                .createdAt(rs.getTimestamp("created_at") != null ? rs.getTimestamp("created_at").toLocalDateTime() : null)
+                                .createdBy(rs.getObject("created_by", Integer.class))
+                                .updatedAt(rs.getTimestamp("updated_at") != null ? rs.getTimestamp("updated_at").toLocalDateTime() : null)
+                                .updatedBy(rs.getObject("updated_by", Integer.class))
+                                .terminatedAt(rs.getTimestamp("terminated_at") != null ? rs.getTimestamp("terminated_at").toLocalDateTime() : null)
+                                .terminatedBy(rs.getObject("terminated_by", Integer.class))
+                                .build();
+                    }
+            );
+
+            LOGGER.info("Successfully fetched {} FAQ hero section items.", results.size());
+            return results;
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching FAQ hero section items: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler(
+                    "Failed to fetch FAQ hero section items from database"
+            );
+
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching FAQ hero section items: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler(
+                    "Unexpected error occurred while fetching FAQ hero section items"
+            );
+        }
+    }
+
+    @Override
+    public List<TourHeroSectionResponse> getTourHeroSectionDetails() {
+        String GET_ALL_TOUR_HERO_SECTION_DATA = HeroSectionQueries.GET_ALL_TOUR_HERO_SECTION_DATA;
+        try {
+            LOGGER.info("Executing query to fetch all tour hero section items...");
+            List<TourHeroSectionResponse> results = jdbcTemplate.query(
+                    GET_ALL_TOUR_HERO_SECTION_DATA,
+                    (rs, rowNum) -> {
+                        Integer order = rs.getInt("order");
+                        if (rs.wasNull()) {
+                            order = null;
+                        }
+                        return TourHeroSectionResponse.builder()
+                                .id(rs.getLong("id"))
+                                .name(rs.getString("name"))
+                                .imageUrl(rs.getString("image_url"))
+                                .title(rs.getString("title"))
+                                .subtitle(rs.getString("subtitle"))
+                                .description(rs.getString("description"))
+                                .primaryButtonText(rs.getString("primary_button_text"))
+                                .primaryButtonLink(rs.getString("primary_button_link"))
+                                .secondaryButtonText(rs.getString("secondary_button_text"))
+                                .secondaryButtonLink(rs.getString("secondary_button_link"))
+                                .status(rs.getString("status"))
+                                .order(order)
+                                .createdAt(rs.getTimestamp("created_at") != null ? rs.getTimestamp("created_at").toLocalDateTime() : null)
+                                .createdBy(rs.getObject("created_by", Integer.class))
+                                .updatedAt(rs.getTimestamp("updated_at") != null ? rs.getTimestamp("updated_at").toLocalDateTime() : null)
+                                .updatedBy(rs.getObject("updated_by", Integer.class))
+                                .terminatedAt(rs.getTimestamp("terminated_at") != null ? rs.getTimestamp("terminated_at").toLocalDateTime() : null)
+                                .terminatedBy(rs.getObject("terminated_by", Integer.class))
+                                .build();
+                    }
+            );
+            LOGGER.info("Successfully fetched {} tour hero section items.", results.size());
+            return results;
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching tour hero section items: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler(
+                    "Failed to fetch tour hero section items from database"
+            );
+
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching tour hero section items: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler(
+                    "Unexpected error occurred while fetching tour hero section items"
+            );
+        }
+    }
+
+    @Override
+    public List<ActivityHeroSectionResponse> getActivityHeroSectionDetails() {
+        String GET_ALL_ACTIVITY_HERO_SECTION_DATA =
+                HeroSectionQueries.GET_ALL_ACTIVITY_HERO_SECTION_DATA;
+
+        try {
+            LOGGER.info("Executing query to fetch all activity hero section items...");
+
+            List<ActivityHeroSectionResponse> results = jdbcTemplate.query(
+                    GET_ALL_ACTIVITY_HERO_SECTION_DATA,
+                    (rs, rowNum) -> {
+
+                        Integer order = rs.getInt("order");
+                        if (rs.wasNull()) {
+                            order = null;
+                        }
+
+                        return ActivityHeroSectionResponse.builder()
+                                .id(rs.getLong("id"))
+                                .name(rs.getString("name"))
+                                .imageUrl(rs.getString("image_url"))
+                                .title(rs.getString("title"))
+                                .subtitle(rs.getString("subtitle"))
+                                .description(rs.getString("description"))
+
+                                .primaryButtonText(rs.getString("primary_button_text"))
+                                .primaryButtonLink(rs.getString("primary_button_link"))
+
+                                .secondaryButtonText(rs.getString("secondary_button_text"))
+                                .secondaryButtonLink(rs.getString("secondary_button_link"))
+
+                                .status(rs.getString("status"))
+                                .order(order)
+
+                                .createdAt(rs.getTimestamp("created_at") != null
+                                        ? rs.getTimestamp("created_at").toLocalDateTime()
+                                        : null)
+                                .createdBy(rs.getInt("created_by"))
+
+                                .updatedAt(rs.getTimestamp("updated_at") != null
+                                        ? rs.getTimestamp("updated_at").toLocalDateTime()
+                                        : null)
+                                .updatedBy(rs.getInt("updated_by"))
+
+                                .terminatedAt(rs.getTimestamp("terminated_at") != null
+                                        ? rs.getTimestamp("terminated_at").toLocalDateTime()
+                                        : null)
+                                .terminatedBy(rs.getInt("terminated_by"))
+                                .build();
+                    }
+            );
+
+            LOGGER.info("Successfully fetched {} activity hero section items.", results.size());
+            return results;
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching activity hero section items: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler(
+                    "Failed to fetch activity hero section items from database"
+            );
+
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching activity hero section items: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler(
+                    "Unexpected error occurred while fetching activity hero section items"
+            );
+        }
+    }
+
+
+    @Override
+    public List<DestinationHeroSectionResponse> getDestinationHeroSectionDetails() {
+        String GET_ALL_DESTINATION_HERO_SECTION_DATA =
+                HeroSectionQueries.GET_ALL_DESTINATION_HERO_SECTION_DATA;
+
+        try {
+            LOGGER.info("Executing query to fetch all destination hero section items...");
+
+            List<DestinationHeroSectionResponse> results = jdbcTemplate.query(
+                    GET_ALL_DESTINATION_HERO_SECTION_DATA,
+                    (rs, rowNum) -> {
+
+                        Integer order = rs.getInt("order");
+                        if (rs.wasNull()) {
+                            order = null;
+                        }
+
+                        return DestinationHeroSectionResponse.builder()
+                                .id(rs.getLong("id"))
+                                .name(rs.getString("name"))
+                                .imageUrl(rs.getString("image_url"))
+                                .title(rs.getString("title"))
+                                .subtitle(rs.getString("subtitle"))
+                                .description(rs.getString("description"))
+
+                                .primaryButtonText(rs.getString("primary_button_text"))
+                                .primaryButtonLink(rs.getString("primary_button_link"))
+
+                                .secondaryButtonText(rs.getString("secondary_button_text"))
+                                .secondaryButtonLink(rs.getString("secondary_button_link"))
+
+                                .status(rs.getString("status"))
+                                .order(order)
+
+                                .createdAt(rs.getTimestamp("created_at") != null
+                                        ? rs.getTimestamp("created_at").toLocalDateTime()
+                                        : null)
+                                .createdBy(rs.getInt("created_by"))
+
+                                .updatedAt(rs.getTimestamp("updated_at") != null
+                                        ? rs.getTimestamp("updated_at").toLocalDateTime()
+                                        : null)
+                                .updatedBy(rs.getInt("updated_by"))
+
+                                .terminatedAt(rs.getTimestamp("terminated_at") != null
+                                        ? rs.getTimestamp("terminated_at").toLocalDateTime()
+                                        : null)
+                                .terminatedBy(rs.getInt("terminated_by"))
+                                .build();
+                    }
+            );
+
+            LOGGER.info("Successfully fetched {} destination hero section items.", results.size());
+            return results;
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching destination hero section items: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler(
+                    "Failed to fetch destination hero section items from database"
+            );
+
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching destination hero section items: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler(
+                    "Unexpected error occurred while fetching destination hero section items"
+            );
+        }
+    }
+
+
+    @Override
+    public List<PackageHeroSectionResponse> getPackageHeroSectionDetails() {
+        String GET_ALL_PACKAGE_HERO_SECTION_DATA = HeroSectionQueries.GET_ALL_PACKAGE_HERO_SECTION_DATA;
+
+        try {
+            LOGGER.info("Executing query to fetch all package hero section items...");
+
+            List<PackageHeroSectionResponse> results = jdbcTemplate.query(
+                    GET_ALL_PACKAGE_HERO_SECTION_DATA,
+                    (rs, rowNum) -> {
+
+                        Integer order = rs.getInt("order");
+                        if (rs.wasNull()) {
+                            order = null;
+                        }
+
+                        return PackageHeroSectionResponse.builder()
+                                .id(rs.getLong("id"))
+                                .name(rs.getString("name"))
+                                .imageUrl(rs.getString("image_url"))
+                                .title(rs.getString("title"))
+                                .subtitle(rs.getString("subtitle"))
+                                .description(rs.getString("description"))
+
+                                .primaryButtonText(rs.getString("primary_button_text"))
+                                .primaryButtonLink(rs.getString("primary_button_link"))
+
+                                .secondaryButtonText(rs.getString("secondary_button_text"))
+                                .secondaryButtonLink(rs.getString("secondary_button_link"))
+
+                                .status(rs.getString("status"))
+                                .order(order)
+
+                                .createdAt(rs.getTimestamp("created_at") != null
+                                        ? rs.getTimestamp("created_at").toLocalDateTime()
+                                        : null)
+                                .createdBy(rs.getInt("created_by"))
+
+                                .updatedAt(rs.getTimestamp("updated_at") != null
+                                        ? rs.getTimestamp("updated_at").toLocalDateTime()
+                                        : null)
+                                .updatedBy(rs.getInt("updated_by"))
+
+                                .terminatedAt(rs.getTimestamp("terminated_at") != null
+                                        ? rs.getTimestamp("terminated_at").toLocalDateTime()
+                                        : null)
+                                .terminatedBy(rs.getInt("terminated_by"))
+                                .build();
+                    }
+            );
+
+            LOGGER.info("Successfully fetched {} package hero section items.", results.size());
+            return results;
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching package hero section items: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler(
+                    "Failed to fetch package hero section items from database"
+            );
+
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching package hero section items: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler(
+                    "Unexpected error occurred while fetching package hero section items"
+            );
+        }
+    }
+
+    @Override
+    public List<PackageScheduleHeroSectionResponse> getPackageScheduleHeroSectionDetails(Long packageScheduleId) {
+        String GET_ALL_PACKAGE_SCHEDULE_HERO_SECTION_DATA = HeroSectionQueries.GET_ALL_PACKAGE_SCHEDULE_HERO_SECTION_DATA;
+
+        try {
+            List<PackageScheduleHeroSectionResponse> results = jdbcTemplate.query(
+                    GET_ALL_PACKAGE_SCHEDULE_HERO_SECTION_DATA,
+                    new Object[]{packageScheduleId},
+                    (rs, rowNum) -> PackageScheduleHeroSectionResponse.builder()
+                            .id(rs.getLong("id"))
+                            .name(rs.getString("name"))
+                            .description(rs.getString("description"))
+                            .imageUrl(rs.getString("image_url"))
+                            .color(rs.getString("color"))
+                            .build()
+            );
+            return results;
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching package hero section items: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler(
+                    "Failed to fetch package hero section items from database"
+            );
+
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching package hero section items: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler(
+                    "Unexpected error occurred while fetching package hero section items"
+            );
+        }
+    }
+
+    @Override
+    public List<BookedTourHeroSectionResponse> getBookedTourHeroSectionDetails(Long bookingId) {
+        String GET_BOOKED_TOUR_HERO_SECTION_DATA = HeroSectionQueries.GET_BOOKED_TOUR_HERO_SECTION_DATA;
+
+        try {
+            List<BookedTourHeroSectionResponse> results = jdbcTemplate.query(
+                    GET_BOOKED_TOUR_HERO_SECTION_DATA,
+                    new Object[]{bookingId},
+                    (rs, rowNum) -> BookedTourHeroSectionResponse.builder()
+                            .id(rs.getLong("id"))
+                            .name(rs.getString("name"))
+                            .description(rs.getString("description"))
+                            .imageUrl(rs.getString("image_url"))
+                            .build()
+            );
+            return results;
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching booked tour hero section items: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler(
+                    "Failed to fetch booked tour hero section items from database"
+            );
+
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching booked tour hero section items: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler(
+                    "Unexpected error occurred while fetching booked tour hero section items"
+            );
+        }
+    }
 
 
 }

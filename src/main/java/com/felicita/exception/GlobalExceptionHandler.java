@@ -148,4 +148,29 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
+    @ExceptionHandler(UnAuthenticateErrorExceptionHandler.class)
+    public ResponseEntity<CommonResponse<String>> handleUnAuthenticateErrorException(UnAuthenticateErrorExceptionHandler e) {
+        logger.error("{} UnAuthenticate Error Exception : {} {}", Constant.ERROR_DOTS_START, e.getMessage(), Constant.ERROR_DOTS_END);
+        CommonResponse<String> response = new CommonResponse<>(
+                CommonResponseMessages.DATA_RETRIEVE_FAILED_CODE,
+                CommonResponseMessages.DATA_RETRIEVE_FAILED_STATUS,
+                CommonResponseMessages.DATA_RETRIEVE_FAILED_MESSAGE,
+                e.getMessage(),
+                Instant.now()
+        );
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+    }
+
+    @ExceptionHandler(TerminateFailedErrorExceptionHandler.class)
+    public ResponseEntity<CommonResponse<String>> handleTerminateFailedErrorException(TerminateFailedErrorExceptionHandler e) {
+        logger.error("{} Terminate Failed Error Exception : {} {}", Constant.ERROR_DOTS_START, e.getMessage(), Constant.ERROR_DOTS_END);
+        CommonResponse<String> response = new CommonResponse<>(
+                CommonResponseMessages.DATA_RETRIEVE_FAILED_CODE,
+                CommonResponseMessages.DATA_RETRIEVE_FAILED_STATUS,
+                CommonResponseMessages.DATA_RETRIEVE_FAILED_MESSAGE,
+                e.getMessage(),
+                Instant.now()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
 }

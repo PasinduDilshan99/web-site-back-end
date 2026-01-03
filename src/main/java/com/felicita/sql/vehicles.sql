@@ -379,3 +379,39 @@ CREATE TABLE vehicle_locations (
         ON UPDATE CASCADE ON DELETE CASCADE
 );
 
+
+REATE TABLE vehicle_type (
+    vehicle_type_id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    description VARCHAR(255),
+    status_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_by INT,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_by INT,
+    terminated_at TIMESTAMP NULL,
+    terminated_by INT,
+    CONSTRAINT fk_vehicle_type_status
+        FOREIGN KEY (status_id)
+        REFERENCES common_status(id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT
+);
+
+ALTER TABLE vehicles
+ADD COLUMN vehicle_type_id INT NOT NULL AFTER registration_number;
+
+INSERT INTO vehicle_type (name, description, status_id)
+VALUES
+('Car', 'Standard passenger car', 1),
+('Van', 'Tourist van', 1),
+('Bus', 'Large tour bus', 1),
+('Jeep', 'Off-road vehicle', 1);
+
+
+ALTER TABLE vehicles
+ADD CONSTRAINT fk_vehicles_vehicle_type
+    FOREIGN KEY (vehicle_type_id)
+    REFERENCES vehicle_type(vehicle_type_id)
+    ON UPDATE CASCADE
+    ON DELETE RESTRICT;

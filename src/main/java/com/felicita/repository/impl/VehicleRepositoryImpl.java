@@ -2,6 +2,7 @@ package com.felicita.repository.impl;
 
 import com.felicita.exception.DataAccessErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
+import com.felicita.model.dto.VehicleBasicDetailsDto;
 import com.felicita.model.response.PartnerResponse;
 import com.felicita.model.response.VehicleDetailResponse;
 import com.felicita.model.response.VehicleResponse;
@@ -12,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -365,6 +367,32 @@ public class VehicleRepositoryImpl implements VehicleRepository {
             throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching vehicle details");
         }
     }
+
+    @Override
+    public VehicleBasicDetailsDto getVehicleBasicDetailsById(Long vehicleId) {
+        String QUERY = VehicleQueries.GET_VEHICLE_BASIC_DETAILS_BY_ID;
+
+        try {
+            return jdbcTemplate.queryForObject(
+                    QUERY,
+                    new Object[]{vehicleId},
+                    (rs, rowNum) -> VehicleBasicDetailsDto.builder()
+                            .vehicleId(rs.getLong("vehicle_id"))
+                            .vehicleNumber(rs.getString("registration_number"))
+                            .vehicleType(rs.getString("type"))
+                            .vehicleMake(rs.getString("make"))
+                            .vehicleModel(rs.getString("model"))
+                            .build()
+            );
+        } catch (EmptyResultDataAccessException e) {
+            LOGGER.warn("No vehicle found for ID: {}", vehicleId);
+            return null; // or throw a DataNotFound exception if preferred
+        } catch (Exception e) {
+            LOGGER.error("Error fetching vehicle basic details for ID {}: {}", vehicleId, e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching vehicle basic details");
+        }
+    }
+
 
     // Helper method to get vehicle assignments separately
     private List<VehicleDetailResponse.Assignment> getVehicleAssignments(Integer vehicleId) {

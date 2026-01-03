@@ -1,9 +1,9 @@
 package com.felicita.controller;
 
-import com.felicita.model.dto.DestinationResponseDto;
-import com.felicita.model.dto.PackageResponseDto;
 import com.felicita.model.dto.PopularTourResponseDto;
 import com.felicita.model.dto.TourResponseDto;
+import com.felicita.model.request.ActivityTerminateRequest;
+import com.felicita.model.request.TourDataRequest;
 import com.felicita.model.response.*;
 import com.felicita.service.TourService;
 import com.felicita.util.Constant;
@@ -12,10 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -46,6 +43,15 @@ public class TourController {
         ResponseEntity<CommonResponse<List<TourResponseDto>>> response = tourService.getActiveTours();
         LOGGER.info("{} End execute get all active tours {}", Constant.DOTS, Constant.DOTS);
         return response;
+    }
+
+    @PostMapping(path = "/tours")
+    public ResponseEntity<CommonResponse<ToursDetailsWithParamResponse>> getToursToShowWithParam(@RequestBody TourDataRequest tourDataRequest) {
+        LOGGER.info("{} Start execute get active tours for params {}", Constant.DOTS, Constant.DOTS);
+        LOGGER.info("Request body: {}", tourDataRequest);
+        CommonResponse<ToursDetailsWithParamResponse> response = tourService.getToursToShowWithParam(tourDataRequest);
+        LOGGER.info("{} End execute get active tours for params {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping(path = "/popular")
@@ -117,6 +123,54 @@ public class TourController {
         LOGGER.info("{} Start execute get all tour review details by id {}", Constant.DOTS, Constant.DOTS);
         CommonResponse<List<TourHistoryImageResponse>> response = tourService.getTourHistoryImagesById(tourId);
         LOGGER.info("{} End execute get all tour review details by id {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/tour-details/{tourId}")
+    public ResponseEntity<CommonResponse<List<TourDetailsWithDayToDayResponse>>> getTourDetailsDayByDay(@PathVariable Long tourId) {
+        LOGGER.info("{} Start execute get tour details day by day with given id {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<TourDetailsWithDayToDayResponse>> response = tourService.getTourDetailsDayByDay(tourId);
+        LOGGER.info("{} End execute get all tour details day by day with given id {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/tour-extra-details/{tourId}")
+    public ResponseEntity<CommonResponse<TourExtrasResponse>> getTourExtraDetailsDayByDay(@PathVariable Long tourId) {
+        LOGGER.info("{} Start execute get tour extra details day by day with given id {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<TourExtrasResponse> response = tourService.getTourExtraDetailsDayByDay(tourId);
+        LOGGER.info("{} End execute get all tour extra details day by day with given id {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/tour-schedules/{tourId}")
+    public ResponseEntity<CommonResponse<TourSchedulesResponse>> getTourSchedules(@PathVariable Long tourId) {
+        LOGGER.info("{} Start execute get tour schedules with given id {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<TourSchedulesResponse> response = tourService.getTourSchedules(tourId);
+        LOGGER.info("{} End execute get all tour schedules with given id {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/all-tours-basic")
+    public ResponseEntity<CommonResponse<List<TourBasicDetailsResponse>>> getAllToursBasicDetails() {
+        LOGGER.info("{} Start execute get all tours basic details {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<TourBasicDetailsResponse>> response = tourService.getAllToursBasicDetails();
+        LOGGER.info("{} End execute get all tours basic details {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/tour-for-terminate")
+    public ResponseEntity<CommonResponse<List<TourForTerminateResponse>>> getToursForTerminate() {
+        LOGGER.info("{} Start execute get all active tour for terminate {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<TourForTerminateResponse>> response = tourService.getToursForTerminate();
+        LOGGER.info("{} End execute get all active tour for terminate {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping(path = "/terminate-tour")
+    public ResponseEntity<CommonResponse<TerminateResponse>> terminateTour(@RequestBody TourTerminateRequest tourTerminateRequest) {
+        LOGGER.info("{} Start execute terminate activity {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<TerminateResponse> response = tourService.terminateTour(tourTerminateRequest);
+        LOGGER.info("{} End execute terminate activity {}", Constant.DOTS, Constant.DOTS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

@@ -223,4 +223,265 @@ public class HeroSectionServiceImpl implements HeroSectionService {
             LOGGER.info("End fetching all blog hero section items from repository");
         }
     }
+
+    @Override
+    public CommonResponse<List<FaqHeroSectionResponse>> getFAQHeroSectionDetails() {
+        LOGGER.info("Start fetching all faq hero section items from repository");
+
+        try {
+            List<FaqHeroSectionResponse> faqHeroSectionResponses = heroSectionRepository.getFAQHeroSectionDetails();
+
+            if (faqHeroSectionResponses.isEmpty()) {
+                LOGGER.warn("No faq hero section items found in database");
+                throw new DataNotFoundErrorExceptionHandler("No faq hero section items found");
+            }
+
+            List<FaqHeroSectionResponse> faqHeroSectionResponseList = faqHeroSectionResponses.stream()
+                    .filter(item -> CommonStatus.ACTIVE.toString().equalsIgnoreCase(item.getStatus()))
+                    .toList();
+
+            if (faqHeroSectionResponseList.isEmpty()) {
+                LOGGER.warn("No active faq hero section items found in database");
+                throw new DataNotFoundErrorExceptionHandler("No visible hero section items found");
+            }
+
+            LOGGER.info("Fetched {} active faq hero section items successfully", faqHeroSectionResponseList.size());
+
+            return(
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            faqHeroSectionResponseList,
+                            Instant.now()
+                    )
+            );
+
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching active faq hero section items: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch faq hero section items from database");
+        } finally {
+            LOGGER.info("End fetching all faq hero section items from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<List<TourHeroSectionResponse>> getTourHeroSectionDetails() {
+        LOGGER.info("Start fetching all tour hero section items from repository");
+
+        try {
+            List<TourHeroSectionResponse> tourHeroSectionResponses = heroSectionRepository.getTourHeroSectionDetails();
+
+            if (tourHeroSectionResponses.isEmpty()) {
+                LOGGER.warn("No tour hero section items found in database");
+                throw new DataNotFoundErrorExceptionHandler("No tour hero section items found");
+            }
+
+            List<TourHeroSectionResponse> tourHeroSectionResponseList = tourHeroSectionResponses.stream()
+                    .filter(item -> CommonStatus.ACTIVE.toString().equalsIgnoreCase(item.getStatus()))
+                    .toList();
+
+            if (tourHeroSectionResponseList.isEmpty()) {
+                LOGGER.warn("No active tour hero section items found in database");
+                throw new DataNotFoundErrorExceptionHandler("No visible hero section items found");
+            }
+
+            LOGGER.info("Fetched {} active tour hero section items successfully", tourHeroSectionResponseList.size());
+
+            return new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            tourHeroSectionResponseList,
+                            Instant.now()
+            );
+
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching active tour hero section items: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch tour hero section items from database");
+        } finally {
+            LOGGER.info("End fetching all tour hero section items from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<List<PackageHeroSectionResponse>> getPackageHeroSectionDetails() {
+        LOGGER.info("Start fetching all package hero section items from repository");
+
+        try {
+            List<PackageHeroSectionResponse> packageHeroSectionResponses = heroSectionRepository.getPackageHeroSectionDetails();
+
+            if (packageHeroSectionResponses.isEmpty()) {
+                LOGGER.warn("No package hero section items found in database");
+                throw new DataNotFoundErrorExceptionHandler("No package hero section items found");
+            }
+
+            List<PackageHeroSectionResponse> packageHeroSectionResponseList = packageHeroSectionResponses.stream()
+                    .filter(item -> CommonStatus.ACTIVE.toString().equalsIgnoreCase(item.getStatus()))
+                    .toList();
+
+            if (packageHeroSectionResponseList.isEmpty()) {
+                LOGGER.warn("No active package hero section items found in database");
+                throw new DataNotFoundErrorExceptionHandler("No visible hero section items found");
+            }
+
+            LOGGER.info("Fetched {} active package hero section items successfully", packageHeroSectionResponseList.size());
+
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    packageHeroSectionResponseList,
+                    Instant.now()
+            );
+
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching active package hero section items: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch package hero section items from database");
+        } finally {
+            LOGGER.info("End fetching all package hero section items from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<List<DestinationHeroSectionResponse>> getDestinationHeroSectionDetails() {
+        LOGGER.info("Start fetching all destination hero section items from repository");
+
+        try {
+            List<DestinationHeroSectionResponse> destinationHeroSectionResponses = heroSectionRepository.getDestinationHeroSectionDetails();
+
+            if (destinationHeroSectionResponses.isEmpty()) {
+                LOGGER.warn("No destination hero section items found in database");
+                throw new DataNotFoundErrorExceptionHandler("No destination hero section items found");
+            }
+
+            List<DestinationHeroSectionResponse> destinationHeroSectionResponseList = destinationHeroSectionResponses.stream()
+                    .filter(item -> CommonStatus.ACTIVE.toString().equalsIgnoreCase(item.getStatus()))
+                    .toList();
+
+            if (destinationHeroSectionResponseList.isEmpty()) {
+                LOGGER.warn("No active destination hero section items found in database");
+                throw new DataNotFoundErrorExceptionHandler("No visible destination hero section items found");
+            }
+
+            LOGGER.info("Fetched {} active destination hero section items successfully", destinationHeroSectionResponseList.size());
+
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    destinationHeroSectionResponseList,
+                    Instant.now()
+            );
+
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching active destination hero section items: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch destination hero section items from database");
+        } finally {
+            LOGGER.info("End fetching all destination hero section items from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<List<ActivityHeroSectionResponse>> getActivityHeroSectionDetails() {
+        LOGGER.info("Start fetching all activity hero section items from repository");
+
+        try {
+            List<ActivityHeroSectionResponse> activityHeroSectionResponses = heroSectionRepository.getActivityHeroSectionDetails();
+
+            if (activityHeroSectionResponses.isEmpty()) {
+                LOGGER.warn("No activity hero section items found in database");
+                throw new DataNotFoundErrorExceptionHandler("No activity hero section items found");
+            }
+
+            List<ActivityHeroSectionResponse> activityHeroSectionResponseList = activityHeroSectionResponses.stream()
+                    .filter(item -> CommonStatus.ACTIVE.toString().equalsIgnoreCase(item.getStatus()))
+                    .toList();
+
+            if (activityHeroSectionResponseList.isEmpty()) {
+                LOGGER.warn("No active activity hero section items found in database");
+                throw new DataNotFoundErrorExceptionHandler("No visible hero section items found");
+            }
+
+            LOGGER.info("Fetched {} active activity hero section items successfully", activityHeroSectionResponseList.size());
+
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    activityHeroSectionResponseList,
+                    Instant.now()
+            );
+
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching active activity hero section items: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch activity hero section items from database");
+        } finally {
+            LOGGER.info("End fetching all activity hero section items from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<List<PackageScheduleHeroSectionResponse>> getPackageScheduleHeroSectionDetails(Long packageScheduleId) {
+        LOGGER.info("Start fetching all package schedule hero section items from repository");
+
+        try {
+            List<PackageScheduleHeroSectionResponse> packageScheduleHeroSectionResponses =
+                    heroSectionRepository.getPackageScheduleHeroSectionDetails(packageScheduleId);
+
+            if (packageScheduleHeroSectionResponses.isEmpty()) {
+                LOGGER.warn("No package schedule hero section items found in database");
+                throw new DataNotFoundErrorExceptionHandler("No package schedule hero section items found");
+            }
+
+
+            LOGGER.info("Fetched {} active package schedule hero section items successfully", packageScheduleHeroSectionResponses.size());
+
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    packageScheduleHeroSectionResponses,
+                    Instant.now()
+            );
+
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching active package schedule hero section items: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch package schedule hero section items from database");
+        } finally {
+            LOGGER.info("End fetching all package schedule hero section items from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<List<BookedTourHeroSectionResponse>> getBookedTourHeroSectionDetails(Long bookingId) {
+        LOGGER.info("Start fetching all booked tour hero section items from repository");
+
+        try {
+            List<BookedTourHeroSectionResponse> bookedTourHeroSectionResponses =
+                    heroSectionRepository.getBookedTourHeroSectionDetails(bookingId);
+
+            if (bookedTourHeroSectionResponses.isEmpty()) {
+                LOGGER.warn("No booked tour hero section items found in database");
+                throw new DataNotFoundErrorExceptionHandler("No booked tour hero section items found");
+            }
+
+
+            LOGGER.info("Fetched {} active booked tour hero section items successfully", bookedTourHeroSectionResponses.size());
+
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    bookedTourHeroSectionResponses,
+                    Instant.now()
+            );
+
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching active booked tour hero section items: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch booked tour hero section items from database");
+        } finally {
+            LOGGER.info("End fetching all booked tour hero section items from repository");
+        }
+    }
 }

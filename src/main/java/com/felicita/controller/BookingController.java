@@ -1,5 +1,6 @@
 package com.felicita.controller;
 
+import com.felicita.model.request.BookingRequest;
 import com.felicita.model.response.*;
 import com.felicita.service.BookingService;
 import com.felicita.util.Constant;
@@ -8,9 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -56,6 +55,39 @@ public class BookingController {
         LOGGER.info("{} Start execute get cancelled booking tours details {}", Constant.DOTS, Constant.DOTS);
         CommonResponse<List<CancelledToursResponse>> response = bookingService.getCancelledToursDetailsById();
         LOGGER.info("{} End execute get cancelled booking tours details {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/book-tour-filter")
+    public ResponseEntity<CommonResponse<List<BookingFilterResponse>>> getBookingFilter() {
+        LOGGER.info("{} Start execute get filters in the booking {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<BookingFilterResponse>> response = bookingService.getBookingFilter();
+        LOGGER.info("{} End execute get filters in the booking {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/booked-tours")
+    public ResponseEntity<CommonResponse<List<UserBookingSummaryResponse>>> getBookedTours() {
+        LOGGER.info("{} Start execute get booked tours {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<UserBookingSummaryResponse>> response = bookingService.getBookedTours();
+        LOGGER.info("{} End execute get booked tours {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping(path = "/book-tour")
+    public ResponseEntity<CommonResponse<BookInsertResponse>> bookingTour(@RequestBody BookingRequest bookingRequest) {
+        LOGGER.info("{} Start execute booking a tour {}", Constant.DOTS, Constant.DOTS);
+        LOGGER.info("Booking request: {}", bookingRequest);
+        CommonResponse<BookInsertResponse> response = bookingService.bookingTour(bookingRequest);
+        LOGGER.info("{} End execute booking a tour {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/book-receipt/{bookingId}")
+    public ResponseEntity<CommonResponse<PrintReceiptForBookingResponse>> createReceiptForBooking(@PathVariable Long bookingId) {
+        LOGGER.info("{} Start execute create receipt for booking a tour {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<PrintReceiptForBookingResponse> response = bookingService.createReceiptForBooking(bookingId);
+        LOGGER.info("{} End execute create receipt for booking a tour {}", Constant.DOTS, Constant.DOTS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

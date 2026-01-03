@@ -2,12 +2,9 @@ package com.felicita.repository.impl;
 
 import com.felicita.exception.DataAccessErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
-import com.felicita.model.dto.ActivityCategoryImageResponseDto;
-import com.felicita.model.dto.ActivityCategoryResponseDto;
-import com.felicita.model.response.CancelledToursResponse;
-import com.felicita.model.response.CompleteToursResponse;
-import com.felicita.model.response.RequestedToursResponse;
-import com.felicita.model.response.UpcomingToursResponse;
+import com.felicita.model.dto.*;
+import com.felicita.model.request.BookingRequest;
+import com.felicita.model.response.*;
 import com.felicita.queries.ActivitiesQueries;
 import com.felicita.queries.BookingQueries;
 import com.felicita.repository.BookingRepository;
@@ -15,9 +12,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -890,4 +894,568 @@ public class BookingRepositoryImpl implements BookingRepository {
             throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching cancelled booking tours");
         }
     }
+
+    @Override
+    public Long bookingTourBasicDetails(InsertBookingRequestDto dto) {
+        String QUERY = BookingQueries.INSERT_BOOKING_BASIC_DETAILS;
+
+        try {
+            KeyHolder keyHolder = new GeneratedKeyHolder();
+
+            jdbcTemplate.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(
+                        QUERY,
+                        Statement.RETURN_GENERATED_KEYS
+                );
+
+                ps.setString(1, dto.getBookingReference());
+                ps.setLong(2, dto.getUserId());
+                ps.setLong(3, dto.getPackageScheduleId());
+
+                ps.setInt(4, dto.getTotalPersons());
+                ps.setDouble(5, dto.getTotalAmount());
+                ps.setDouble(6, dto.getDiscountAmount() != null ? dto.getDiscountAmount() : 0.0);
+                ps.setDouble(7, dto.getTaxAmount() != null ? dto.getTaxAmount() : 0.0);
+                ps.setDouble(8, dto.getInsuranceAmount() != null ? dto.getInsuranceAmount() : 0.0);
+                ps.setDouble(9, dto.getFinalAmount());
+
+                ps.setDate(10, Date.valueOf(dto.getBookingDate()));
+                ps.setDate(11, dto.getTravelStartDate());
+                ps.setDate(12, dto.getTravelEndDate());
+
+                // booking_status_id (must be resolved beforehand)
+                ps.setInt(13, 1);
+
+                ps.setString(14, dto.getSpecialRequirements());
+                ps.setString(15, dto.getDietaryRestrictions());
+                ps.setBoolean(16, Boolean.TRUE.equals(dto.getInsuranceRequired()));
+
+                // created_by (usually userId)
+                ps.setLong(17, dto.getUserId());
+
+                return ps;
+            }, keyHolder);
+
+            if (keyHolder.getKey() == null) {
+                throw new InternalServerErrorExceptionHandler("Failed to retrieve generated booking ID");
+            }
+
+            return keyHolder.getKey().longValue();
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while inserting booking basic details", ex);
+            throw new DataAccessErrorExceptionHandler(
+                    "Failed to insert booking basic details into database"
+            );
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while inserting booking basic details", ex);
+            throw new InternalServerErrorExceptionHandler(
+                    "Unexpected error occurred while inserting booking basic details"
+            );
+        }
+    }
+
+    @Override
+    public void bookingTransportation(Long bookingId, VehicleBasicDetailsDto vehicleBasicDetailsDto, LocalDate departureDate, Long userId) {
+        String QUERY = BookingQueries.INSERT_BOOKING_TRANSPORTATION;
+        try {
+            jdbcTemplate.update(QUERY,
+                    bookingId,
+                    vehicleBasicDetailsDto.getVehicleType(),      // transport_type
+                    departureDate,                               // departure_date
+                    vehicleBasicDetailsDto.getVehicleMake() + " " + vehicleBasicDetailsDto.getVehicleModel(), // carrier_name
+                    vehicleBasicDetailsDto.getVehicleNumber(),   // reference_number
+                    userId                                            // created_by (replace with actual user ID)
+            );
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while inserting booking transportation for bookingId {}", bookingId, ex);
+            throw new InternalServerErrorExceptionHandler("Database error while inserting booking transportation");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while inserting booking transportation for bookingId {}", bookingId, ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error while inserting booking transportation");
+        }
+    }
+
+    @Override
+    public void insertBookingPriceBreakdown(Long bookingId, PackageActivityPriceDto activity, int totalParticipants, Long userId) {
+        String QUERY = BookingQueries.INSERT_BOOKING_PRICE_BREAKDOWN;
+
+        try {
+            Double totalPrice = activity.getPriceForeigners() != null
+                    ? activity.getPriceForeigners() * totalParticipants
+                    : 0.0;
+
+            jdbcTemplate.update(
+                    QUERY,
+                    bookingId,
+                    "ACTIVITY",
+                    activity.getName(),
+                    activity.getDescription(),
+                    totalParticipants,
+                    activity.getPriceForeigners(),
+                    totalPrice,
+                    userId
+            );
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while inserting booking price breakdown for bookingId {}", bookingId, ex);
+            throw new InternalServerErrorExceptionHandler("Database error while inserting booking price breakdown");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while inserting booking price breakdown for bookingId {}", bookingId, ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error while inserting booking price breakdown");
+        }
+    }
+
+    @Override
+    public void insertBookingParticipant(Long bookingId, BookingRequest.Participant participant, Long userId) {
+        String QUERY = BookingQueries.INSERT_BOOKING_PARTICIPANT;
+
+        try {
+            jdbcTemplate.update(
+                    QUERY,
+                    bookingId,
+                    participant.getFirstName(),
+                    participant.getLastName(),
+                    participant.getDateOfBirth(),
+                    participant.getGender(),             // subquery maps to gender_id
+                    participant.getPassportNumber(),
+                    participant.getCountry(),            // subquery maps to country_id
+                    participant.getEmail(),
+                    participant.getMobileNumber(),
+                    participant.getEmergencyContactName(),
+                    participant.getEmergencyContactPhone(),
+                    participant.getEmergencyContactRelationship(),
+                    participant.getMedicalConditions(),
+                    participant.getAllergies(),
+                    participant.getSpecialAssistanceRequired() != null ? participant.getSpecialAssistanceRequired() : false,
+                    participant.getAssistantDetails(),
+                    null,                                // room_sharing_with (can set later if needed)
+                    userId
+            );
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while inserting booking participant for bookingId {}", bookingId, ex);
+            throw new InternalServerErrorExceptionHandler("Database error while inserting booking participant");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while inserting booking participant for bookingId {}", bookingId, ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error while inserting booking participant");
+        }
+    }
+
+    @Override
+    public void insertBookingNote(Long bookingId, BookingRequest.BookingNote note, Long userId) {
+        String QUERY = BookingQueries.INSERT_BOOKING_NOTE;
+
+        try {
+            jdbcTemplate.update(
+                    QUERY,
+                    bookingId,
+                    note.getNoteType(),
+                    note.getNoteText(),
+                    userId
+            );
+
+        } catch (DataAccessException ex) {
+            LOGGER.error(
+                    "Database error while inserting booking note for bookingId {}",
+                    bookingId,
+                    ex
+            );
+            throw new InternalServerErrorExceptionHandler(
+                    "Database error while inserting booking note"
+            );
+        } catch (Exception ex) {
+            LOGGER.error(
+                    "Unexpected error while inserting booking note for bookingId {}",
+                    bookingId,
+                    ex
+            );
+            throw new InternalServerErrorExceptionHandler(
+                    "Unexpected error while inserting booking note"
+            );
+        }
+    }
+
+    @Override
+    public void insertBookingItinerary(
+            Long bookingId,
+            PackageDayAccommodationPriceDto p,
+            LocalDate date,
+            Long userId
+    ) {
+        String QUERY = BookingQueries.INSERT_BOOKING_ITINERARY;
+
+        try {
+            jdbcTemplate.update(
+                    QUERY,
+                    bookingId,
+                    p.getDayNumber(),
+                    date,
+                    p.getTourName(),
+                    p.getTourDescription(),
+                    null, // start_time
+                    null, // end_time
+                    p.getHotelName(),
+                    null, // included_meals
+                    userId
+            );
+
+        } catch (DataAccessException ex) {
+            LOGGER.error(
+                    "Database error while inserting booking itinerary for bookingId {} day {}",
+                    bookingId,
+                    p.getDayNumber(),
+                    ex
+            );
+            throw new InternalServerErrorExceptionHandler(
+                    "Database error while inserting booking itinerary"
+            );
+        } catch (Exception ex) {
+            LOGGER.error(
+                    "Unexpected error while inserting booking itinerary for bookingId {} day {}",
+                    bookingId,
+                    p.getDayNumber(),
+                    ex
+            );
+            throw new InternalServerErrorExceptionHandler(
+                    "Unexpected error while inserting booking itinerary"
+            );
+        }
+    }
+
+    @Override
+    public void insertBookingActivities(
+            Long bookingId,
+            PackageActivityPriceDto a,
+            int totalParticipants,
+            Long userId
+    ) {
+        String QUERY = BookingQueries.INSERT_BOOKING_ACTIVITIES;
+
+        try {
+            Double pricePerPerson = a.getPriceForeigners() != null
+                    ? a.getPriceForeigners()
+                    : 0.0;
+
+            Double totalPrice = pricePerPerson * totalParticipants;
+
+            jdbcTemplate.update(
+                    QUERY,
+                    bookingId,
+                    a.getActivityId(),
+                    null, // activity_schedule_id
+                    null, // activity_date
+                    null, // start_time
+                    null, // end_time
+                    totalParticipants,
+                    pricePerPerson,
+                    totalPrice,
+                    1, // status ID (adjust if needed)
+                    userId
+            );
+
+        } catch (DataAccessException ex) {
+            LOGGER.error(
+                    "Database error while inserting booking activity for bookingId {} activityId {}",
+                    bookingId,
+                    a.getActivityId(),
+                    ex
+            );
+            throw new InternalServerErrorExceptionHandler(
+                    "Database error while inserting booking activity"
+            );
+        } catch (Exception ex) {
+            LOGGER.error(
+                    "Unexpected error while inserting booking activity for bookingId {} activityId {}",
+                    bookingId,
+                    a.getActivityId(),
+                    ex
+            );
+            throw new InternalServerErrorExceptionHandler(
+                    "Unexpected error while inserting booking activity"
+            );
+        }
+    }
+
+    @Override
+    public void insertBookingInvoice(
+            Long bookingId,
+            String invoiceNumber,
+            LocalDate invoiceDate,
+            LocalDate invoiceDueDate,
+            Double totalAmount,
+            Double taxAmount,
+            Double discountAmount,
+            Double finalAmount,
+            BookingRequest.BookingInvoice invoice,
+            Long userId
+    ) {
+        String QUERY = BookingQueries.INSERT_BOOKING_INVOICE;
+
+        try {
+            double safeTax = taxAmount != null ? taxAmount : 0.0;
+            double safeDiscount = discountAmount != null ? discountAmount : 0.0;
+            double amountPaid = 0.0;
+            double balanceDue = totalAmount;
+
+            jdbcTemplate.update(
+                    QUERY,
+                    bookingId,
+                    invoiceNumber,
+                    invoiceDate,
+                    invoiceDueDate,
+                    finalAmount,
+                    safeTax,
+                    safeDiscount,
+                    totalAmount,
+                    amountPaid,
+                    balanceDue,
+                    invoice.getBillingFullName(),
+                    invoice.getBillingAddress(),
+                    invoice.getBillingEmail(),
+                    invoice.getBillingPhone(),
+                    1, // status ID
+                    userId
+            );
+
+        } catch (DataAccessException ex) {
+            LOGGER.error(
+                    "Database error while inserting booking invoice for bookingId {} invoiceNumber {}",
+                    bookingId,
+                    invoiceNumber,
+                    ex
+            );
+            throw new InternalServerErrorExceptionHandler(
+                    "Database error while inserting booking invoice"
+            );
+        } catch (Exception ex) {
+            LOGGER.error(
+                    "Unexpected error while inserting booking invoice for bookingId {} invoiceNumber {}",
+                    bookingId,
+                    invoiceNumber,
+                    ex
+            );
+            throw new InternalServerErrorExceptionHandler(
+                    "Unexpected error while inserting booking invoice"
+            );
+        }
+    }
+
+    @Override
+    public BookingBasicDetailsDto getBookingBasicDetailsByBookingId(Long bookingId) {
+        String QUERY = BookingQueries.GET_BOOKING_BASIC_DETAILS_BY_BOOKING_ID;
+
+        try {
+            return jdbcTemplate.queryForObject(
+                    QUERY,
+                    new Object[]{bookingId},
+                    (rs, rowNum) -> BookingBasicDetailsDto.builder()
+                            .bookingId(rs.getLong("booking_id"))
+                            .bookingReference(rs.getString("booking_reference"))
+
+                            // Invoice fields
+                            .invoiceNumber(rs.getString("invoice_number"))
+                            .invoiceDate(rs.getDate("invoice_date") != null ? rs.getDate("invoice_date").toLocalDate() : null)
+                            .dueDate(rs.getDate("due_date") != null ? rs.getDate("due_date").toLocalDate() : null)
+                            .subtotal(rs.getObject("subtotal", Double.class))
+                            .taxAmount(rs.getObject("tax_amount", Double.class))
+                            .discountAmount(rs.getObject("discount_amount", Double.class))
+                            .insuranceAmount(rs.getObject("insurance_amount", Double.class))
+                            .packagePrice(rs.getObject("package_price", Double.class))
+                            .totalAmount(rs.getObject("total_amount", Double.class))
+                            .amountPaid(rs.getObject("amount_paid", Double.class))
+                            .balanceDue(rs.getObject("balance_due", Double.class))
+
+                            // Billing info
+                            .billingFullName(rs.getString("billing_full_name"))
+                            .billingAddress(rs.getString("billing_address"))
+                            .billingEmail(rs.getString("billing_email"))
+                            .billingPhone(rs.getString("billing_phone"))
+
+                            // Package info
+                            .packageName(rs.getString("package_name"))
+                            .packageScheduleId(rs.getLong("package_schedule_id"))
+                            .assumeStartDate(rs.getDate("assume_start_date") != null ? rs.getDate("assume_start_date").toLocalDate() : null)
+                            .assumeEndDate(rs.getDate("assume_end_date") != null ? rs.getDate("assume_end_date").toLocalDate() : null)
+
+                            // Tour info
+                            .tourName(rs.getString("tour_name"))
+                            .tourDescription(rs.getString("tour_description"))
+
+                            // Booking info
+                            .finalAmount(rs.getObject("final_amount", Double.class))
+                            .bookingDate(rs.getDate("booking_date") != null ? rs.getDate("booking_date").toLocalDate() : null)
+                            .bookingStatus(rs.getString("booking_status"))
+
+                            .build()
+            );
+
+        } catch (EmptyResultDataAccessException ex) {
+            LOGGER.warn("No booking found for ID: {}", bookingId);
+            return null; // or throw a custom DataNotFound exception
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching booking details for ID {}: {}", bookingId, ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error while fetching booking details");
+        }
+    }
+
+    @Override
+    public List<BookingActivityDto> getBookingActivityByBookingId(Long bookingId) {
+        String QUERY = BookingQueries.GET_BOOKING_ACTIVITIES_BY_BOOKING_ID;
+
+        try {
+            return jdbcTemplate.query(
+                    QUERY,
+                    new Object[]{bookingId},
+                    (rs, rowNum) -> BookingActivityDto.builder()
+                            .bookingId(rs.getLong("booking_id"))
+                            .activityId(rs.getLong("activity_id"))
+                            .name(rs.getString("name"))
+                            .description(rs.getString("description"))
+                            .numberOfParticipants(rs.getObject("number_of_participants", Integer.class))
+                            .pricePerPerson(rs.getObject("price_per_person", Double.class))
+                            .totalPrice(rs.getObject("total_price", Double.class))
+                            .build()
+            );
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching booking activities for bookingId {}", bookingId, ex);
+            throw new InternalServerErrorExceptionHandler("Database error while fetching booking activities");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching booking activities for bookingId {}", bookingId, ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error while fetching booking activities");
+        }
+    }
+
+    @Override
+    public List<BookingParticipantDto> getBookingParticipantByBookingId(Long bookingId) {
+        String QUERY = BookingQueries.GET_BOOKING_PARTICIPANTS_BY_BOOKING_ID;
+
+        try {
+            return jdbcTemplate.query(
+                    QUERY,
+                    new Object[]{bookingId},
+                    (rs, rowNum) -> BookingParticipantDto.builder()
+                            .bookingId(rs.getLong("booking_id"))
+                            .firstName(rs.getString("first_name"))
+                            .lastName(rs.getString("last_name"))
+                            .dateOfBirth(rs.getDate("date_of_birth") != null ? rs.getDate("date_of_birth").toLocalDate() : null)
+                            .gender(rs.getString("name"))  // gender name
+                            .passportNumber(rs.getString("passport_number"))
+                            .nationality(rs.getString(10)) // country name, column index 10 (or use alias)
+                            .email(rs.getString("email"))
+                            .mobileNumber(rs.getString("mobile_number"))
+                            .medicalConditions(rs.getString("medical_conditions"))
+                            .allergies(rs.getString("allergies"))
+                            .build()
+            );
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching booking participants for bookingId {}", bookingId, ex);
+            throw new InternalServerErrorExceptionHandler("Database error while fetching booking participants");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching booking participants for bookingId {}", bookingId, ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error while fetching booking participants");
+        }
+    }
+
+    @Override
+    public List<BookingFilterResponse> getBookingFilter() {
+        List<Map<String, Object>> rows = jdbcTemplate.queryForList(BookingQueries.GET_BOOKING_FILTER);
+
+        // Use a map to group by tour
+        Map<Long, BookingFilterResponse> tourMap = new LinkedHashMap<>();
+
+        for (Map<String, Object> row : rows) {
+            Long tourId = ((Number) row.get("tour_id")).longValue();
+            BookingFilterResponse tour = tourMap.getOrDefault(tourId,
+                    BookingFilterResponse.builder()
+                            .tourId(tourId)
+                            .tourName((String) row.get("tour_name"))
+                            .tourDescription((String) row.get("tour_description"))
+                            .packageDetails(new ArrayList<>())
+                            .build()
+            );
+
+            // Package
+            Long packageId = row.get("package_id") != null ? ((Number) row.get("package_id")).longValue() : null;
+            if (packageId != null) {
+                BookingFilterResponse.PackageDetails packageDetails = tour.getPackageDetails().stream()
+                        .filter(p -> p.getPackageId().equals(packageId))
+                        .findFirst()
+                        .orElseGet(() -> {
+                            BookingFilterResponse.PackageDetails p = BookingFilterResponse.PackageDetails.builder()
+                                    .packageId(packageId)
+                                    .packageName((String) row.get("package_name"))
+                                    .packageDescription((String) row.get("package_description"))
+                                    .packageSchedulesDetails(new ArrayList<>())
+                                    .build();
+                            tour.getPackageDetails().add(p);
+                            return p;
+                        });
+
+                // Package Schedule
+                Long packageScheduleId = row.get("package_schedule_id") != null ? ((Number) row.get("package_schedule_id")).longValue() : null;
+                if (packageScheduleId != null) {
+                    BookingFilterResponse.PackageSchedulesDetails schedule = BookingFilterResponse.PackageSchedulesDetails.builder()
+                            .packageScheduleId(packageScheduleId)
+                            .packageScheduleName((String) row.get("package_schedule_name"))
+                            .packageScheduleDescription((String) row.get("package_schedule_description"))
+                            .startDate((Date) row.get("package_schedule_start_date"))
+                            .endDate((Date) row.get("package_schedule_end_date"))
+                            .build();
+                    packageDetails.getPackageSchedulesDetails().add(schedule);
+                }
+            }
+
+            tourMap.put(tourId, tour);
+        }
+
+        return new ArrayList<>(tourMap.values());
+    }
+
+    @Override
+    public List<UserBookingSummaryResponse> getBookedTours(Long userId) {
+        String sql = BookingQueries.GET_BOOKED_TOURS_BY_USER_ID;
+        return jdbcTemplate.query(sql, new Object[]{userId}, (rs, rowNum) ->
+                UserBookingSummaryResponse.builder()
+                        .bookingId(rs.getLong("booking_id"))
+                        .bookingReference(rs.getString("booking_reference"))
+                        .bookingInvoiceNumber(rs.getString("invoice_number"))
+                        .packageName(rs.getString("package_name"))
+                        .packageScheduleName(rs.getString("package_schedule_name"))
+                        .tourName(rs.getString("tour_name"))
+                        .build()
+        );
+    }
+
+    @Override
+    public void bookingAirportTransportation(
+            Long bookingId,
+            BookingRequest.Transport transport,
+            Long userId) {
+        String sql = BookingQueries.INSERT_BOOKING_AIRPORT_TRANSPORTATION;
+
+        try {
+            jdbcTemplate.update(
+                    sql,
+                    bookingId,
+                    "FLIGHT",
+                    transport.getDepartureDate(),
+                    transport.getDepartureTime(),
+                    transport.getArrivalDate(),
+                    transport.getArrivalTime(),
+                    transport.getDepartureLocation(),
+                    transport.getArrivalLocation(),
+                    userId
+            );
+        } catch (Exception ex) {
+            LOGGER.error("Error while inserting airport transportation for bookingId: {}", bookingId, ex);
+            throw new RuntimeException("Failed to save airport transportation details", ex);
+        }
+    }
+
+
+
 }

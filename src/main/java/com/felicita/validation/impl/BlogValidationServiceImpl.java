@@ -1,9 +1,10 @@
 package com.felicita.validation.impl;
 
 import com.felicita.exception.ValidationFailedErrorExceptionHandler;
-import com.felicita.model.request.CreateBlogRequest;
+import com.felicita.model.request.*;
 import com.felicita.model.response.ValidationFailedResponse;
 import com.felicita.model.response.ValidationResultResponse;
+import com.felicita.repository.BlogRepository;
 import com.felicita.validation.BlogValidationService;
 import com.felicita.validation.CommonValidationService;
 import org.slf4j.Logger;
@@ -20,10 +21,13 @@ public class BlogValidationServiceImpl implements BlogValidationService {
     private static final Logger LOGGER = LoggerFactory.getLogger(BlogValidationServiceImpl.class);
 
     private final CommonValidationService commonValidationService;
+    private final BlogRepository blogRepository;
 
     @Autowired
-    public BlogValidationServiceImpl(CommonValidationService commonValidationService) {
+    public BlogValidationServiceImpl(CommonValidationService commonValidationService,
+                                     BlogRepository blogRepository) {
         this.commonValidationService = commonValidationService;
+        this.blogRepository =blogRepository;
     }
 
     @Override
@@ -60,6 +64,101 @@ public class BlogValidationServiceImpl implements BlogValidationService {
         LOGGER.info(validationFailedResponses.toString());
         if (!validationFailedResponses.isEmpty()) {
             throw new ValidationFailedErrorExceptionHandler("Validation failed : createBlogRequest", validationFailedResponses);
+        }
+    }
+
+    @Override
+    public void validateBlogBookmarkRequest(BlogBookmarkRequest blogBookmarkRequest, Long userId) {
+        List<ValidationFailedResponse> validationFailedResponses = new ArrayList<>();
+        ValidationResultResponse blogId = commonValidationService.validateOnlyNumbers("blogId", blogBookmarkRequest.getBlogId().toString());
+        if (!blogId.isValid()) {
+            validationFailedResponses.add(ValidationFailedResponse.builder().field(blogId.getField()).value(blogId.getMessage()).build());
+        }
+        Boolean isBlogExists = blogRepository.isBlogExists(blogBookmarkRequest.getBlogId());
+
+        if (!isBlogExists) {
+            validationFailedResponses.add(ValidationFailedResponse.builder().field("blogId").value("Blog not found").build());
+        }
+
+//        Boolean isBlogAlreadyBookmarked = blogRepository.isBlogAlreadyBookmarked(blogBookmarkRequest.getBlogId(), userId);
+//        if (isBlogAlreadyBookmarked) {
+//            validationFailedResponses.add(ValidationFailedResponse.builder().field("blogId").value("Blog already bookmarked").build());
+//        }
+
+        if (!validationFailedResponses.isEmpty()) {
+            throw new ValidationFailedErrorExceptionHandler("Validation failed : blogBookmarkRequest", validationFailedResponses);
+        }
+    }
+
+    @Override
+    public void validateBlogReactRequest(BlogReactRequest blogReactRequest) {
+        List<ValidationFailedResponse> validationFailedResponses = new ArrayList<>();
+        ValidationResultResponse blogId = commonValidationService.validateOnlyNumbers("blogId", blogReactRequest.getBlogId().toString());
+        if (!blogId.isValid()) {
+            validationFailedResponses.add(ValidationFailedResponse.builder().field(blogId.getField()).value(blogId.getMessage()).build());
+        }
+
+        ValidationResultResponse reactionType = commonValidationService.validateRectionType("reactionType", blogReactRequest.getReactType());
+        if (!reactionType.isValid()) {
+            validationFailedResponses.add(ValidationFailedResponse.builder().field(reactionType.getField()).value(reactionType.getMessage()).build());
+        }
+
+        Boolean isBlogExists = blogRepository.isBlogExists(blogReactRequest.getBlogId());
+        if (!isBlogExists) {
+            validationFailedResponses.add(ValidationFailedResponse.builder().field("blogId").value("Blog not found").build());
+        }
+
+
+        if (!validationFailedResponses.isEmpty()) {
+            throw new ValidationFailedErrorExceptionHandler("Validation failed : blogReactRequest", validationFailedResponses);
+        }
+    }
+
+    @Override
+    public void validateBlogCommentRequest(BlogCommentRequest blogCommentRequest) {
+        List<ValidationFailedResponse> validationFailedResponses = new ArrayList<>();
+        ValidationResultResponse blogId = commonValidationService.validateOnlyNumbers("blogId", blogCommentRequest.getBlogId().toString());
+        if (!blogId.isValid()) {
+            validationFailedResponses.add(ValidationFailedResponse.builder().field(blogId.getField()).value(blogId.getMessage()).build());
+        }
+
+        ValidationResultResponse blogComment = commonValidationService.validateNotNull("blogComment", blogCommentRequest.getComment());
+        if (!blogComment.isValid()) {
+            validationFailedResponses.add(ValidationFailedResponse.builder().field(blogComment.getField()).value(blogComment.getMessage()).build());
+        }
+
+        Boolean isBlogExists = blogRepository.isBlogExists(blogCommentRequest.getBlogId());
+        if (!isBlogExists) {
+            validationFailedResponses.add(ValidationFailedResponse.builder().field("blogId").value("Blog not found").build());
+        }
+
+
+        if (!validationFailedResponses.isEmpty()) {
+            throw new ValidationFailedErrorExceptionHandler("Validation failed : blogCommentRequest", validationFailedResponses);
+        }
+    }
+
+    @Override
+    public void validateBlogCommentReactRequest(BlogCommentReactRequest blogCommentReactRequest) {
+        List<ValidationFailedResponse> validationFailedResponses = new ArrayList<>();
+        ValidationResultResponse commentId = commonValidationService.validateOnlyNumbers("commentId", blogCommentReactRequest.getCommentId().toString());
+        if (!commentId.isValid()) {
+            validationFailedResponses.add(ValidationFailedResponse.builder().field(commentId.getField()).value(commentId.getMessage()).build());
+        }
+
+        ValidationResultResponse reactionType = commonValidationService.validateRectionType("reactionType", blogCommentReactRequest.getReactType());
+        if (!reactionType.isValid()) {
+            validationFailedResponses.add(ValidationFailedResponse.builder().field(reactionType.getField()).value(reactionType.getMessage()).build());
+        }
+
+        Boolean isBlogCommentExists = blogRepository.isBlogCommentExists(blogCommentReactRequest.getCommentId());
+        if (!isBlogCommentExists) {
+            validationFailedResponses.add(ValidationFailedResponse.builder().field("commentId").value("Blog comment not found").build());
+        }
+
+
+        if (!validationFailedResponses.isEmpty()) {
+            throw new ValidationFailedErrorExceptionHandler("Validation failed : blogReactRequest", validationFailedResponses);
         }
     }
 }
