@@ -2,9 +2,7 @@ package com.felicita.controller;
 
 import com.felicita.model.dto.ActivityCategoryResponseDto;
 import com.felicita.model.dto.ActivityResponseDto;
-import com.felicita.model.request.ActivityDataRequest;
-import com.felicita.model.request.ActivityTerminateRequest;
-import com.felicita.model.request.DestinationTerminateRequest;
+import com.felicita.model.request.*;
 import com.felicita.model.response.*;
 import com.felicita.service.ActivitiesService;
 import com.felicita.util.Constant;
@@ -140,6 +138,14 @@ public class ActivitiesController {
         LOGGER.info("{} Start execute terminate activity {}", Constant.DOTS, Constant.DOTS);
         CommonResponse<TerminateResponse> response = activitiesService.terminateActivity(activityTerminateRequest);
         LOGGER.info("{} End execute terminate activity {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping(path = "/add-activity")
+    public ResponseEntity<CommonResponse<InsertResponse>> insertActivity(@RequestBody ActivityInsertRequest activityInsertRequest) {
+        LOGGER.info("{} Start execute insert activity {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<InsertResponse> response = activitiesService.insertActivity(activityInsertRequest);
+        LOGGER.info("{} End execute insert activity {}", Constant.DOTS, Constant.DOTS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

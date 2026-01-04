@@ -4,12 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.felicita.exception.DataAccessErrorExceptionHandler;
+import com.felicita.exception.InsertFailedErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
 import com.felicita.exception.TerminateFailedErrorExceptionHandler;
 import com.felicita.model.dto.*;
 import com.felicita.model.enums.CommonStatus;
-import com.felicita.model.request.ActivityDataRequest;
-import com.felicita.model.request.ActivityTerminateRequest;
+import com.felicita.model.request.*;
 import com.felicita.model.response.*;
 import com.felicita.queries.ActivitiesQueries;
 import com.felicita.queries.DestinationQueries;
@@ -21,13 +21,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.*;
+
+import static com.felicita.queries.DestinationQueries.INSERT_DESTINATION_IMAGES_REQUEST;
 
 @Repository
 public class ActivitiesRepositoryImpl implements ActivitiesRepository {
@@ -386,7 +388,8 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
                 String schedulesJson = rs.getString("schedules");
                 try {
                     activity.setSchedules(schedulesJson != null ?
-                            mapper.readValue(schedulesJson, new TypeReference<List<ActivityScheduleDto>>() {}) : List.of());
+                            mapper.readValue(schedulesJson, new TypeReference<List<ActivityScheduleDto>>() {
+                            }) : List.of());
                 } catch (JsonProcessingException e) {
                     throw new RuntimeException(e);
                 }
@@ -394,7 +397,8 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
                 String requirementsJson = rs.getString("requirements");
                 try {
                     activity.setRequirements(requirementsJson != null ?
-                            mapper.readValue(requirementsJson, new TypeReference<List<ActivityRequirementDto>>() {}) : List.of());
+                            mapper.readValue(requirementsJson, new TypeReference<List<ActivityRequirementDto>>() {
+                            }) : List.of());
                 } catch (JsonProcessingException e) {
                     throw new RuntimeException(e);
                 }
@@ -402,7 +406,8 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
                 String imagesJson = rs.getString("images");
                 try {
                     activity.setImages(imagesJson != null ?
-                            mapper.readValue(imagesJson, new TypeReference<List<ActivityImageDto>>() {}) : List.of());
+                            mapper.readValue(imagesJson, new TypeReference<List<ActivityImageDto>>() {
+                            }) : List.of());
                 } catch (JsonProcessingException e) {
                     throw new RuntimeException(e);
                 }
@@ -816,7 +821,6 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
             );
 
 
-
             if (activitiesIds.isEmpty()) {
                 return null;
             }
@@ -832,7 +836,7 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
                     new ActivityRowMapper()
             );
 
-            return new ActivityWithParamsResponse(totalCount,result);
+            return new ActivityWithParamsResponse(totalCount, result);
 
         } catch (DataAccessException ex) {
             LOGGER.error("Database error while fetching activity categories: {}", ex.getMessage(), ex);
@@ -876,6 +880,130 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
             throw new InternalServerErrorExceptionHandler("Failed to terminate activity");
         }
     }
+
+    @Override
+    public Long insertActivityDetails(ActivityInsertRequest activityInsertRequest, Long userId) {
+        String INSERT_ACTIVITY_BASIC_DETAILS = ActivitiesQueries.INSERT_ACTIVITY_BASIC_DETAILS;
+        try {
+            KeyHolder keyHolder = new GeneratedKeyHolder();
+
+            jdbcTemplate.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(
+                        INSERT_ACTIVITY_BASIC_DETAILS,
+                        Statement.RETURN_GENERATED_KEYS
+                );
+
+                ps.setLong(1, activityInsertRequest.getDestinationId());
+                ps.setString(2, activityInsertRequest.getName());
+                ps.setString(3, activityInsertRequest.getDescription());
+                ps.setString(4, activityInsertRequest.getActivitiesCategory());
+                ps.setBigDecimal(5, activityInsertRequest.getDurationHours());
+                ps.setObject(6, activityInsertRequest.getAvailableFrom()); // LocalTime
+                ps.setObject(7, activityInsertRequest.getAvailableTo());   // LocalTime
+                ps.setBigDecimal(8, activityInsertRequest.getPriceLocal());
+                ps.setBigDecimal(9, activityInsertRequest.getPriceForeigners());
+                ps.setInt(10, activityInsertRequest.getMinParticipate());
+                ps.setInt(11, activityInsertRequest.getMaxParticipate());
+                ps.setString(12, activityInsertRequest.getSeason());
+                ps.setString(13, activityInsertRequest.getStatus());
+                ps.setLong(14, userId); // created_by (from logged-in user)
+
+                return ps;
+            }, keyHolder);
+
+            if (keyHolder.getKey() == null) {
+                throw new InsertFailedErrorExceptionHandler("Failed to generate activity ID");
+            }
+
+            return keyHolder.getKey().longValue();
+
+        } catch (DataAccessException dae) {
+            LOGGER.error("DB error while inserting activity", dae);
+            throw new InsertFailedErrorExceptionHandler(dae.getMessage());
+
+        } catch (Exception e) {
+            LOGGER.error("Failed to insert activity", e);
+            throw new InternalServerErrorExceptionHandler("Failed to insert activity");
+        }
+    }
+
+
+    @Override
+    public void insertActivityImages(
+            Long activityId,
+            List<ActivityImageInsertRequest> images,
+            Long userId) {
+
+        if (images == null || images.isEmpty()) {
+            return;
+        }
+
+        String INSERT_ACTIVITY_IMAGE = ActivitiesQueries.INSERT_ACTIVITY_IMAGE;
+
+        try {
+            jdbcTemplate.batchUpdate(
+                    INSERT_ACTIVITY_IMAGE,
+                    images,
+                    images.size(),
+                    (ps, image) -> {
+                        ps.setLong(1, activityId);
+                        ps.setString(2, image.getName());
+                        ps.setString(3, image.getDescription());
+                        ps.setString(4, image.getImageUrl());
+                        ps.setString(5, image.getStatus());
+                        ps.setLong(6, userId); // created_by from logged-in user
+                    }
+            );
+
+        } catch (DataAccessException dae) {
+            LOGGER.error("DB error while inserting activity images", dae);
+            throw new InsertFailedErrorExceptionHandler(dae.getMessage());
+
+        } catch (Exception e) {
+            LOGGER.error("Failed to insert activity images", e);
+            throw new InternalServerErrorExceptionHandler("Failed to insert activity images");
+        }
+    }
+
+
+    @Override
+    public void insertActivityRequirements(
+            Long activityId,
+            List<ActivityRequirementInsertRequest> requirements,
+            Long userId) {
+
+        if (requirements == null || requirements.isEmpty()) {
+            return;
+        }
+
+        String INSERT_ACTIVITY_REQUIREMENTS = ActivitiesQueries.INSERT_ACTIVITY_REQUIREMENTS;
+
+        try {
+            jdbcTemplate.batchUpdate(
+                    INSERT_ACTIVITY_REQUIREMENTS,
+                    requirements,
+                    requirements.size(),
+                    (ps, req) -> {
+                        ps.setLong(1, activityId);
+                        ps.setString(2, req.getName());
+                        ps.setString(3, req.getValue());
+                        ps.setString(4, req.getDescription());
+                        ps.setString(5, req.getStatus());
+                        ps.setString(6, req.getColor());
+                        ps.setLong(7, userId); // created_by from logged-in user
+                    }
+            );
+
+        } catch (DataAccessException dae) {
+            LOGGER.error("DB error while inserting activity requirements", dae);
+            throw new InsertFailedErrorExceptionHandler(dae.getMessage());
+
+        } catch (Exception e) {
+            LOGGER.error("Failed to insert activity requirements", e);
+            throw new InternalServerErrorExceptionHandler("Failed to insert activity requirements");
+        }
+    }
+
 
 
     private LocalDateTime getLocalDateTime(ResultSet rs, String column) {

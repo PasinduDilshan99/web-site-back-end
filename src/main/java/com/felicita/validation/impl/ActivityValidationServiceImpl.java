@@ -1,5 +1,6 @@
 package com.felicita.validation.impl;
 
+import com.felicita.model.request.ActivityInsertRequest;
 import com.felicita.model.request.ActivityTerminateRequest;
 import com.felicita.validation.ActivityValidationService;
 import com.felicita.validation.CommonValidationService;
@@ -22,6 +23,11 @@ public class ActivityValidationServiceImpl implements ActivityValidationService 
 
     @Override
     public void validateTerminateActivityRequest(ActivityTerminateRequest activityTerminateRequest) {
+
+    }
+
+    @Override
+    public void validateActivityInsertRequest(ActivityInsertRequest activityInsertRequest) {
 
     }
 }

@@ -721,4 +721,22 @@ public class ActivitiesQueries {
             SET status = (SELECT id FROM common_status WHERE name = ? LIMIT 1),terminated_at = now(), terminated_by = ?
             WHERE id = ?
             """;
+    public static final String INSERT_ACTIVITY_BASIC_DETAILS = """
+                        INSERT INTO activities
+                        (destination_id, name, description, activities_category,
+                         duration_hours, available_from, available_to,
+                         price_local, price_foreigners,
+                         min_participate, max_participate,
+                         season, status, created_by)
+                        VALUES (?, ?, ?,(SELECT ac.id FROM activity_category ac WHERE ac.name = ? LIMIT 1), ?, ?, ?, ?, ?, ?, ?, ?,
+                         (SELECT cs.id FROM common_status cs WHERE cs.name = ? LIMIT 1)
+                         , ?)
+            """;
+    public static final String INSERT_ACTIVITY_IMAGE = """
+            INSERT INTO activities_images (activity_id, name, description, image_url, status, created_by) VALUES
+            (?,?,?,?, (SELECT cs.id FROM common_status cs WHERE cs.name = ? LIMIT 1),?)""";
+    public static final String INSERT_ACTIVITY_REQUIREMENTS = """
+            INSERT INTO activities_requirement (activity_id, name, value, description, status, color, created_by) 
+            VALUES (?,?,?,?, (SELECT cs.id FROM common_status cs WHERE cs.name = ? LIMIT 1),?,?)
+            """;
 }

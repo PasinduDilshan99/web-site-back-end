@@ -6,6 +6,7 @@ import com.felicita.model.dto.ActivityResponseDto;
 import com.felicita.model.dto.PackageResponseDto;
 import com.felicita.model.enums.CommonStatus;
 import com.felicita.model.request.ActivityDataRequest;
+import com.felicita.model.request.ActivityInsertRequest;
 import com.felicita.model.request.ActivityTerminateRequest;
 import com.felicita.model.response.*;
 import com.felicita.repository.ActivitiesRepository;
@@ -493,6 +494,33 @@ public class ActivitiesServiceImpl implements ActivitiesService {
             throw new ValidationFailedErrorExceptionHandler("validation failed in the terminate activity request", vfe.getValidationFailedResponses());
         } catch (TerminateFailedErrorExceptionHandler tfe) {
             throw new TerminateFailedErrorExceptionHandler(tfe.getMessage());
+        }catch (UnAuthenticateErrorExceptionHandler uae) {
+            throw new UnAuthenticateErrorExceptionHandler(uae.getMessage());
+        } catch (Exception e) {
+            throw new InternalServerErrorExceptionHandler("Something went wrong");
+        }
+    }
+
+    @Override
+    public CommonResponse<InsertResponse> insertActivity(ActivityInsertRequest activityInsertRequest) {
+        try {
+            activityValidationService.validateActivityInsertRequest(activityInsertRequest);
+            Long userId = commonService.getUserIdBySecurityContext();
+            Long activityId = activitiesRepository.insertActivityDetails(activityInsertRequest, userId);
+            activitiesRepository.insertActivityImages(activityId,activityInsertRequest.getImages(), userId);
+            activitiesRepository.insertActivityRequirements(activityId,activityInsertRequest.getRequirements(), userId);
+
+            return new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            new InsertResponse("Successfully insert activity request"),
+                            Instant.now());
+
+        } catch (ValidationFailedErrorExceptionHandler vfe) {
+            throw new ValidationFailedErrorExceptionHandler("validation failed in the insert activity request", vfe.getValidationFailedResponses());
+        } catch (InsertFailedErrorExceptionHandler ife) {
+            throw new InsertFailedErrorExceptionHandler(ife.getMessage());
         }catch (UnAuthenticateErrorExceptionHandler uae) {
             throw new UnAuthenticateErrorExceptionHandler(uae.getMessage());
         } catch (Exception e) {

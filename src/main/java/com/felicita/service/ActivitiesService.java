@@ -3,6 +3,7 @@ package com.felicita.service;
 import com.felicita.model.dto.ActivityCategoryResponseDto;
 import com.felicita.model.dto.ActivityResponseDto;
 import com.felicita.model.request.ActivityDataRequest;
+import com.felicita.model.request.ActivityInsertRequest;
 import com.felicita.model.request.ActivityTerminateRequest;
 import com.felicita.model.response.*;
 import org.springframework.http.ResponseEntity;
@@ -37,4 +38,6 @@ public interface ActivitiesService {
     CommonResponse<List<ActivityForTerminateResponse>> getActivitiesForTerminate();
 
     CommonResponse<TerminateResponse> terminateActivity(ActivityTerminateRequest activityTerminateRequest);
+
+    CommonResponse<InsertResponse> insertActivity(ActivityInsertRequest activityInsertRequest);
 }
