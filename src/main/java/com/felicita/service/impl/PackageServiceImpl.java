@@ -4,6 +4,7 @@ import com.felicita.exception.*;
 import com.felicita.model.dto.*;
 import com.felicita.model.enums.CommonStatus;
 import com.felicita.model.request.PackageDataRequest;
+import com.felicita.model.request.PackageInsertRequest;
 import com.felicita.model.request.PackageTerminateRequest;
 import com.felicita.model.response.*;
 import com.felicita.repository.PackageRepository;
@@ -723,6 +724,38 @@ public class PackageServiceImpl implements PackageService {
         } catch (TerminateFailedErrorExceptionHandler tfe) {
             throw new TerminateFailedErrorExceptionHandler(tfe.getMessage());
         }catch (UnAuthenticateErrorExceptionHandler uae) {
+            throw new UnAuthenticateErrorExceptionHandler(uae.getMessage());
+        } catch (Exception e) {
+            throw new InternalServerErrorExceptionHandler("Something went wrong");
+        }
+    }
+
+    @Override
+    public CommonResponse<InsertResponse> insertPackage(PackageInsertRequest packageInsertRequest) {
+        LOGGER.info("Start execute insert package request.");
+        try {
+            packageValidationService.validatePackageInsertRequest(packageInsertRequest);
+            Long userId = commonService.getUserIdBySecurityContext();
+            Long packageId = packageRepository.insertPackageDeails(packageInsertRequest, userId);
+            packageRepository.insertTourImages(packageId, packageInsertRequest.getImages(), userId);
+            packageRepository.insertTourInclusions(packageId, packageInsertRequest.getInclusions(), userId);
+            packageRepository.insertTourExclusions(packageId, packageInsertRequest.getExclusions(), userId);
+            packageRepository.insertTourConditions(packageId, packageInsertRequest.getConditions(), userId);
+            packageRepository.insertTourTravelTips(packageId, packageInsertRequest.getTravelTips(), userId);
+            packageRepository.insertDayByDayAccommodations(packageId, packageInsertRequest.getDayAccommodations(), userId);
+
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    new InsertResponse("Successfully insert package request"),
+                    Instant.now());
+
+        } catch (ValidationFailedErrorExceptionHandler vfe) {
+            throw new ValidationFailedErrorExceptionHandler("validation failed in the insert package request", vfe.getValidationFailedResponses());
+        } catch (InsertFailedErrorExceptionHandler ife) {
+            throw new InsertFailedErrorExceptionHandler(ife.getMessage());
+        } catch (UnAuthenticateErrorExceptionHandler uae) {
             throw new UnAuthenticateErrorExceptionHandler(uae.getMessage());
         } catch (Exception e) {
             throw new InternalServerErrorExceptionHandler("Something went wrong");

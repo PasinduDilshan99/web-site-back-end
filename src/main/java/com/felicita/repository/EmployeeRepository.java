@@ -2,6 +2,7 @@ package com.felicita.repository;
 
 import com.felicita.model.response.EmployeeGuideResponse;
 import com.felicita.model.response.EmployeeWithSocialMediaResponse;
+import com.felicita.model.response.EmployeesForAssignTourResponse;
 import com.felicita.model.response.TourAssignedEmployeeResponse;
 
 import java.util.List;
@@ -16,4 +17,8 @@ public interface EmployeeRepository {
     TourAssignedEmployeeResponse getEmployeeAssignToTourId(Long tourId);
 
     List<TourAssignedEmployeeResponse.RelatedOtherTours> getOtherRelatedToursByTourId(Long tourId);
+
+    List<Long> getEmployeeIdsForAssignTour();
+
+    List<EmployeesForAssignTourResponse> getEmployeeDetailsForAssignTour();
 }

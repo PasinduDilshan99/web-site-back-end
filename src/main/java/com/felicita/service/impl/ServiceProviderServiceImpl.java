@@ -2,9 +2,7 @@ package com.felicita.service.impl;
 
 import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
-import com.felicita.model.response.CommonResponse;
-import com.felicita.model.response.PartnerResponse;
-import com.felicita.model.response.ServiceProviderDetailsResponse;
+import com.felicita.model.response.*;
 import com.felicita.repository.ServiceProviderRepository;
 import com.felicita.service.ServiceProviderService;
 import com.felicita.util.CommonResponseMessages;
@@ -85,6 +83,39 @@ public class ServiceProviderServiceImpl implements ServiceProviderService {
             throw new InternalServerErrorExceptionHandler("Failed to fetch partners from database");
         } finally {
             LOGGER.info("End fetching all partners from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<List<ServiceProviderIdsAndNamesReponse>> getServiceProviderNamesAndIds() {
+        LOGGER.info("Start fetching active service provider ids and names from repository");
+        try {
+            List<ServiceProviderIdsAndNamesReponse> serviceProviderIdsAndNamesReponses =
+                    serviceProviderRepository.getServiceProviderNamesAndIds();
+
+            if (serviceProviderIdsAndNamesReponses.isEmpty()) {
+                LOGGER.warn("No active service provider found in database");
+                throw new DataNotFoundErrorExceptionHandler("No active service provider found");
+            }
+
+            return
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            serviceProviderIdsAndNamesReponses,
+                            Instant.now()
+                    )
+                    ;
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching active service provider: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching active service provider: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch active service provider from database");
+        } finally {
+            LOGGER.info("End fetching active service provider from repository");
         }
     }
 }

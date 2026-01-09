@@ -3,7 +3,9 @@ package com.felicita.controller;
 import com.felicita.model.dto.PopularTourResponseDto;
 import com.felicita.model.dto.TourResponseDto;
 import com.felicita.model.request.ActivityTerminateRequest;
+import com.felicita.model.request.DestinationInsertRequest;
 import com.felicita.model.request.TourDataRequest;
+import com.felicita.model.request.TourInsertRequest;
 import com.felicita.model.response.*;
 import com.felicita.service.TourService;
 import com.felicita.util.Constant;
@@ -174,4 +176,27 @@ public class TourController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PostMapping(path = "/add-tour")
+    public ResponseEntity<CommonResponse<InsertResponse>> insertTour(@RequestBody TourInsertRequest tourInsertRequest) {
+        LOGGER.info("{} Start execute insert tour {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<InsertResponse> response = tourService.insertTour(tourInsertRequest);
+        LOGGER.info("{} End execute insert tour {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/tourId-and-tourName")
+    public ResponseEntity<CommonResponse<List<TourIdAndTourNameResponse>>> getTourIdsAndTourNames() {
+        LOGGER.info("{} Start execute get all active tour ids and names {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<TourIdAndTourNameResponse>> response = tourService.getTourIdsAndTourNames();
+        LOGGER.info("{} End execute get all active tour ids and names {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/tour-details-for-add-package/{tourId}")
+    public ResponseEntity<CommonResponse<TourDetailsForAddPackageResponse>> getTourDetailsForAddPackage(@PathVariable Long tourId) {
+        LOGGER.info("{} Start execute get tour details for add package {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<TourDetailsForAddPackageResponse> response = tourService.getTourDetailsForAddPackage(tourId);
+        LOGGER.info("{} End execute get tour details for add package {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }

@@ -1,9 +1,6 @@
 package com.felicita.service;
 
-import com.felicita.model.response.CommonResponse;
-import com.felicita.model.response.EmployeeGuideResponse;
-import com.felicita.model.response.EmployeeWithSocialMediaResponse;
-import com.felicita.model.response.TourAssignedEmployeeResponse;
+import com.felicita.model.response.*;
 
 import java.util.List;
 
@@ -15,4 +12,6 @@ public interface EmployeeService {
     CommonResponse<List<EmployeeGuideResponse>> getEmployeeGiudeDetails();
 
     CommonResponse<TourAssignedEmployeeResponse> getEmployeeAssignToTourId(Long tourId);
+
+    CommonResponse<List<EmployeesForAssignTourResponse>> getEmployeeDetailsForAssignTour();
 }

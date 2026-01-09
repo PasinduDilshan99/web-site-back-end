@@ -3,7 +3,7 @@ package com.felicita.repository;
 import com.felicita.model.dto.PopularTourResponseDto;
 import com.felicita.model.dto.TourDayDestinationActivityIdsDto;
 import com.felicita.model.dto.TourResponseDto;
-import com.felicita.model.request.TourDataRequest;
+import com.felicita.model.request.*;
 import com.felicita.model.response.*;
 
 import java.util.List;
@@ -54,4 +54,28 @@ public interface TourRepository {
     List<TourForTerminateResponse> getToursForTerminate();
 
     void terminateTour(TourTerminateRequest tourTerminateRequest, Long userId);
+
+    Long insertTourDetails(TourInsertRequest tourInsertRequest, Long userId);
+
+    void insertTourDestinations(Long tourId, List<TourDestinationInsertRequest> destinations, Long userId);
+
+    void insertTourImages(Long tourId, List<TourImageInsertRequest> images, Long userId);
+
+    void insertTourInclusions(Long tourId, List<TourInclusionInsertRequest> inclusions, Long userId);
+
+    void insertTourExclusions(Long tourId, List<TourExclusionInsertRequest> exclusions, Long userId);
+
+    void insertTourConditions(Long tourId, List<TourConditionInsertRequest> conditions, Long userId);
+
+    void insertTourTravelTips(Long tourId, List<TourTravelTipInsertRequest> travelTips, Long userId);
+
+    TourDetailsForAddPackageResponse getTourDetailsForAddPackage(Long tourId);
+
+    List<String> getTourInclusionsNamesOnly(Long tourId);
+
+    List<String> getTourExclusionsNamesOnly(Long tourId);
+
+    List<String> getTourConditionsNamesOnly(Long tourId);
+
+    List<TourDetailsForAddPackageResponse.TravelTip> getTourTravelTipsNamesOnly(Long tourId);
 }

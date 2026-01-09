@@ -528,5 +528,38 @@ public class ActivitiesServiceImpl implements ActivitiesService {
         }
     }
 
+//    @Override
+//    public CommonResponse<List<ActivityBasicDetailsResponse>> getActivitiesByDestinationId(String destinationId) {
+//        LOGGER.info("Start fetching activities by destination id from repository");
+//        try {
+//            List<ActivityBasicDetailsResponse> activityBasicDetailsResponses =
+//                    activitiesRepository.getActivityById(activityId);
+//
+//            if (activityBasicDetailsResponses.isEmpty()) {
+//                LOGGER.warn("No activities found for id in database");
+//                throw new DataNotFoundErrorExceptionHandler("No activities found");
+//            }
+//
+//            return
+//                    new CommonResponse<>(
+//                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+//                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+//                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+//                            activityBasicDetailsResponses,
+//                            Instant.now()
+//                    )
+//                    ;
+//
+//        } catch (DataNotFoundErrorExceptionHandler e) {
+//            LOGGER.error("Error occurred while fetching activities by destination id: {}", e.getMessage(), e);
+//            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+//        } catch (Exception e) {
+//            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
+//            throw new InternalServerErrorExceptionHandler("Failed to fetch package from database");
+//        } finally {
+//            LOGGER.info("End fetching all package from repository");
+//        }
+//    }
+
 
 }

@@ -149,5 +149,13 @@ public class ActivitiesController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+//    @GetMapping(path = "/{destinationId}")
+//    public ResponseEntity<CommonResponse<List<ActivityBasicDetailsResponse>>> getActivitiesByDestinationId(@PathVariable String destinationId){
+//        LOGGER.info("{} Start execute get activities by destination id {}", Constant.DOTS, Constant.DOTS);
+//        CommonResponse<List<ActivityBasicDetailsResponse>> response = activitiesService.getActivitiesByDestinationId(destinationId);
+//        LOGGER.info("{} End execute get activities by destination id {}", Constant.DOTS, Constant.DOTS);
+//        return new ResponseEntity<>(response, HttpStatus.OK);
+//    }
+
 
 }

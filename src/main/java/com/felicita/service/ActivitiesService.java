@@ -40,4 +40,6 @@ public interface ActivitiesService {
     CommonResponse<TerminateResponse> terminateActivity(ActivityTerminateRequest activityTerminateRequest);
 
     CommonResponse<InsertResponse> insertActivity(ActivityInsertRequest activityInsertRequest);
+
+//    CommonResponse<List<ActivityBasicDetailsResponse>> getActivitiesByDestinationId(String destinationId);
 }

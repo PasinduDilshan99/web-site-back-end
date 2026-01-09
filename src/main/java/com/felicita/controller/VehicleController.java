@@ -1,9 +1,6 @@
 package com.felicita.controller;
 
-import com.felicita.model.response.CommonResponse;
-import com.felicita.model.response.ServiceProviderDetailsResponse;
-import com.felicita.model.response.VehicleDetailResponse;
-import com.felicita.model.response.VehicleResponse;
+import com.felicita.model.response.*;
 import com.felicita.service.VehicleService;
 import com.felicita.util.Constant;
 import org.slf4j.Logger;
@@ -44,6 +41,14 @@ public class VehicleController {
         LOGGER.info("{} Start execute get vehicles details by id {}", Constant.DOTS, Constant.DOTS);
         CommonResponse<List<VehicleDetailResponse>> response = vehicleService.getVehicleDetailsById(vehicleId);
         LOGGER.info("{} End execute get vehicles details by id {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/names-and-ids")
+    public ResponseEntity<CommonResponse<List<VehicleIdAndNameResponse>>> getVehiclesNumberAndIds() {
+        LOGGER.info("{} Start execute get all active vehicles ids and register numbers {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<VehicleIdAndNameResponse>> response = vehicleService.getVehiclesNumberAndIds();
+        LOGGER.info("{} End execute get all active vehicles ids and register numbers {}", Constant.DOTS, Constant.DOTS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

@@ -1,5 +1,6 @@
 package com.felicita.validation.impl;
 
+import com.felicita.model.request.PackageInsertRequest;
 import com.felicita.model.request.PackageTerminateRequest;
 import com.felicita.validation.CommonValidationService;
 import com.felicita.validation.PackageValidationService;
@@ -22,6 +23,11 @@ public class PackageValidationServiceImpl implements PackageValidationService {
 
     @Override
     public void validateTerminatePackageRequest(PackageTerminateRequest packageTerminateRequest) {
+
+    }
+
+    @Override
+    public void validatePackageInsertRequest(PackageInsertRequest packageInsertRequest) {
 
     }
 }

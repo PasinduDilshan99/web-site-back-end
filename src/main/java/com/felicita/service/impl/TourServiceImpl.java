@@ -4,6 +4,7 @@ import com.felicita.exception.*;
 import com.felicita.model.dto.*;
 import com.felicita.model.enums.CommonStatus;
 import com.felicita.model.request.TourDataRequest;
+import com.felicita.model.request.TourInsertRequest;
 import com.felicita.model.response.*;
 import com.felicita.repository.TourRepository;
 import com.felicita.service.CommonService;
@@ -593,7 +594,7 @@ public class TourServiceImpl implements TourService {
             TourSchedulesResponse tourSchedulesResponse = new TourSchedulesResponse(
                     tourBasicDetails,
                     scheduleDetails
-                    );
+            );
 
             return new CommonResponse<>(
                     CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
@@ -627,11 +628,11 @@ public class TourServiceImpl implements TourService {
 
             LOGGER.info("Fetched {} tours basic details successfully", tourBasicDetailsResponses.size());
             return new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            tourBasicDetailsResponses,
-                            Instant.now()
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    tourBasicDetailsResponses,
+                    Instant.now()
             );
 
         } catch (DataNotFoundErrorExceptionHandler e) {
@@ -697,10 +698,96 @@ public class TourServiceImpl implements TourService {
             throw new ValidationFailedErrorExceptionHandler("validation failed in the terminate tour request", vfe.getValidationFailedResponses());
         } catch (TerminateFailedErrorExceptionHandler tfe) {
             throw new TerminateFailedErrorExceptionHandler(tfe.getMessage());
-        }catch (UnAuthenticateErrorExceptionHandler uae) {
+        } catch (UnAuthenticateErrorExceptionHandler uae) {
             throw new UnAuthenticateErrorExceptionHandler(uae.getMessage());
         } catch (Exception e) {
             throw new InternalServerErrorExceptionHandler("Something went wrong");
+        }
+    }
+
+    @Override
+    public CommonResponse<InsertResponse> insertTour(TourInsertRequest tourInsertRequest) {
+        LOGGER.info("Start execute insert tour request.");
+        try {
+            tourValidationService.validateTourInsertRequest(tourInsertRequest);
+            Long userId = commonService.getUserIdBySecurityContext();
+            Long tourId = tourRepository.insertTourDetails(tourInsertRequest, userId);
+            tourRepository.insertTourDestinations(tourId, tourInsertRequest.getDestinations(), userId);
+            tourRepository.insertTourImages(tourId, tourInsertRequest.getImages(), userId);
+            tourRepository.insertTourInclusions(tourId, tourInsertRequest.getInclusions(), userId);
+            tourRepository.insertTourExclusions(tourId, tourInsertRequest.getExclusions(), userId);
+            tourRepository.insertTourConditions(tourId, tourInsertRequest.getConditions(), userId);
+            tourRepository.insertTourTravelTips(tourId, tourInsertRequest.getTravelTips(), userId);
+
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    new InsertResponse("Successfully insert tour request"),
+                    Instant.now());
+        } catch (ValidationFailedErrorExceptionHandler vfe) {
+            throw new ValidationFailedErrorExceptionHandler("validation failed in the insert tour request", vfe.getValidationFailedResponses());
+        } catch (InsertFailedErrorExceptionHandler ife) {
+            throw new InsertFailedErrorExceptionHandler(ife.getMessage());
+        } catch (UnAuthenticateErrorExceptionHandler uae) {
+            throw new UnAuthenticateErrorExceptionHandler(uae.getMessage());
+        } catch (Exception e) {
+            throw new InternalServerErrorExceptionHandler("Something went wrong");
+        }
+    }
+
+    @Override
+    public CommonResponse<List<TourIdAndTourNameResponse>> getTourIdsAndTourNames() {
+        CommonResponse<List<TourForTerminateResponse>> toursForTerminate = getToursForTerminate();
+        List<TourIdAndTourNameResponse> tourIdAndTourNameResponses = new ArrayList<>();
+        for (TourForTerminateResponse tourForTerminateResponse : toursForTerminate.getData()) {
+            tourIdAndTourNameResponses.add(
+                    new TourIdAndTourNameResponse(
+                            tourForTerminateResponse.getTourId(),
+                            tourForTerminateResponse.getTourName()
+                    )
+            );
+        }
+        return new CommonResponse<>(
+                CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                tourIdAndTourNameResponses,
+                Instant.now());
+    }
+
+    @Override
+    public CommonResponse<TourDetailsForAddPackageResponse> getTourDetailsForAddPackage(Long tourId) {
+        LOGGER.info("Start fetching tour details from the repository");
+        try {
+            TourDetailsForAddPackageResponse tourDetailsForAddPackageResponses =
+                    tourRepository.getTourDetailsForAddPackage(tourId);
+            List<String> tourInclusions = tourRepository.getTourInclusionsNamesOnly(tourId);
+            List<String> tourExclusions = tourRepository.getTourExclusionsNamesOnly(tourId);
+            List<String> tourConditions = tourRepository.getTourConditionsNamesOnly(tourId);
+            List<TourDetailsForAddPackageResponse.TravelTip> tourTravelTips = tourRepository.getTourTravelTipsNamesOnly(tourId);
+
+            tourDetailsForAddPackageResponses.setInclusions(tourInclusions);
+            tourDetailsForAddPackageResponses.setExclusions(tourExclusions);
+            tourDetailsForAddPackageResponses.setConditions(tourConditions);
+            tourDetailsForAddPackageResponses.setTravelTips(tourTravelTips);
+
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    tourDetailsForAddPackageResponses,
+                    Instant.now()
+            );
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching tour details by tour id: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching tour details by tour id: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch tour details by tour id from database");
+        } finally {
+            LOGGER.info("End fetching all tour details by tour id from repository");
         }
     }
 
