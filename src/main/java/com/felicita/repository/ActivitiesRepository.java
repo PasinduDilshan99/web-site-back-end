@@ -37,4 +37,15 @@ public interface ActivitiesRepository {
     void insertActivityImages(Long activityId, List<ActivityImageInsertRequest> images, Long userId);
 
     void insertActivityRequirements(Long activityId, List<ActivityRequirementInsertRequest> requirements, Long userId);
+
+    void updateBasicActivityDetails(ActivityUpdateRequest activityUpdateRequest, Long userId);
+
+    void removeActivityImages(List<Long> removeImagesIds, Long userId);
+
+    void removeRequirements(List<Long> removeRequirementsIds, Long userId);
+
+
+    void updateActivityImages(Long activityId, List<ActivityImageUpdateRequest> updatedImages, Long userId);
+
+    void updateActivityRequirements(Long activityId, List<ActivityRequirementsUpdateRequest> updatedRequirements, Long userId);
 }

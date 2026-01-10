@@ -5,6 +5,7 @@ import com.felicita.model.dto.ActivityResponseDto;
 import com.felicita.model.request.ActivityDataRequest;
 import com.felicita.model.request.ActivityInsertRequest;
 import com.felicita.model.request.ActivityTerminateRequest;
+import com.felicita.model.request.ActivityUpdateRequest;
 import com.felicita.model.response.*;
 import org.springframework.http.ResponseEntity;
 
@@ -40,6 +41,10 @@ public interface ActivitiesService {
     CommonResponse<TerminateResponse> terminateActivity(ActivityTerminateRequest activityTerminateRequest);
 
     CommonResponse<InsertResponse> insertActivity(ActivityInsertRequest activityInsertRequest);
+
+    CommonResponse<UpdateResponse> updateActivity(ActivityUpdateRequest activityUpdateRequest);
+
+    CommonResponse<List<ActivityIdAndNameResponse>> getTourIdsAndTourNames();
 
 //    CommonResponse<List<ActivityBasicDetailsResponse>> getActivitiesByDestinationId(String destinationId);
 }

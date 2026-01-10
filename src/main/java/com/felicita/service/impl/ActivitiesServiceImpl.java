@@ -8,6 +8,7 @@ import com.felicita.model.enums.CommonStatus;
 import com.felicita.model.request.ActivityDataRequest;
 import com.felicita.model.request.ActivityInsertRequest;
 import com.felicita.model.request.ActivityTerminateRequest;
+import com.felicita.model.request.ActivityUpdateRequest;
 import com.felicita.model.response.*;
 import com.felicita.repository.ActivitiesRepository;
 import com.felicita.service.ActivitiesService;
@@ -21,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -424,11 +426,11 @@ public class ActivitiesServiceImpl implements ActivitiesService {
             }
 
             return new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
                     activityWithParamsResponse,
-                            Instant.now()
+                    Instant.now()
             );
 
         } catch (DataNotFoundErrorExceptionHandler e) {
@@ -494,7 +496,7 @@ public class ActivitiesServiceImpl implements ActivitiesService {
             throw new ValidationFailedErrorExceptionHandler("validation failed in the terminate activity request", vfe.getValidationFailedResponses());
         } catch (TerminateFailedErrorExceptionHandler tfe) {
             throw new TerminateFailedErrorExceptionHandler(tfe.getMessage());
-        }catch (UnAuthenticateErrorExceptionHandler uae) {
+        } catch (UnAuthenticateErrorExceptionHandler uae) {
             throw new UnAuthenticateErrorExceptionHandler(uae.getMessage());
         } catch (Exception e) {
             throw new InternalServerErrorExceptionHandler("Something went wrong");
@@ -507,25 +509,85 @@ public class ActivitiesServiceImpl implements ActivitiesService {
             activityValidationService.validateActivityInsertRequest(activityInsertRequest);
             Long userId = commonService.getUserIdBySecurityContext();
             Long activityId = activitiesRepository.insertActivityDetails(activityInsertRequest, userId);
-            activitiesRepository.insertActivityImages(activityId,activityInsertRequest.getImages(), userId);
-            activitiesRepository.insertActivityRequirements(activityId,activityInsertRequest.getRequirements(), userId);
+            activitiesRepository.insertActivityImages(activityId, activityInsertRequest.getImages(), userId);
+            activitiesRepository.insertActivityRequirements(activityId, activityInsertRequest.getRequirements(), userId);
 
             return new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            new InsertResponse("Successfully insert activity request"),
-                            Instant.now());
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    new InsertResponse("Successfully insert activity request"),
+                    Instant.now());
 
         } catch (ValidationFailedErrorExceptionHandler vfe) {
             throw new ValidationFailedErrorExceptionHandler("validation failed in the insert activity request", vfe.getValidationFailedResponses());
         } catch (InsertFailedErrorExceptionHandler ife) {
             throw new InsertFailedErrorExceptionHandler(ife.getMessage());
-        }catch (UnAuthenticateErrorExceptionHandler uae) {
+        } catch (UnAuthenticateErrorExceptionHandler uae) {
             throw new UnAuthenticateErrorExceptionHandler(uae.getMessage());
         } catch (Exception e) {
             throw new InternalServerErrorExceptionHandler("Something went wrong");
         }
+    }
+
+    @Override
+    public CommonResponse<UpdateResponse> updateActivity(ActivityUpdateRequest activityUpdateRequest) {
+        LOGGER.info("Start execute update activity request.");
+        try {
+            activityValidationService.validateActivityUpdateRequest(activityUpdateRequest);
+            Long userId = commonService.getUserIdBySecurityContext();
+            activitiesRepository.updateBasicActivityDetails(activityUpdateRequest, userId);
+            activitiesRepository.removeActivityImages(activityUpdateRequest.getRemoveImagesIds(), userId);
+            if (!activityUpdateRequest.getAddImages().isEmpty()) {
+                activitiesRepository.insertActivityImages(activityUpdateRequest.getActivityId(),activityUpdateRequest.getAddImages(),userId);
+            }
+            if (!activityUpdateRequest.getUpdatedImages().isEmpty()) {
+                activitiesRepository.updateActivityImages(activityUpdateRequest.getActivityId(),activityUpdateRequest.getUpdatedImages(),userId);
+            }
+            activitiesRepository.removeRequirements(activityUpdateRequest.getRemoveRequirementsIds(), userId);
+            if (!activityUpdateRequest.getAddRequirements().isEmpty()) {
+                activitiesRepository.insertActivityRequirements(activityUpdateRequest.getActivityId(), activityUpdateRequest.getAddRequirements(), userId);
+            }
+            if (!activityUpdateRequest.getUpdatedRequirements().isEmpty()) {
+                activitiesRepository.updateActivityRequirements(activityUpdateRequest.getActivityId(), activityUpdateRequest.getUpdatedRequirements(), userId);
+            }
+            return
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            new UpdateResponse("Successfully update activity request", activityUpdateRequest.getActivityId()),
+                            Instant.now()
+                    );
+        } catch (ValidationFailedErrorExceptionHandler vfe) {
+            throw new ValidationFailedErrorExceptionHandler("validation failed in the insert activity request", vfe.getValidationFailedResponses());
+        } catch (UpdateFailedErrorExceptionHandler ufe) {
+            throw new UpdateFailedErrorExceptionHandler(ufe.getMessage());
+        } catch (UnAuthenticateErrorExceptionHandler uae) {
+            throw new UnAuthenticateErrorExceptionHandler(uae.getMessage());
+        } catch (Exception e) {
+            throw new InternalServerErrorExceptionHandler("Something went wrong");
+        }
+    }
+
+    @Override
+    public CommonResponse<List<ActivityIdAndNameResponse>> getTourIdsAndTourNames() {
+        CommonResponse<List<ActivityForTerminateResponse>> activitiesForTerminate = getActivitiesForTerminate();
+        List<ActivityIdAndNameResponse> activityIdAndNameResponses = new ArrayList<>();
+        for (ActivityForTerminateResponse activityForTerminateResponse : activitiesForTerminate.getData()) {
+            activityIdAndNameResponses.add(
+                    new ActivityIdAndNameResponse(
+                            activityForTerminateResponse.getActivityId(),
+                            activityForTerminateResponse.getActivityName()
+                    )
+            );
+        }
+        return new CommonResponse<>(
+                CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                activityIdAndNameResponses,
+                Instant.now());
     }
 
 //    @Override

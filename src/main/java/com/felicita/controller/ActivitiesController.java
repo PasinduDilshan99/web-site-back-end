@@ -157,5 +157,20 @@ public class ActivitiesController {
 //        return new ResponseEntity<>(response, HttpStatus.OK);
 //    }
 
+    @PostMapping(path = "/update-activity")
+    public ResponseEntity<CommonResponse<UpdateResponse>> updateActivity(@RequestBody ActivityUpdateRequest activityUpdateRequest) {
+        LOGGER.info("{} Start execute update activity {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<UpdateResponse> response = activitiesService.updateActivity(activityUpdateRequest);
+        LOGGER.info("{} End execute update activity {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/activityId-and-activityName")
+    public ResponseEntity<CommonResponse<List<ActivityIdAndNameResponse>>> getTourIdsAndTourNames() {
+        LOGGER.info("{} Start execute get all active activity ids and names {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<ActivityIdAndNameResponse>> response = activitiesService.getTourIdsAndTourNames();
+        LOGGER.info("{} End execute get all active activity ids and names {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
 }

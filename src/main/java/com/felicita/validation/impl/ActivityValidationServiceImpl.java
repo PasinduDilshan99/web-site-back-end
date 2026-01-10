@@ -2,6 +2,7 @@ package com.felicita.validation.impl;
 
 import com.felicita.model.request.ActivityInsertRequest;
 import com.felicita.model.request.ActivityTerminateRequest;
+import com.felicita.model.request.ActivityUpdateRequest;
 import com.felicita.validation.ActivityValidationService;
 import com.felicita.validation.CommonValidationService;
 import org.slf4j.Logger;
@@ -28,6 +29,11 @@ public class ActivityValidationServiceImpl implements ActivityValidationService 
 
     @Override
     public void validateActivityInsertRequest(ActivityInsertRequest activityInsertRequest) {
+
+    }
+
+    @Override
+    public void validateActivityUpdateRequest(ActivityUpdateRequest activityUpdateRequest) {
 
     }
 }

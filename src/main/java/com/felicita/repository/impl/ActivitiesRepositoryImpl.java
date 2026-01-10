@@ -3,10 +3,7 @@ package com.felicita.repository.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.felicita.exception.DataAccessErrorExceptionHandler;
-import com.felicita.exception.InsertFailedErrorExceptionHandler;
-import com.felicita.exception.InternalServerErrorExceptionHandler;
-import com.felicita.exception.TerminateFailedErrorExceptionHandler;
+import com.felicita.exception.*;
 import com.felicita.model.dto.*;
 import com.felicita.model.enums.CommonStatus;
 import com.felicita.model.request.*;
@@ -1001,6 +998,159 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
         } catch (Exception e) {
             LOGGER.error("Failed to insert activity requirements", e);
             throw new InternalServerErrorExceptionHandler("Failed to insert activity requirements");
+        }
+    }
+
+    @Override
+    public void updateBasicActivityDetails(ActivityUpdateRequest request, Long userId) {
+
+        String sql = ActivitiesQueries.UPDATE_BASIC_ACTIVITY_DETAILS;
+
+        try {
+            jdbcTemplate.update(sql,
+                    request.getDestinationId(),                       // 1
+                    request.getName(),                                // 2
+                    request.getDescription(),                         // 3
+                    request.getActivitiesCategory(),                 // 4
+                    request.getDurationHours(),                       // 5
+                    request.getAvailableFrom() != null
+                            ? Time.valueOf(request.getAvailableFrom())
+                            : null,                                    // 6
+                    request.getAvailableTo() != null
+                            ? Time.valueOf(request.getAvailableTo())
+                            : null,                                    // 7
+                    request.getPriceLocal(),                          // 8
+                    request.getPriceForeigners(),                     // 9
+                    request.getMinParticipate(),                      // 10
+                    request.getMaxParticipate(),                      // 11
+                    request.getSeason(),                              // 12
+                    request.getStatus(),                              // 13 → used inside subquery
+                    userId,                                           // 14 → updated_by
+                    request.getActivityId()                           // 15 → WHERE id
+            );
+
+        } catch (DataAccessException dae) {
+            LOGGER.error("Database error while updating activity", dae);
+            throw new UpdateFailedErrorExceptionHandler(dae.getMessage());
+
+        } catch (Exception e) {
+            LOGGER.error("Failed to update activity", e);
+            throw new InternalServerErrorExceptionHandler("Failed to update activity");
+        }
+    }
+
+
+    @Override
+    public void removeActivityImages(List<Long> removeImagesIds, Long userId) {
+        try {
+            jdbcTemplate.batchUpdate(
+                    ActivitiesQueries.ACTIVITY_IMAGES_REMOVE,
+                    removeImagesIds,
+                    removeImagesIds.size(),
+                    (ps, imageId) -> {
+                        ps.setString(1, CommonStatus.TERMINATED.toString());
+                        ps.setLong(2, userId);
+                        ps.setLong(3, imageId);
+                    }
+            );
+        } catch (DataAccessException e) {
+            LOGGER.error("Failed to remove activity images", e);
+            throw new TerminateFailedErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Failed to remove activity images : ", e);
+            throw new InternalServerErrorExceptionHandler("Failed to remove activity images");
+        }
+    }
+
+    @Override
+    public void removeRequirements(List<Long> removeRequirementsIds, Long userId) {
+        try {
+            jdbcTemplate.batchUpdate(
+                    ActivitiesQueries.ACTIVITY_REQUIREMENTS_REMOVE,
+                    removeRequirementsIds,
+                    removeRequirementsIds.size(),
+                    (ps, requirementId) -> {
+                        ps.setString(1, CommonStatus.TERMINATED.toString());
+                        ps.setLong(2, userId);
+                        ps.setLong(3, requirementId);
+                    }
+            );
+        } catch (DataAccessException e) {
+            LOGGER.error("Failed to remove requirements", e);
+            throw new TerminateFailedErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Failed to remove requirements : ", e);
+            throw new InternalServerErrorExceptionHandler("Failed to remove requirements");
+        }
+    }
+
+    @Override
+    public void updateActivityImages(Long activityId,
+                                     List<ActivityImageUpdateRequest> updatedImages,
+                                     Long userId) {
+
+        if (updatedImages == null || updatedImages.isEmpty()) {
+            return; // nothing to update
+        }
+
+        try {
+            for (ActivityImageUpdateRequest image : updatedImages) {
+
+                jdbcTemplate.update(
+                        ActivitiesQueries.UPDATE_ACTIVITY_IMAGE,
+                        image.getName(),            // 1
+                        image.getDescription(),     // 2
+                        image.getImageUrl(),        // 3
+                        image.getStatus(),          // 4 (status name)
+                        userId,                     // 5 (updated_by)
+                        image.getImageId(),         // 6 (WHERE id)
+                        activityId                  // 7 (safety check)
+                );
+            }
+
+        } catch (DataAccessException dae) {
+            LOGGER.error("Database error while updating activity images", dae);
+            throw new UpdateFailedErrorExceptionHandler(dae.getMessage());
+
+        } catch (Exception e) {
+            LOGGER.error("Failed to update activity images", e);
+            throw new InternalServerErrorExceptionHandler("Failed to update activity images");
+        }
+    }
+
+
+    @Override
+    public void updateActivityRequirements(Long activityId,
+                                           List<ActivityRequirementsUpdateRequest> updatedRequirements,
+                                           Long userId) {
+
+        if (updatedRequirements == null || updatedRequirements.isEmpty()) {
+            return; // nothing to update
+        }
+
+        try {
+            for (ActivityRequirementsUpdateRequest req : updatedRequirements) {
+
+                jdbcTemplate.update(
+                        ActivitiesQueries.UPDATE_ACTIVITY_REQUIREMENT,
+                        req.getName(),               // 1
+                        req.getValue(),              // 2
+                        req.getDescription(),        // 3
+                        req.getColor(),              // 4
+                        req.getStatus(),             // 5 (status name)
+                        userId,                      // 6
+                        req.getRequirementId(),      // 7
+                        activityId                   // 8 (safety)
+                );
+            }
+
+        } catch (DataAccessException dae) {
+            LOGGER.error("Database error while updating activity requirements", dae);
+            throw new UpdateFailedErrorExceptionHandler(dae.getMessage());
+
+        } catch (Exception e) {
+            LOGGER.error("Failed to update activity requirements", e);
+            throw new InternalServerErrorExceptionHandler("Failed to update activity requirements");
         }
     }
 
