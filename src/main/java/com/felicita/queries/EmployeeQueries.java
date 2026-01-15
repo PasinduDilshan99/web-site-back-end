@@ -62,4 +62,38 @@ public class EmployeeQueries {
             JOIN tour ref ON ref.tour_id = ?
             WHERE t.assign_to = ref.assign_to
             """ ;
+    public static final String GET_EMPLOYEE_IDS_FOR_ASSIGN_TOUR = """
+            SELECT e.id
+            FROM employees e
+            LEFT JOIN employee_departments ed
+            	ON ed.id = e.department_id
+            WHERE ed.department_name IN ('Sales & Marketing','Executive Management')
+            """ ;
+    public static final String GET_EMPLOYEE_DETAILS_FOR_ASSIGN_TOUR = """
+            SELECT
+            	e.id,
+                u.first_name,
+                u.last_name,
+                u.image_url,
+                u.email,
+                u.mobile_number1,
+                ed.designation_name,
+                JSON_ARRAYAGG(
+                    JSON_OBJECT(
+                        'tour_id', t.tour_id,
+                        'name', t.name
+                    )
+                ) AS tours
+            FROM employees e
+            LEFT JOIN user u
+                ON u.user_id = e.user_id
+            LEFT JOIN employee_designations ed
+                ON ed.id = e.designation_id
+            LEFT JOIN tour t
+                ON t.assign_to = e.id
+            LEFT JOIN employee_departments ede
+            	ON ede.id = e.department_id
+            WHERE ede.department_name IN ('Sales & Marketing','Executive Management')
+            GROUP BY e.id,u.first_name, u.last_name, u.image_url, u.email, u.mobile_number1, ed.designation_name 
+            """;
 }

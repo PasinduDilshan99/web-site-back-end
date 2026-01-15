@@ -133,4 +133,31 @@ public class EmployeeServiceImpl implements EmployeeService {
             LOGGER.info("End fetching employee assign to tour id from repository");
         }
     }
+
+    @Override
+    public CommonResponse<List<EmployeesForAssignTourResponse>> getEmployeeDetailsForAssignTour() {
+        LOGGER.info("Start fetching employee assign for tour from repository");
+        try {
+            List<EmployeesForAssignTourResponse> employeesForAssignTourResponses =
+                    employeeRepository.getEmployeeDetailsForAssignTour();
+
+            return (
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            employeesForAssignTourResponses,
+                            Instant.now()
+                    )
+            );
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching employee assign for tour  : {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching employee assign for tour  from repository: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch all employee assign for tour from repository");
+        } finally {
+            LOGGER.info("End fetching employee assign for tour from repository");
+        }
+    }
 }

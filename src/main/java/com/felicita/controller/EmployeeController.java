@@ -61,4 +61,12 @@ public class EmployeeController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping(path = "/employee-details-for-assign-tour")
+    public ResponseEntity<CommonResponse<List<EmployeesForAssignTourResponse>>> getEmployeeDetailsForAssignTour(){
+        LOGGER.info("{} Start execute get employee details for assign tour {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<EmployeesForAssignTourResponse>> response = employeeService.getEmployeeDetailsForAssignTour();
+        LOGGER.info("{} End execute get employee details assign for tour {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 }

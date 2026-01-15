@@ -1,8 +1,6 @@
 package com.felicita.controller;
 
-import com.felicita.model.response.CommonResponse;
-import com.felicita.model.response.PartnerResponse;
-import com.felicita.model.response.ServiceProviderDetailsResponse;
+import com.felicita.model.response.*;
 import com.felicita.service.ServiceProviderService;
 import com.felicita.util.Constant;
 import org.slf4j.Logger;
@@ -36,6 +34,14 @@ public class ServiceProviderController {
         CommonResponse<ServiceProviderDetailsResponse> response = serviceProviderService.getServiceProviderDetailsById(serviceProviderId);
         LOGGER.info("{} End execute get service provider details {}", Constant.DOTS, Constant.DOTS);
         return new ResponseEntity<>(response,HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/names-and-ids")
+    public ResponseEntity<CommonResponse<List<ServiceProviderIdsAndNamesReponse>>> getServiceProviderNamesAndIds() {
+        LOGGER.info("{} Start execute get all active service provider ids and names {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<ServiceProviderIdsAndNamesReponse>> response = serviceProviderService.getServiceProviderNamesAndIds();
+        LOGGER.info("{} End execute get all active service provider ids and names {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 }

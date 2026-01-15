@@ -3,13 +3,10 @@ package com.felicita.repository.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.felicita.exception.DataAccessErrorExceptionHandler;
-import com.felicita.exception.DataNotFoundErrorExceptionHandler;
-import com.felicita.exception.InternalServerErrorExceptionHandler;
-import com.felicita.exception.TerminateFailedErrorExceptionHandler;
+import com.felicita.exception.*;
 import com.felicita.model.dto.*;
 import com.felicita.model.enums.CommonStatus;
-import com.felicita.model.request.TourDataRequest;
+import com.felicita.model.request.*;
 import com.felicita.model.response.*;
 import com.felicita.queries.ActivitiesQueries;
 import com.felicita.queries.TourQueries;
@@ -19,11 +16,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -1505,6 +1502,476 @@ public class TourRepositoryImpl implements TourRepository {
             LOGGER.error("Failed to terminate tour : ", e);
             throw new InternalServerErrorExceptionHandler("Failed to terminate tour");
         }
+    }
+
+    @Override
+    public Long insertTourDetails(TourInsertRequest request, Long userId) {
+
+        try {
+            KeyHolder keyHolder = new GeneratedKeyHolder();
+
+            jdbcTemplate.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(
+                        TourQueries.INSERT_TOUR_BASIC_DETAILS,
+                        Statement.RETURN_GENERATED_KEYS
+                );
+
+                ps.setString(1, request.getName());
+                ps.setString(2, request.getDescription());
+                ps.setLong(3, request.getTourType());
+                ps.setLong(4, request.getTourCategory());
+                ps.setInt(5, request.getDuration());
+                ps.setBigDecimal(6, request.getLatitude());
+                ps.setBigDecimal(7, request.getLongitude());
+                ps.setString(8, request.getStartLocation());
+                ps.setString(9, request.getEndLocation());
+                ps.setLong(10, request.getSeason());
+                ps.setString(11, request.getStatus()); // for subquery
+                ps.setLong(12, userId);
+                ps.setLong(13, request.getAssignTo());
+                ps.setString(14, request.getAssignMessage());
+
+                return ps;
+            }, keyHolder);
+
+            if (keyHolder.getKey() == null) {
+                throw new InsertFailedErrorExceptionHandler("Failed to generate tour ID");
+            }
+
+            Long tourId = keyHolder.getKey().longValue();
+
+
+            return tourId;
+
+        } catch (DataAccessException dae) {
+            LOGGER.error("DB error while inserting tour", dae);
+            throw new InsertFailedErrorExceptionHandler(dae.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Failed to insert tour", e);
+            throw new InternalServerErrorExceptionHandler("Failed to insert tour");
+        }
+    }
+
+    @Override
+    public void insertTourDestinations(Long tourId,
+                                       List<TourDestinationInsertRequest> destinations,
+                                       Long userId) {
+
+        if (destinations == null || destinations.isEmpty()) {
+            return;
+        }
+
+        try {
+            for (TourDestinationInsertRequest destination : destinations) {
+                jdbcTemplate.update(
+                        TourQueries.INSERT_TOUR_DESTINATION,
+                        tourId,
+                        destination.getDestinationId(),
+                        destination.getActivityId(),
+                        destination.getDayNumber()
+                );
+            }
+        } catch (DataAccessException dae) {
+            LOGGER.error("DB error while inserting tour destinations", dae);
+            throw new InsertFailedErrorExceptionHandler(dae.getMessage());
+        }
+    }
+
+
+    @Override
+    public void insertTourImages(Long tourId, List<TourImageInsertRequest> images, Long userId) {
+
+        if (images == null || images.isEmpty()) {
+            return;
+        }
+
+        try {
+            for (TourImageInsertRequest image : images) {
+                jdbcTemplate.update(
+                        TourQueries.INSERT_TOUR_IMAGE,
+                        tourId,
+                        image.getName(),
+                        image.getDescription(),
+                        image.getImageUrl(),
+                        image.getStatus(),
+                        userId
+                );
+            }
+        } catch (DataAccessException dae) {
+            LOGGER.error("DB error while inserting tour images", dae);
+            throw new InsertFailedErrorExceptionHandler(dae.getMessage());
+        }
+    }
+
+
+    @Override
+    public void insertTourInclusions(Long tourId,
+                                     List<TourInclusionInsertRequest> inclusions,
+                                     Long userId) {
+
+        if (inclusions == null || inclusions.isEmpty()) {
+            return;
+        }
+
+        try {
+            for (TourInclusionInsertRequest inclusion : inclusions) {
+                jdbcTemplate.update(
+                        TourQueries.INSERT_TOUR_INCLUSION,
+                        tourId,
+                        inclusion.getInclusionText(),
+                        inclusion.getDisplayOrder(),
+                        inclusion.getStatus(),
+                        userId);
+            }
+        } catch (DataAccessException dae) {
+            LOGGER.error("DB error while inserting tour inclusions", dae);
+            throw new InsertFailedErrorExceptionHandler(dae.getMessage());
+        }
+    }
+
+
+    @Override
+    public void insertTourExclusions(Long tourId,
+                                     List<TourExclusionInsertRequest> exclusions,
+                                     Long userId) {
+
+        if (exclusions == null || exclusions.isEmpty()) {
+            return;
+        }
+
+        try {
+            for (TourExclusionInsertRequest exclusion : exclusions) {
+                jdbcTemplate.update(
+                        TourQueries.INSERT_TOUR_EXCLUSION,
+                        tourId,
+                        exclusion.getExclusionText(),
+                        exclusion.getDisplayOrder(),
+                        exclusion.getStatus(),
+                        userId
+                );
+            }
+        } catch (DataAccessException dae) {
+            LOGGER.error("DB error while inserting tour exclusions", dae);
+            throw new InsertFailedErrorExceptionHandler(dae.getMessage());
+        }
+    }
+
+
+    @Override
+    public void insertTourConditions(Long tourId,
+                                     List<TourConditionInsertRequest> conditions,
+                                     Long userId) {
+
+        if (conditions == null || conditions.isEmpty()) {
+            return;
+        }
+
+        try {
+            for (TourConditionInsertRequest condition : conditions) {
+                jdbcTemplate.update(
+                        TourQueries.INSERT_TOUR_CONDITION,
+                        tourId,
+                        condition.getConditionText(),
+                        condition.getDisplayOrder(),
+                        condition.getStatus(),
+                        userId
+                );
+            }
+        } catch (DataAccessException dae) {
+            LOGGER.error("DB error while inserting tour conditions", dae);
+            throw new InsertFailedErrorExceptionHandler(dae.getMessage());
+        }
+    }
+
+
+    @Override
+    public void insertTourTravelTips(Long tourId,
+                                     List<TourTravelTipInsertRequest> travelTips,
+                                     Long userId) {
+
+        if (travelTips == null || travelTips.isEmpty()) {
+            return;
+        }
+
+        try {
+            for (TourTravelTipInsertRequest tip : travelTips) {
+                jdbcTemplate.update(
+                        TourQueries.INSERT_TOUR_TRAVEL_TIP,
+                        tourId,
+                        tip.getTipTitle(),
+                        tip.getTipDescription(),
+                        tip.getDisplayOrder(),
+                        tip.getStatus(),
+                        userId
+                );
+            }
+        } catch (DataAccessException dae) {
+            LOGGER.error("DB error while inserting tour travel tips", dae);
+            throw new InsertFailedErrorExceptionHandler(dae.getMessage());
+        }
+    }
+
+    @Override
+    public TourDetailsForAddPackageResponse getTourDetailsForAddPackage(Long tourId) {
+
+        String sql = TourQueries.TOUR_DETAILS_FOR_ADD_PACKAGE;
+
+        try {
+            return jdbcTemplate.query(sql, rs -> {
+
+                TourDetailsForAddPackageResponse response = null;
+
+                Map<Integer, TourDetailsForAddPackageResponse.TourDay> dayMap = new LinkedHashMap<>();
+
+                while (rs.next()) {
+
+                    // ========== Create Tour only once ==========
+                    if (response == null) {
+                        response = new TourDetailsForAddPackageResponse();
+                        response.setTourId(rs.getLong(1));
+                        response.setName(rs.getString(2));
+                        response.setDescription(rs.getString(3));
+                        response.setTourType(rs.getString(4));
+                        response.setTourCategory(rs.getString(5));
+                        response.setStartLocation(rs.getString(6));
+                        response.setEndLocation(rs.getString(7));
+                        response.setStatus(rs.getString(8));
+                        response.setSeason(rs.getString(9));
+                        response.setAssignMessage(rs.getString(14));
+
+                        TourDetailsForAddPackageResponse.AssignedUser user =
+                                new TourDetailsForAddPackageResponse.AssignedUser();
+                        user.setUserId(rs.getLong(10));
+                        user.setFirstName(rs.getString(11));
+                        user.setLastName(rs.getString(12));
+                        user.setUsername(rs.getString(13));
+                        response.setAssignedUser(user);
+                    }
+
+                    // ========== Day ==========
+                    int day = rs.getInt(15);
+                    TourDetailsForAddPackageResponse.TourDay tourDay =
+                            dayMap.computeIfAbsent(day, d -> {
+                                TourDetailsForAddPackageResponse.TourDay td =
+                                        new TourDetailsForAddPackageResponse.TourDay();
+                                td.setDay(d);
+                                td.setDestinations(new ArrayList<>());
+                                return td;
+                            });
+
+                    // ========== Destination ==========
+                    Long destinationId = rs.getLong(16);
+
+                    TourDetailsForAddPackageResponse.Destination destination =
+                            tourDay.getDestinations()
+                                    .stream()
+                                    .filter(d -> d.getDestinationId().equals(destinationId))
+                                    .findFirst()
+                                    .orElseGet(() -> {
+                                        TourDetailsForAddPackageResponse.Destination d =
+                                                new TourDetailsForAddPackageResponse.Destination();
+                                        d.setDestinationId(destinationId);
+                                        try {
+                                            d.setName(rs.getString(17));
+                                            d.setDescription(rs.getString(18));
+                                        } catch (SQLException e) {
+                                            throw new RuntimeException(e);
+                                        }
+                                        d.setActivities(new ArrayList<>());
+                                        tourDay.getDestinations().add(d);
+                                        return d;
+                                    });
+
+                    // ========== Activity ==========
+                    Long activityId = rs.getLong(19);
+                    if (activityId != null && activityId > 0) {
+                        boolean exists = destination.getActivities()
+                                .stream()
+                                .anyMatch(a -> a.getActivityId().equals(activityId));
+
+                        if (!exists) {
+                            TourDetailsForAddPackageResponse.Activity activity =
+                                    new TourDetailsForAddPackageResponse.Activity();
+                            activity.setActivityId(activityId);
+                            activity.setName(rs.getString(20));
+                            activity.setDescription(rs.getString(21));
+                            destination.getActivities().add(activity);
+                        }
+                    }
+                }
+
+                if (response != null) {
+                    response.setDays(new ArrayList<>(dayMap.values()));
+                }
+
+                return response;
+            }, tourId);
+
+        } catch (DataAccessException tfe) {
+            LOGGER.error(tfe.toString());
+            throw new TerminateFailedErrorExceptionHandler(tfe.getMessage());
+
+        } catch (Exception e) {
+            LOGGER.error("Failed", e);
+            throw new InternalServerErrorExceptionHandler("Failed to load tour");
+        }
+    }
+
+    @Override
+    public List<String> getTourInclusionsNamesOnly(Long tourId) {
+        try {
+            return jdbcTemplate.query(
+                    TourQueries.GET_TOUR_INCLUSIONS_NAMES,
+                    (rs, rowNum) -> rs.getString("inclusion_text"),
+                    tourId
+            );
+        } catch (DataAccessException dae) {
+            LOGGER.error("DB error while fetching tour inclusions", dae);
+            return List.of();
+        }
+    }
+
+    @Override
+    public List<String> getTourExclusionsNamesOnly(Long tourId) {
+        try {
+            return jdbcTemplate.query(
+                    TourQueries.GET_TOUR_EXCLUSIONS_NAMES,
+                    (rs, rowNum) -> rs.getString("exclusion_text"),
+                    tourId
+            );
+        } catch (DataAccessException dae) {
+            LOGGER.error("DB error while fetching tour exclusions", dae);
+            return List.of();
+        }
+    }
+
+    @Override
+    public List<String> getTourConditionsNamesOnly(Long tourId) {
+        try {
+            return jdbcTemplate.query(
+                    TourQueries.GET_TOUR_CONDITIONS_NAMES,
+                    (rs, rowNum) -> rs.getString("condition_text"),
+                    tourId
+            );
+        } catch (DataAccessException dae) {
+            LOGGER.error("DB error while fetching tour conditions", dae);
+            return List.of();
+        }
+    }
+
+    @Override
+    public List<TourDetailsForAddPackageResponse.TravelTip> getTourTravelTipsNamesOnly(Long tourId) {
+        try {
+            return jdbcTemplate.query(
+                    TourQueries.GET_TOUR_TRAVEL_TIPS,
+                    (rs, rowNum) -> {
+                        TourDetailsForAddPackageResponse.TravelTip tip = new TourDetailsForAddPackageResponse.TravelTip();
+                        tip.setTipTitle(rs.getString("tip_title"));
+                        tip.setTipDescription(rs.getString("tip_description"));
+                        return tip;
+                    },
+                    tourId
+            );
+        } catch (DataAccessException dae) {
+            LOGGER.error("DB error while fetching tour travel tips", dae);
+            return List.of();
+        }
+    }
+
+    @Override
+    public void updateTourBasicDetails(Long tourId,
+                                       TourUpdateRequest.TourBasicDetails tourBasicDetails,
+                                       Long userId) {
+
+        String UPDATE_TOUR_BASIC_DETAILS = TourQueries.UPDATE_TOUR_BASIC_DETAILS;
+
+        try {
+            jdbcTemplate.update(
+                    UPDATE_TOUR_BASIC_DETAILS,
+                    tourBasicDetails.getTourName(),          // 1 name
+                    tourBasicDetails.getTourDescription(),   // 2 description
+                    tourBasicDetails.getTourType(),          // 3 tour_type
+                    tourBasicDetails.getTourCategory(),      // 4 tour_category
+                    tourBasicDetails.getDuration(),          // 5 duration
+                    tourBasicDetails.getLatitude(),          // 6 latitude
+                    tourBasicDetails.getLongitude(),         // 7 longitude
+                    tourBasicDetails.getStartLocation(),     // 8 start_location
+                    tourBasicDetails.getEndLocation(),       // 9 end_location
+                    tourBasicDetails.getSeason(),            // 10 season
+                    tourBasicDetails.getStatus(),            // 11 status (name -> subquery)
+                    userId,                                  // 12 updated_by
+                    tourId                                   // 13 where tour_id
+            );
+
+        } catch (DataAccessException dae) {
+            LOGGER.error("Database error while updating tour", dae);
+            throw new UpdateFailedErrorExceptionHandler(dae.getMessage());
+
+        } catch (Exception e) {
+            LOGGER.error("Failed to update tour", e);
+            throw new InternalServerErrorExceptionHandler("Failed to update tour");
+        }
+    }
+
+
+    @Override
+    public void removeTourDestinations(Long tourId, List<Long> removeDestinations, Long userId) {
+
+    }
+
+    @Override
+    public void updateTourDestinations(Long tourId, List<TourDestinationInsertRequest> updateDestinations, Long userId) {
+
+    }
+
+    @Override
+    public void removeTourImages(Long tourId, List<Long> removeImages, Long userId) {
+
+    }
+
+    @Override
+    public void updateTourImages(Long tourId, List<TourImageInsertRequest> updateImages, Long userId) {
+
+    }
+
+    @Override
+    public void removeTourInclusions(Long tourId, List<Long> removeInclusions, Long userId) {
+
+    }
+
+    @Override
+    public void updateTourInclusions(Long tourId, List<TourInclusionInsertRequest> updateInclusions, Long userId) {
+
+    }
+
+    @Override
+    public void removeTourExclusions(Long tourId, List<Long> removeExclusions, Long userId) {
+
+    }
+
+    @Override
+    public void updateTourExclusions(Long tourId, List<TourExclusionInsertRequest> updateExclusions, Long userId) {
+
+    }
+
+    @Override
+    public void removeTourConditions(Long tourId, List<Long> removeConditions, Long userId) {
+
+    }
+
+    @Override
+    public void updateTourConditions(Long tourId, List<TourConditionInsertRequest> updateConditions, Long userId) {
+
+    }
+
+    @Override
+    public void removeTourTravelTips(Long tourId, List<Long> removeTravelTips, Long userId) {
+
+    }
+
+    @Override
+    public void updateTourTravelTips(Long tourId, List<TourTravelTipInsertRequest> updateTravelTips, Long userId) {
+
     }
 
 

@@ -1,5 +1,7 @@
 package com.felicita.validation.impl;
 
+import com.felicita.model.request.TourInsertRequest;
+import com.felicita.model.request.TourUpdateRequest;
 import com.felicita.model.response.TourTerminateRequest;
 import com.felicita.validation.CommonValidationService;
 import com.felicita.validation.TourValidationService;
@@ -22,6 +24,16 @@ public class TourValidationServiceImpl implements TourValidationService {
 
     @Override
     public void validateTerminateTourRequest(TourTerminateRequest tourTerminateRequest) {
+
+    }
+
+    @Override
+    public void validateTourInsertRequest(TourInsertRequest tourInsertRequest) {
+
+    }
+
+    @Override
+    public void validateTourUpdateRequest(TourUpdateRequest tourUpdateRequest) {
 
     }
 }

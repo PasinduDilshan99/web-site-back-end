@@ -1,17 +1,17 @@
 package com.felicita.repository.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
-import com.felicita.model.response.CouponDetailsResponse;
-import com.felicita.model.response.EmployeeGuideResponse;
-import com.felicita.model.response.EmployeeWithSocialMediaResponse;
-import com.felicita.model.response.TourAssignedEmployeeResponse;
+import com.felicita.model.response.*;
 import com.felicita.queries.CouponQueries;
 import com.felicita.queries.EmployeeQueries;
 import com.felicita.repository.EmployeeRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -339,6 +339,65 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
             );
         } catch (Exception e) {
             return List.of();
+        }
+    }
+
+    @Override
+    public List<Long> getEmployeeIdsForAssignTour() {
+        String GET_EMPLOYEE_IDS_FOR_ASSIGN_TOUR = EmployeeQueries.GET_EMPLOYEE_IDS_FOR_ASSIGN_TOUR;
+
+        try {
+            return jdbcTemplate.queryForList(GET_EMPLOYEE_IDS_FOR_ASSIGN_TOUR, Long.class);
+
+        } catch (DataAccessException dae) {
+            LOGGER.error("DB error while fetching employee IDs for assign tour", dae);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch employee IDs");
+        }
+    }
+
+    @Override
+    public List<EmployeesForAssignTourResponse> getEmployeeDetailsForAssignTour() {
+        String GET_EMPLOYEE_DETAILS_FOR_ASSIGN_TOUR = EmployeeQueries.GET_EMPLOYEE_DETAILS_FOR_ASSIGN_TOUR;
+
+        try {
+            return jdbcTemplate.query(GET_EMPLOYEE_DETAILS_FOR_ASSIGN_TOUR, (rs, rowNum) -> {
+                EmployeesForAssignTourResponse employee = new EmployeesForAssignTourResponse();
+                employee.setEmployeeId(rs.getLong("id"));
+                employee.setFirstName(rs.getString("first_name"));
+                employee.setLastName(rs.getString("last_name"));
+                employee.setImageUrl(rs.getString("image_url"));
+                employee.setEmail(rs.getString("email"));
+                employee.setMobileNumber1(rs.getString("mobile_number1"));
+                employee.setDesignationName(rs.getString("designation_name"));
+
+                // Parse JSON array from MySQL
+                String toursJson = rs.getString("tours");
+                if (toursJson != null) {
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    List<EmployeesForAssignTourResponse.Tour> tours = null;
+                    try {
+                        tours = objectMapper.readValue(
+                                toursJson,
+                                objectMapper.getTypeFactory().constructCollectionType(
+                                        List.class,
+                                        EmployeesForAssignTourResponse.Tour.class
+                                )
+                        );
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException(e);
+                    }
+                    employee.setTours(tours);
+                }
+
+                return employee;
+            });
+
+        } catch (DataAccessException dae) {
+            LOGGER.error("DB error while fetching employee details for assign tour", dae);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch employee details");
+        } catch (Exception e) {
+            LOGGER.error("Error parsing tours JSON", e);
+            throw new InternalServerErrorExceptionHandler("Failed to parse employee tours");
         }
     }
 

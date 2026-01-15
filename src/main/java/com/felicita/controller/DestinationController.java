@@ -198,6 +198,12 @@ public class DestinationController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-
+    @GetMapping(path = "/destination-names")
+    public ResponseEntity<CommonResponse<List<DestinationForTerminateResponse>>> getDestinationsNames() {
+        LOGGER.info("{} Start execute get all active destination names {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<DestinationForTerminateResponse>> response = destinationService.getDestinationsForTerminate();
+        LOGGER.info("{} End execute get all active destination names {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
 }

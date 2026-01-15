@@ -1,8 +1,7 @@
 package com.felicita.repository;
 
 import com.felicita.model.dto.*;
-import com.felicita.model.request.PackageDataRequest;
-import com.felicita.model.request.PackageTerminateRequest;
+import com.felicita.model.request.*;
 import com.felicita.model.response.*;
 
 import java.util.List;
@@ -61,4 +60,18 @@ public interface PackageRepository {
     List<PackageForTerminateResponse> getPackagesForTerminate();
 
     void terminatePackage(PackageTerminateRequest packageTerminateRequest, Long userId);
+
+    Long insertPackageDeails(PackageInsertRequest packageInsertRequest, Long userId);
+
+    void insertTourImages(Long packageId, List<PackageImageInsertRequest> images, Long userId);
+
+    void insertTourInclusions(Long packageId, List<PackageInclusionInsertRequest> inclusions, Long userId);
+
+    void insertTourExclusions(Long packageId, List<PackageExclusionInsertRequest> exclusions, Long userId);
+
+    void insertTourConditions(Long packageId, List<PackageConditionInsertRequest> conditions, Long userId);
+
+    void insertTourTravelTips(Long packageId, List<PackageTravelTipInsertRequest> travelTips, Long userId);
+
+    void insertDayByDayAccommodations(Long packageId, List<PackageDayAccommodationInsertRequest> dayAccommodations, Long userId);
 }

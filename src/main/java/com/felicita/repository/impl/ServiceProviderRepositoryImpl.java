@@ -2,10 +2,14 @@ package com.felicita.repository.impl;
 
 import com.felicita.exception.DataAccessErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
+import com.felicita.model.enums.CommonStatus;
 import com.felicita.model.response.PartnerResponse;
 import com.felicita.model.response.ServiceProviderDetailsResponse;
+import com.felicita.model.response.ServiceProviderIdsAndNamesReponse;
+import com.felicita.model.response.TourForTerminateResponse;
 import com.felicita.queries.PartnerQueries;
 import com.felicita.queries.ServiceProviderQueries;
+import com.felicita.queries.TourQueries;
 import com.felicita.repository.ServiceProviderRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -881,6 +885,25 @@ public class ServiceProviderRepositoryImpl implements ServiceProviderRepository 
         } catch (DataAccessException e) {
             LOGGER.error("Error fetching review details for service provider ID: {}", serviceProviderId, e);
             return Collections.emptyList();
+        }
+    }
+
+    @Override
+    public List<ServiceProviderIdsAndNamesReponse> getServiceProviderNamesAndIds() {
+        String GET_SERVICE_PROVIDER_NAMES_AND_IDS = ServiceProviderQueries.GET_SERVICE_PROVIDER_NAMES_AND_IDS;
+
+        try {
+            return jdbcTemplate.query(
+                    GET_SERVICE_PROVIDER_NAMES_AND_IDS,
+                    new Object[]{CommonStatus.ACTIVE.toString()}, // parameter for cs.name = ?
+                    (rs, rowNum) -> ServiceProviderIdsAndNamesReponse.builder()
+                            .serviceProviderId(rs.getLong("service_provider_id"))
+                            .serviceProviderName(rs.getString("name"))
+                            .build()
+            );
+        } catch (DataAccessException e) {
+            LOGGER.error("Failed to fetch service provider: ", e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch service provider");
         }
     }
 

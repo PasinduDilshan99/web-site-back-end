@@ -5,10 +5,7 @@ import com.felicita.exception.InternalServerErrorExceptionHandler;
 import com.felicita.model.dto.VehicleBasicDetailsDto;
 import com.felicita.model.enums.CommonStatus;
 import com.felicita.model.enums.PartnerStatus;
-import com.felicita.model.response.CommonResponse;
-import com.felicita.model.response.PartnerResponse;
-import com.felicita.model.response.VehicleDetailResponse;
-import com.felicita.model.response.VehicleResponse;
+import com.felicita.model.response.*;
 import com.felicita.repository.VehicleRepository;
 import com.felicita.service.VehicleService;
 import com.felicita.util.CommonResponseMessages;
@@ -137,6 +134,39 @@ public class VehicleServiceImpl implements VehicleService {
             throw new InternalServerErrorExceptionHandler("Failed to fetch partners from database");
         } finally {
             LOGGER.info("End fetching all visible partners from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<List<VehicleIdAndNameResponse>> getVehiclesNumberAndIds() {
+        LOGGER.info("Start fetching active vehicles ids and register numbers from repository");
+        try {
+            List<VehicleIdAndNameResponse> vehicleIdAndNameResponses =
+                    vehicleRepository.getVehiclesNumberAndIds();
+
+            if (vehicleIdAndNameResponses.isEmpty()) {
+                LOGGER.warn("No active vehicles ids and register numbers found in database");
+                throw new DataNotFoundErrorExceptionHandler("No active vehicles ids and register numbers found");
+            }
+
+            return
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            vehicleIdAndNameResponses,
+                            Instant.now()
+                    )
+                    ;
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching active vehicles ids and register numbers: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching active vehicles ids and register numbers: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch active vehicles ids and register numbers from database");
+        } finally {
+            LOGGER.info("End fetching active vehicles ids and register numbers from repository");
         }
     }
 }

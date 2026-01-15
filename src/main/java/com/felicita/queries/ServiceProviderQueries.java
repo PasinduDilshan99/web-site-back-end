@@ -410,4 +410,13 @@ public class ServiceProviderQueries {
             ORDER BY spr.created_at DESC;
             """;
 
+    public static final String GET_SERVICE_PROVIDER_NAMES_AND_IDS = """
+            SELECT
+            	sp.service_provider_id,
+                sp.name
+            FROM service_provider sp
+            LEFT JOIN common_status cs
+            	ON sp.status_id = cs.id
+            WHERE cs.name=?
+            """ ;
 }

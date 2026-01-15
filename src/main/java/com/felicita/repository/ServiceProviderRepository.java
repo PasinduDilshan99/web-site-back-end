@@ -1,6 +1,7 @@
 package com.felicita.repository;
 
 import com.felicita.model.response.ServiceProviderDetailsResponse;
+import com.felicita.model.response.ServiceProviderIdsAndNamesReponse;
 
 import java.util.List;
 
@@ -34,4 +35,6 @@ public interface ServiceProviderRepository {
     List<ServiceProviderDetailsResponse.SocialMedia> getSocialMedias(String serviceProviderId);
 
     List<ServiceProviderDetailsResponse.ReviewDetail> getReviewDetails(String serviceProviderId);
+
+    List<ServiceProviderIdsAndNamesReponse> getServiceProviderNamesAndIds();
 }

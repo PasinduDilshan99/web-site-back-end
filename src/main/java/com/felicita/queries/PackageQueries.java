@@ -965,4 +965,77 @@ public class PackageQueries {
             	ON cs.id = p.status
             WHERE cs.name = ?
             """;
+
+    public static final String INSERT_PACKAGE_BASIC_DETAILS = """
+                INSERT INTO packages 
+                (package_type_id,tour_id, name, description, total_price, discount_percentage, start_date, end_date,
+                 color, status, hover_color, min_person_count, max_person_count, price_per_person, created_by)
+                VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, (SELECT cs.id FROM common_status cs WHERE cs.name = ? LIMIT 1), ?, ?, ?, ?, ?)
+            """;
+
+    public static final String INSERT_PACKAGE_IMAGE = """
+            INSERT INTO package_images
+            (package_id, name, description, status, image_url, color, created_by)
+            VALUES (
+               ?, ?, ?, 
+               (SELECT cs.id FROM common_status cs WHERE cs.name = ? LIMIT 1),
+               ?, ?, ?
+            )
+            """;
+    public static final String INSERT_PACKAGE_INCLUSION = """
+            INSERT INTO package_inclusion
+            (package_id, inclusion_text, display_order, status_id, created_by, updated_by)
+            VALUES (
+             ?, ?, ?, 
+             (SELECT cs.id FROM common_status cs WHERE cs.name = ? LIMIT 1),
+             ?, ?
+            )
+            """;
+
+    public static final String INSERT_PACKAGE_EXCLUSION = """
+            INSERT INTO package_exclusion
+            (package_id, exclusion_text, display_order, status_id, created_by, updated_by)
+            VALUES (
+             ?, ?, ?, 
+             (SELECT cs.id FROM common_status cs WHERE cs.name = ? LIMIT 1),
+             ?, ?
+            )
+            """;
+
+    public static final String INSERT_PACKAGE_CONDITION = """
+            INSERT INTO package_condition
+            (package_id, condition_text, display_order, status_id, created_by, updated_by)
+            VALUES (
+             ?, ?, ?, 
+             (SELECT cs.id FROM common_status cs WHERE cs.name = ? LIMIT 1),
+             ?, ?
+            )
+            """;
+
+    public static final String INSERT_PACKAGE_TRAVEL_TIP = """
+            INSERT INTO package_travel_tips
+            (package_id, tip_title, tip_description, display_order, status_id, created_by, updated_by)
+            VALUES (
+             ?, ?, ?, ?, 
+             (SELECT cs.id FROM common_status cs WHERE cs.name = ? LIMIT 1),
+             ?, ?
+            )
+            """;
+
+    public static final String INSERT_PACKAGE_DAY_ACCOMMODATION = """
+            INSERT INTO package_day_accommodation (
+                package_id, day_number,
+                breakfast, breakfast_description,
+                lunch, lunch_description,
+                dinner, dinner_description,
+                morning_tea, morning_tea_description,
+                evening_tea, evening_tea_description,
+                snacks, snack_note,
+                hotel_id,
+                transport_id,
+                other_notes
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """;
+
+
 }

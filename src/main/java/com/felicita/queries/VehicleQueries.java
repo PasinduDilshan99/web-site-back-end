@@ -271,4 +271,13 @@ public class VehicleQueries {
             """;
 
 
+    public static final String GET_VEHICLE_NUMBER_AND_IDS = """
+            SELECT
+            	v.vehicle_id,
+            	v.registration_number
+            FROM vehicles v
+            LEFT JOIN common_status cs
+            	ON cs.id = v.status_id
+            WHERE cs.name = ?
+            """;
 }

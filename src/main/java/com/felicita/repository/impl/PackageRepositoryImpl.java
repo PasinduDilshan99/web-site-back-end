@@ -3,14 +3,10 @@ package com.felicita.repository.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.felicita.exception.DataAccessErrorExceptionHandler;
-import com.felicita.exception.DataNotFoundErrorExceptionHandler;
-import com.felicita.exception.InternalServerErrorExceptionHandler;
-import com.felicita.exception.TerminateFailedErrorExceptionHandler;
+import com.felicita.exception.*;
 import com.felicita.model.dto.*;
 import com.felicita.model.enums.CommonStatus;
-import com.felicita.model.request.PackageDataRequest;
-import com.felicita.model.request.PackageTerminateRequest;
+import com.felicita.model.request.*;
 import com.felicita.model.response.*;
 import com.felicita.queries.PackageQueries;
 import com.felicita.queries.TourQueries;
@@ -22,10 +18,11 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -1503,6 +1500,233 @@ public class PackageRepositoryImpl implements PackageRepository {
             throw new InternalServerErrorExceptionHandler("Failed to terminate package");
         }
     }
+
+    @Override
+    public Long insertPackageDeails(PackageInsertRequest request, Long userId) {
+
+        try {
+            KeyHolder keyHolder = new GeneratedKeyHolder();
+
+            jdbcTemplate.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(
+                        PackageQueries.INSERT_PACKAGE_BASIC_DETAILS,
+                        Statement.RETURN_GENERATED_KEYS
+                );
+
+                ps.setLong(1, request.getPackageType());
+                ps.setLong(2, request.getTourId());
+                ps.setString(3, request.getName());
+                ps.setString(4, request.getDescription());
+                ps.setBigDecimal(5, request.getTotalPrice());
+                ps.setBigDecimal(6, request.getDiscountPercentage());
+                ps.setObject(7, request.getStartDate());   // LocalDate supported
+                ps.setObject(8, request.getEndDate());
+                ps.setString(9, request.getColor());
+                ps.setString(10, request.getStatus());
+                ps.setString(11, request.getHoverColor());
+                ps.setInt(12, request.getMinPersonCount());
+                ps.setInt(13, request.getMaxPersonCount());
+                ps.setBigDecimal(14, request.getPricePerPerson());
+                ps.setLong(15, userId);
+
+                return ps;
+            }, keyHolder);
+
+            if (keyHolder.getKey() == null) {
+                throw new InsertFailedErrorExceptionHandler("Failed to generate package ID");
+            }
+
+            Long packageId = keyHolder.getKey().longValue();
+
+            return packageId;
+
+        } catch (DataAccessException dae) {
+            LOGGER.error("DB error while inserting package", dae);
+            throw new InsertFailedErrorExceptionHandler(dae.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Failed to insert package", e);
+            throw new InternalServerErrorExceptionHandler("Failed to insert package");
+        }
+    }
+
+
+    @Override
+    public void insertTourImages(Long packageId,
+                                 List<PackageImageInsertRequest> images,
+                                 Long userId) {
+
+        if (images == null || images.isEmpty()) return;
+
+        try {
+            jdbcTemplate.batchUpdate(
+                    PackageQueries.INSERT_PACKAGE_IMAGE,
+                    images,
+                    images.size(),
+                    (ps, image) -> {
+                        ps.setLong(1, packageId);
+                        ps.setString(2, image.getName());
+                        ps.setString(3, image.getDescription());
+                        ps.setString(4, image.getStatus());   // common_status.name
+                        ps.setString(5, image.getImageUrl());
+                        ps.setString(6, image.getColor());
+                        ps.setLong(7, userId);
+                    }
+            );
+        } catch (DataAccessException dae) {
+            LOGGER.error("DB error while inserting package images", dae);
+            throw new InsertFailedErrorExceptionHandler(dae.getMessage());
+        }
+    }
+
+
+    @Override
+    public void insertTourInclusions(Long packageId,
+                                     List<PackageInclusionInsertRequest> inclusions,
+                                     Long userId) {
+
+        if (inclusions == null || inclusions.isEmpty()) return;
+
+        jdbcTemplate.batchUpdate(
+                PackageQueries.INSERT_PACKAGE_INCLUSION,
+                inclusions,
+                inclusions.size(),
+                (ps, inc) -> {
+                    ps.setLong(1, packageId);
+                    ps.setString(2, inc.getInclusionText());
+                    ps.setInt(3, inc.getDisplayOrder());
+                    ps.setString(4, inc.getStatus());
+                    ps.setLong(5, userId);
+                    ps.setLong(6, userId);
+                }
+        );
+    }
+
+
+    @Override
+    public void insertTourExclusions(Long packageId,
+                                     List<PackageExclusionInsertRequest> exclusions,
+                                     Long userId) {
+
+        if (exclusions == null || exclusions.isEmpty()) return;
+
+        jdbcTemplate.batchUpdate(
+                PackageQueries.INSERT_PACKAGE_EXCLUSION,
+                exclusions,
+                exclusions.size(),
+                (ps, exc) -> {
+                    ps.setLong(1, packageId);
+                    ps.setString(2, exc.getExclusionText());
+                    ps.setInt(3, exc.getDisplayOrder());
+                    ps.setString(4, exc.getStatus());
+                    ps.setLong(5, userId);
+                    ps.setLong(6, userId);
+                }
+        );
+    }
+
+
+    @Override
+    public void insertTourConditions(Long packageId,
+                                     List<PackageConditionInsertRequest> conditions,
+                                     Long userId) {
+
+        if (conditions == null || conditions.isEmpty()) return;
+
+        jdbcTemplate.batchUpdate(
+                PackageQueries.INSERT_PACKAGE_CONDITION,
+                conditions,
+                conditions.size(),
+                (ps, con) -> {
+                    ps.setLong(1, packageId);
+                    ps.setString(2, con.getConditionText());
+                    ps.setInt(3, con.getDisplayOrder());
+                    ps.setString(4, con.getStatus());
+                    ps.setLong(5, userId);
+                    ps.setLong(6, userId);
+                }
+        );
+    }
+
+
+    @Override
+    public void insertTourTravelTips(Long packageId,
+                                     List<PackageTravelTipInsertRequest> travelTips,
+                                     Long userId) {
+
+        if (travelTips == null || travelTips.isEmpty()) return;
+
+        jdbcTemplate.batchUpdate(
+                PackageQueries.INSERT_PACKAGE_TRAVEL_TIP,
+                travelTips,
+                travelTips.size(),
+                (ps, tip) -> {
+                    ps.setLong(1, packageId);
+                    ps.setString(2, tip.getTipTitle());
+                    ps.setString(3, tip.getTipDescription());
+                    ps.setInt(4, tip.getDisplayOrder());
+                    ps.setString(5, tip.getStatus());
+                    ps.setLong(6, userId);
+                    ps.setLong(7, userId);
+                }
+        );
+    }
+
+
+    @Override
+    public void insertDayByDayAccommodations(Long packageId,
+                                             List<PackageDayAccommodationInsertRequest> dayAccommodations,
+                                             Long userId) {
+
+        if (dayAccommodations == null || dayAccommodations.isEmpty()) return;
+
+        try {
+            jdbcTemplate.batchUpdate(
+                    PackageQueries.INSERT_PACKAGE_DAY_ACCOMMODATION,
+                    dayAccommodations,
+                    dayAccommodations.size(),
+                    (ps, day) -> {
+                        ps.setLong(1, packageId);
+                        ps.setInt(2, day.getDayNumber());
+
+                        ps.setBoolean(3, Boolean.TRUE.equals(day.getBreakfast()));
+                        ps.setString(4, day.getBreakfastDescription());
+
+                        ps.setBoolean(5, Boolean.TRUE.equals(day.getLunch()));
+                        ps.setString(6, day.getLunchDescription());
+
+                        ps.setBoolean(7, Boolean.TRUE.equals(day.getDinner()));
+                        ps.setString(8, day.getDinnerDescription());
+
+                        ps.setBoolean(9, Boolean.TRUE.equals(day.getMorningTea()));
+                        ps.setString(10, day.getMorningTeaDescription());
+
+                        ps.setBoolean(11, Boolean.TRUE.equals(day.getEveningTea()));
+                        ps.setString(12, day.getEveningTeaDescription());
+
+                        ps.setBoolean(13, Boolean.TRUE.equals(day.getSnacks()));
+                        ps.setString(14, day.getSnackNote());
+
+                        if (day.getHotelId() != null) {
+                            ps.setLong(15, day.getHotelId());
+                        } else {
+                            ps.setNull(15, Types.BIGINT);
+                        }
+
+                        if (day.getTransportId() != null) {
+                            ps.setLong(16, day.getTransportId());
+                        } else {
+                            ps.setNull(16, Types.BIGINT);
+                        }
+
+                        ps.setString(17, day.getOtherNotes());
+                    }
+            );
+        } catch (DataAccessException dae) {
+            LOGGER.error("DB error while inserting day accommodations", dae);
+            throw new InsertFailedErrorExceptionHandler(dae.getMessage());
+        }
+    }
+
 
 
 }

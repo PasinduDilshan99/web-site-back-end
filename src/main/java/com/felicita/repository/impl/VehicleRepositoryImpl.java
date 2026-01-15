@@ -3,10 +3,10 @@ package com.felicita.repository.impl;
 import com.felicita.exception.DataAccessErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
 import com.felicita.model.dto.VehicleBasicDetailsDto;
-import com.felicita.model.response.PartnerResponse;
-import com.felicita.model.response.VehicleDetailResponse;
-import com.felicita.model.response.VehicleResponse;
+import com.felicita.model.enums.CommonStatus;
+import com.felicita.model.response.*;
 import com.felicita.queries.PartnerQueries;
+import com.felicita.queries.TourQueries;
 import com.felicita.queries.VehicleQueries;
 import com.felicita.repository.VehicleRepository;
 import org.slf4j.Logger;
@@ -390,6 +390,25 @@ public class VehicleRepositoryImpl implements VehicleRepository {
         } catch (Exception e) {
             LOGGER.error("Error fetching vehicle basic details for ID {}: {}", vehicleId, e.getMessage(), e);
             throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching vehicle basic details");
+        }
+    }
+
+    @Override
+    public List<VehicleIdAndNameResponse> getVehiclesNumberAndIds() {
+        String GET_VEHICLE_NUMBER_AND_IDS = VehicleQueries.GET_VEHICLE_NUMBER_AND_IDS;
+
+        try {
+            return jdbcTemplate.query(
+                    GET_VEHICLE_NUMBER_AND_IDS,
+                    new Object[]{CommonStatus.ACTIVE.toString()}, // parameter for cs.name = ?
+                    (rs, rowNum) -> VehicleIdAndNameResponse.builder()
+                            .vehicleId(rs.getLong("vehicle_id"))
+                            .registerNumber(rs.getString("registration_number"))
+                            .build()
+            );
+        } catch (DataAccessException e) {
+            LOGGER.error("Failed to fetch vehicles: ", e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch vehicles");
         }
     }
 
