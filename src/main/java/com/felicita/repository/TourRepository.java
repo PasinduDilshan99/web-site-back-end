@@ -83,25 +83,25 @@ public interface TourRepository {
 
     void removeTourDestinations(Long tourId, List<Long> removeDestinations, Long userId);
 
-    void updateTourDestinations(Long tourId, List<TourDestinationInsertRequest> updateDestinations, Long userId);
+    void updateTourDestinations(Long tourId, List<TourDestinationUpdateRequest> updateDestinations, Long userId);
 
     void removeTourImages(Long tourId, List<Long> removeImages, Long userId);
 
-    void updateTourImages(Long tourId, List<TourImageInsertRequest> updateImages, Long userId);
+    void updateTourImages(Long tourId, List<TourImageUpdateRequest> updateImages, Long userId);
 
     void removeTourInclusions(Long tourId, List<Long> removeInclusions, Long userId);
 
-    void updateTourInclusions(Long tourId, List<TourInclusionInsertRequest> updateInclusions, Long userId);
+    void updateTourInclusions(Long tourId, List<TourInclusionUpdateRequest> updateInclusions, Long userId);
 
     void removeTourExclusions(Long tourId, List<Long> removeExclusions, Long userId);
 
-    void updateTourExclusions(Long tourId, List<TourExclusionInsertRequest> updateExclusions, Long userId);
+    void updateTourExclusions(Long tourId, List<TourExclusionUpdateRequest> updateExclusions, Long userId);
 
     void removeTourConditions(Long tourId, List<Long> removeConditions, Long userId);
 
-    void updateTourConditions(Long tourId, List<TourConditionInsertRequest> updateConditions, Long userId);
+    void updateTourConditions(Long tourId, List<TourConditionUpdateRequest> updateConditions, Long userId);
 
     void removeTourTravelTips(Long tourId, List<Long> removeTravelTips, Long userId);
 
-    void updateTourTravelTips(Long tourId, List<TourTravelTipInsertRequest> updateTravelTips, Long userId);
+    void updateTourTravelTips(Long tourId, List<TourTravelTipUpdateRequest> updateTravelTips, Long userId);
 }
