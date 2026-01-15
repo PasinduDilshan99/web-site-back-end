@@ -2,10 +2,7 @@ package com.felicita.controller;
 
 import com.felicita.model.dto.PopularTourResponseDto;
 import com.felicita.model.dto.TourResponseDto;
-import com.felicita.model.request.ActivityTerminateRequest;
-import com.felicita.model.request.DestinationInsertRequest;
-import com.felicita.model.request.TourDataRequest;
-import com.felicita.model.request.TourInsertRequest;
+import com.felicita.model.request.*;
 import com.felicita.model.response.*;
 import com.felicita.service.TourService;
 import com.felicita.util.Constant;
@@ -68,7 +65,15 @@ public class TourController {
     public ResponseEntity<CommonResponse<TourResponseDto>> getTourDetailsById(@PathVariable String tourId) {
         LOGGER.info("{} Start execute get tour details by id  {}", Constant.DOTS, Constant.DOTS);
         CommonResponse<TourResponseDto> response = tourService.getTourDetailsById(tourId);
-        LOGGER.info("{} End execute get package details by id {}", Constant.DOTS, Constant.DOTS);
+        LOGGER.info("{} End execute get tour details by id {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/tout-all-details/{tourId}")
+    public ResponseEntity<CommonResponse<TourAllDetailsResponse>> getTourAllDetailsById(@PathVariable Long tourId) {
+        LOGGER.info("{} Start execute get tour all details by id  {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<TourAllDetailsResponse> response = tourService.getTourAllDetailsById(tourId);
+        LOGGER.info("{} End execute get tour all details by id {}", Constant.DOTS, Constant.DOTS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -181,6 +186,14 @@ public class TourController {
         LOGGER.info("{} Start execute insert tour {}", Constant.DOTS, Constant.DOTS);
         CommonResponse<InsertResponse> response = tourService.insertTour(tourInsertRequest);
         LOGGER.info("{} End execute insert tour {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping(path = "/update-tour")
+    public ResponseEntity<CommonResponse<UpdateResponse>> updateTour(@RequestBody TourUpdateRequest tourUpdateRequest) {
+        LOGGER.info("{} Start execute update tour {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<UpdateResponse> response = tourService.updateTour(tourUpdateRequest);
+        LOGGER.info("{} End execute update tour {}", Constant.DOTS, Constant.DOTS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

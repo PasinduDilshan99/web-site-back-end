@@ -1878,6 +1878,101 @@ public class TourRepositoryImpl implements TourRepository {
         }
     }
 
+    @Override
+    public void updateTourBasicDetails(Long tourId,
+                                       TourUpdateRequest.TourBasicDetails tourBasicDetails,
+                                       Long userId) {
+
+        String UPDATE_TOUR_BASIC_DETAILS = TourQueries.UPDATE_TOUR_BASIC_DETAILS;
+
+        try {
+            jdbcTemplate.update(
+                    UPDATE_TOUR_BASIC_DETAILS,
+                    tourBasicDetails.getTourName(),          // 1 name
+                    tourBasicDetails.getTourDescription(),   // 2 description
+                    tourBasicDetails.getTourType(),          // 3 tour_type
+                    tourBasicDetails.getTourCategory(),      // 4 tour_category
+                    tourBasicDetails.getDuration(),          // 5 duration
+                    tourBasicDetails.getLatitude(),          // 6 latitude
+                    tourBasicDetails.getLongitude(),         // 7 longitude
+                    tourBasicDetails.getStartLocation(),     // 8 start_location
+                    tourBasicDetails.getEndLocation(),       // 9 end_location
+                    tourBasicDetails.getSeason(),            // 10 season
+                    tourBasicDetails.getStatus(),            // 11 status (name -> subquery)
+                    userId,                                  // 12 updated_by
+                    tourId                                   // 13 where tour_id
+            );
+
+        } catch (DataAccessException dae) {
+            LOGGER.error("Database error while updating tour", dae);
+            throw new UpdateFailedErrorExceptionHandler(dae.getMessage());
+
+        } catch (Exception e) {
+            LOGGER.error("Failed to update tour", e);
+            throw new InternalServerErrorExceptionHandler("Failed to update tour");
+        }
+    }
+
+
+    @Override
+    public void removeTourDestinations(Long tourId, List<Long> removeDestinations, Long userId) {
+
+    }
+
+    @Override
+    public void updateTourDestinations(Long tourId, List<TourDestinationInsertRequest> updateDestinations, Long userId) {
+
+    }
+
+    @Override
+    public void removeTourImages(Long tourId, List<Long> removeImages, Long userId) {
+
+    }
+
+    @Override
+    public void updateTourImages(Long tourId, List<TourImageInsertRequest> updateImages, Long userId) {
+
+    }
+
+    @Override
+    public void removeTourInclusions(Long tourId, List<Long> removeInclusions, Long userId) {
+
+    }
+
+    @Override
+    public void updateTourInclusions(Long tourId, List<TourInclusionInsertRequest> updateInclusions, Long userId) {
+
+    }
+
+    @Override
+    public void removeTourExclusions(Long tourId, List<Long> removeExclusions, Long userId) {
+
+    }
+
+    @Override
+    public void updateTourExclusions(Long tourId, List<TourExclusionInsertRequest> updateExclusions, Long userId) {
+
+    }
+
+    @Override
+    public void removeTourConditions(Long tourId, List<Long> removeConditions, Long userId) {
+
+    }
+
+    @Override
+    public void updateTourConditions(Long tourId, List<TourConditionInsertRequest> updateConditions, Long userId) {
+
+    }
+
+    @Override
+    public void removeTourTravelTips(Long tourId, List<Long> removeTravelTips, Long userId) {
+
+    }
+
+    @Override
+    public void updateTourTravelTips(Long tourId, List<TourTravelTipInsertRequest> updateTravelTips, Long userId) {
+
+    }
 
 
     // ✅ Helper methods (avoid null pointer issues)

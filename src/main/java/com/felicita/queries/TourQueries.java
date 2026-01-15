@@ -970,7 +970,22 @@ WHERE t.tour_id = ?
 """;
 
 
-
-
-
+    public static final String UPDATE_TOUR_BASIC_DETAILS = """
+            UPDATE tour
+            SET
+                name = ?,
+                description = ?,
+                tour_type = ?,
+                tour_category = ?,
+                duration = ?,
+                latitude = ?,
+                longitude = ?,
+                start_location = ?,
+                end_location = ?,
+                season = ?,
+                status = (SELECT cs.id FROM common_status cs WHERE cs.name = ? LIMIT 1),
+                updated_by = ?,
+                updated_at = CURRENT_TIMESTAMP
+            WHERE tour_id = ?
+            """;
 }

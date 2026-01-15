@@ -4,6 +4,7 @@ import com.felicita.model.dto.PopularTourResponseDto;
 import com.felicita.model.dto.TourResponseDto;
 import com.felicita.model.request.TourDataRequest;
 import com.felicita.model.request.TourInsertRequest;
+import com.felicita.model.request.TourUpdateRequest;
 import com.felicita.model.response.*;
 import org.springframework.http.ResponseEntity;
 
@@ -52,4 +53,8 @@ public interface TourService {
     CommonResponse<List<TourIdAndTourNameResponse>> getTourIdsAndTourNames();
 
     CommonResponse<TourDetailsForAddPackageResponse> getTourDetailsForAddPackage(Long tourId);
+
+    CommonResponse<TourAllDetailsResponse> getTourAllDetailsById(Long tourId);
+
+    CommonResponse<UpdateResponse> updateTour(TourUpdateRequest tourUpdateRequest);
 }
