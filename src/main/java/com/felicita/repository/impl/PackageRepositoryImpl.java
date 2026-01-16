@@ -76,7 +76,7 @@ public class PackageRepositoryImpl implements PackageRepository {
                         pkg.setPackageTypeStatus(rs.getString("package_type_status"));
 
                         // Tour info
-                        pkg.setTourId(rs.getInt("tour_id"));
+                        pkg.setTourId(rs.getLong("tour_id"));
                         pkg.setTourName(rs.getString("tour_name"));
                         pkg.setTourDescription(rs.getString("tour_description"));
                         pkg.setDuration(rs.getObject("duration", Integer.class));
@@ -187,7 +187,7 @@ public class PackageRepositoryImpl implements PackageRepository {
                         pkg.setPackageTypeStatus(rs.getString("package_type_status"));
 
                         // Tour info
-                        pkg.setTourId(rs.getObject("tour_id", Integer.class));
+                        pkg.setTourId(rs.getObject("tour_id", Long.class));
                         pkg.setTourName(rs.getString("tour_name"));
                         pkg.setTourDescription(rs.getString("tour_description"));
                         pkg.setDuration(rs.getObject("duration", Integer.class));
@@ -881,7 +881,7 @@ public class PackageRepositoryImpl implements PackageRepository {
                                 p.setPackageTypeStatus(rs.getString("package_type_status"));
 
                                 // Tour
-                                p.setTourId(rs.getInt("tour_id"));
+                                p.setTourId(rs.getLong("tour_id"));
                                 p.setTourName(rs.getString("tour_name"));
                                 p.setTourDescription(rs.getString("tour_description"));
                                 p.setDuration(rs.getInt("duration"));
@@ -2099,6 +2099,94 @@ public class PackageRepositoryImpl implements PackageRepository {
         } catch (Exception e) {
             LOGGER.error("Failed to update package travel tips", e);
             throw new InternalServerErrorExceptionHandler("Failed to update travel tips");
+        }
+    }
+
+    @Override
+    public void insertPackageFeatures(
+            Long packageId,
+            List<PackageFeaturesInsertRequest> addFeatures,
+            Long userId
+    ) {
+        if (addFeatures == null || addFeatures.isEmpty()) return;
+
+        try {
+            jdbcTemplate.batchUpdate(
+                    PackageQueries.INSERT_PACKAGE_FEATURE,
+                    addFeatures,
+                    addFeatures.size(),
+                    (ps, feature) -> {
+                        ps.setLong(1, packageId);
+                        ps.setString(2, feature.getFeatureName());
+                        ps.setString(3, feature.getFeatureValue());
+                        ps.setString(4, feature.getFeatureDescription());
+
+                        ps.setString(5, feature.getStatus());
+
+                        ps.setString(6, feature.getColor());
+                        ps.setString(7, feature.getHoverColor());
+                        ps.setString(8, feature.getSpecialNote());
+                        ps.setLong(9, userId);
+                    }
+            );
+        } catch (DataAccessException dae) {
+            throw new RuntimeException("Failed to insert package features", dae);
+        }
+    }
+
+
+    @Override
+    public void removePackageFeatures(Long packageId, List<Long> removeFeatureIds, Long userId) {
+        try {
+            jdbcTemplate.batchUpdate(
+                    PackageQueries.PACKAGE_FEATURE_REMOVE,
+                    removeFeatureIds,
+                    removeFeatureIds.size(),
+                    (ps, featureId) -> {
+                        ps.setString(1, CommonStatus.TERMINATED.toString());
+                        ps.setLong(2, userId);
+                        ps.setLong(3, featureId);
+                    }
+            );
+        } catch (DataAccessException e) {
+            LOGGER.error("Failed to remove package feature ", e);
+            throw new TerminateFailedErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Failed to remove package feature : ", e);
+            throw new InternalServerErrorExceptionHandler("Failed to remove package feature");
+        }
+    }
+
+    @Override
+    public void updatePackageFeatures(
+            Long packageId,
+            List<PackageFeaturesUpdateRequest> updatedFeatures,
+            Long userId
+    ) {
+        if (updatedFeatures == null || updatedFeatures.isEmpty()) return;
+
+        try {
+            for (PackageFeaturesUpdateRequest feature : updatedFeatures) {
+                jdbcTemplate.update(
+                        PackageQueries.UPDATE_PACKAGE_FEATURE,
+                        feature.getFeatureName(),
+                        feature.getFeatureValue(),
+                        feature.getFeatureDescription(),
+                        feature.getStatus(), // converts string to int
+                        feature.getColor(),
+                        feature.getHoverColor(),
+                        feature.getSpecialNote(),
+                        userId,
+                        feature.getFeatureId(), // id of the feature
+                        packageId
+                );
+            }
+        } catch (DataAccessException dae) {
+            LOGGER.error("Database error while updating package feature", dae);
+            throw new UpdateFailedErrorExceptionHandler(dae.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Failed to update package feature", e);
+            throw new InternalServerErrorExceptionHandler("Failed to update package feature");
         }
     }
 

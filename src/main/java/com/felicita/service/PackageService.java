@@ -57,4 +57,8 @@ public interface PackageService {
     CommonResponse<InsertResponse> insertPackage(PackageInsertRequest packageInsertRequest);
 
     CommonResponse<UpdateResponse> updatePackage(PackageUpdateRequest packageUpdateRequest);
+
+    CommonResponse<PackageAllDetailsResponse> getPackageAllDetailsById(Long packageId);
+
+    CommonResponse<List<PackageIdAndPackageNameResponse>> getPackageIdsAndPackageNames();
 }

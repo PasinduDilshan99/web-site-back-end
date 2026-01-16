@@ -57,7 +57,17 @@ public class SecurityConfig {
                         .requestMatchers("/v0/api/destination/update-destination").hasAuthority("DESTINATION_UPDATE")
                         .requestMatchers("/v0/api/destination/terminate-destination").hasAuthority("DESTINATION_TERMINATE")
                         // ACTIVITIES
+                        .requestMatchers("/api/v0/activities/add-activity").hasAuthority("ACTIVITY_CREATE")
+                        .requestMatchers("/api/v0/activities/update-activity").hasAuthority("ACTIVITY_UPDATE")
                         .requestMatchers("/api/v0/activities/terminate-activity").hasAuthority("ACTIVITY_TERMINATE")
+                        // TOURS
+                        .requestMatchers("/v0/api/tour/add-tour").hasAuthority("TOUR_CREATE")
+                        .requestMatchers("/v0/api/tour/update-tour").hasAuthority("TOUR_UPDATE")
+                        .requestMatchers("/v0/api/tour/terminate-tour").hasAuthority("TOUR_TERMINATE")
+                        // PACKAGES
+                        .requestMatchers("/v0/api/package/add-package").hasAuthority("PACKAGE_CREATE")
+                        .requestMatchers("/v0/api/package/update-package").hasAuthority("PACKAGE_UPDATE")
+                        .requestMatchers("/v0/api/package/terminate-package").hasAuthority("PACKAGE_TERMINATE")
                         .requestMatchers(PublicEndpoints.ENDPOINTS).permitAll()
                         .requestMatchers(AuthorizeEndPoints.ENDPOINTS).authenticated()
                         .anyRequest().permitAll()

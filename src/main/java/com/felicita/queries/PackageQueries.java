@@ -1200,4 +1200,40 @@ public class PackageQueries {
                     AND package_id = ?
             """;
 
+    public static final String INSERT_PACKAGE_FEATURE = """
+            INSERT INTO features (
+                package_id,
+                name,
+                value,
+                description,
+                status,
+                color,
+                hover_color,
+                special_note,
+                created_by
+            ) VALUES (?, ?, ?, ?, (SELECT cs.id FROM common_status cs WHERE cs.name = ? LIMIT 1), ?, ?, ?, ?)
+            """;
+
+    public static final String PACKAGE_FEATURE_REMOVE = """
+            UPDATE features
+            SET status = (SELECT id FROM common_status WHERE name = ? LIMIT 1),
+                terminated_at = now(),
+                terminated_by = ?
+            WHERE id = ?
+            """;
+
+    public static final String UPDATE_PACKAGE_FEATURE = """
+            UPDATE features SET
+                name = ?,
+                value = ?,
+                description = ?,
+                status = (SELECT cs.id FROM common_status cs WHERE cs.name = ? LIMIT 1),
+                color = ?,
+                hover_color = ?,
+                special_note = ?,
+                updated_by = ?,
+                updated_at = CURRENT_TIMESTAMP
+            WHERE id = ? AND package_id = ?
+            """;
+
 }

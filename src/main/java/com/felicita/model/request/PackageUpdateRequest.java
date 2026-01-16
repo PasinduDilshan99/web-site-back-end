@@ -21,6 +21,10 @@ public class PackageUpdateRequest {
     private List<PackageImageInsertRequest> addImages;
     private List<PackageImageUpdateRequest> updatedImages;
 
+    private List<PackageFeaturesInsertRequest> addFeatures;
+    private List<Long> removeFeatureIds;
+    private List<PackageFeaturesUpdateRequest> updatedFeatures;
+
     private List<PackageDayAccommodationInsertRequest> addDayAccommodations;
     private List<Long> removeDayAccommodationIds;
     private List<PackageDayAccommodationUpdateRequest> updatedDayAccommodations;

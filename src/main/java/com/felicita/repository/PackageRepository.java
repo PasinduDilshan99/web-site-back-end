@@ -100,4 +100,10 @@ public interface PackageRepository {
     void removePcakageTravelTips(Long packageId, List<Long> removeTravelTipIds, Long userId);
 
     void updatePackageTravelTips(Long packageId, List<PackageTravelTipUpdateRequest> updatedTravelTips, Long userId);
+
+    void insertPackageFeatures(Long packageId, List<PackageFeaturesInsertRequest> addFeatures, Long userId);
+
+    void removePackageFeatures(Long packageId, List<Long> removeFeatureIds, Long userId);
+
+    void updatePackageFeatures(Long packageId, List<PackageFeaturesUpdateRequest> updatedFeatures, Long userId);
 }

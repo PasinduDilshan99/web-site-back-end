@@ -180,4 +180,21 @@ public class PackageController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping(path = "/package-all-details/{packageId}")
+    public ResponseEntity<CommonResponse<PackageAllDetailsResponse>> getPackageAllDetailsById(@PathVariable Long packageId) {
+        LOGGER.info("{} Start execute get package all details by id  {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<PackageAllDetailsResponse> response = packageService.getPackageAllDetailsById(packageId);
+        LOGGER.info("{} End execute get package all details by id {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/packageId-and-packageName")
+    public ResponseEntity<CommonResponse<List<PackageIdAndPackageNameResponse>>> getPackageIdsAndPackageNames() {
+        LOGGER.info("{} Start execute get all active package ids and names {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<PackageIdAndPackageNameResponse>> response = packageService.getPackageIdsAndPackageNames();
+        LOGGER.info("{} End execute get all package tour ids and names {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
 }

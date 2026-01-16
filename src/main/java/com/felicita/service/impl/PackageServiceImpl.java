@@ -775,6 +775,10 @@ public class PackageServiceImpl implements PackageService {
             packageRepository.removePackageImages(packageUpdateRequest.getPackageId(), packageUpdateRequest.getRemovedImageIds(), userId);
             packageRepository.updatePackageImages(packageUpdateRequest.getPackageId(), packageUpdateRequest.getUpdatedImages(), userId);
 
+            packageRepository.insertPackageFeatures(packageUpdateRequest.getPackageId(), packageUpdateRequest.getAddFeatures(), userId);
+            packageRepository.removePackageFeatures(packageUpdateRequest.getPackageId(), packageUpdateRequest.getRemoveFeatureIds(), userId);
+            packageRepository.updatePackageFeatures(packageUpdateRequest.getPackageId(), packageUpdateRequest.getUpdatedFeatures(), userId);
+
             packageRepository.insertDayByDayAccommodations(packageUpdateRequest.getPackageId(), packageUpdateRequest.getAddDayAccommodations(), userId);
             packageRepository.removeDayByDayAccommodations(packageUpdateRequest.getPackageId(), packageUpdateRequest.getRemoveDayAccommodationIds(), userId);
             packageRepository.updateDayByDayAccommodations(packageUpdateRequest.getPackageId(), packageUpdateRequest.getUpdatedDayAccommodations(), userId);
@@ -810,5 +814,88 @@ public class PackageServiceImpl implements PackageService {
         } catch (Exception e) {
             throw new InternalServerErrorExceptionHandler("Something went wrong");
         }
+    }
+
+    @Override
+    public CommonResponse<PackageAllDetailsResponse> getPackageAllDetailsById(Long packageId) {
+        LOGGER.info("Start fetching all package details by package id from repository");
+        try {
+            PackageAllDetailsResponse packageAllDetailsResponse = new PackageAllDetailsResponse();
+            PackageResponseDto packageDetailsById = getPackageDetailsById(String.valueOf(packageId)).getData();
+
+            packageAllDetailsResponse.setPackageId(packageId);
+            packageAllDetailsResponse.setPackageName(packageDetailsById.getPackageName());
+            packageAllDetailsResponse.setPackageDescription(packageDetailsById.getPackageDescription());
+            packageAllDetailsResponse.setTotalPrice(packageDetailsById.getTotalPrice());
+            packageAllDetailsResponse.setDiscountPercentage(packageDetailsById.getDiscountPercentage());
+            packageAllDetailsResponse.setStartDate(packageDetailsById.getStartDate());
+            packageAllDetailsResponse.setEndDate(packageDetailsById.getEndDate());
+            packageAllDetailsResponse.setColor(packageDetailsById.getColor());
+            packageAllDetailsResponse.setHoverColor(packageDetailsById.getHoverColor());
+            packageAllDetailsResponse.setMinPersonCount(packageDetailsById.getMinPersonCount());
+            packageAllDetailsResponse.setMaxPersonCount(packageDetailsById.getMaxPersonCount());
+            packageAllDetailsResponse.setPricePerPerson(packageDetailsById.getPricePerPerson());
+            packageAllDetailsResponse.setPackageStatus(packageDetailsById.getPackageStatus());
+            packageAllDetailsResponse.setPackageTypeName(packageDetailsById.getPackageTypeName());
+            packageAllDetailsResponse.setTourId(packageDetailsById.getTourId());
+            packageAllDetailsResponse.setTourName(packageDetailsById.getTourName());
+            packageAllDetailsResponse.setPackageFeatures(packageDetailsById.getFeatures());
+            packageAllDetailsResponse.setPackageImages(packageDetailsById.getImages());
+
+
+            List<PackageExtrasResponse.PackageInclusion> packageInclusions = packageRepository.getPackageInclusions(packageId);
+            List<PackageExtrasResponse.PackageExclusion> packageExclusions = packageRepository.getPackageExclusions(packageId);
+            List<PackageExtrasResponse.PackageCondition> packageConditions = packageRepository.getPackageConditions(packageId);
+            List<PackageExtrasResponse.PackageTravelTip> packageTravelTips = packageRepository.getPackageTravelTips(packageId);
+
+            packageAllDetailsResponse.setInclusions(packageInclusions);
+            packageAllDetailsResponse.setExclusions(packageExclusions);
+            packageAllDetailsResponse.setConditions(packageConditions);
+            packageAllDetailsResponse.setTravelTips(packageTravelTips);
+
+            PackageDayAccommodationResponse dayToPackageDetailsByTourId =
+                    getDayToPackageDetailsByTourId(packageAllDetailsResponse.getTourId()).getData().stream().filter(data->data.getPackageId().equals(packageId)).findFirst().get();
+
+
+            packageAllDetailsResponse.setDayAccommodationResponses(dayToPackageDetailsByTourId);
+
+            return
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            packageAllDetailsResponse,
+                            Instant.now()
+                    );
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching package : {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch package from database");
+        } finally {
+            LOGGER.info("End fetching package all details by package id from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<List<PackageIdAndPackageNameResponse>> getPackageIdsAndPackageNames() {
+        CommonResponse<List<PackageForTerminateResponse>> packagesForTerminate = getPackagesForTerminate();
+        List<PackageIdAndPackageNameResponse> packageIdAndPackageNameResponses = new ArrayList<>();
+        for (PackageForTerminateResponse packageForTerminateResponse : packagesForTerminate.getData()) {
+            packageIdAndPackageNameResponses.add(
+                    new PackageIdAndPackageNameResponse(
+                            packageForTerminateResponse.getPackageId(),
+                            packageForTerminateResponse.getPackageName()
+                    )
+            );
+        }
+        return new CommonResponse<>(
+                CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                packageIdAndPackageNameResponses,
+                Instant.now());
     }
 }

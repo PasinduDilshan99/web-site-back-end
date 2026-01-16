@@ -1,6 +1,10 @@
-package com.felicita.model.dto;
+package com.felicita.model.response;
 
+import com.felicita.model.dto.PackageFeatureResponseDto;
+import com.felicita.model.dto.PackageImageResponseDto;
+import com.felicita.model.dto.PackageScheduleResponseDto;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,7 +16,8 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PackageResponseDto {
+@Builder
+public class PackageAllDetailsResponse {
     private Long packageId;
     private String packageName;
     private String packageDescription;
@@ -26,28 +31,18 @@ public class PackageResponseDto {
     private Integer maxPersonCount;
     private BigDecimal pricePerPerson;
     private String packageStatus;
-
-    // New fields for audit info
-    private LocalDateTime createdAt;
-    private Integer createdBy;
-
-    // New fields for package type
     private String packageTypeName;
-    private String packageTypeDescription;
-    private String packageTypeStatus;
 
-    // Related Tour Info
     private Long tourId;
     private String tourName;
-    private String tourDescription;
-    private Integer duration;
-    private Double latitude;
-    private Double longitude;
-    private String startLocation;
-    private String endLocation;
-    private String tourStatus;
 
-    private List<PackageScheduleResponseDto> schedules;
-    private List<PackageFeatureResponseDto> features;
-    private List<PackageImageResponseDto> images;
+    private List<PackageFeatureResponseDto> packageFeatures;
+    private List<PackageImageResponseDto> packageImages;
+
+    private List<PackageExtrasResponse.PackageInclusion> inclusions;
+    private List<PackageExtrasResponse.PackageExclusion> exclusions;
+    private List<PackageExtrasResponse.PackageCondition> conditions;
+    private List<PackageExtrasResponse.PackageTravelTip> travelTips;
+
+    private PackageDayAccommodationResponse dayAccommodationResponses;
 }
