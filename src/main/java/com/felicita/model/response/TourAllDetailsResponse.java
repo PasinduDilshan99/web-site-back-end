@@ -35,6 +35,10 @@ public class TourAllDetailsResponse {
     private String seasonDescription;
     private String statusName;
 
+    private Long assignTo;
+    private String assignToName;
+    private String assignMessage;
+
     private List<TourScheduleResponseDto> schedules;
     private List<TourImageResponseDto> images;
     private List<TourExtrasResponse.TourInclusion> inclusions;

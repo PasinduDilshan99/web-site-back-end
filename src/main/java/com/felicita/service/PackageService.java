@@ -4,6 +4,7 @@ import com.felicita.model.dto.*;
 import com.felicita.model.request.PackageDataRequest;
 import com.felicita.model.request.PackageInsertRequest;
 import com.felicita.model.request.PackageTerminateRequest;
+import com.felicita.model.request.PackageUpdateRequest;
 import com.felicita.model.response.*;
 import org.springframework.http.ResponseEntity;
 
@@ -54,4 +55,6 @@ public interface PackageService {
     CommonResponse<TerminateResponse> terminatePackage(PackageTerminateRequest packageTerminateRequest);
 
     CommonResponse<InsertResponse> insertPackage(PackageInsertRequest packageInsertRequest);
+
+    CommonResponse<UpdateResponse> updatePackage(PackageUpdateRequest packageUpdateRequest);
 }

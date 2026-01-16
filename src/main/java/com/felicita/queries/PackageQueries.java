@@ -1038,4 +1038,166 @@ public class PackageQueries {
             """;
 
 
+    public static final String UPDATE_PACKAGE_BASIC_DETAILS = """
+            UPDATE packages
+            SET
+                package_type_id = ?,
+                tour_id = ?,
+                name = ?,
+                description = ?,
+                total_price = ?,
+                discount_percentage = ?,
+                start_date = ?,
+                end_date = ?,
+                color = ?,
+                status = (SELECT cs.id FROM common_status cs WHERE cs.name = ? LIMIT 1),
+                hover_color = ?,
+                min_person_count = ?,
+                max_person_count = ?,
+                price_per_person = ?,
+                updated_by = ?
+            WHERE package_id = ?
+            """;
+    public static final String PACKAGE_EXCLUSION_REMOVE = """
+            UPDATE tour_exclusion
+            SET status_id = (SELECT id FROM common_status WHERE name = ? LIMIT 1),
+                terminated_at = now(),
+                terminated_by = ?
+            WHERE tour_exclusion_id = ?
+            """;
+    public static final String PACKAGE_CONDITION_REMOVE = """
+            UPDATE package_condition
+            SET status_id = (SELECT id FROM common_status WHERE name = ? LIMIT 1),
+                terminated_at = now(),
+                terminated_by = ?
+            WHERE package_condition_id = ?
+            """;
+    public static final String PACKAGE_INCLUSION_REMOVE = """
+            UPDATE package_inclusion
+            SET status_id = (SELECT id FROM common_status WHERE name = ? LIMIT 1),
+                terminated_at = now(),
+                terminated_by = ?
+            WHERE package_inclusion_id = ?
+            """;
+    public static final String PACKAGE_TRAVEL_TIPS_REMOVE = """
+            UPDATE package_travel_tips
+            SET status_id = (SELECT id FROM common_status WHERE name = ? LIMIT 1),
+                terminated_at = now(),
+                terminated_by = ?
+            WHERE package_travel_tip_id = ?
+            """;
+    public static final String PACKAGE_TRAVEL_TIP_UPDATE = """
+            UPDATE package_travel_tips
+            SET
+                tip_title = ?,
+                tip_description = ?,
+                display_order = ?,
+                status_id = (
+                    SELECT cs.id
+                    FROM common_status cs
+                    WHERE cs.name = ?
+                    LIMIT 1
+                ),
+                updated_by = ?
+            WHERE package_travel_tip_id = ? AND package_id = ?
+            """;
+
+    public static final String UPDATE_PACKAGE_CONDITION = """
+            UPDATE package_condition
+            SET
+                condition_text = ?,
+                display_order = ?,
+                status_id = (
+                    SELECT cs.id
+                    FROM common_status cs
+                    WHERE cs.name = ?
+                    LIMIT 1
+                ),
+                updated_by = ?
+            WHERE package_condition_id = ? AND package_id = ?
+            """;
+
+    public static final String UPDATE_PACKAGE_EXCLUSION = """
+            UPDATE package_exclusion
+            SET
+                exclusion_text = ?,
+                display_order = ?,
+                status_id = (
+                    SELECT cs.id
+                    FROM common_status cs
+                    WHERE cs.name = ?
+                    LIMIT 1
+                ),
+                updated_by = ?
+            WHERE package_exclusion_id = ? AND package_id = ?
+            """;
+
+    public static final String UPDATE_PACKAGE_INCLUSION = """
+            UPDATE package_inclusion
+            SET
+                inclusion_text = ?,
+                display_order = ?,
+                status_id = (
+                    SELECT cs.id
+                    FROM common_status cs
+                    WHERE cs.name = ?
+                    LIMIT 1
+                ),
+                updated_by = ?
+            WHERE package_inclusion_id = ? AND package_id = ?
+            """;
+
+
+    public static final String PACKAGE_IMAGES_REMOVE = """
+            UPDATE package_images
+            SET status = (SELECT id FROM common_status WHERE name = ? LIMIT 1),
+                terminated_at = now(),
+                terminated_by = ?
+            WHERE id = ?
+            """;
+
+    public static final String UPDATE_PACKAGE_IMAGE = """
+            UPDATE package_images
+            SET
+                name = ?,
+                description = ?,
+                image_url = ?,
+                status = (SELECT cs.id FROM common_status cs WHERE cs.name = ? LIMIT 1),
+                updated_by = ?
+            WHERE id = ? AND package_id = ?
+            """;
+
+    public static final String PACKAGE_DAY_ACCOMMODATION_REMOVE = """
+            UPDATE package_day_accommodation
+            SET status = (SELECT id FROM common_status WHERE name = ? LIMIT 1),
+                terminated_at = now(),
+                terminated_by = ?
+            WHERE package_day_accommodation_id = ?
+            """;
+    public static final String UPDATE_PACKAGE_DAY_ACCOMMODATION = """
+                UPDATE package_day_accommodation
+                SET
+                    day_number = ?,
+                    breakfast = ?,
+                    breakfast_description = ?,
+                    lunch = ?,
+                    lunch_description = ?,
+                    dinner = ?,
+                    dinner_description = ?,
+                    morning_tea = ?,
+                    morning_tea_description = ?,
+                    evening_tea = ?,
+                    evening_tea_description = ?,
+                    snacks = ?,
+                    snack_note = ?,
+                    hotel_id = ?,
+                    transport_id = ?,
+                    other_notes = ?,
+                    status = (SELECT id FROM common_status WHERE name = ? LIMIT 1),
+                    updated_by = ?
+                WHERE
+                    package_day_accommodation_id = ?
+                    AND package_id = ?
+            """;
+
 }

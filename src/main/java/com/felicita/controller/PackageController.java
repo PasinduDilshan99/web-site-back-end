@@ -1,10 +1,7 @@
 package com.felicita.controller;
 
 import com.felicita.model.dto.PackageResponseDto;
-import com.felicita.model.request.PackageDataRequest;
-import com.felicita.model.request.PackageInsertRequest;
-import com.felicita.model.request.PackageTerminateRequest;
-import com.felicita.model.request.TourInsertRequest;
+import com.felicita.model.request.*;
 import com.felicita.model.response.*;
 import com.felicita.service.PackageService;
 import com.felicita.util.Constant;
@@ -172,6 +169,14 @@ public class PackageController {
         LOGGER.info("{} Start execute insert package {}", Constant.DOTS, Constant.DOTS);
         CommonResponse<InsertResponse> response = packageService.insertPackage(packageInsertRequest);
         LOGGER.info("{} End execute insert package {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping(path = "/update-package")
+    public ResponseEntity<CommonResponse<UpdateResponse>> updatePackage(@RequestBody PackageUpdateRequest packageUpdateRequest) {
+        LOGGER.info("{} Start execute update package {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<UpdateResponse> response = packageService.updatePackage(packageUpdateRequest);
+        LOGGER.info("{} End execute update package {}", Constant.DOTS, Constant.DOTS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

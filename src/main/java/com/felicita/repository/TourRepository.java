@@ -1,6 +1,7 @@
 package com.felicita.repository;
 
 import com.felicita.model.dto.PopularTourResponseDto;
+import com.felicita.model.dto.TourAssignUserDto;
 import com.felicita.model.dto.TourDayDestinationActivityIdsDto;
 import com.felicita.model.dto.TourResponseDto;
 import com.felicita.model.request.*;
@@ -104,4 +105,6 @@ public interface TourRepository {
     void removeTourTravelTips(Long tourId, List<Long> removeTravelTips, Long userId);
 
     void updateTourTravelTips(Long tourId, List<TourTravelTipUpdateRequest> updateTravelTips, Long userId);
+
+    TourAssignUserDto getTourAssignUserDetailsByTourId(Long tourId);
 }

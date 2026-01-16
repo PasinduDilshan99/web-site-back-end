@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -1590,8 +1591,8 @@ public class TourRepositoryImpl implements TourRepository {
                 jdbcTemplate.update(
                         TourQueries.INSERT_TOUR_IMAGE,
                         tourId,
-                        image.getName(),
-                        image.getDescription(),
+                        image.getImageName(),
+                        image.getImageDescription(),
                         image.getImageUrl(),
                         image.getStatus(),
                         userId
@@ -2002,8 +2003,8 @@ public class TourRepositoryImpl implements TourRepository {
 
                 jdbcTemplate.update(
                         TourQueries.UPDATE_TOUR_IMAGE,
-                        image.getName(),            // 1
-                        image.getDescription(),     // 2
+                        image.getImageName(),            // 1
+                        image.getImageDescription(),     // 2
                         image.getImageUrl(),        // 3
                         image.getStatus(),          // 4 (status name)
                         userId,                     // 5 (updated_by)
@@ -2219,6 +2220,27 @@ public class TourRepositoryImpl implements TourRepository {
             throw new InternalServerErrorExceptionHandler("Failed to update travel tips");
         }
     }
+
+    @Override
+    public TourAssignUserDto getTourAssignUserDetailsByTourId(Long tourId) {
+        try {
+            return jdbcTemplate.queryForObject(
+                    TourQueries.GET_TOUR_ASSIGN_USER_DETAILS_BY_TOUR_ID,
+                    new Object[]{tourId},
+                    (rs, rowNum) -> TourAssignUserDto.builder()
+                            .assignTo(rs.getLong("user_id"))
+                            .assignToName(rs.getString("username"))
+                            .assignMessage(rs.getString("assign_message"))
+                            .build()
+            );
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        } catch (DataAccessException e) {
+            LOGGER.error("Database error while fetching tour assign user details", e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch tour assign user details");
+        }
+    }
+
 
 
     // ✅ Helper methods (avoid null pointer issues)

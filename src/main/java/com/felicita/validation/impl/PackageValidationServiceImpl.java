@@ -2,6 +2,7 @@ package com.felicita.validation.impl;
 
 import com.felicita.model.request.PackageInsertRequest;
 import com.felicita.model.request.PackageTerminateRequest;
+import com.felicita.model.request.PackageUpdateRequest;
 import com.felicita.validation.CommonValidationService;
 import com.felicita.validation.PackageValidationService;
 import org.slf4j.Logger;
@@ -28,6 +29,11 @@ public class PackageValidationServiceImpl implements PackageValidationService {
 
     @Override
     public void validatePackageInsertRequest(PackageInsertRequest packageInsertRequest) {
+
+    }
+
+    @Override
+    public void validatePackageUpdateRequest(PackageUpdateRequest packageUpdateRequest) {
 
     }
 }

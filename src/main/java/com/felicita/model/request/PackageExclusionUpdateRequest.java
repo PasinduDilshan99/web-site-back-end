@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class TourImageInsertRequest {
-    private String imageName;
-    private String imageDescription;
-    private String imageUrl;
+public class PackageExclusionUpdateRequest {
+    private Long packageExclusionId;
+    private String exclusionText;
+    private Integer displayOrder;
     private String status;
 }

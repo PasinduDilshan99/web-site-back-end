@@ -1094,4 +1094,15 @@ public class TourQueries {
         """;
 
 
+    public static final String GET_TOUR_ASSIGN_USER_DETAILS_BY_TOUR_ID = """
+            SELECT
+            	u.user_id,
+                u.username,
+                t.assign_message
+            FROM tour t
+            LEFT JOIN user u
+            	ON u.user_id = t.assign_to
+            WHERE t.tour_id = ?
+            """;
+
 }

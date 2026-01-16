@@ -1551,9 +1551,9 @@ public class PackageRepositoryImpl implements PackageRepository {
 
 
     @Override
-    public void insertTourImages(Long packageId,
-                                 List<PackageImageInsertRequest> images,
-                                 Long userId) {
+    public void insertPackageImages(Long packageId,
+                                    List<PackageImageInsertRequest> images,
+                                    Long userId) {
 
         if (images == null || images.isEmpty()) return;
 
@@ -1580,9 +1580,9 @@ public class PackageRepositoryImpl implements PackageRepository {
 
 
     @Override
-    public void insertTourInclusions(Long packageId,
-                                     List<PackageInclusionInsertRequest> inclusions,
-                                     Long userId) {
+    public void insertPackageInclusions(Long packageId,
+                                        List<PackageInclusionInsertRequest> inclusions,
+                                        Long userId) {
 
         if (inclusions == null || inclusions.isEmpty()) return;
 
@@ -1603,9 +1603,9 @@ public class PackageRepositoryImpl implements PackageRepository {
 
 
     @Override
-    public void insertTourExclusions(Long packageId,
-                                     List<PackageExclusionInsertRequest> exclusions,
-                                     Long userId) {
+    public void insertPackageExclusions(Long packageId,
+                                        List<PackageExclusionInsertRequest> exclusions,
+                                        Long userId) {
 
         if (exclusions == null || exclusions.isEmpty()) return;
 
@@ -1626,9 +1626,9 @@ public class PackageRepositoryImpl implements PackageRepository {
 
 
     @Override
-    public void insertTourConditions(Long packageId,
-                                     List<PackageConditionInsertRequest> conditions,
-                                     Long userId) {
+    public void insertPackageConditions(Long packageId,
+                                        List<PackageConditionInsertRequest> conditions,
+                                        Long userId) {
 
         if (conditions == null || conditions.isEmpty()) return;
 
@@ -1649,9 +1649,9 @@ public class PackageRepositoryImpl implements PackageRepository {
 
 
     @Override
-    public void insertTourTravelTips(Long packageId,
-                                     List<PackageTravelTipInsertRequest> travelTips,
-                                     Long userId) {
+    public void insertPackageTravelTips(Long packageId,
+                                        List<PackageTravelTipInsertRequest> travelTips,
+                                        Long userId) {
 
         if (travelTips == null || travelTips.isEmpty()) return;
 
@@ -1724,6 +1724,381 @@ public class PackageRepositoryImpl implements PackageRepository {
         } catch (DataAccessException dae) {
             LOGGER.error("DB error while inserting day accommodations", dae);
             throw new InsertFailedErrorExceptionHandler(dae.getMessage());
+        }
+    }
+
+    @Override
+    public void updatePackageBasicDetails(
+            Long packageId,
+            PackageUpdateRequest.PackageBasicDetails packageBasicDetails,
+            Long userId
+    ) {
+        if (packageBasicDetails == null) {
+            return;
+        }
+
+        try {
+            jdbcTemplate.update(
+                    PackageQueries.UPDATE_PACKAGE_BASIC_DETAILS,
+                    packageBasicDetails.getPackageType(),
+                    packageBasicDetails.getTourId(),
+                    packageBasicDetails.getName(),
+                    packageBasicDetails.getDescription(),
+                    packageBasicDetails.getTotalPrice(),
+                    packageBasicDetails.getDiscountPercentage(),
+                    packageBasicDetails.getStartDate(),
+                    packageBasicDetails.getEndDate(),
+                    packageBasicDetails.getColor(),
+                    packageBasicDetails.getStatus(),
+                    packageBasicDetails.getHoverColor(),
+                    packageBasicDetails.getMinPersonCount(),
+                    packageBasicDetails.getMaxPersonCount(),
+                    packageBasicDetails.getPricePerPerson(),
+                    userId,
+                    packageId
+            );
+
+        } catch (DataAccessException dae) {
+            LOGGER.error("Database error while updating package basic details", dae);
+            throw new UpdateFailedErrorExceptionHandler(dae.getMessage());
+
+        } catch (Exception e) {
+            LOGGER.error("Failed to update package basic details", e);
+            throw new InternalServerErrorExceptionHandler("Failed to update package");
+        }
+    }
+
+
+    @Override
+    public void removePackageImages(Long packageId, List<Long> removedImageIds, Long userId) {
+        try {
+            jdbcTemplate.batchUpdate(
+                    PackageQueries.PACKAGE_IMAGES_REMOVE,
+                    removedImageIds,
+                    removedImageIds.size(),
+                    (ps, imageId) -> {
+                        ps.setString(1, CommonStatus.TERMINATED.toString());
+                        ps.setLong(2, userId);
+                        ps.setLong(3, imageId);
+                    }
+            );
+        } catch (DataAccessException e) {
+            LOGGER.error("Failed to remove package images", e);
+            throw new TerminateFailedErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Failed to remove package images : ", e);
+            throw new InternalServerErrorExceptionHandler("Failed to remove package images");
+        }
+    }
+
+    @Override
+    public void updatePackageImages(Long packageId, List<PackageImageUpdateRequest> updatedImages, Long userId) {
+        if (updatedImages == null || updatedImages.isEmpty()) {
+            return; // nothing to update
+        }
+
+        try {
+            for (PackageImageUpdateRequest image : updatedImages) {
+
+                jdbcTemplate.update(
+                        PackageQueries.UPDATE_PACKAGE_IMAGE,
+                        image.getImageName(),            // 1
+                        image.getImageDescription(),     // 2
+                        image.getImageUrl(),        // 3
+                        image.getStatus(),          // 4 (status name)
+                        userId,                     // 5 (updated_by)
+                        image.getImageId(),         // 6 (WHERE id)
+                        packageId                  // 7 (safety check)
+                );
+            }
+
+        } catch (DataAccessException dae) {
+            LOGGER.error("Database error while updating package images", dae);
+            throw new UpdateFailedErrorExceptionHandler(dae.getMessage());
+
+        } catch (Exception e) {
+            LOGGER.error("Failed to update package images", e);
+            throw new InternalServerErrorExceptionHandler("Failed to update package images");
+        }
+    }
+
+    @Override
+    public void removeDayByDayAccommodations(Long packageId, List<Long> removeDayAccommodationIds, Long userId) {
+        try {
+            jdbcTemplate.batchUpdate(
+                    PackageQueries.PACKAGE_DAY_ACCOMMODATION_REMOVE,
+                    removeDayAccommodationIds,
+                    removeDayAccommodationIds.size(),
+                    (ps, dayAccommodationId) -> {
+                        ps.setString(1, CommonStatus.TERMINATED.toString());
+                        ps.setLong(2, userId);
+                        ps.setLong(3, dayAccommodationId);
+                    }
+            );
+        } catch (DataAccessException e) {
+            LOGGER.error("Failed to remove day accommodation", e);
+            throw new TerminateFailedErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Failed to remove day accommodation : ", e);
+            throw new InternalServerErrorExceptionHandler("Failed to remove day accommodation");
+        }
+    }
+
+    @Override
+    public void updateDayByDayAccommodations(
+            Long packageId,
+            List<PackageDayAccommodationUpdateRequest> updatedDayAccommodations,
+            Long userId
+    ) {
+        if (updatedDayAccommodations == null || updatedDayAccommodations.isEmpty()) {
+            return;
+        }
+
+        try {
+            for (PackageDayAccommodationUpdateRequest req : updatedDayAccommodations) {
+                jdbcTemplate.update(
+                        PackageQueries.UPDATE_PACKAGE_DAY_ACCOMMODATION,
+
+                        req.getDayNumber(),
+                        req.getBreakfast(),
+                        req.getBreakfastDescription(),
+                        req.getLunch(),
+                        req.getLunchDescription(),
+                        req.getDinner(),
+                        req.getDinnerDescription(),
+                        req.getMorningTea(),
+                        req.getMorningTeaDescription(),
+                        req.getEveningTea(),
+                        req.getEveningTeaDescription(),
+                        req.getSnacks(),
+                        req.getSnackNote(),
+                        req.getHotelId(),
+                        req.getTransportId(),
+                        req.getOtherNotes(),
+                        req.getStatus(),
+                        userId,
+                        req.getPackageDayAccommodationId(),
+                        packageId
+                );
+            }
+        } catch (DataAccessException dae) {
+            LOGGER.error("Database error while updating package day accommodation", dae);
+            throw new UpdateFailedErrorExceptionHandler(dae.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Failed to update package day accommodation", e);
+            throw new InternalServerErrorExceptionHandler(
+                    "Failed to update package day accommodation"
+            );
+        }
+    }
+
+
+    @Override
+    public void removePcakageInclusions(Long packageId, List<Long> removeInclusionIds, Long userId) {
+        try {
+            jdbcTemplate.batchUpdate(
+                    PackageQueries.PACKAGE_INCLUSION_REMOVE,
+                    removeInclusionIds,
+                    removeInclusionIds.size(),
+                    (ps, inclusionId) -> {
+                        ps.setString(1, CommonStatus.TERMINATED.toString());
+                        ps.setLong(2, userId);
+                        ps.setLong(3, inclusionId);
+                    }
+            );
+        } catch (DataAccessException e) {
+            LOGGER.error("Failed to remove inclusion", e);
+            throw new TerminateFailedErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Failed to remove inclusion : ", e);
+            throw new InternalServerErrorExceptionHandler("Failed to remove inclusion");
+        }
+    }
+
+    @Override
+    public void updatePackageInclusions(
+            Long packageId,
+            List<PackageInclusionUpdateRequest> updatedInclusions,
+            Long userId
+    ) {
+        if (updatedInclusions == null || updatedInclusions.isEmpty()) return;
+
+        try {
+            for (PackageInclusionUpdateRequest inclusion : updatedInclusions) {
+                jdbcTemplate.update(
+                        PackageQueries.UPDATE_PACKAGE_INCLUSION,
+                        inclusion.getInclusionText(),
+                        inclusion.getDisplayOrder(),
+                        inclusion.getStatus(),
+                        userId,
+                        inclusion.getPackageInclusionId(),
+                        packageId
+                );
+            }
+        } catch (DataAccessException dae) {
+            LOGGER.error("Database error while updating package inclusions", dae);
+            throw new UpdateFailedErrorExceptionHandler(dae.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Failed to update package inclusions", e);
+            throw new InternalServerErrorExceptionHandler("Failed to update package inclusions");
+        }
+    }
+
+
+    @Override
+    public void removePackageExclusions(Long packageId, List<Long> removeExclusionIds, Long userId) {
+        try {
+            jdbcTemplate.batchUpdate(
+                    PackageQueries.PACKAGE_EXCLUSION_REMOVE,
+                    removeExclusionIds,
+                    removeExclusionIds.size(),
+                    (ps, exclusionId) -> {
+                        ps.setString(1, CommonStatus.TERMINATED.toString());
+                        ps.setLong(2, userId);
+                        ps.setLong(3, exclusionId);
+                    }
+            );
+        } catch (DataAccessException e) {
+            LOGGER.error("Failed to remove exclusion", e);
+            throw new TerminateFailedErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Failed to remove exclusion : ", e);
+            throw new InternalServerErrorExceptionHandler("Failed to remove exclusion");
+        }
+    }
+
+    @Override
+    public void updatePackageExclusions(
+            Long packageId,
+            List<PackageExclusionUpdateRequest> updatedExclusions,
+            Long userId
+    ) {
+        if (updatedExclusions == null || updatedExclusions.isEmpty()) return;
+
+        try {
+            for (PackageExclusionUpdateRequest exclusion : updatedExclusions) {
+                jdbcTemplate.update(
+                        PackageQueries.UPDATE_PACKAGE_EXCLUSION,
+                        exclusion.getExclusionText(),
+                        exclusion.getDisplayOrder(),
+                        exclusion.getStatus(),
+                        userId,
+                        exclusion.getPackageExclusionId(),
+                        packageId
+                );
+            }
+        } catch (DataAccessException dae) {
+            LOGGER.error("Database error while updating package exclusions", dae);
+            throw new UpdateFailedErrorExceptionHandler(dae.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Failed to update package exclusions", e);
+            throw new InternalServerErrorExceptionHandler("Failed to update package exclusions");
+        }
+    }
+
+
+    @Override
+    public void removePcakageConditions(Long packageId, List<Long> removeConditionIds, Long userId) {
+        try {
+            jdbcTemplate.batchUpdate(
+                    PackageQueries.PACKAGE_CONDITION_REMOVE,
+                    removeConditionIds,
+                    removeConditionIds.size(),
+                    (ps, conditionId) -> {
+                        ps.setString(1, CommonStatus.TERMINATED.toString());
+                        ps.setLong(2, userId);
+                        ps.setLong(3, conditionId);
+                    }
+            );
+        } catch (DataAccessException e) {
+            LOGGER.error("Failed to remove condition", e);
+            throw new TerminateFailedErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Failed to remove condition : ", e);
+            throw new InternalServerErrorExceptionHandler("Failed to remove condition");
+        }
+    }
+
+    @Override
+    public void updatePackageConditions(
+            Long packageId,
+            List<PackageConditionUpdateRequest> updatedConditions,
+            Long userId
+    ) {
+        if (updatedConditions == null || updatedConditions.isEmpty()) return;
+
+        try {
+            for (PackageConditionUpdateRequest condition : updatedConditions) {
+                jdbcTemplate.update(
+                        PackageQueries.UPDATE_PACKAGE_CONDITION,
+                        condition.getConditionText(),
+                        condition.getDisplayOrder(),
+                        condition.getStatus(),
+                        userId,
+                        condition.getPackageConditionId(),
+                        packageId
+                );
+            }
+        } catch (DataAccessException dae) {
+            LOGGER.error("Database error while updating package conditions", dae);
+            throw new UpdateFailedErrorExceptionHandler(dae.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Failed to update package conditions", e);
+            throw new InternalServerErrorExceptionHandler("Failed to update package conditions");
+        }
+    }
+
+
+    @Override
+    public void removePcakageTravelTips(Long packageId, List<Long> removeTravelTipIds, Long userId) {
+        try {
+            jdbcTemplate.batchUpdate(
+                    PackageQueries.PACKAGE_TRAVEL_TIPS_REMOVE,
+                    removeTravelTipIds,
+                    removeTravelTipIds.size(),
+                    (ps, travelTipId) -> {
+                        ps.setString(1, CommonStatus.TERMINATED.toString());
+                        ps.setLong(2, userId);
+                        ps.setLong(3, travelTipId);
+                    }
+            );
+        } catch (DataAccessException e) {
+            LOGGER.error("Failed to remove travel tip ", e);
+            throw new TerminateFailedErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Failed to remove travel tip : ", e);
+            throw new InternalServerErrorExceptionHandler("Failed to remove travel tip");
+        }
+    }
+
+    @Override
+    public void updatePackageTravelTips(
+            Long packageId,
+            List<PackageTravelTipUpdateRequest> updatedTravelTips,
+            Long userId
+    ) {
+        if (updatedTravelTips == null || updatedTravelTips.isEmpty()) return;
+
+        try {
+            for (PackageTravelTipUpdateRequest tip : updatedTravelTips) {
+                jdbcTemplate.update(
+                        PackageQueries.PACKAGE_TRAVEL_TIP_UPDATE,
+
+                        tip.getTipTitle(),
+                        tip.getTipDescription(),
+                        tip.getDisplayOrder(),
+                        tip.getStatus(),
+                        userId,
+                        tip.getPackageTipId(),
+                        packageId
+                );
+            }
+        } catch (DataAccessException dae) {
+            LOGGER.error("Database error while updating package travel tips", dae);
+            throw new UpdateFailedErrorExceptionHandler(dae.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Failed to update package travel tips", e);
+            throw new InternalServerErrorExceptionHandler("Failed to update travel tips");
         }
     }
 

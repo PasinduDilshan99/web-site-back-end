@@ -152,9 +152,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<CommonResponse<String>> handleUnAuthenticateErrorException(UnAuthenticateErrorExceptionHandler e) {
         logger.error("{} UnAuthenticate Error Exception : {} {}", Constant.ERROR_DOTS_START, e.getMessage(), Constant.ERROR_DOTS_END);
         CommonResponse<String> response = new CommonResponse<>(
-                CommonResponseMessages.DATA_RETRIEVE_FAILED_CODE,
-                CommonResponseMessages.DATA_RETRIEVE_FAILED_STATUS,
-                CommonResponseMessages.DATA_RETRIEVE_FAILED_MESSAGE,
+                CommonResponseMessages.USER_NOT_FOUND_ERROR_CODE,
+                CommonResponseMessages.USER_NOT_FOUND_ERROR_STATUS,
+                CommonResponseMessages.USER_NOT_FOUND_ERROR_MESSAGE,
                 e.getMessage(),
                 Instant.now()
         );

@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class TourImageUpdateRequest {
     private Long imageId;
-    private String name;
-    private String description;
+    private String imageName;
+    private String imageDescription;
     private String imageUrl;
     private String status;
 }

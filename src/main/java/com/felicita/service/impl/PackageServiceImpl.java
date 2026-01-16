@@ -6,6 +6,7 @@ import com.felicita.model.enums.CommonStatus;
 import com.felicita.model.request.PackageDataRequest;
 import com.felicita.model.request.PackageInsertRequest;
 import com.felicita.model.request.PackageTerminateRequest;
+import com.felicita.model.request.PackageUpdateRequest;
 import com.felicita.model.response.*;
 import com.felicita.repository.PackageRepository;
 import com.felicita.service.CommonService;
@@ -737,11 +738,11 @@ public class PackageServiceImpl implements PackageService {
             packageValidationService.validatePackageInsertRequest(packageInsertRequest);
             Long userId = commonService.getUserIdBySecurityContext();
             Long packageId = packageRepository.insertPackageDeails(packageInsertRequest, userId);
-            packageRepository.insertTourImages(packageId, packageInsertRequest.getImages(), userId);
-            packageRepository.insertTourInclusions(packageId, packageInsertRequest.getInclusions(), userId);
-            packageRepository.insertTourExclusions(packageId, packageInsertRequest.getExclusions(), userId);
-            packageRepository.insertTourConditions(packageId, packageInsertRequest.getConditions(), userId);
-            packageRepository.insertTourTravelTips(packageId, packageInsertRequest.getTravelTips(), userId);
+            packageRepository.insertPackageImages(packageId, packageInsertRequest.getImages(), userId);
+            packageRepository.insertPackageInclusions(packageId, packageInsertRequest.getInclusions(), userId);
+            packageRepository.insertPackageExclusions(packageId, packageInsertRequest.getExclusions(), userId);
+            packageRepository.insertPackageConditions(packageId, packageInsertRequest.getConditions(), userId);
+            packageRepository.insertPackageTravelTips(packageId, packageInsertRequest.getTravelTips(), userId);
             packageRepository.insertDayByDayAccommodations(packageId, packageInsertRequest.getDayAccommodations(), userId);
 
             return new CommonResponse<>(
@@ -757,6 +758,55 @@ public class PackageServiceImpl implements PackageService {
             throw new InsertFailedErrorExceptionHandler(ife.getMessage());
         } catch (UnAuthenticateErrorExceptionHandler uae) {
             throw new UnAuthenticateErrorExceptionHandler(uae.getMessage());
+        } catch (Exception e) {
+            throw new InternalServerErrorExceptionHandler("Something went wrong");
+        }
+    }
+
+    @Override
+    public CommonResponse<UpdateResponse> updatePackage(PackageUpdateRequest packageUpdateRequest) {
+        LOGGER.info("Start execute update package request.");
+        try {
+            packageValidationService.validatePackageUpdateRequest(packageUpdateRequest);
+            Long userId = commonService.getUserIdBySecurityContext();
+            packageRepository.updatePackageBasicDetails(packageUpdateRequest.getPackageId(), packageUpdateRequest.getPackageBasicDetails(), userId);
+
+            packageRepository.insertPackageImages(packageUpdateRequest.getPackageId(), packageUpdateRequest.getAddImages(), userId);
+            packageRepository.removePackageImages(packageUpdateRequest.getPackageId(), packageUpdateRequest.getRemovedImageIds(), userId);
+            packageRepository.updatePackageImages(packageUpdateRequest.getPackageId(), packageUpdateRequest.getUpdatedImages(), userId);
+
+            packageRepository.insertDayByDayAccommodations(packageUpdateRequest.getPackageId(), packageUpdateRequest.getAddDayAccommodations(), userId);
+            packageRepository.removeDayByDayAccommodations(packageUpdateRequest.getPackageId(), packageUpdateRequest.getRemoveDayAccommodationIds(), userId);
+            packageRepository.updateDayByDayAccommodations(packageUpdateRequest.getPackageId(), packageUpdateRequest.getUpdatedDayAccommodations(), userId);
+
+            packageRepository.insertPackageInclusions(packageUpdateRequest.getPackageId(), packageUpdateRequest.getAddInclusions(), userId);
+            packageRepository.removePcakageInclusions(packageUpdateRequest.getPackageId(), packageUpdateRequest.getRemoveInclusionIds(), userId);
+            packageRepository.updatePackageInclusions(packageUpdateRequest.getPackageId(), packageUpdateRequest.getUpdatedInclusions(), userId);
+
+            packageRepository.insertPackageExclusions(packageUpdateRequest.getPackageId(), packageUpdateRequest.getAddExclusions(), userId);
+            packageRepository.removePackageExclusions(packageUpdateRequest.getPackageId(), packageUpdateRequest.getRemoveExclusionIds(), userId);
+            packageRepository.updatePackageExclusions(packageUpdateRequest.getPackageId(), packageUpdateRequest.getUpdatedExclusions(), userId);
+
+            packageRepository.insertPackageConditions(packageUpdateRequest.getPackageId(), packageUpdateRequest.getAddConditions(), userId);
+            packageRepository.removePcakageConditions(packageUpdateRequest.getPackageId(), packageUpdateRequest.getRemoveConditionIds(), userId);
+            packageRepository.updatePackageConditions(packageUpdateRequest.getPackageId(), packageUpdateRequest.getUpdatedConditions(), userId);
+
+            packageRepository.insertPackageTravelTips(packageUpdateRequest.getPackageId(), packageUpdateRequest.getAddTravelTips(), userId);
+            packageRepository.removePcakageTravelTips(packageUpdateRequest.getPackageId(), packageUpdateRequest.getRemoveTravelTipIds(), userId);
+            packageRepository.updatePackageTravelTips(packageUpdateRequest.getPackageId(), packageUpdateRequest.getUpdatedTravelTips(), userId);
+
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    new UpdateResponse("Successfully update package request", packageUpdateRequest.getPackageId()),
+                    Instant.now());
+        } catch (ValidationFailedErrorExceptionHandler vfe) {
+            throw new ValidationFailedErrorExceptionHandler("validation failed in the update package request", vfe.getValidationFailedResponses());
+        } catch (InsertFailedErrorExceptionHandler ife) {
+            throw new InsertFailedErrorExceptionHandler(ife.getMessage());
+        } catch (UnAuthenticateErrorExceptionHandler uae) {
+            throw new UnAuthenticateErrorExceptionHandler("before login to update the package details");
         } catch (Exception e) {
             throw new InternalServerErrorExceptionHandler("Something went wrong");
         }
