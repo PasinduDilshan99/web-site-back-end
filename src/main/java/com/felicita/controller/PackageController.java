@@ -1,10 +1,7 @@
 package com.felicita.controller;
 
 import com.felicita.model.dto.PackageResponseDto;
-import com.felicita.model.request.PackageDataRequest;
-import com.felicita.model.request.PackageInsertRequest;
-import com.felicita.model.request.PackageTerminateRequest;
-import com.felicita.model.request.TourInsertRequest;
+import com.felicita.model.request.*;
 import com.felicita.model.response.*;
 import com.felicita.service.PackageService;
 import com.felicita.util.Constant;
@@ -174,5 +171,30 @@ public class PackageController {
         LOGGER.info("{} End execute insert package {}", Constant.DOTS, Constant.DOTS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @PostMapping(path = "/update-package")
+    public ResponseEntity<CommonResponse<UpdateResponse>> updatePackage(@RequestBody PackageUpdateRequest packageUpdateRequest) {
+        LOGGER.info("{} Start execute update package {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<UpdateResponse> response = packageService.updatePackage(packageUpdateRequest);
+        LOGGER.info("{} End execute update package {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/package-all-details/{packageId}")
+    public ResponseEntity<CommonResponse<PackageAllDetailsResponse>> getPackageAllDetailsById(@PathVariable Long packageId) {
+        LOGGER.info("{} Start execute get package all details by id  {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<PackageAllDetailsResponse> response = packageService.getPackageAllDetailsById(packageId);
+        LOGGER.info("{} End execute get package all details by id {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/packageId-and-packageName")
+    public ResponseEntity<CommonResponse<List<PackageIdAndPackageNameResponse>>> getPackageIdsAndPackageNames() {
+        LOGGER.info("{} Start execute get all active package ids and names {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<PackageIdAndPackageNameResponse>> response = packageService.getPackageIdsAndPackageNames();
+        LOGGER.info("{} End execute get all package tour ids and names {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 
 }

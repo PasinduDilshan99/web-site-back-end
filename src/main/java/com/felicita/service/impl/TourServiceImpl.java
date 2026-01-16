@@ -799,6 +799,7 @@ public class TourServiceImpl implements TourService {
             TourAllDetailsResponse tourAllDetailsResponse = new TourAllDetailsResponse();
             TourResponseDto tourResponseDto = tourRepository.getTourDetailsById(String.valueOf(tourId));
 
+            TourAssignUserDto tourAssignUserDto = tourRepository.getTourAssignUserDetailsByTourId(tourId);
             tourAllDetailsResponse.setTourId(tourResponseDto.getTourId());
             tourAllDetailsResponse.setTourName(tourResponseDto.getTourName());
             tourAllDetailsResponse.setTourDescription(tourResponseDto.getTourDescription());
@@ -816,6 +817,9 @@ public class TourServiceImpl implements TourService {
             tourAllDetailsResponse.setStatusName(tourResponseDto.getStatusName());
             tourAllDetailsResponse.setSchedules(tourResponseDto.getSchedules());
             tourAllDetailsResponse.setImages(tourResponseDto.getImages());
+            tourAllDetailsResponse.setAssignTo(tourAssignUserDto.getAssignTo());
+            tourAllDetailsResponse.setAssignToName(tourAssignUserDto.getAssignToName());
+            tourAllDetailsResponse.setAssignMessage(tourAssignUserDto.getAssignMessage());
 
             List<TourExtrasResponse.TourExclusion> tourExclusions = tourRepository.getTourExclusions(tourId);
             List<TourExtrasResponse.TourCondition> tourConditions = tourRepository.getTourConditions(tourId);

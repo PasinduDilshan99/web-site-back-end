@@ -63,15 +63,47 @@ public interface PackageRepository {
 
     Long insertPackageDeails(PackageInsertRequest packageInsertRequest, Long userId);
 
-    void insertTourImages(Long packageId, List<PackageImageInsertRequest> images, Long userId);
+    void insertPackageImages(Long packageId, List<PackageImageInsertRequest> images, Long userId);
 
-    void insertTourInclusions(Long packageId, List<PackageInclusionInsertRequest> inclusions, Long userId);
+    void insertPackageInclusions(Long packageId, List<PackageInclusionInsertRequest> inclusions, Long userId);
 
-    void insertTourExclusions(Long packageId, List<PackageExclusionInsertRequest> exclusions, Long userId);
+    void insertPackageExclusions(Long packageId, List<PackageExclusionInsertRequest> exclusions, Long userId);
 
-    void insertTourConditions(Long packageId, List<PackageConditionInsertRequest> conditions, Long userId);
+    void insertPackageConditions(Long packageId, List<PackageConditionInsertRequest> conditions, Long userId);
 
-    void insertTourTravelTips(Long packageId, List<PackageTravelTipInsertRequest> travelTips, Long userId);
+    void insertPackageTravelTips(Long packageId, List<PackageTravelTipInsertRequest> travelTips, Long userId);
 
     void insertDayByDayAccommodations(Long packageId, List<PackageDayAccommodationInsertRequest> dayAccommodations, Long userId);
+
+    void updatePackageBasicDetails(Long packageId, PackageUpdateRequest.PackageBasicDetails packageBasicDetails, Long userId);
+
+    void removePackageImages(Long packageId, List<Long> removedImageIds, Long userId);
+
+    void updatePackageImages(Long packageId, List<PackageImageUpdateRequest> updatedImages, Long userId);
+
+    void removeDayByDayAccommodations(Long packageId, List<Long> removeDayAccommodationIds, Long userId);
+
+    void updateDayByDayAccommodations(Long packageId, List<PackageDayAccommodationUpdateRequest> updatedDayAccommodations, Long userId);
+
+    void removePcakageInclusions(Long packageId, List<Long> removeInclusionIds, Long userId);
+
+    void updatePackageInclusions(Long packageId, List<PackageInclusionUpdateRequest> updatedInclusions, Long userId);
+
+    void removePackageExclusions(Long packageId, List<Long> removeExclusionIds, Long userId);
+
+    void updatePackageExclusions(Long packageId, List<PackageExclusionUpdateRequest> updatedExclusions, Long userId);
+
+    void removePcakageConditions(Long packageId, List<Long> removeConditionIds, Long userId);
+
+    void updatePackageConditions(Long packageId, List<PackageConditionUpdateRequest> updatedConditions, Long userId);
+
+    void removePcakageTravelTips(Long packageId, List<Long> removeTravelTipIds, Long userId);
+
+    void updatePackageTravelTips(Long packageId, List<PackageTravelTipUpdateRequest> updatedTravelTips, Long userId);
+
+    void insertPackageFeatures(Long packageId, List<PackageFeaturesInsertRequest> addFeatures, Long userId);
+
+    void removePackageFeatures(Long packageId, List<Long> removeFeatureIds, Long userId);
+
+    void updatePackageFeatures(Long packageId, List<PackageFeaturesUpdateRequest> updatedFeatures, Long userId);
 }

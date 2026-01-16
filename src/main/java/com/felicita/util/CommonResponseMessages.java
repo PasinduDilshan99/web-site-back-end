@@ -42,4 +42,9 @@ public class CommonResponseMessages {
     public static final int DATA_ACCESS_ERROR_CODE = 500;
     public static final String DATA_ACCESS_ERROR_STATUS = "DATA_ACCESS_ERROR";
     public static final String DATA_ACCESS_ERROR_MESSAGE = "DATA_ACCESS_ERROR";
+
+
+    public static final int USER_NOT_FOUND_ERROR_CODE = 401;
+    public static final String USER_NOT_FOUND_ERROR_STATUS = "USER_NOT_FOUND";
+    public static final String USER_NOT_FOUND_ERROR_MESSAGE = "USER_NOT_FOUND";
 }

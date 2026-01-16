@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -1590,8 +1591,8 @@ public class TourRepositoryImpl implements TourRepository {
                 jdbcTemplate.update(
                         TourQueries.INSERT_TOUR_IMAGE,
                         tourId,
-                        image.getName(),
-                        image.getDescription(),
+                        image.getImageName(),
+                        image.getImageDescription(),
                         image.getImageUrl(),
                         image.getStatus(),
                         userId
@@ -1900,6 +1901,8 @@ public class TourRepositoryImpl implements TourRepository {
                     tourBasicDetails.getSeason(),            // 10 season
                     tourBasicDetails.getStatus(),            // 11 status (name -> subquery)
                     userId,                                  // 12 updated_by
+                    tourBasicDetails.getAssignTo(),
+                    tourBasicDetails.getAssignMessage(),     // 13 assign_message
                     tourId                                   // 13 where tour_id
             );
 
@@ -1916,63 +1919,328 @@ public class TourRepositoryImpl implements TourRepository {
 
     @Override
     public void removeTourDestinations(Long tourId, List<Long> removeDestinations, Long userId) {
-
+        try {
+            jdbcTemplate.batchUpdate(
+                    TourQueries.TOUR_DESTINATION_REMOVE,
+                    removeDestinations,
+                    removeDestinations.size(),
+                    (ps, tourDestinationId) -> {
+                        ps.setString(1, CommonStatus.TERMINATED.toString());
+                        ps.setLong(2, userId);
+                        ps.setLong(3, tourDestinationId);
+                    }
+            );
+        } catch (DataAccessException e) {
+            LOGGER.error("Failed to remove tour destination", e);
+            throw new TerminateFailedErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Failed to remove tour destination : ", e);
+            throw new InternalServerErrorExceptionHandler("Failed to remove tour destination");
+        }
     }
 
     @Override
-    public void updateTourDestinations(Long tourId, List<TourDestinationInsertRequest> updateDestinations, Long userId) {
+    public void updateTourDestinations(Long tourId, List<TourDestinationUpdateRequest> updateDestinations, Long userId) {
+        if (updateDestinations == null || updateDestinations.isEmpty()) {
+            return; // nothing to update
+        }
 
+        try {
+            for (TourDestinationUpdateRequest updateDestination : updateDestinations) {
+
+                jdbcTemplate.update(
+                        TourQueries.UPDATE_TOUR_DESTINATION,
+                        updateDestination.getDestinationId(),
+                        updateDestination.getActivityId(),
+                        updateDestination.getDayNumber(),
+                        updateDestination.getStatus(),
+                        updateDestination.getTourDestinationId(),
+                        tourId
+                );
+            }
+
+        } catch (DataAccessException dae) {
+            LOGGER.error("Database error while updating tour destination", dae);
+            throw new UpdateFailedErrorExceptionHandler(dae.getMessage());
+
+        } catch (Exception e) {
+            LOGGER.error("Failed to update tour destination", e);
+            throw new InternalServerErrorExceptionHandler("Failed to update tour destination");
+        }
     }
+
 
     @Override
     public void removeTourImages(Long tourId, List<Long> removeImages, Long userId) {
-
+        try {
+            jdbcTemplate.batchUpdate(
+                    TourQueries.TOUR_IMAGES_REMOVE,
+                    removeImages,
+                    removeImages.size(),
+                    (ps, imageId) -> {
+                        ps.setString(1, CommonStatus.TERMINATED.toString());
+                        ps.setLong(2, userId);
+                        ps.setLong(3, imageId);
+                    }
+            );
+        } catch (DataAccessException e) {
+            LOGGER.error("Failed to remove tour images", e);
+            throw new TerminateFailedErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Failed to remove tour images : ", e);
+            throw new InternalServerErrorExceptionHandler("Failed to remove tour images");
+        }
     }
 
     @Override
-    public void updateTourImages(Long tourId, List<TourImageInsertRequest> updateImages, Long userId) {
+    public void updateTourImages(Long tourId, List<TourImageUpdateRequest> updateImages, Long userId) {
+        if (updateImages == null || updateImages.isEmpty()) {
+            return; // nothing to update
+        }
 
+        try {
+            for (TourImageUpdateRequest image : updateImages) {
+
+                jdbcTemplate.update(
+                        TourQueries.UPDATE_TOUR_IMAGE,
+                        image.getImageName(),            // 1
+                        image.getImageDescription(),     // 2
+                        image.getImageUrl(),        // 3
+                        image.getStatus(),          // 4 (status name)
+                        userId,                     // 5 (updated_by)
+                        image.getImageId(),         // 6 (WHERE id)
+                        tourId                  // 7 (safety check)
+                );
+            }
+
+        } catch (DataAccessException dae) {
+            LOGGER.error("Database error while updating tour images", dae);
+            throw new UpdateFailedErrorExceptionHandler(dae.getMessage());
+
+        } catch (Exception e) {
+            LOGGER.error("Failed to update tour images", e);
+            throw new InternalServerErrorExceptionHandler("Failed to update tour images");
+        }
     }
 
     @Override
     public void removeTourInclusions(Long tourId, List<Long> removeInclusions, Long userId) {
-
+        try {
+            jdbcTemplate.batchUpdate(
+                    TourQueries.TOUR_INCLUSION_REMOVE,
+                    removeInclusions,
+                    removeInclusions.size(),
+                    (ps, inclusionId) -> {
+                        ps.setString(1, CommonStatus.TERMINATED.toString());
+                        ps.setLong(2, userId);
+                        ps.setLong(3, inclusionId);
+                    }
+            );
+        } catch (DataAccessException e) {
+            LOGGER.error("Failed to remove inclusion", e);
+            throw new TerminateFailedErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Failed to remove inclusion : ", e);
+            throw new InternalServerErrorExceptionHandler("Failed to remove inclusion");
+        }
     }
 
     @Override
-    public void updateTourInclusions(Long tourId, List<TourInclusionInsertRequest> updateInclusions, Long userId) {
+    public void updateTourInclusions(Long tourId, List<TourInclusionUpdateRequest> updateInclusions, Long userId) {
+        if (updateInclusions == null || updateInclusions.isEmpty()) {
+            return; // nothing to update
+        }
 
+        try {
+            for (TourInclusionUpdateRequest updateInclusion : updateInclusions) {
+
+                jdbcTemplate.update(
+                        TourQueries.UPDATE_INCLUSION,
+                        updateInclusion.getInclusionText(),
+                        updateInclusion.getDisplayOrder(),
+                        updateInclusion.getStatus(),
+                        userId,
+                        updateInclusion.getInclusionId(),
+                        tourId
+                );
+            }
+
+        } catch (DataAccessException dae) {
+            LOGGER.error("Database error while updating tour inclusion", dae);
+            throw new UpdateFailedErrorExceptionHandler(dae.getMessage());
+
+        } catch (Exception e) {
+            LOGGER.error("Failed to update tour inclusion", e);
+            throw new InternalServerErrorExceptionHandler("Failed to update tour inclusion");
+        }
     }
 
     @Override
     public void removeTourExclusions(Long tourId, List<Long> removeExclusions, Long userId) {
-
+        try {
+            jdbcTemplate.batchUpdate(
+                    TourQueries.TOUR_EXCLUSION_REMOVE,
+                    removeExclusions,
+                    removeExclusions.size(),
+                    (ps, exclusionId) -> {
+                        ps.setString(1, CommonStatus.TERMINATED.toString());
+                        ps.setLong(2, userId);
+                        ps.setLong(3, exclusionId);
+                    }
+            );
+        } catch (DataAccessException e) {
+            LOGGER.error("Failed to remove exclusion", e);
+            throw new TerminateFailedErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Failed to remove exclusion : ", e);
+            throw new InternalServerErrorExceptionHandler("Failed to remove exclusion");
+        }
     }
 
-    @Override
-    public void updateTourExclusions(Long tourId, List<TourExclusionInsertRequest> updateExclusions, Long userId) {
 
-    }
 
     @Override
     public void removeTourConditions(Long tourId, List<Long> removeConditions, Long userId) {
-
+        try {
+            jdbcTemplate.batchUpdate(
+                    TourQueries.TOUR_CONDITION_REMOVE,
+                    removeConditions,
+                    removeConditions.size(),
+                    (ps, conditionId) -> {
+                        ps.setString(1, CommonStatus.TERMINATED.toString());
+                        ps.setLong(2, userId);
+                        ps.setLong(3, conditionId);
+                    }
+            );
+        } catch (DataAccessException e) {
+            LOGGER.error("Failed to remove condition", e);
+            throw new TerminateFailedErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Failed to remove condition : ", e);
+            throw new InternalServerErrorExceptionHandler("Failed to remove condition");
+        }
     }
 
-    @Override
-    public void updateTourConditions(Long tourId, List<TourConditionInsertRequest> updateConditions, Long userId) {
 
-    }
 
     @Override
     public void removeTourTravelTips(Long tourId, List<Long> removeTravelTips, Long userId) {
-
+        try {
+            jdbcTemplate.batchUpdate(
+                    TourQueries.TOUR_TRAVEL_TIPS_REMOVE,
+                    removeTravelTips,
+                    removeTravelTips.size(),
+                    (ps, travelTipId) -> {
+                        ps.setString(1, CommonStatus.TERMINATED.toString());
+                        ps.setLong(2, userId);
+                        ps.setLong(3, travelTipId);
+                    }
+            );
+        } catch (DataAccessException e) {
+            LOGGER.error("Failed to remove travel tip ", e);
+            throw new TerminateFailedErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Failed to remove travel tip : ", e);
+            throw new InternalServerErrorExceptionHandler("Failed to remove travel tip");
+        }
     }
 
     @Override
-    public void updateTourTravelTips(Long tourId, List<TourTravelTipInsertRequest> updateTravelTips, Long userId) {
+    public void updateTourExclusions(Long tourId, List<TourExclusionUpdateRequest> updateExclusions, Long userId) {
+        if (updateExclusions == null || updateExclusions.isEmpty()) return;
 
+        try {
+            for (TourExclusionUpdateRequest exclusion : updateExclusions) {
+                jdbcTemplate.update(
+                        TourQueries.UPDATE_EXCLUSION,
+                        exclusion.getExclusionText(),
+                        exclusion.getDisplayOrder(),
+                        exclusion.getStatus(),
+                        userId,
+                        exclusion.getExclusionId(),
+                        tourId
+                );
+            }
+        } catch (DataAccessException dae) {
+            LOGGER.error("Database error while updating tour exclusions", dae);
+            throw new UpdateFailedErrorExceptionHandler(dae.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Failed to update tour exclusions", e);
+            throw new InternalServerErrorExceptionHandler("Failed to update tour exclusions");
+        }
     }
+
+    @Override
+    public void updateTourConditions(Long tourId, List<TourConditionUpdateRequest> updateConditions, Long userId) {
+        if (updateConditions == null || updateConditions.isEmpty()) return;
+
+        try {
+            for (TourConditionUpdateRequest condition : updateConditions) {
+                jdbcTemplate.update(
+                        TourQueries.UPDATE_CONDITION,
+                        condition.getConditionText(),
+                        condition.getDisplayOrder(),
+                        condition.getStatus(),
+                        userId,
+                        condition.getConditionId(),
+                        tourId
+                );
+            }
+        } catch (DataAccessException dae) {
+            LOGGER.error("Database error while updating tour conditions", dae);
+            throw new UpdateFailedErrorExceptionHandler(dae.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Failed to update tour conditions", e);
+            throw new InternalServerErrorExceptionHandler("Failed to update tour conditions");
+        }
+    }
+
+    @Override
+    public void updateTourTravelTips(Long tourId, List<TourTravelTipUpdateRequest> updateTravelTips, Long userId) {
+        if (updateTravelTips == null || updateTravelTips.isEmpty()) return;
+
+        try {
+            for (TourTravelTipUpdateRequest tip : updateTravelTips) {
+                jdbcTemplate.update(
+                        TourQueries.UPDATE_TRAVEL_TIP,
+                        tip.getTipTitle(),
+                        tip.getTipDescription(),
+                        tip.getDisplayOrder(),
+                        tip.getStatus(),
+                        userId,
+                        tip.getTravelTipId(),
+                        tourId
+                );
+            }
+        } catch (DataAccessException dae) {
+            LOGGER.error("Database error while updating travel tips", dae);
+            throw new UpdateFailedErrorExceptionHandler(dae.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Failed to update travel tips", e);
+            throw new InternalServerErrorExceptionHandler("Failed to update travel tips");
+        }
+    }
+
+    @Override
+    public TourAssignUserDto getTourAssignUserDetailsByTourId(Long tourId) {
+        try {
+            return jdbcTemplate.queryForObject(
+                    TourQueries.GET_TOUR_ASSIGN_USER_DETAILS_BY_TOUR_ID,
+                    new Object[]{tourId},
+                    (rs, rowNum) -> TourAssignUserDto.builder()
+                            .assignTo(rs.getLong("user_id"))
+                            .assignToName(rs.getString("username"))
+                            .assignMessage(rs.getString("assign_message"))
+                            .build()
+            );
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        } catch (DataAccessException e) {
+            LOGGER.error("Database error while fetching tour assign user details", e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch tour assign user details");
+        }
+    }
+
 
 
     // ✅ Helper methods (avoid null pointer issues)

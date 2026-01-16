@@ -18,27 +18,27 @@ public class TourUpdateRequest {
 
     private List<TourDestinationInsertRequest> addDestinations;
     private List<Long> removeDestinations;
-    private List<TourDestinationInsertRequest> updateDestinations;
+    private List<TourDestinationUpdateRequest> updateDestinations;
 
     private List<TourImageInsertRequest> addImages;
     private List<Long> removeImages;
-    private List<TourImageInsertRequest> updateImages;
+    private List<TourImageUpdateRequest> updateImages;
 
     private List<TourInclusionInsertRequest> addInclusions;
     private List<Long> removeInclusions;
-    private List<TourInclusionInsertRequest> updateInclusions;
+    private List<TourInclusionUpdateRequest> updateInclusions;
 
     private List<TourExclusionInsertRequest> addExclusions;
     private List<Long> removeExclusions;
-    private List<TourExclusionInsertRequest> updateExclusions;
+    private List<TourExclusionUpdateRequest> updateExclusions;
 
     private List<TourConditionInsertRequest> addConditions;
     private List<Long> removeConditions;
-    private List<TourConditionInsertRequest> updateConditions;
+    private List<TourConditionUpdateRequest> updateConditions;
 
     private List<TourTravelTipInsertRequest> addTravelTips;
     private List<Long> removeTravelTips;
-    private List<TourTravelTipInsertRequest> updateTravelTips;
+    private List<TourTravelTipUpdateRequest> updateTravelTips;
 
     @Data
     @AllArgsConstructor

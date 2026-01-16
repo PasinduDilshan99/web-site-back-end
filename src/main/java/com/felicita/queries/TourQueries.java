@@ -583,85 +583,85 @@ public class TourQueries {
             """;
 
     public static final String GET_ACTIVITIES_DETAILS_BASE = """
-        SELECT
-            a.id,
-            a.destination_id,
-            a.name,
-            a.description,
-            a.activities_category,
-            a.duration_hours,
-            a.available_from,
-            a.available_to,
-            a.price_local,
-            a.price_foreigners,
-            a.min_participate,
-            a.max_participate,
-            a.season,
-            MAX(cs.name) AS status_name,
-            a.created_at,
-            a.updated_at,
-            MAX(ac.name) AS category_name,
-            MAX(ac.description) AS category_description,
-
-            (
-                SELECT COALESCE(
-                    JSON_ARRAYAGG(
-                        JSON_OBJECT(
-                            'id', ar.id,
-                            'name', ar.name,
-                            'value', ar.value,
-                            'description', ar.description,
-                            'color', ar.color,
-                            'status', ar.status
-                        )
-                    ),
-                    JSON_ARRAY()
-                )
-                FROM activities_requirement ar
-                WHERE ar.activity_id = a.id
-                  AND ar.terminated_at IS NULL
-            ) AS requirements,
-
-            (
-                SELECT COALESCE(
-                    JSON_ARRAYAGG(
-                        JSON_OBJECT(
-                            'id', ai.id,
-                            'name', ai.name,
-                            'description', ai.description,
-                            'image_url', ai.image_url,
-                            'status', ai.status
-                        )
-                    ),
-                    JSON_ARRAY()
-                )
-                FROM activities_images ai
-                WHERE ai.activity_id = a.id
-                  AND ai.terminated_at IS NULL
-            ) AS images
-
-        FROM activities a
-        LEFT JOIN common_status cs ON a.status = cs.id
-        LEFT JOIN activity_category ac ON a.activities_category = ac.name
-        WHERE a.terminated_at IS NULL
-        GROUP BY
-            a.id,
-            a.destination_id,
-            a.name,
-            a.description,
-            a.activities_category,
-            a.duration_hours,
-            a.available_from,
-            a.available_to,
-            a.price_local,
-            a.price_foreigners,
-            a.min_participate,
-            a.max_participate,
-            a.season,
-            a.status,
-            a.created_at,
-            a.updated_at
-        """;
+            SELECT
+                a.id,
+                a.destination_id,
+                a.name,
+                a.description,
+                a.activities_category,
+                a.duration_hours,
+                a.available_from,
+                a.available_to,
+                a.price_local,
+                a.price_foreigners,
+                a.min_participate,
+                a.max_participate,
+                a.season,
+                MAX(cs.name) AS status_name,
+                a.created_at,
+                a.updated_at,
+                MAX(ac.name) AS category_name,
+                MAX(ac.description) AS category_description,
+            
+                (
+                    SELECT COALESCE(
+                        JSON_ARRAYAGG(
+                            JSON_OBJECT(
+                                'id', ar.id,
+                                'name', ar.name,
+                                'value', ar.value,
+                                'description', ar.description,
+                                'color', ar.color,
+                                'status', ar.status
+                            )
+                        ),
+                        JSON_ARRAY()
+                    )
+                    FROM activities_requirement ar
+                    WHERE ar.activity_id = a.id
+                      AND ar.terminated_at IS NULL
+                ) AS requirements,
+            
+                (
+                    SELECT COALESCE(
+                        JSON_ARRAYAGG(
+                            JSON_OBJECT(
+                                'id', ai.id,
+                                'name', ai.name,
+                                'description', ai.description,
+                                'image_url', ai.image_url,
+                                'status', ai.status
+                            )
+                        ),
+                        JSON_ARRAY()
+                    )
+                    FROM activities_images ai
+                    WHERE ai.activity_id = a.id
+                      AND ai.terminated_at IS NULL
+                ) AS images
+            
+            FROM activities a
+            LEFT JOIN common_status cs ON a.status = cs.id
+            LEFT JOIN activity_category ac ON a.activities_category = ac.name
+            WHERE a.terminated_at IS NULL
+            GROUP BY
+                a.id,
+                a.destination_id,
+                a.name,
+                a.description,
+                a.activities_category,
+                a.duration_hours,
+                a.available_from,
+                a.available_to,
+                a.price_local,
+                a.price_foreigners,
+                a.min_participate,
+                a.max_participate,
+                a.season,
+                a.status,
+                a.created_at,
+                a.updated_at
+            """;
 
 
     public static final String GET_TOUR_ACCOMMODATIONS_BY_TOUR_ID = """
@@ -857,41 +857,41 @@ public class TourQueries {
             """;
 
     public static final String INSERT_TOUR_TRAVEL_TIP = """
-    INSERT INTO tour_travel_tips
-    (tour_id, tip_title, tip_description, display_order, status_id, created_by)
-    VALUES (?,?,?,?,(SELECT cs.id FROM common_status cs WHERE cs.name = ? LIMIT 1),?)
-    """;
+            INSERT INTO tour_travel_tips
+            (tour_id, tip_title, tip_description, display_order, status_id, created_by)
+            VALUES (?,?,?,?,(SELECT cs.id FROM common_status cs WHERE cs.name = ? LIMIT 1),?)
+            """;
 
 
     public static final String INSERT_TOUR_EXCLUSION = """
-    INSERT INTO tour_exclusion
-    (tour_id, exclusion_text, display_order, status_id, created_by)
-    VALUES (?,?,?,(SELECT cs.id FROM common_status cs WHERE cs.name = ? LIMIT 1),?)
-    """;
+            INSERT INTO tour_exclusion
+            (tour_id, exclusion_text, display_order, status_id, created_by)
+            VALUES (?,?,?,(SELECT cs.id FROM common_status cs WHERE cs.name = ? LIMIT 1),?)
+            """;
     public static final String INSERT_TOUR_CONDITION = """
-    INSERT INTO tour_condition
-    (tour_id, condition_text, display_order, status_id, created_by)
-    VALUES (?,?,?,(SELECT cs.id FROM common_status cs WHERE cs.name = ? LIMIT 1),?)
-    """;
+            INSERT INTO tour_condition
+            (tour_id, condition_text, display_order, status_id, created_by)
+            VALUES (?,?,?,(SELECT cs.id FROM common_status cs WHERE cs.name = ? LIMIT 1),?)
+            """;
 
     public static final String INSERT_TOUR_INCLUSION = """
-    INSERT INTO tour_inclusion
-    (tour_id, inclusion_text, display_order, status_id, created_by)
-    VALUES (?,?,?,(SELECT cs.id FROM common_status cs WHERE cs.name = ? LIMIT 1),?)
-    """;
+            INSERT INTO tour_inclusion
+            (tour_id, inclusion_text, display_order, status_id, created_by)
+            VALUES (?,?,?,(SELECT cs.id FROM common_status cs WHERE cs.name = ? LIMIT 1),?)
+            """;
 
 
     public static final String INSERT_TOUR_DESTINATION = """
-    INSERT INTO tour_destination
-    (tour_id, destination_id, activities_id, day)
-    VALUES (?,?,?,?)
-    """;
+            INSERT INTO tour_destination
+            (tour_id, destination_id, activities_id, day)
+            VALUES (?,?,?,?)
+            """;
 
     public static final String INSERT_TOUR_IMAGE = """
-    INSERT INTO tour_images
-    (tour_id, name, description, image_url, status, created_by)
-    VALUES (?,?,?,?,(SELECT cs.id FROM common_status cs WHERE cs.name = ? LIMIT 1),?)
-    """;
+            INSERT INTO tour_images
+            (tour_id, name, description, image_url, status, created_by)
+            VALUES (?,?,?,?,(SELECT cs.id FROM common_status cs WHERE cs.name = ? LIMIT 1),?)
+            """;
 
 
     public static final String TOUR_DETAILS_FOR_ADD_PACKAGE = """
@@ -938,36 +938,36 @@ public class TourQueries {
             """;
 
     public static final String GET_TOUR_INCLUSIONS_NAMES = """
-SELECT ti.inclusion_text
-FROM tour t
-LEFT JOIN tour_inclusion ti
-    ON t.tour_id = ti.tour_id
-WHERE t.tour_id = ?
-""";
+            SELECT ti.inclusion_text
+            FROM tour t
+            LEFT JOIN tour_inclusion ti
+                ON t.tour_id = ti.tour_id
+            WHERE t.tour_id = ?
+            """;
 
     public static final String GET_TOUR_EXCLUSIONS_NAMES = """
-SELECT te.exclusion_text
-FROM tour t
-LEFT JOIN tour_exclusion te
-    ON t.tour_id = te.tour_id
-WHERE t.tour_id = ?
-""";
+            SELECT te.exclusion_text
+            FROM tour t
+            LEFT JOIN tour_exclusion te
+                ON t.tour_id = te.tour_id
+            WHERE t.tour_id = ?
+            """;
 
     public static final String GET_TOUR_CONDITIONS_NAMES = """
-SELECT tc.condition_text
-FROM tour t
-LEFT JOIN tour_condition tc
-    ON tc.tour_id = t.tour_id
-WHERE t.tour_id = ?
-""";
+            SELECT tc.condition_text
+            FROM tour t
+            LEFT JOIN tour_condition tc
+                ON tc.tour_id = t.tour_id
+            WHERE t.tour_id = ?
+            """;
 
     public static final String GET_TOUR_TRAVEL_TIPS = """
-SELECT ttt.tip_title, ttt.tip_description
-FROM tour t
-LEFT JOIN tour_travel_tips ttt
-    ON ttt.tour_id = t.tour_id
-WHERE t.tour_id = ?
-""";
+            SELECT ttt.tip_title, ttt.tip_description
+            FROM tour t
+            LEFT JOIN tour_travel_tips ttt
+                ON ttt.tour_id = t.tour_id
+            WHERE t.tour_id = ?
+            """;
 
 
     public static final String UPDATE_TOUR_BASIC_DETAILS = """
@@ -985,7 +985,124 @@ WHERE t.tour_id = ?
                 season = ?,
                 status = (SELECT cs.id FROM common_status cs WHERE cs.name = ? LIMIT 1),
                 updated_by = ?,
-                updated_at = CURRENT_TIMESTAMP
+                updated_at = CURRENT_TIMESTAMP,
+                assign_to = ?,
+                assign_message = ?
             WHERE tour_id = ?
             """;
+
+    public static final String TOUR_IMAGES_REMOVE = """
+            UPDATE tour_images
+            SET status = (SELECT id FROM common_status WHERE name = ? LIMIT 1),
+                terminated_at = now(),
+                terminated_by = ?
+            WHERE id = ?
+            """;
+    public static final String TOUR_INCLUSION_REMOVE = """
+            UPDATE tour_inclusion
+            SET status_id = (SELECT id FROM common_status WHERE name = ? LIMIT 1),
+                terminated_at = now(),
+                terminated_by = ?
+            WHERE tour_inclusion_id = ?
+            """;
+    public static final String TOUR_EXCLUSION_REMOVE = """
+            UPDATE tour_exclusion
+            SET status_id = (SELECT id FROM common_status WHERE name = ? LIMIT 1),
+                terminated_at = now(),
+                terminated_by = ?
+            WHERE tour_exclusion_id = ?
+            """;
+    public static final String TOUR_CONDITION_REMOVE = """
+            UPDATE tour_condition
+            SET status_id = (SELECT id FROM common_status WHERE name = ? LIMIT 1),
+                terminated_at = now(),
+                terminated_by = ?
+            WHERE tour_condition_id = ?
+            """;
+    public static final String TOUR_TRAVEL_TIPS_REMOVE = """
+            UPDATE tour_travel_tips
+            SET status_id = (SELECT id FROM common_status WHERE name = ? LIMIT 1),
+                terminated_at = now(),
+                terminated_by = ?
+            WHERE tour_travel_tip_id = ?
+            """;
+    public static final String TOUR_DESTINATION_REMOVE = """
+            UPDATE tour_destination
+            SET status = (SELECT id FROM common_status WHERE name = ? LIMIT 1),
+                terminated_at = now(),
+                terminated_by = ?
+            WHERE id = ?
+            """;
+    public static final String UPDATE_TOUR_IMAGE = """
+            UPDATE tour_images
+            SET
+                name = ?,
+                description = ?,
+                image_url = ?,
+                status = (SELECT cs.id FROM common_status cs WHERE cs.name = ? LIMIT 1),
+                updated_by = ?
+            WHERE id = ? AND tour_id = ?
+            """;
+    public static final String UPDATE_INCLUSION = """
+            UPDATE tour_inclusion
+            SET
+                inclusion_text = ?,
+                display_order = ?,
+                status_id = (SELECT cs.id FROM common_status cs WHERE cs.name = ? LIMIT 1),
+                updated_by = ?
+            WHERE tour_inclusion_id = ? AND tour_id = ?
+            """;
+    public static final String UPDATE_EXCLUSION = """
+        UPDATE tour_exclusion
+        SET
+            exclusion_text = ?,
+            display_order = ?,
+            status_id = (SELECT cs.id FROM common_status cs WHERE cs.name = ? LIMIT 1),
+            updated_by = ?
+        WHERE tour_exclusion_id = ? AND tour_id = ?
+        """;
+
+    public static final String UPDATE_CONDITION = """
+        UPDATE tour_condition
+        SET
+            condition_text = ?,
+            display_order = ?,
+            status_id = (SELECT cs.id FROM common_status cs WHERE cs.name = ? LIMIT 1),
+            updated_by = ?
+        WHERE tour_condition_id = ? AND tour_id = ?
+        """;
+
+    public static final String UPDATE_TRAVEL_TIP = """
+        UPDATE tour_travel_tips
+        SET
+            tip_title = ?,
+            tip_description = ?,
+            display_order = ?,
+            status_id = (SELECT cs.id FROM common_status cs WHERE cs.name = ? LIMIT 1),
+            updated_by = ?
+        WHERE tour_travel_tip_id = ? AND tour_id = ?
+        """;
+
+    public static final String UPDATE_TOUR_DESTINATION = """
+        UPDATE tour_destination
+        SET
+            destination_id = ?,
+            activities_id = ?,
+            day = ?,
+            status = (SELECT cs.id FROM common_status cs WHERE cs.name = ? LIMIT 1)
+        WHERE id = ? AND tour_id = ?
+        """;
+
+
+    public static final String GET_TOUR_ASSIGN_USER_DETAILS_BY_TOUR_ID = """
+            SELECT
+            	u.user_id,
+                u.username,
+                t.assign_message
+            FROM tour t
+            LEFT JOIN user u
+            	ON u.user_id = t.assign_to
+            WHERE t.tour_id = ?
+            """;
+
 }
