@@ -1,11 +1,10 @@
 package com.felicita.service.impl;
 
+import com.felicita.exception.DataAccessErrorExceptionHandler;
 import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
-import com.felicita.model.enums.LinkBarItemStatus;
 import com.felicita.model.enums.NavBarItemStatus;
 import com.felicita.model.response.CommonResponse;
-import com.felicita.model.response.LinkBarResponse;
 import com.felicita.model.response.NavBarResponse;
 import com.felicita.repository.NavBarRepository;
 import com.felicita.service.NavBarService;
@@ -13,9 +12,7 @@ import com.felicita.util.CommonResponseMessages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import java.time.Instant;
 import java.util.List;
 
@@ -32,73 +29,71 @@ public class NavBarServiceImpl implements NavBarService {
     }
 
     @Override
-    public ResponseEntity<CommonResponse<List<NavBarResponse>>> getAllNavBarItems() {
-        LOGGER.info("Start fetching all nav bar items from repository");
+    public CommonResponse<List<NavBarResponse>> getAllNavBarData() {
+        LOGGER.info("Start fetching all nav bar data from repository");
         try {
-            List<NavBarResponse> navBarResponses = navBarRepository.getAllNavBarItems();
+            List<NavBarResponse> navBarResponses = navBarRepository.getAllNavBarData();
 
             if (navBarResponses.isEmpty()) {
-                LOGGER.warn("No nav bar items found in database");
-                throw new DataNotFoundErrorExceptionHandler("No nav bar items found");
+                LOGGER.warn("No nav bar data found in database");
+                throw new DataNotFoundErrorExceptionHandler("No nav bar data found");
             }
 
-            LOGGER.info("Fetched {} nav bar items with submenus successfully", navBarResponses.size());
-            return ResponseEntity.ok(
-                    new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            navBarResponses,
-                            Instant.now()
-                    )
-            );
+            LOGGER.info("Fetched {} nav bar data with submenus successfully", navBarResponses.size());
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    navBarResponses,
+                    Instant.now());
 
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            throw e;
+        } catch (DataAccessErrorExceptionHandler e) {
+            throw e;
         } catch (Exception e) {
-            LOGGER.error("Error occurred while fetching nav bar items: {}", e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch nav bar items from database");
+            LOGGER.error("Error occurred while fetching nav bar data: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch nav bar data from database");
         } finally {
-            LOGGER.info("End fetching all nav bar items from repository");
+            LOGGER.info("End fetching all nav bar data from repository");
         }
     }
 
     @Override
-    public ResponseEntity<CommonResponse<List<NavBarResponse>>> getAllVisibleNavBarItems() {
-        LOGGER.info("Start fetching all visible LinkBar items from repository");
+    public CommonResponse<List<NavBarResponse>> getActiveNavBarData() {
+        LOGGER.info("Start fetching active nav bar data from repository");
 
         try {
-            List<NavBarResponse> navBarResponses = navBarRepository.getAllNavBarItems();
-
-            if (navBarResponses.isEmpty()) {
-                LOGGER.warn("No LinkBar items found in database");
-                throw new DataNotFoundErrorExceptionHandler("No LinkBar items found");
-            }
+            List<NavBarResponse> navBarResponses = getAllNavBarData().getData();
 
             List<NavBarResponse> visibleList = navBarResponses.stream()
                     .filter(item -> NavBarItemStatus.VISIBLE.toString().equalsIgnoreCase(item.getStatus()))
                     .toList();
 
             if (visibleList.isEmpty()) {
-                LOGGER.warn("No visible nav bar items found in database");
-                throw new DataNotFoundErrorExceptionHandler("No visible nav bar items found");
+                LOGGER.warn("No active nav bar data found in database");
+                throw new DataNotFoundErrorExceptionHandler("No active nav bar data found");
             }
 
-            LOGGER.info("Fetched {} visible nav bar items successfully", visibleList.size());
+            LOGGER.info("Fetched {} active nav bar data successfully", visibleList.size());
 
-            return ResponseEntity.ok(
-                    new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            visibleList,
-                            Instant.now()
-                    )
-            );
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    visibleList,
+                    Instant.now());
 
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            throw e;
+        } catch (DataAccessErrorExceptionHandler e) {
+            throw e;
         } catch (Exception e) {
-            LOGGER.error("Error occurred while fetching visible nav bar items: {}", e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch nav bar items from database");
+            LOGGER.error("Error occurred while fetching active nav bar data: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch active nav bar data from database");
         } finally {
-            LOGGER.info("End fetching all visible nav bar items from repository");
+            LOGGER.info("End fetching active nav bar data from repository");
         }
     }
+
 }

@@ -26,7 +26,7 @@ public class LinkBarRepositoryImpl implements LinkBarRepository {
     }
 
     @Override
-    public List<LinkBarResponse> getAllLinkBarItems(){
+    public List<LinkBarResponse> getAllLinkBarData(){
         String GET_ALL_LINK_BAR = LinkBarQueries.GET_ALL_LINK_BAR_DATA;
         try {
             LOGGER.info("Executing query to fetch all link bar data");

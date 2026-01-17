@@ -73,6 +73,10 @@ public class SecurityConfig {
 //                        .requestMatchers("/api/v0/link-bar/all").hasAuthority("LINK_BAR_VIEW")
 //                        .requestMatchers("/api/v0/link-bar/active").hasAuthority("LINK_BAR_VIEW")
 
+                        // LINK BAR
+//                        .requestMatchers("/api/v0/nav-bar/all").hasAuthority("NAV_BAR_VIEW")
+//                        .requestMatchers("/api/v0/nav-bar/active").hasAuthority("NAV_BAR_VIEW")
+
                         .requestMatchers(PublicEndpoints.ENDPOINTS).permitAll()
                         .requestMatchers(AuthorizeEndPoints.ENDPOINTS).authenticated()
                         .anyRequest().permitAll()

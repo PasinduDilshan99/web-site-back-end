@@ -32,7 +32,7 @@ public class LinkBarServiceImpl implements LinkBarService {
     public CommonResponse<List<LinkBarResponse>> getAllLinkBarData() {
         LOGGER.info("Start fetching all link bar data from repository");
         try {
-            List<LinkBarResponse> linkBarResponses = linkBarRepository.getAllLinkBarItems();
+            List<LinkBarResponse> linkBarResponses = linkBarRepository.getAllLinkBarData();
 
             if (linkBarResponses.isEmpty()) {
                 LOGGER.warn("No link bar data found in database");

@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface LinkBarRepository {
 
-    List<LinkBarResponse> getAllLinkBarItems();
+    List<LinkBarResponse> getAllLinkBarData();
 
 }
