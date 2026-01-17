@@ -1,5 +1,6 @@
 package com.felicita.service.impl;
 
+import com.felicita.exception.DataAccessErrorExceptionHandler;
 import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
 import com.felicita.model.enums.LinkBarItemStatus;
@@ -11,12 +12,9 @@ import com.felicita.util.CommonResponseMessages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import java.time.Instant;
 import java.util.List;
-import java.util.stream.Stream;
 
 @Service
 public class LinkBarServiceImpl implements LinkBarService {
@@ -31,73 +29,74 @@ public class LinkBarServiceImpl implements LinkBarService {
     }
 
     @Override
-    public ResponseEntity<CommonResponse<List<LinkBarResponse>>> getAllLinkBarItems() {
-        LOGGER.info("Start fetching all LinkBar items from repository");
+    public CommonResponse<List<LinkBarResponse>> getAllLinkBarData() {
+        LOGGER.info("Start fetching all link bar data from repository");
         try {
             List<LinkBarResponse> linkBarResponses = linkBarRepository.getAllLinkBarItems();
 
             if (linkBarResponses.isEmpty()) {
-                LOGGER.warn("No LinkBar items found in database");
-                throw new DataNotFoundErrorExceptionHandler("No LinkBar items found");
+                LOGGER.warn("No link bar data found in database");
+                throw new DataNotFoundErrorExceptionHandler("No link bar data found");
             }
 
-            LOGGER.info("Fetched {} LinkBar items successfully", linkBarResponses.size());
-            return ResponseEntity.ok(
-                    new CommonResponse<>(
+            LOGGER.info("Fetched {} link bar data successfully", linkBarResponses.size());
+            return new CommonResponse<>(
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
                             linkBarResponses,
-                            Instant.now()
-                    )
-            );
+                            Instant.now());
 
-        } catch (Exception e) {
-            LOGGER.error("Error occurred while fetching LinkBar items: {}", e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch LinkBar items from database");
+        }catch (DataNotFoundErrorExceptionHandler dnfee){
+            LOGGER.error("No link bar data found: {}", dnfee.getMessage(), dnfee);
+            throw dnfee;
+        }catch (DataAccessErrorExceptionHandler daee){
+            LOGGER.error("Error occurred while fetching link bar data: {}", daee.getMessage(), daee);
+            throw daee;
+        }catch (Exception e) {
+            LOGGER.error("Error occurred while fetching link bar data: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch link bar data from database");
         } finally {
-            LOGGER.info("End fetching all LinkBar items from repository");
+            LOGGER.info("End fetching all link bar data from repository");
         }
     }
 
     @Override
-    public ResponseEntity<CommonResponse<List<LinkBarResponse>>> getAllVisibleLinkBarItems() {
-        LOGGER.info("Start fetching all visible LinkBar items from repository");
+    public CommonResponse<List<LinkBarResponse>> getActiveLinkBarData() {
+        LOGGER.info("Start fetching active link bar data from repository");
 
         try {
-            List<LinkBarResponse> linkBarResponses = linkBarRepository.getAllLinkBarItems();
+            List<LinkBarResponse> linkBarResponses = getAllLinkBarData().getData();
 
-            if (linkBarResponses.isEmpty()) {
-                LOGGER.warn("No LinkBar items found in database");
-                throw new DataNotFoundErrorExceptionHandler("No LinkBar items found");
-            }
-
-            List<LinkBarResponse> visibleList = linkBarResponses.stream()
+            List<LinkBarResponse> activeList = linkBarResponses.stream()
                     .filter(item -> LinkBarItemStatus.VISIBLE.toString().equalsIgnoreCase(item.getItemStatus()))
                     .toList();
 
-            if (visibleList.isEmpty()) {
-                LOGGER.warn("No visible LinkBar items found in database");
-                throw new DataNotFoundErrorExceptionHandler("No visible LinkBar items found");
+            if (activeList.isEmpty()) {
+                LOGGER.warn("No active link bar data found in database");
+                throw new DataNotFoundErrorExceptionHandler("No active link bar data found");
             }
 
-            LOGGER.info("Fetched {} visible LinkBar items successfully", visibleList.size());
+            LOGGER.info("Fetched {} active link bar data successfully", activeList.size());
 
-            return ResponseEntity.ok(
-                    new CommonResponse<>(
+            return new CommonResponse<>(
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            visibleList,
-                            Instant.now()
-                    )
-            );
+                            activeList,
+                            Instant.now());
 
+        }catch (DataAccessErrorExceptionHandler daee){
+            LOGGER.error("Error occurred while fetching link bar data: {}", daee.getMessage(), daee);
+            throw daee;
+        } catch (DataNotFoundErrorExceptionHandler dnfe) {
+            LOGGER.error("Error occurred while fetching active link bar data:",dnfe);
+            throw dnfe;
         } catch (Exception e) {
-            LOGGER.error("Error occurred while fetching visible LinkBar items: {}", e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch LinkBar items from database");
+            LOGGER.error("Error occurred while fetching active link bar data: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch active link bar data from database");
         } finally {
-            LOGGER.info("End fetching all visible LinkBar items from repository");
+            LOGGER.info("End fetching active link bar data from repository");
         }
     }
 

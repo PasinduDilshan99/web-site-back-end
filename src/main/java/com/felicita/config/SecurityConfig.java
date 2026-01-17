@@ -68,6 +68,11 @@ public class SecurityConfig {
                         .requestMatchers("/v0/api/package/add-package").hasAuthority("PACKAGE_CREATE")
                         .requestMatchers("/v0/api/package/update-package").hasAuthority("PACKAGE_UPDATE")
                         .requestMatchers("/v0/api/package/terminate-package").hasAuthority("PACKAGE_TERMINATE")
+
+                        //LINK BAR
+//                        .requestMatchers("/api/v0/link-bar/all").hasAuthority("LINK_BAR_VIEW")
+//                        .requestMatchers("/api/v0/link-bar/active").hasAuthority("LINK_BAR_VIEW")
+
                         .requestMatchers(PublicEndpoints.ENDPOINTS).permitAll()
                         .requestMatchers(AuthorizeEndPoints.ENDPOINTS).authenticated()
                         .anyRequest().permitAll()

@@ -2,6 +2,9 @@ package com.felicita.queries;
 
 public class LinkBarQueries {
 
+    private LinkBarQueries() {
+    }
+
     public static final String GET_ALL_LINK_BAR_DATA = """
             SELECT
                     lb.name AS name,
