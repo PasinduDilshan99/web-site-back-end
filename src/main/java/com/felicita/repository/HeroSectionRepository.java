@@ -1,11 +1,11 @@
 package com.felicita.repository;
 
 import com.felicita.model.response.*;
-
 import java.util.List;
 
 public interface HeroSectionRepository {
-    List<HeroSectionResponse> getAllHeroSectionItems();
+
+    List<HeroSectionResponse> getAllHomeHeroSectionData();
 
     List<AboutUsHeroSectionResponse> getAboutUsHeroSectionDetails();
 
@@ -26,4 +26,5 @@ public interface HeroSectionRepository {
     List<PackageScheduleHeroSectionResponse> getPackageScheduleHeroSectionDetails(Long packageScheduleId);
 
     List<BookedTourHeroSectionResponse> getBookedTourHeroSectionDetails(Long bookingId);
+
 }

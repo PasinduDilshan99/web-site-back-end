@@ -77,6 +77,20 @@ public class SecurityConfig {
 //                        .requestMatchers("/api/v0/nav-bar/all").hasAuthority("NAV_BAR_VIEW")
 //                        .requestMatchers("/api/v0/nav-bar/active").hasAuthority("NAV_BAR_VIEW")
 
+                        // Hero Section
+//                        .requestMatchers("/api/v0/hero-section/home-all").hasAuthority("HERO_SECTION_HOME_VIEW")
+//                        .requestMatchers("/api/v0/hero-section/home").hasAuthority("HERO_SECTION_HOME_VIEW")
+//                        .requestMatchers("/api/v0/hero-section/about-us").hasAuthority("HERO_SECTION_ABOUT_US_VIEW")
+//                        .requestMatchers("/api/v0/hero-section/contact-us").hasAuthority("HERO_SECTION_CONTACT_US_VIEW")
+//                        .requestMatchers("/api/v0/hero-section/blog").hasAuthority("HERO_SECTION_BLOG_VIEW")
+//                        .requestMatchers("/api/v0/hero-section/faq").hasAuthority("HERO_SECTION_FAQ_VIEW")
+//                        .requestMatchers("/api/v0/hero-section/tour").hasAuthority("HERO_SECTION_TOUR_VIEW")
+//                        .requestMatchers("/api/v0/hero-section/package").hasAuthority("HERO_SECTION_PACKAGE_VIEW")
+//                        .requestMatchers("/api/v0/hero-section/package-schedule/{packageScheduleId}").hasAuthority("HERO_SECTION_PACKAGE_SCHEDULE_VIEW")
+//                        .requestMatchers("/api/v0/hero-section/booked-tour/{bookingId}").hasAuthority("HERO_SECTION_BOOKED_TOUR_VIEW")
+//                        .requestMatchers("/api/v0/hero-section/destination").hasAuthority("HERO_SECTION_DESTINATION_VIEW")
+//                        .requestMatchers("/api/v0/hero-section/activity").hasAuthority("HERO_SECTION_ACTIVITY_VIEW")
+
                         .requestMatchers(PublicEndpoints.ENDPOINTS).permitAll()
                         .requestMatchers(AuthorizeEndPoints.ENDPOINTS).authenticated()
                         .anyRequest().permitAll()
