@@ -91,9 +91,13 @@ public class SecurityConfig {
 //                        .requestMatchers("/api/v0/hero-section/destination").hasAuthority("HERO_SECTION_DESTINATION_VIEW")
 //                        .requestMatchers("/api/v0/hero-section/activity").hasAuthority("HERO_SECTION_ACTIVITY_VIEW")
 
-                        // Hero Section
+                        // Why Choose Us Section
 //                        .requestMatchers("/api/v0/why-choose-us/all").hasAuthority("WHY_CHOOSE_US_VIEW")
 //                        .requestMatchers("/api/v0/why-choose-us/active").hasAuthority("WHY_CHOOSE_US_VIEW")
+
+                        // Our Service Section
+//                        .requestMatchers("/api/v0/our-service/all").hasAuthority("OUR_SERVICES_VIEW")
+//                        .requestMatchers("/api/v0/our-service/active").hasAuthority("OUR_SERVICES_VIEW")
 
 
                                 .requestMatchers(PublicEndpoints.ENDPOINTS).permitAll()

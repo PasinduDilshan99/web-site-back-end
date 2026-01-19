@@ -32,5 +32,9 @@ public class PublicEndpoints {
             "/api/v0/why-choose-us/all",
             "/api/v0/why-choose-us/active",
 
+            // Our Services
+            "/api/v0/our-service/all",
+            "/api/v0/our-service/active",
+
     };
 }

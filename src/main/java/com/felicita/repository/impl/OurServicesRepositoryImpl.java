@@ -3,9 +3,7 @@ package com.felicita.repository.impl;
 import com.felicita.exception.DataAccessErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
 import com.felicita.model.response.OurServiceResponse;
-import com.felicita.model.response.PartnerResponse;
 import com.felicita.queries.OurServicesQueries;
-import com.felicita.queries.PartnerQueries;
 import com.felicita.repository.OurServicesRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,12 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
 
 @Repository
 public class OurServicesRepositoryImpl implements OurServicesRepository {
-
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OurServicesRepositoryImpl.class);
 
@@ -31,9 +27,11 @@ public class OurServicesRepositoryImpl implements OurServicesRepository {
 
     @Override
     public List<OurServiceResponse> getAllOurServices() {
+
         String GET_ALL_OUR_SERVICES = OurServicesQueries.GET_ALL_OUR_SERVICES_DATA;
+
         try {
-            LOGGER.info("Executing query to fetch all our services...");
+            LOGGER.info("Executing query to fetch all our services.");
 
             List<OurServiceResponse> results = jdbcTemplate.query(GET_ALL_OUR_SERVICES, (rs, rowNum) -> {
                 OurServiceResponse service = new OurServiceResponse();
