@@ -9,7 +9,6 @@ import com.felicita.model.request.DestinationTerminateRequest;
 import com.felicita.model.request.DestinationUpdateRequest;
 import com.felicita.model.response.*;
 import com.felicita.queries.DestinationQueries;
-import com.felicita.queries.PartnerQueries;
 import com.felicita.repository.DestinationRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,13 +18,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-
 import static com.felicita.queries.DestinationQueries.*;
 
 @Repository
@@ -44,7 +41,7 @@ public class DestinationRepositoryImpl implements DestinationRepository {
     public List<DestinationResponseDto> getAllDestinations() {
         String GET_ALL_DESTINATIONS = DestinationQueries.GET_ALL_DESTINATIONS;
         try {
-            LOGGER.info("Executing query to fetch all destinations...");
+            LOGGER.info("Executing query to fetch all destinations.");
 
             return jdbcTemplate.query(GET_ALL_DESTINATIONS, rs -> {
                 Map<Integer, DestinationResponseDto> destinationMap = new HashMap<>();
@@ -52,7 +49,6 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                 while (rs.next()) {
                     int destinationId = rs.getInt("destination_id");
 
-                    // Check if destination already exists
                     DestinationResponseDto destination = destinationMap.get(destinationId);
                     if (destination == null) {
                         destination = new DestinationResponseDto();
@@ -73,7 +69,6 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                         destinationMap.put(destinationId, destination);
                     }
 
-                    // Add activity if exists
                     int activityId = rs.getInt("activity_id");
                     if (activityId != 0 && rs.getString("activity_name") != null) {
                         DestinationActivityResponseDto activity = new DestinationActivityResponseDto();
@@ -90,13 +85,11 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                         activity.setMaxParticipate(rs.getObject("max_participate", Integer.class));
                         activity.setSeason(rs.getString("season"));
 
-                        // Avoid duplicates
                         if (destination.getActivities().stream().noneMatch(a -> a.getActivityId() == activityId)) {
                             destination.getActivities().add(activity);
                         }
                     }
 
-                    // Add image if exists
                     int imageId = rs.getInt("image_id");
                     if (imageId != 0 && rs.getString("image_url") != null) {
                         DestionationImageResponseDto image = new DestionationImageResponseDto();
@@ -105,7 +98,6 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                         image.setImageDescription(rs.getString("image_description"));
                         image.setImageUrl(rs.getString("image_url"));
 
-                        // Avoid duplicates
                         if (destination.getImages().stream().noneMatch(i -> i.getImageId() == imageId)) {
                             destination.getImages().add(image);
                         }
@@ -128,7 +120,7 @@ public class DestinationRepositoryImpl implements DestinationRepository {
     public List<DestinationCategoryResponseDto> getAllDestinationsCategories() {
         String GET_ALL_DESTINATIONS_CATEGORIES = DestinationQueries.GET_ALL_DESTINATIONS_CATEGORIES;
         try {
-            LOGGER.info("Executing query to fetch all destinations...");
+            LOGGER.info("Executing query to fetch all destinations categories.");
 
             return jdbcTemplate.query(GET_ALL_DESTINATIONS_CATEGORIES, rs -> {
                 Map<Integer, DestinationCategoryResponseDto> categoryMap = new LinkedHashMap<>();
@@ -136,7 +128,6 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                 while (rs.next()) {
                     int categoryId = rs.getInt("category_id");
 
-                    // If category not seen before, create a new DTO
                     DestinationCategoryResponseDto category = categoryMap.computeIfAbsent(categoryId, id ->
                             {
                                 try {
@@ -173,11 +164,11 @@ public class DestinationRepositoryImpl implements DestinationRepository {
             });
 
         } catch (DataAccessException ex) {
-            LOGGER.error("Database error while fetching destinations: {}", ex.getMessage(), ex);
-            throw new DataAccessErrorExceptionHandler("Failed to fetch destinations from database");
+            LOGGER.error("Database error while fetching destinations categories: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler("Failed to fetch destinations categories from database");
         } catch (Exception ex) {
-            LOGGER.error("Unexpected error while fetching destinations: {}", ex.getMessage(), ex);
-            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching destinations");
+            LOGGER.error("Unexpected error while fetching destinations categories: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching destinations categories");
         }
     }
 
@@ -185,7 +176,7 @@ public class DestinationRepositoryImpl implements DestinationRepository {
     public List<PopularDestinationResponseDto> getPopularDestinations() {
         String GET_POPULAR_DESTINATIONS = DestinationQueries.GET_POPULAR_DESTINATIONS;
         try {
-            LOGGER.info("Executing query to fetch all popular destinations...");
+            LOGGER.info("Executing query to fetch all popular destinations.");
 
             return jdbcTemplate.query(GET_POPULAR_DESTINATIONS, rs -> {
                 Map<Integer, PopularDestinationResponseDto> destinationMap = new LinkedHashMap<>();
@@ -193,7 +184,6 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                 while (rs.next()) {
                     int popularId = rs.getInt("popular_id");
 
-                    // If we haven't added this destination yet → create DTO
                     PopularDestinationResponseDto popularDestination = destinationMap.computeIfAbsent(popularId, id ->
                             {
                                 try {
@@ -216,7 +206,7 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                                             rs.getString("category_description"),
                                             rs.getString("category_status"),
 
-                                            new ArrayList<>() // empty images list initially
+                                            new ArrayList<>()
                                     );
                                 } catch (SQLException e) {
                                     throw new RuntimeException(e);
@@ -224,7 +214,6 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                             }
                     );
 
-                    // Handle image (if exists)
                     int imageId = rs.getInt("image_id");
                     if (imageId > 0) {
                         DestinationImageResponseDto image = new DestinationImageResponseDto(
@@ -263,7 +252,6 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                 while (rs.next()) {
                     int popularId = rs.getInt("popular_id");
 
-                    // Create or get the destination DTO
                     TrendingDestinationResponseDto trendingDestination = destinationMap.computeIfAbsent(popularId, id ->
                             {
                                 try {
@@ -286,8 +274,8 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                                             rs.getString("category_description"),
                                             rs.getString("category_status"),
 
-                                            new ArrayList<>(), // images list
-                                            new ArrayList<>()  // activities list
+                                            new ArrayList<>(),
+                                            new ArrayList<>()
                                     );
                                 } catch (SQLException e) {
                                     throw new RuntimeException(e);
@@ -295,7 +283,6 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                             }
                     );
 
-                    // Handle image
                     int imageId = rs.getInt("image_id");
                     if (!rs.wasNull() && imageId > 0) {
                         DestinationImageResponseDto image = new DestinationImageResponseDto(
@@ -306,13 +293,11 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                                 rs.getString("image_status"),
                                 rs.getTimestamp("image_created_at") != null ? rs.getTimestamp("image_created_at").toLocalDateTime() : null
                         );
-                        // Prevent duplicate images
                         if (trendingDestination.getImages().stream().noneMatch(i -> i.getImageId() == imageId)) {
                             trendingDestination.getImages().add(image);
                         }
                     }
 
-                    // Handle activity
                     int activityId = rs.getInt("activity_id");
                     if (!rs.wasNull() && activityId > 0) {
                         DestinationActivityResponseDto activity = new DestinationActivityResponseDto(
@@ -329,7 +314,6 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                                 rs.getObject("max_participate") != null ? rs.getInt("max_participate") : null,
                                 rs.getString("season")
                         );
-                        // Prevent duplicate activities
                         if (trendingDestination.getActivities().stream().noneMatch(a -> a.getActivityId() == activityId)) {
                             trendingDestination.getActivities().add(activity);
                         }
@@ -352,15 +336,13 @@ public class DestinationRepositoryImpl implements DestinationRepository {
     public List<DestinationsForTourMapDto> getDestinationsForTourMap() {
         String GET_DESTINATIONS_FOR_TOUR_MAP = DestinationQueries.GET_DESTINATIONS_FOR_TOUR_MAP;
         try {
-            LOGGER.info("Executing query to fetch all destinations...");
+            LOGGER.info("Executing query to fetch all destinations for tour map.");
 
-            // Use LinkedHashMap to preserve insertion order
             Map<Long, DestinationsForTourMapDto> destinationMap = new LinkedHashMap<>();
 
             jdbcTemplate.query(GET_DESTINATIONS_FOR_TOUR_MAP, rs -> {
                 Long destinationId = rs.getLong("destination_id");
 
-                // Check if destination already exists in map
                 DestinationsForTourMapDto dto = destinationMap.get(destinationId);
                 if (dto == null) {
                     dto = new DestinationsForTourMapDto();
@@ -378,15 +360,12 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                             : null);
                     dto.setDestinationCreatedBy(rs.getObject("destination_created_by") != null ? rs.getLong("destination_created_by") : null);
 
-                    // Initialize empty lists for images
                     dto.setDestinationImagesForTourMapDtos(new ArrayList<>());
                     dto.setDestinationCategoryImageForTourMapDtos(new ArrayList<>());
 
-                    // Add to map
                     destinationMap.put(destinationId, dto);
                 }
 
-                // --- Destination Image Mapping ---
                 Long destinationImageId = rs.getObject("destination_image_id") != null ? rs.getLong("destination_image_id") : null;
                 if (destinationImageId != null) {
                     DestinationImagesForTourMapDto imageDto = new DestinationImagesForTourMapDto();
@@ -396,14 +375,12 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                     imageDto.setImageUrl(rs.getString("destination_image_url"));
                     imageDto.setStatus(rs.getString("destination_image_status"));
 
-                    // Add to list only if not already present
                     if (!dto.getDestinationImagesForTourMapDtos().stream()
                             .anyMatch(img -> img.getId().equals(destinationImageId))) {
                         dto.getDestinationImagesForTourMapDtos().add(imageDto);
                     }
                 }
 
-                // --- Destination Category Image Mapping ---
                 Long destinationCategoryImageId = rs.getObject("destination_category_image_id") != null
                         ? rs.getLong("destination_category_image_id")
                         : null;
@@ -422,20 +399,19 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                 }
             });
 
-            // Convert map values to list
             return new ArrayList<>(destinationMap.values());
 
         } catch (DataAccessException ex) {
-            LOGGER.error("Database error while fetching destinations: {}", ex.getMessage(), ex);
-            throw new DataAccessErrorExceptionHandler("Failed to fetch destinations from database");
+            LOGGER.error("Database error while fetching destinations for tour map: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler("Failed to fetch destinations for tour map from database");
         } catch (Exception ex) {
-            LOGGER.error("Unexpected error while fetching destinations: {}", ex.getMessage(), ex);
-            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching destinations");
+            LOGGER.error("Unexpected error while fetching destinations for tour map: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching destinations for tour map");
         }
     }
 
     @Override
-    public List<DestinationResponseDto> getDestinationDetailsByTourId(String tourId) {
+    public List<DestinationResponseDto> getDestinationDetailsByTourId(Long tourId) {
         String GET_ALL_DESTINATIONS = DestinationQueries.GET_ALL_DESTINATIONS_BY_TOUR_ID;
         try {
             LOGGER.info("Executing query to fetch all destinations for tourId: {}", tourId);
@@ -446,7 +422,6 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                 while (rs.next()) {
                     int destinationId = rs.getInt("destination_id");
 
-                    // Fetch or create destination
                     DestinationResponseDto destination = destinationMap.computeIfAbsent(destinationId, id -> {
                         DestinationResponseDto dto = new DestinationResponseDto();
                         dto.setDestinationId(id);
@@ -468,7 +443,6 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                         return dto;
                     });
 
-                    // Add activity if exists
                     int activityId = rs.getInt("activity_id");
                     if (activityId != 0 && rs.getString("activity_name") != null) {
                         boolean activityExists = destination.getActivities()
@@ -493,7 +467,6 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                         }
                     }
 
-                    // Add image if exists
                     int imageId = rs.getInt("image_id");
                     if (imageId != 0 && rs.getString("image_url") != null) {
                         boolean imageExists = destination.getImages()
@@ -524,17 +497,16 @@ public class DestinationRepositoryImpl implements DestinationRepository {
     }
 
     @Override
-    public List<DestinationReviewDetailsResponse> getDestinationReviewDetailsById(String destinationId) {
+    public List<DestinationReviewDetailsResponse> getDestinationReviewDetailsById(Long destinationId) {
         String GET_DESTINATIONS_REVIEW_DETAILS_BY_ID = DestinationQueries.GET_DESTINATIONS_REVIEW_DETAILS_BY_ID;
 
         try {
-            // Map to hold reviews by reviewId to aggregate images, reactions, comments
+            LOGGER.info("Executing query to fetch all destinations reviews for destination id : {}", destinationId);
             Map<Integer, DestinationReviewDetailsResponse> reviewMap = new LinkedHashMap<>();
 
             jdbcTemplate.query(GET_DESTINATIONS_REVIEW_DETAILS_BY_ID, new Object[]{destinationId}, rs -> {
                 Integer reviewId = rs.getInt("review_id");
 
-                // Fetch or create review object
                 DestinationReviewDetailsResponse review = reviewMap.get(reviewId);
                 if (review == null) {
                     review = DestinationReviewDetailsResponse.builder()
@@ -558,7 +530,6 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                     reviewMap.put(reviewId, review);
                 }
 
-                // Add image if exists
                 Integer imageId = rs.getObject("image_id", Integer.class);
                 if (imageId != null && review.getImages().stream().noneMatch(i -> i.getImageId().equals(imageId))) {
                     DestinationReviewDetailsResponse.Image image = DestinationReviewDetailsResponse.Image.builder()
@@ -574,7 +545,6 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                     review.getImages().add(image);
                 }
 
-                // Add reaction if exists
                 Integer reactionId = rs.getObject("review_reaction_id", Integer.class);
                 if (reactionId != null && review.getReactions().stream().noneMatch(r -> r.getReviewReactionId().equals(reactionId))) {
                     DestinationReviewDetailsResponse.Reaction reaction = DestinationReviewDetailsResponse.Reaction.builder()
@@ -590,7 +560,6 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                     review.getReactions().add(reaction);
                 }
 
-                // Add comment if exists
                 Integer commentId = rs.getObject("comment_id", Integer.class);
                 DestinationReviewDetailsResponse.Comment comment = null;
                 if (commentId != null) {
@@ -617,7 +586,6 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                     }
                 }
 
-                // Add comment reaction if exists
                 Integer commentReactionId = rs.getObject("comment_reaction_id", Integer.class);
                 if (commentReactionId != null && comment != null &&
                         comment.getCommentReactions().stream().noneMatch(cr -> cr.getCommentReactionId().equals(commentReactionId))) {
@@ -647,20 +615,18 @@ public class DestinationRepositoryImpl implements DestinationRepository {
             throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching destinations");
         }
     }
-
 
     @Override
     public List<DestinationReviewDetailsResponse> getAllDestinationsReviewDetails() {
         String GET_DESTINATIONS_REVIEW_DETAILS = DestinationQueries.GET_DESTINATIONS_REVIEW_DETAILS;
 
         try {
-            // Map to hold reviews by reviewId to aggregate images, reactions, comments
+            LOGGER.info("Executing query to fetch all destinations reviews");
             Map<Integer, DestinationReviewDetailsResponse> reviewMap = new LinkedHashMap<>();
 
             jdbcTemplate.query(GET_DESTINATIONS_REVIEW_DETAILS, rs -> {
                 Integer reviewId = rs.getInt("review_id");
 
-                // Fetch or create review object
                 DestinationReviewDetailsResponse review = reviewMap.get(reviewId);
                 if (review == null) {
                     review = DestinationReviewDetailsResponse.builder()
@@ -684,7 +650,6 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                     reviewMap.put(reviewId, review);
                 }
 
-                // Add image if exists
                 Integer imageId = rs.getObject("image_id", Integer.class);
                 if (imageId != null && review.getImages().stream().noneMatch(i -> i.getImageId().equals(imageId))) {
                     DestinationReviewDetailsResponse.Image image = DestinationReviewDetailsResponse.Image.builder()
@@ -700,7 +665,6 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                     review.getImages().add(image);
                 }
 
-                // Add reaction if exists
                 Integer reactionId = rs.getObject("review_reaction_id", Integer.class);
                 if (reactionId != null && review.getReactions().stream().noneMatch(r -> r.getReviewReactionId().equals(reactionId))) {
                     DestinationReviewDetailsResponse.Reaction reaction = DestinationReviewDetailsResponse.Reaction.builder()
@@ -716,7 +680,6 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                     review.getReactions().add(reaction);
                 }
 
-                // Add comment if exists
                 Integer commentId = rs.getObject("comment_id", Integer.class);
                 DestinationReviewDetailsResponse.Comment comment = null;
                 if (commentId != null) {
@@ -743,7 +706,6 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                     }
                 }
 
-                // Add comment reaction if exists
                 Integer commentReactionId = rs.getObject("comment_reaction_id", Integer.class);
                 if (commentReactionId != null && comment != null &&
                         comment.getCommentReactions().stream().noneMatch(cr -> cr.getCommentReactionId().equals(commentReactionId))) {
@@ -775,11 +737,11 @@ public class DestinationRepositoryImpl implements DestinationRepository {
     }
 
     @Override
-    public DestinationResponseDto getDestinationDetailsById(String destinationId) {
+    public DestinationResponseDto getDestinationDetailsById(Long destinationId) {
         String GET_DESTINATION_DETAILS_BY_ID = DestinationQueries.GET_DESTINATION_DETAILS_BY_ID;
 
         try {
-            LOGGER.info("Executing query to fetch destination details...");
+            LOGGER.info("Executing query to fetch destination details.");
 
             return jdbcTemplate.query(GET_DESTINATION_DETAILS_BY_ID, new Object[]{destinationId}, rs -> {
                 DestinationResponseDto destination = null;
@@ -800,7 +762,6 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                         destination.setStatusName(rs.getString("status_name"));
                     }
 
-                    // Map activity
                     int activityId = rs.getInt("activity_id");
                     if (activityId != 0 && !activityMap.containsKey(activityId)) {
                         DestinationActivityResponseDto activity = new DestinationActivityResponseDto();
@@ -819,7 +780,6 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                         activityMap.put(activityId, activity);
                     }
 
-                    // Map image
                     int imageId = rs.getInt("image_id");
                     if (imageId != 0 && !imageMap.containsKey(imageId)) {
                         DestionationImageResponseDto image = new DestionationImageResponseDto();
@@ -853,13 +813,13 @@ public class DestinationRepositoryImpl implements DestinationRepository {
         String GET_DESTINATION_REVIEW_DETAILS = DestinationQueries.GET_DESTINATION_REVIEW_DETAILS;
 
         try {
-            // Map to collect historyId -> DestinationHistoryDetailsResponse
+            LOGGER.info("Executing query to fetch destination history details.");
+
             Map<Integer, DestinationHistoryDetailsResponse> historyMap = new LinkedHashMap<>();
 
             jdbcTemplate.query(GET_DESTINATION_REVIEW_DETAILS, rs -> {
                 Integer historyId = rs.getInt("history_id");
 
-                // If the history record is not already in the map, create it
                 historyMap.computeIfAbsent(historyId, id -> {
                     DestinationHistoryDetailsResponse.Destination destination = null;
                     try {
@@ -936,9 +896,8 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                     }
                 });
 
-                // Add image if exists
                 Integer imageId = rs.getInt("image_id");
-                if (imageId != 0) { // image_id is not null
+                if (imageId != 0) {
                     DestinationHistoryDetailsResponse.HistoryImage image = new DestinationHistoryDetailsResponse.HistoryImage();
                     image.setImageId(imageId);
                     image.setName(rs.getString("image_name"));
@@ -979,26 +938,22 @@ public class DestinationRepositoryImpl implements DestinationRepository {
         }
     }
 
-    // Helper to convert null usernames to null userId
     private Integer nullSafeInteger(String username) {
         return (username != null && !username.isEmpty()) ? 0 : null; // replace 0 if you want a default id
     }
 
-
     @Override
-    public List<DestinationHistoryDetailsResponse> getDestinationHistoryDetailsById(String destinationId) {
+    public List<DestinationHistoryDetailsResponse> getDestinationHistoryDetailsById(Long destinationId) {
         String GET_DESTINATION_REVIEW_DETAILS_BY_ID = DestinationQueries.GET_DESTINATION_REVIEW_DETAILS_BY_ID;
 
         try {
             LOGGER.info("Executing query to fetch destination history for ID: {}", destinationId);
 
-            // Map to collect historyId -> DestinationHistoryDetailsResponse
             Map<Integer, DestinationHistoryDetailsResponse> historyMap = new LinkedHashMap<>();
 
             jdbcTemplate.query(GET_DESTINATION_REVIEW_DETAILS_BY_ID, new Object[]{destinationId}, rs -> {
                 Integer historyId = rs.getInt("history_id");
 
-                // Create history record if not already in map
                 historyMap.computeIfAbsent(historyId, id -> {
                     DestinationHistoryDetailsResponse.Destination destination = null;
                     try {
@@ -1075,9 +1030,8 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                     }
                 });
 
-                // Add image if exists
                 Integer imageId = rs.getInt("image_id");
-                if (imageId != 0) { // image_id is not null
+                if (imageId != 0) {
                     DestinationHistoryDetailsResponse.HistoryImage image = new DestinationHistoryDetailsResponse.HistoryImage();
                     image.setImageId(imageId);
                     image.setName(rs.getString("image_name"));
@@ -1123,9 +1077,9 @@ public class DestinationRepositoryImpl implements DestinationRepository {
         String GET_DESTINATION_HISTORY_IMAGES = DestinationQueries.GET_DESTINATION_HISTORY_IMAGES;
 
         try {
+            LOGGER.info("Executing query to fetch destination history images.");
             return jdbcTemplate.query(GET_DESTINATION_HISTORY_IMAGES, (rs, rowNum) -> {
 
-                // Map User info for image
                 DestinationHistoryImageResponse.UserDto imageCreatedBy =
                         new DestinationHistoryImageResponse.UserDto(rs.getString("image_created_by_username"));
 
@@ -1136,7 +1090,6 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                         rs.getString("image_terminated_by_username") != null ?
                                 new DestinationHistoryImageResponse.UserDto(rs.getString("image_terminated_by_username")) : null;
 
-                // Map History info
                 DestinationHistoryImageResponse.HistoryDto history = new DestinationHistoryImageResponse.HistoryDto(
                         rs.getLong("history_id"),
                         rs.getString("history_title"),
@@ -1145,7 +1098,6 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                         rs.getString("history_status_name")
                 );
 
-                // Map Destination info
                 DestinationHistoryImageResponse.DestinationDto destination = new DestinationHistoryImageResponse.DestinationDto(
                         rs.getLong("destination_id"),
                         rs.getString("destination_name"),
@@ -1154,7 +1106,6 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                         rs.getBigDecimal("longitude")
                 );
 
-                // Map top-level image info
                 return DestinationHistoryImageResponse.builder()
                         .imageId(rs.getLong("image_id"))
                         .imageName(rs.getString("image_name"))
@@ -1180,15 +1131,14 @@ public class DestinationRepositoryImpl implements DestinationRepository {
         }
     }
 
-
     @Override
-    public List<DestinationHistoryImageResponse> getDestinationHistoryImagesById(String destinationId) {
+    public List<DestinationHistoryImageResponse> getDestinationHistoryImagesById(Long destinationId) {
         String GET_DESTINATION_HISTORY_IMAGES_BY_ID = DestinationQueries.GET_DESTINATION_HISTORY_IMAGES_BY_ID;
 
         try {
+            LOGGER.info("Executing query to fetch destination history images by destination id : {}.", destinationId);
             return jdbcTemplate.query(GET_DESTINATION_HISTORY_IMAGES_BY_ID, new Object[]{destinationId}, (rs, rowNum) -> {
 
-                // Map User info for image
                 DestinationHistoryImageResponse.UserDto imageCreatedBy =
                         new DestinationHistoryImageResponse.UserDto(rs.getString("image_created_by_username"));
 
@@ -1199,7 +1149,6 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                         rs.getString("image_terminated_by_username") != null ?
                                 new DestinationHistoryImageResponse.UserDto(rs.getString("image_terminated_by_username")) : null;
 
-                // Map History info
                 DestinationHistoryImageResponse.HistoryDto history = new DestinationHistoryImageResponse.HistoryDto(
                         rs.getLong("history_id"),
                         rs.getString("history_title"),
@@ -1208,7 +1157,6 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                         rs.getString("history_status_name")
                 );
 
-                // Map Destination info
                 DestinationHistoryImageResponse.DestinationDto destination = new DestinationHistoryImageResponse.DestinationDto(
                         rs.getLong("destination_id"),
                         rs.getString("destination_name"),
@@ -1217,7 +1165,6 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                         rs.getBigDecimal("longitude")
                 );
 
-                // Map top-level image info
                 return DestinationHistoryImageResponse.builder()
                         .imageId(rs.getLong("image_id"))
                         .imageName(rs.getString("image_name"))
@@ -1246,11 +1193,10 @@ public class DestinationRepositoryImpl implements DestinationRepository {
     @Override
     public DestinationsWithParamsResponse getDestinationWithParams(DestinationDataRequest destinationDataRequest) {
         try {
-            LOGGER.info("Executing query to fetch destinations...");
+            LOGGER.info("Executing query to fetch destinations.");
 
             int offset = (destinationDataRequest.getPageNumber() - 1) * destinationDataRequest.getPageSize();
 
-            // Step 1: fetch paginated destination IDs
             List<Integer> destinationIds = jdbcTemplate.queryForList(GET_PAGINATED_DESTINATION_IDS,
                     new Object[]{
                             destinationDataRequest.getName(), destinationDataRequest.getName(),
@@ -1282,7 +1228,6 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                 return null;
             }
 
-            // Step 2: fetch full details for these IDs
             String inSql = String.join(",", Collections.nCopies(destinationIds.size(), "?"));
             String fullQuery = String.format(GET_DESTINATIONS_BY_IDS, inSql);
 
@@ -1292,7 +1237,6 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                 while (rs.next()) {
                     int destinationId = rs.getInt("destination_id");
 
-                    // Create or get existing destination
                     DestinationResponseDto destination = destinationMap.get(destinationId);
                     if (destination == null) {
                         destination = new DestinationResponseDto();
@@ -1313,7 +1257,6 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                         destinationMap.put(destinationId, destination);
                     }
 
-                    // Add activity if exists
                     int activityId = rs.getInt("activity_id");
                     if (activityId != 0 && rs.getString("activity_name") != null) {
                         DestinationActivityResponseDto activity = new DestinationActivityResponseDto();
@@ -1330,13 +1273,11 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                         activity.setMaxParticipate(rs.getObject("max_participate", Integer.class));
                         activity.setSeason(rs.getString("season"));
 
-                        // Avoid duplicates
                         if (destination.getActivities().stream().noneMatch(a -> a.getActivityId() == activityId)) {
                             destination.getActivities().add(activity);
                         }
                     }
 
-                    // Add image if exists
                     int imageId = rs.getInt("image_id");
                     if (imageId != 0 && rs.getString("image_url") != null) {
                         DestionationImageResponseDto image = new DestionationImageResponseDto();
@@ -1345,14 +1286,12 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                         image.setImageDescription(rs.getString("image_description"));
                         image.setImageUrl(rs.getString("image_url"));
 
-                        // Avoid duplicates
                         if (destination.getImages().stream().noneMatch(i -> i.getImageId() == imageId)) {
                             destination.getImages().add(image);
                         }
                     }
                 }
 
-                // Return the final response
                 return new DestinationsWithParamsResponse(totalCount, new ArrayList<>(destinationMap.values()));
             });
 
@@ -1372,6 +1311,8 @@ public class DestinationRepositoryImpl implements DestinationRepository {
         String INSERT_DESTINATION_IMAGE = INSERT_DESTINATION_IMAGES_REQUEST;
 
         try {
+            LOGGER.error("Start the execute insert destination");
+
             KeyHolder keyHolder = new GeneratedKeyHolder();
 
             jdbcTemplate.update(connection -> {
@@ -1382,14 +1323,14 @@ public class DestinationRepositoryImpl implements DestinationRepository {
 
                 ps.setString(1, request.getName());
                 ps.setString(2, request.getDescription());
-                ps.setString(3, request.getStatus());               // common_status.name
-                ps.setString(4, request.getDestinationCategory());  // destination_categories.category
+                ps.setString(3, request.getStatus());
+                ps.setString(4, request.getDestinationCategory());
                 ps.setString(5, request.getLocation());
                 ps.setDouble(6, request.getLatitude());
                 ps.setDouble(7, request.getLongitude());
-                ps.setLong(8, userId);                              // ✅ created_by
-                ps.setDouble(9, request.getExtraPrice());           // ✅ extra_price
-                ps.setString(10, request.getExtraPriceNote());      // ✅ extra_price_note
+                ps.setLong(8, userId);
+                ps.setDouble(9, request.getExtraPrice());
+                ps.setString(10, request.getExtraPriceNote());
 
                 return ps;
             }, keyHolder);
@@ -1424,6 +1365,7 @@ public class DestinationRepositoryImpl implements DestinationRepository {
     public void terminateDestination(DestinationTerminateRequest destinationTerminateRequest, Long userId) {
         String DESTINATION_TERMINATE = DestinationQueries.DESTINATION_TERMINATE;
         try {
+            LOGGER.error("Start the execute terminate destination");
             jdbcTemplate.update(DESTINATION_TERMINATE, new Object[]{CommonStatus.TERMINATED.toString(), userId, destinationTerminateRequest.getDestinationId()});
         } catch (DataAccessException tfe) {
             LOGGER.error(tfe.toString());
@@ -1440,9 +1382,10 @@ public class DestinationRepositoryImpl implements DestinationRepository {
         String GET_ACTIVE_DESTINATIONS_FOR_TERMINATE = DestinationQueries.GET_ACTIVE_DESTINATIONS_FOR_TERMINATE;
 
         try {
+            LOGGER.error("Start the execute get destinations for terminate.");
             return jdbcTemplate.query(
                     GET_ACTIVE_DESTINATIONS_FOR_TERMINATE,
-                    new Object[]{CommonStatus.ACTIVE.toString()}, // parameter for cs.name = ?
+                    new Object[]{CommonStatus.ACTIVE.toString()},
                     (rs, rowNum) -> DestinationForTerminateResponse.builder()
                             .destinationId(rs.getLong("destination_id"))
                             .destinationName(rs.getString("name"))
@@ -1457,7 +1400,9 @@ public class DestinationRepositoryImpl implements DestinationRepository {
     @Override
     public void updateBasicDestinationDetails(DestinationUpdateRequest destinationUpdateRequest, Long userId) {
         String UPDATE_BASIC_DESTINATION_DETAILS = DestinationQueries.UPDATE_BASIC_DESTINATION_DETAILS;
+
         try {
+            LOGGER.error("Start the execute update destination");
             jdbcTemplate.update(UPDATE_BASIC_DESTINATION_DETAILS, new Object[]{
                     destinationUpdateRequest.getName(),
                     destinationUpdateRequest.getDescription(),
@@ -1484,6 +1429,7 @@ public class DestinationRepositoryImpl implements DestinationRepository {
     @Override
     public void removeDestinationImages(List<Long> removeImages, Long userId) {
         try {
+            LOGGER.error("Start the execute remove destination images");
             jdbcTemplate.batchUpdate(
                     DestinationQueries.DESTINATION_IMAGES_REMOVE,
                     removeImages,
@@ -1503,11 +1449,12 @@ public class DestinationRepositoryImpl implements DestinationRepository {
         }
     }
 
-
     @Override
     public void addNewImagesToDestination(List<DestinationInsertRequest.Image> newImages, Long destinationId, Long userId) {
         String INSERT_DESTINATION_IMAGE = DestinationQueries.INSERT_DESTINATION_IMAGES_REQUEST;
+
         try {
+            LOGGER.error("Start the execute add destination images");
             for (DestinationInsertRequest.Image image : newImages) {
                 jdbcTemplate.update(
                         INSERT_DESTINATION_IMAGE,
@@ -1524,15 +1471,17 @@ public class DestinationRepositoryImpl implements DestinationRepository {
             throw new InsertFailedErrorExceptionHandler(ife.getMessage());
 
         } catch (Exception e) {
-            LOGGER.error("Failed to insert destination : ", e);
-            throw new InternalServerErrorExceptionHandler("Failed to insert destination");
+            LOGGER.error("Failed to insert destination image : ", e);
+            throw new InternalServerErrorExceptionHandler("Failed to insert destination image");
         }
     }
 
     @Override
     public void removeDestinationActivities(List<Long> removeActivities, Long userId) {
         String DESTINATION_ACTIVITIES_REMOVE = DestinationQueries.DESTINATION_ACTIVITIES_REMOVE;
+
         try {
+            LOGGER.error("Start the execute remove destination activities.");
             jdbcTemplate.batchUpdate(
                     DESTINATION_ACTIVITIES_REMOVE,
                     removeActivities,
@@ -1558,6 +1507,7 @@ public class DestinationRepositoryImpl implements DestinationRepository {
         String INSERT_DESTINATION_ACTIVITY_IMAGE = DestinationQueries.INSERT_DESTINATION_ACTIVITY_IMAGE;
 
         try {
+            LOGGER.error("Start the execute add destination activities.");
             KeyHolder keyHolder = new GeneratedKeyHolder();
 
             for (DestinationUpdateRequest.Activity activity : newActivities) {
@@ -1606,10 +1556,9 @@ public class DestinationRepositoryImpl implements DestinationRepository {
             throw new InsertFailedErrorExceptionHandler(ife.getMessage());
 
         } catch (Exception e) {
-            LOGGER.error("Failed to insert destination : ", e);
-            throw new InternalServerErrorExceptionHandler("Failed to insert destination");
+            LOGGER.error("Failed to insert activity : ", e);
+            throw new InternalServerErrorExceptionHandler("Failed to insert activity");
         }
     }
-
 
 }

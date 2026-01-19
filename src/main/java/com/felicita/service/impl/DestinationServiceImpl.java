@@ -16,13 +16,10 @@ import com.felicita.validation.DestinationValidationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class DestinationServiceImpl implements DestinationService {
@@ -43,7 +40,7 @@ public class DestinationServiceImpl implements DestinationService {
     }
 
     @Override
-    public ResponseEntity<CommonResponse<List<DestinationResponseDto>>> getAllDestinations() {
+    public CommonResponse<List<DestinationResponseDto>> getAllDestinations() {
         LOGGER.info("Start fetching all destinations from repository");
         try {
             List<DestinationResponseDto> destinationResponseDtos = destinationRepository.getAllDestinations();
@@ -54,19 +51,15 @@ public class DestinationServiceImpl implements DestinationService {
             }
 
             LOGGER.info("Fetched {} destinations successfully", destinationResponseDtos.size());
-            return ResponseEntity.ok(
-                    new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            destinationResponseDtos,
-                            Instant.now()
-                    )
-            );
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    destinationResponseDtos,
+                    Instant.now());
 
-        } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching destinations: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
         } catch (Exception e) {
             LOGGER.error("Error occurred while fetching destinations: {}", e.getMessage(), e);
             throw new InternalServerErrorExceptionHandler("Failed to fetch destinations from database");
@@ -76,34 +69,24 @@ public class DestinationServiceImpl implements DestinationService {
     }
 
     @Override
-    public ResponseEntity<CommonResponse<List<DestinationResponseDto>>> getAllActiveDestinations() {
+    public CommonResponse<List<DestinationResponseDto>> getActiveDestinations() {
         LOGGER.info("Start fetching all active destinations from repository");
         try {
-            List<DestinationResponseDto> destinationResponseDtos = destinationRepository.getAllDestinations();
-
-            if (destinationResponseDtos.isEmpty()) {
-                LOGGER.warn("No active destinations found in database");
-                throw new DataNotFoundErrorExceptionHandler("No destinations found");
-            }
+            List<DestinationResponseDto> destinationResponseDtos = getAllDestinations().getData();
 
             List<DestinationResponseDto> destinationResponseDtoList = destinationResponseDtos.stream()
-                    .filter(data -> CommonStatus.ACTIVE.name().equalsIgnoreCase(data.getStatusName()))
-                    .collect(Collectors.toList());
+                    .filter(data -> CommonStatus.ACTIVE.name().equalsIgnoreCase(data.getStatusName())).toList();
 
             LOGGER.info("Fetched {} active destinations successfully", destinationResponseDtoList.size());
-            return ResponseEntity.ok(
-                    new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            destinationResponseDtoList,
-                            Instant.now()
-                    )
-            );
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    destinationResponseDtoList,
+                    Instant.now());
 
-        } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching active destinations: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
         } catch (Exception e) {
             LOGGER.error("Error occurred while fetching active destinations: {}", e.getMessage(), e);
             throw new InternalServerErrorExceptionHandler("Failed to fetch active destinations from database");
@@ -113,7 +96,7 @@ public class DestinationServiceImpl implements DestinationService {
     }
 
     @Override
-    public ResponseEntity<CommonResponse<List<DestinationCategoryResponseDto>>> getAllDestinationsCategories() {
+    public CommonResponse<List<DestinationCategoryResponseDto>> getAllDestinationsCategories() {
         LOGGER.info("Start fetching all destinations categories from repository");
         try {
             List<DestinationCategoryResponseDto> destinationCategoryResponseDtos = destinationRepository.getAllDestinationsCategories();
@@ -124,19 +107,15 @@ public class DestinationServiceImpl implements DestinationService {
             }
 
             LOGGER.info("Fetched {} destinations categories successfully", destinationCategoryResponseDtos.size());
-            return ResponseEntity.ok(
-                    new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            destinationCategoryResponseDtos,
-                            Instant.now()
-                    )
-            );
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    destinationCategoryResponseDtos,
+                    Instant.now());
 
-        } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching destinations categories: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
         } catch (Exception e) {
             LOGGER.error("Error occurred while fetching destinations categories: {}", e.getMessage(), e);
             throw new InternalServerErrorExceptionHandler("Failed to fetch destinations categories from database");
@@ -146,67 +125,54 @@ public class DestinationServiceImpl implements DestinationService {
     }
 
     @Override
-    public ResponseEntity<CommonResponse<List<DestinationCategoryResponseDto>>> getActiveDestinationsCategories() {
-        LOGGER.info("Start fetching all destinations categories from repository");
+    public CommonResponse<List<DestinationCategoryResponseDto>> getActiveDestinationsCategories() {
+        LOGGER.info("Start fetching active destinations categories from repository");
         try {
-            List<DestinationCategoryResponseDto> destinationCategoryResponseDtos = destinationRepository.getAllDestinationsCategories();
-
-            if (destinationCategoryResponseDtos.isEmpty()) {
-                LOGGER.warn("No destinations categories found in database");
-                throw new DataNotFoundErrorExceptionHandler("No destinations categories found");
-            }
+            List<DestinationCategoryResponseDto> destinationCategoryResponseDtos = getAllDestinationsCategories().getData();
 
             List<DestinationCategoryResponseDto> destinationCategoryResponseDtoList = destinationCategoryResponseDtos.stream()
                     .filter(data -> CommonStatus.ACTIVE.name().equalsIgnoreCase(data.getCategoryStatus()))
-                    .collect(Collectors.toList());
+                    .toList();
 
-            LOGGER.info("Fetched {} destinations categories successfully", destinationCategoryResponseDtoList.size());
-            return ResponseEntity.ok(
-                    new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            destinationCategoryResponseDtoList,
-                            Instant.now()
-                    )
-            );
+            LOGGER.info("Fetched {} active destinations categories successfully", destinationCategoryResponseDtoList.size());
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    destinationCategoryResponseDtoList,
+                    Instant.now());
 
-        } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching destinations categories: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
         } catch (Exception e) {
-            LOGGER.error("Error occurred while fetching destinations categories: {}", e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch destinations categories from database");
+            LOGGER.error("Error occurred while fetching active destinations categories: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch active destinations categories from database");
         } finally {
-            LOGGER.info("End fetching all destinations categories from repository");
+            LOGGER.info("End fetching active destinations categories from repository");
         }
     }
 
     @Override
-    public ResponseEntity<CommonResponse<List<PopularDestinationResponseDto>>> getPopularDestinations() {
+    public CommonResponse<List<PopularDestinationResponseDto>> getPopularDestinations() {
         LOGGER.info("Start fetching all popular destinations from repository");
         try {
             List<PopularDestinationResponseDto> popularDestinationResponseDtos = destinationRepository.getPopularDestinations();
 
             if (popularDestinationResponseDtos.isEmpty()) {
-                LOGGER.warn("No popular  destinations  found in database");
+                LOGGER.warn("No popular destinations found in database");
                 throw new DataNotFoundErrorExceptionHandler("No popular destinations found");
             }
 
-            LOGGER.info("Fetched {} popular destinations  successfully", popularDestinationResponseDtos.size());
-            return ResponseEntity.ok(
-                    new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            popularDestinationResponseDtos,
-                            Instant.now()
-                    )
-            );
+            LOGGER.info("Fetched {} popular destinations successfully", popularDestinationResponseDtos.size());
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    popularDestinationResponseDtos,
+                    Instant.now());
 
-        } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching popular destinations : {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
         } catch (Exception e) {
             LOGGER.error("Error occurred while fetching popular destinations : {}", e.getMessage(), e);
             throw new InternalServerErrorExceptionHandler("Failed to fetch popular destinations  from database");
@@ -216,8 +182,8 @@ public class DestinationServiceImpl implements DestinationService {
     }
 
     @Override
-    public ResponseEntity<CommonResponse<List<PopularDestinationResponseDto>>> getNewDestinations() {
-        LOGGER.info("Start fetching all popular destinations from repository");
+    public CommonResponse<List<PopularDestinationResponseDto>> getNewDestinations() {
+        LOGGER.info("Start fetching new destinations from repository");
         try {
             List<PopularDestinationResponseDto> popularDestinationResponseDtos =
                     destinationRepository.getPopularDestinations();
@@ -225,71 +191,64 @@ public class DestinationServiceImpl implements DestinationService {
             List<PopularDestinationResponseDto> lastMonthDestinations = popularDestinationResponseDtos.stream()
                     .filter(d -> d.getPopularCreatedAt() != null &&
                             d.getPopularCreatedAt().isAfter(LocalDateTime.now().minusMonths(6)))
-                    .collect(Collectors.toList());
+                    .toList();
 
 
             if (lastMonthDestinations.isEmpty()) {
-                LOGGER.warn("No popular  destinations  found in database");
-                throw new DataNotFoundErrorExceptionHandler("No popular destinations found");
+                LOGGER.warn("No new destinations found in database");
+                throw new DataNotFoundErrorExceptionHandler("No new destinations found");
             }
 
-            LOGGER.info("Fetched {} popular destinations  successfully", lastMonthDestinations.size());
-            return ResponseEntity.ok(
-                    new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            lastMonthDestinations,
-                            Instant.now()
-                    )
+            LOGGER.info("Fetched {} new destinations successfully", lastMonthDestinations.size());
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    lastMonthDestinations,
+                    Instant.now()
             );
 
-        } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching popular destinations : {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
         } catch (Exception e) {
-            LOGGER.error("Error occurred while fetching popular destinations : {}", e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch popular destinations  from database");
+            LOGGER.error("Error occurred while fetching new destinations : {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch new destinations  from database");
         } finally {
-            LOGGER.info("End fetching all popular destinations  from repository");
+            LOGGER.info("End fetching new destinations  from repository");
         }
     }
 
     @Override
-    public ResponseEntity<CommonResponse<List<TrendingDestinationResponseDto>>> getTrendingDestinations() {
-        LOGGER.info("Start fetching all popular destinations from repository");
+    public CommonResponse<List<TrendingDestinationResponseDto>> getTrendingDestinations() {
+        LOGGER.info("Start fetching trending destinations from repository");
         try {
             List<TrendingDestinationResponseDto> trendingDestinationResponseDtos = destinationRepository.getTrendingDestinations();
 
             if (trendingDestinationResponseDtos.isEmpty()) {
-                LOGGER.warn("No popular  destinations  found in database");
-                throw new DataNotFoundErrorExceptionHandler("No popular destinations found");
+                LOGGER.warn("No trending destinations found in database");
+                throw new DataNotFoundErrorExceptionHandler("No trending destinations found");
             }
 
-            LOGGER.info("Fetched {} popular destinations  successfully", trendingDestinationResponseDtos.size());
-            return ResponseEntity.ok(
-                    new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            trendingDestinationResponseDtos,
-                            Instant.now()
-                    )
-            );
+            LOGGER.info("Fetched {} trending destinations successfully", trendingDestinationResponseDtos.size());
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    trendingDestinationResponseDtos,
+                    Instant.now());
 
-        } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching popular destinations : {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
         } catch (Exception e) {
-            LOGGER.error("Error occurred while fetching popular destinations : {}", e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch popular destinations  from database");
+            LOGGER.error("Error occurred while fetching trending destinations : {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch trending destinations  from database");
         } finally {
-            LOGGER.info("End fetching all popular destinations  from repository");
+            LOGGER.info("End fetching trending destinations  from repository");
         }
     }
 
     @Override
-    public ResponseEntity<CommonResponse<List<DestinationsForTourMapDto>>> getDestinationsForTourMap() {
+    public CommonResponse<List<DestinationsForTourMapDto>> getDestinationsForTourMap() {
         LOGGER.info("Start fetching get destinations for tour map from repository");
         try {
             List<DestinationsForTourMapDto> destinationsForTourMapDtos = destinationRepository.getDestinationsForTourMap();
@@ -300,19 +259,15 @@ public class DestinationServiceImpl implements DestinationService {
             }
 
             LOGGER.info("Fetched {} destinations for tour map  successfully", destinationsForTourMapDtos.size());
-            return ResponseEntity.ok(
-                    new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            destinationsForTourMapDtos,
-                            Instant.now()
-                    )
-            );
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    destinationsForTourMapDtos,
+                    Instant.now());
 
-        } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching destinations for tour map : {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
         } catch (Exception e) {
             LOGGER.error("Error occurred while fetching destinations for tour map : {}", e.getMessage(), e);
             throw new InternalServerErrorExceptionHandler("Failed to fetch destinations for tour map  from database");
@@ -322,261 +277,232 @@ public class DestinationServiceImpl implements DestinationService {
     }
 
     @Override
-    public CommonResponse<List<DestinationResponseDto>> getDestinationDetailsByTourId(String tourId) {
-        LOGGER.info("Start fetching all destinations from repository");
+    public CommonResponse<List<DestinationResponseDto>> getDestinationDetailsByTourId(Long tourId) {
+        LOGGER.info("Start fetching destinations details by tour id from repository");
         try {
             List<DestinationResponseDto> destinationResponseDtos = destinationRepository.getDestinationDetailsByTourId(tourId);
 
             if (destinationResponseDtos.isEmpty()) {
-                LOGGER.warn("No destinations found in database");
-                throw new DataNotFoundErrorExceptionHandler("No destinations found");
+                LOGGER.warn("No destinations details found in database for tour id : {} ", tourId);
+                throw new DataNotFoundErrorExceptionHandler("No destinations details found in database for tour id : " + tourId);
             }
 
-            LOGGER.info("Fetched {} destinations successfully", destinationResponseDtos.size());
-            return
-                    new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            destinationResponseDtos,
-                            Instant.now()
-            );
+            LOGGER.info("Fetched {} destinations details for tour id {} successfully", destinationResponseDtos.size(), tourId);
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    destinationResponseDtos,
+                    Instant.now());
 
-        } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching destinations: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
         } catch (Exception e) {
-            LOGGER.error("Error occurred while fetching destinations: {}", e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch destinations from database");
+            LOGGER.error("Error occurred while fetching destinations details for tour id :{} , {}", tourId, e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch destinations details from database");
         } finally {
-            LOGGER.info("End fetching all destinations from repository");
+            LOGGER.info("End fetching destinations details for tour id : {} from repository", tourId);
         }
     }
 
     @Override
     public CommonResponse<List<DestinationReviewDetailsResponse>> getAllDestinationsReviewDetails() {
-        LOGGER.info("Start fetching all active package from repository");
+        LOGGER.info("Start fetching all destinations reviews from repository");
         try {
             List<DestinationReviewDetailsResponse> destinationReviewDetailsResponses = destinationRepository.getAllDestinationsReviewDetails();
 
             if (destinationReviewDetailsResponses.isEmpty()) {
-                LOGGER.warn("No active package found in database");
-                throw new DataNotFoundErrorExceptionHandler("No package found");
+                LOGGER.warn("No destinations reviews found in database");
+                throw new DataNotFoundErrorExceptionHandler("No destinations reviews found");
             }
 
             List<DestinationReviewDetailsResponse> destinationReviewDetailsResponseList = destinationReviewDetailsResponses.stream()
                     .filter(data -> CommonStatus.ACTIVE.name().equalsIgnoreCase(data.getReviewStatus()))
-                    .collect(Collectors.toList());
+                    .toList();
 
-            LOGGER.info("Fetched {} active package successfully", destinationReviewDetailsResponseList.size());
+            LOGGER.info("Fetched {} destinations reviews successfully", destinationReviewDetailsResponseList.size());
             return new CommonResponse<>(
                     CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
                     CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                     CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
                     destinationReviewDetailsResponseList,
-                    Instant.now()
-            );
+                    Instant.now());
 
-        } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching active package: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
         } catch (Exception e) {
-            LOGGER.error("Error occurred while fetching active package: {}", e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch active package from database");
+            LOGGER.error("Error occurred while fetching destinations reviews : {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch destinations reviews from database");
         } finally {
-            LOGGER.info("End fetching all active package from repository");
+            LOGGER.info("End fetching destinations reviews from repository");
         }
     }
 
     @Override
-    public CommonResponse<List<DestinationReviewDetailsResponse>> getDestinationReviewDetailsById(String destinationId) {
-        LOGGER.info("Start fetching all package from repository");
+    public CommonResponse<List<DestinationReviewDetailsResponse>> getDestinationReviewDetailsById(Long destinationId) {
+        LOGGER.info("Start fetching destinations reviews by destination id : {} from repository", destinationId);
         try {
             List<DestinationReviewDetailsResponse> destinationReviewDetailsResponses = destinationRepository.getDestinationReviewDetailsById(destinationId);
 
             if (destinationReviewDetailsResponses.isEmpty()) {
-                LOGGER.warn("No active package found in database");
-                throw new DataNotFoundErrorExceptionHandler("No package found");
+                LOGGER.warn("No destinations reviews by destination id : {} found in database", destinationId);
+                throw new DataNotFoundErrorExceptionHandler("No destinations reviews by destination id : found in database" + destinationId);
             }
 
-            return
-                    new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            destinationReviewDetailsResponses,
-                            Instant.now()
-                    )
-                    ;
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    destinationReviewDetailsResponses,
+                    Instant.now());
 
-        } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
         } catch (Exception e) {
-            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch package from database");
+            LOGGER.error("Error occurred while fetching destinations reviews by destination id : {} , {}", destinationId, e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch destinations reviews by destination id : " + destinationId);
         } finally {
-            LOGGER.info("End fetching all package from repository");
+            LOGGER.info("End fetching destinations reviews by destination id : {} from repository", destinationId);
         }
     }
 
     @Override
-    public CommonResponse<DestinationResponseDto> getDestinationDetailsById(String destinationId) {
-        LOGGER.info("Start fetching all package from repository");
+    public CommonResponse<DestinationResponseDto> getDestinationDetailsById(Long destinationId) {
+        LOGGER.info("Start fetching destination details by destination id : {} from repository", destinationId);
         try {
             DestinationResponseDto destinationDetailsById = destinationRepository.getDestinationDetailsById(destinationId);
 
             if (destinationDetailsById == null) {
-                LOGGER.warn("No package found in database");
-                throw new DataNotFoundErrorExceptionHandler("No package found");
+                LOGGER.warn("No destination details by destination id : {} found in database", destinationId);
+                throw new DataNotFoundErrorExceptionHandler("No destination details by destination id : {} found in database" + destinationId);
             }
 
-            return
-                    new CommonResponse<>(
+            return new CommonResponse<>(
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
                             destinationDetailsById,
-                            Instant.now()
-                    )
-                    ;
+                            Instant.now());
 
-        } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
         } catch (Exception e) {
-            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch package from database");
+            LOGGER.error("Error occurred while fetching destination details by destination id :{}, {}", destinationId, e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch destination details by destination id from database");
         } finally {
-            LOGGER.info("End fetching all package from repository");
+            LOGGER.info("End fetching destination details by destination id : {} from repository", destinationId);
         }
     }
 
     @Override
     public CommonResponse<List<DestinationHistoryDetailsResponse>> getAllDestinationHistoryDetails() {
-        LOGGER.info("Start fetching all package from repository");
+        LOGGER.info("Start fetching destination history details from repository");
         try {
             List<DestinationHistoryDetailsResponse> destinationReviewDetailsResponses = destinationRepository.getAllDestinationHistoryDetails();
 
             if (destinationReviewDetailsResponses.isEmpty()) {
-                LOGGER.warn("No active package found in database");
-                throw new DataNotFoundErrorExceptionHandler("No package found");
+                LOGGER.warn("No destination history details found in database");
+                throw new DataNotFoundErrorExceptionHandler("No destination history details found");
             }
 
-            return
-                    new CommonResponse<>(
+            return new CommonResponse<>(
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
                             destinationReviewDetailsResponses,
-                            Instant.now()
-                    )
-                    ;
+                            Instant.now());
 
-        } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
         } catch (Exception e) {
-            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch package from database");
+            LOGGER.error("Error occurred while fetching destination history details : {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch destination history details from database");
         } finally {
-            LOGGER.info("End fetching all package from repository");
+            LOGGER.info("End fetching destination history details from repository");
         }
     }
 
     @Override
-    public CommonResponse<List<DestinationHistoryDetailsResponse>> getDestinationHistoryDetailsById(String destinationId) {
-        LOGGER.info("Start fetching all package from repository");
+    public CommonResponse<List<DestinationHistoryDetailsResponse>> getDestinationHistoryDetailsById(Long destinationId) {
+        LOGGER.info("Start fetching destination history details by destination id : {} from repository", destinationId);
         try {
             List<DestinationHistoryDetailsResponse> destinationReviewDetailsResponses = destinationRepository.getDestinationHistoryDetailsById(destinationId);
 
             if (destinationReviewDetailsResponses.isEmpty()) {
-                LOGGER.warn("No active package found in database");
-                throw new DataNotFoundErrorExceptionHandler("No package found");
+                LOGGER.warn("No destination history details by destination id : {} found in database", destinationId);
+                throw new DataNotFoundErrorExceptionHandler("No destination history details by found");
             }
 
-            return
-                    new CommonResponse<>(
+            return new CommonResponse<>(
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
                             destinationReviewDetailsResponses,
-                            Instant.now()
-                    )
-                    ;
+                            Instant.now());
 
-        } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
         } catch (Exception e) {
-            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch package from database");
+            LOGGER.error("Error occurred while fetching destination history details by destination id: {} , {}", destinationId, e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch destination history details from database");
         } finally {
-            LOGGER.info("End fetching all package from repository");
+            LOGGER.info("End fetching destination history details by destination id : {} from repository", destinationId);
         }
     }
 
     @Override
     public CommonResponse<List<DestinationHistoryImageResponse>> getAllDestinationHistoryImages() {
-        LOGGER.info("Start fetching all package from repository");
+        LOGGER.info("Start fetching destination history images from repository");
         try {
             List<DestinationHistoryImageResponse> destinationHistoryImageResponses = destinationRepository.getAllDestinationHistoryImages();
 
             if (destinationHistoryImageResponses.isEmpty()) {
-                LOGGER.warn("No active package found in database");
-                throw new DataNotFoundErrorExceptionHandler("No package found");
+                LOGGER.warn("No destination history images found in database");
+                throw new DataNotFoundErrorExceptionHandler("No destination history images found");
             }
 
-            return
-                    new CommonResponse<>(
+            return new CommonResponse<>(
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
                             destinationHistoryImageResponses,
-                            Instant.now()
-                    )
-                    ;
+                            Instant.now());
 
-        } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
         } catch (Exception e) {
-            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch package from database");
+            LOGGER.error("Error occurred while fetching destination history images : {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch destination history images from database");
         } finally {
-            LOGGER.info("End fetching all package from repository");
+            LOGGER.info("End fetching destination history images from repository");
         }
     }
 
     @Override
-    public CommonResponse<List<DestinationHistoryImageResponse>> getDestinationHistoryImagesById(String destinationId) {
-        LOGGER.info("Start fetching all package from repository");
+    public CommonResponse<List<DestinationHistoryImageResponse>> getDestinationHistoryImagesById(Long destinationId) {
+        LOGGER.info("Start fetching destination history images by destination id : {} from repository", destinationId);
         try {
             List<DestinationHistoryImageResponse> destinationHistoryImageResponses = destinationRepository.getDestinationHistoryImagesById(destinationId);
 
             if (destinationHistoryImageResponses.isEmpty()) {
-                LOGGER.warn("No active package found in database");
-                throw new DataNotFoundErrorExceptionHandler("No package found");
+                LOGGER.warn("No destination history images by destination id : {} found in database", destinationId);
+                throw new DataNotFoundErrorExceptionHandler("No destination history images found");
             }
 
-            return
-                    new CommonResponse<>(
+            return new CommonResponse<>(
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
                             destinationHistoryImageResponses,
-                            Instant.now()
-                    )
-                    ;
+                            Instant.now());
 
-        } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
         } catch (Exception e) {
-            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch package from database");
+            LOGGER.error("Error occurred while fetching destination history images by destination id : {} , {}", destinationId, e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch destination history images from database");
         } finally {
-            LOGGER.info("End fetching all package from repository");
+            LOGGER.info("End fetching destination history images by destination id : {} from repository",destinationId);
         }
     }
 
@@ -587,16 +513,15 @@ public class DestinationServiceImpl implements DestinationService {
             DestinationsWithParamsResponse destinationsWithParamsResponse = destinationRepository.getDestinationWithParams(destinationDataRequest);
 
             return new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
                     destinationsWithParamsResponse,
-                            Instant.now()
+                    Instant.now()
             );
 
-        } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching destinations with params : {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
         } catch (Exception e) {
             LOGGER.error("Error occurred while fetching destinations with params: {}", e.getMessage(), e);
             throw new InternalServerErrorExceptionHandler("Failed to fetch destinations with params from database");
@@ -612,19 +537,19 @@ public class DestinationServiceImpl implements DestinationService {
             destinationValidationService.validateDestinationInsertRequest(destinationInsertRequest);
             Long userId = commonService.getUserIdBySecurityContext();
             destinationRepository.insertDestination(destinationInsertRequest, userId);
-            return
-                    new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+
+            return new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_INSERT_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_INSERT_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_INSERT_MESSAGE,
                             new InsertResponse("Successfully insert destination request"),
-                            Instant.now()
-                    );
+                            Instant.now());
+
         } catch (ValidationFailedErrorExceptionHandler vfe) {
             throw new ValidationFailedErrorExceptionHandler("validation failed in the insert destination request", vfe.getValidationFailedResponses());
         } catch (InsertFailedErrorExceptionHandler ife) {
             throw new InsertFailedErrorExceptionHandler(ife.getMessage());
-        }catch (UnAuthenticateErrorExceptionHandler uae) {
+        } catch (UnAuthenticateErrorExceptionHandler uae) {
             throw new UnAuthenticateErrorExceptionHandler(uae.getMessage());
         } catch (Exception e) {
             throw new InternalServerErrorExceptionHandler("Something went wrong");
@@ -638,19 +563,18 @@ public class DestinationServiceImpl implements DestinationService {
             destinationValidationService.validateTerminateDestinationRequest(destinationTerminateRequest);
             Long userId = commonService.getUserIdBySecurityContext();
             destinationRepository.terminateDestination(destinationTerminateRequest, userId);
-            return
-                    new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+            return new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_TERMINATE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_TERMINATE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_TERMINATE_MESSAGE,
                             new TerminateResponse("Successfully terminate destination request"),
-                            Instant.now()
-                    );
+                            Instant.now());
+
         } catch (ValidationFailedErrorExceptionHandler vfe) {
             throw new ValidationFailedErrorExceptionHandler("validation failed in the terminate destination request", vfe.getValidationFailedResponses());
         } catch (TerminateFailedErrorExceptionHandler tfe) {
             throw new TerminateFailedErrorExceptionHandler(tfe.getMessage());
-        }catch (UnAuthenticateErrorExceptionHandler uae) {
+        } catch (UnAuthenticateErrorExceptionHandler uae) {
             throw new UnAuthenticateErrorExceptionHandler(uae.getMessage());
         } catch (Exception e) {
             throw new InternalServerErrorExceptionHandler("Something went wrong");
@@ -659,34 +583,31 @@ public class DestinationServiceImpl implements DestinationService {
 
     @Override
     public CommonResponse<List<DestinationForTerminateResponse>> getDestinationsForTerminate() {
-        LOGGER.info("Start fetching active destinations from repository");
+        LOGGER.info("Start fetching destinations names and ids for terminate from repository");
         try {
             List<DestinationForTerminateResponse> destinationForTerminateResponses =
                     destinationRepository.getDestinationsForTerminate();
 
             if (destinationForTerminateResponses.isEmpty()) {
-                LOGGER.warn("No active destinations found in database");
-                throw new DataNotFoundErrorExceptionHandler("No active destinations found");
+                LOGGER.warn("No destinations names and ids for terminate found in database");
+                throw new DataNotFoundErrorExceptionHandler("No destinations names and ids for terminate found");
             }
 
-            return
-                    new CommonResponse<>(
+            return new CommonResponse<>(
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
                             destinationForTerminateResponses,
-                            Instant.now()
-                    )
-                    ;
+                            Instant.now());
 
         } catch (DataNotFoundErrorExceptionHandler e) {
             LOGGER.error("Error occurred while fetching active destinations: {}", e.getMessage(), e);
             throw new DataNotFoundErrorExceptionHandler(e.getMessage());
         } catch (Exception e) {
-            LOGGER.error("Error occurred while fetching active destinations: {}", e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch active destinations from database");
+            LOGGER.error("Error occurred while fetching destinations names and ids for terminate : {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch destinations names and ids for terminate from database");
         } finally {
-            LOGGER.info("End fetching active destinations from repository");
+            LOGGER.info("End fetching destinations names and ids for terminate from repository");
         }
     }
 
@@ -698,22 +619,21 @@ public class DestinationServiceImpl implements DestinationService {
             Long userId = commonService.getUserIdBySecurityContext();
             destinationRepository.updateBasicDestinationDetails(destinationUpdateRequest, userId);
             destinationRepository.removeDestinationImages(destinationUpdateRequest.getRemoveImages(), userId);
-            destinationRepository.addNewImagesToDestination(destinationUpdateRequest.getNewImages(), destinationUpdateRequest.getDestinationId(),userId);
+            destinationRepository.addNewImagesToDestination(destinationUpdateRequest.getNewImages(), destinationUpdateRequest.getDestinationId(), userId);
             destinationRepository.removeDestinationActivities(destinationUpdateRequest.getRemoveActivities(), userId);
             destinationRepository.addNewActivitiesToDestination(destinationUpdateRequest.getNewActivities(), destinationUpdateRequest.getDestinationId(), userId);
-            return
-                    new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            new UpdateResponse("Successfully update destination request",destinationUpdateRequest.getDestinationId()),
-                            Instant.now()
-                    );
+            return new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_UPDATE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_UPDATE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_UPDATE_MESSAGE,
+                            new UpdateResponse("Successfully update destination request", destinationUpdateRequest.getDestinationId()),
+                            Instant.now());
+
         } catch (ValidationFailedErrorExceptionHandler vfe) {
             throw new ValidationFailedErrorExceptionHandler("validation failed in the insert destination request", vfe.getValidationFailedResponses());
         } catch (UpdateFailedErrorExceptionHandler ufe) {
             throw new UpdateFailedErrorExceptionHandler(ufe.getMessage());
-        }catch (UnAuthenticateErrorExceptionHandler uae) {
+        } catch (UnAuthenticateErrorExceptionHandler uae) {
             throw new UnAuthenticateErrorExceptionHandler(uae.getMessage());
         } catch (Exception e) {
             throw new InternalServerErrorExceptionHandler("Something went wrong");

@@ -6,6 +6,14 @@ public class CommonResponseMessages {
     public static final String SUCCESSFULLY_INSERT_STATUS = "SUCCESSFULLY_INSERT";
     public static final String SUCCESSFULLY_INSERT_MESSAGE = "SUCCESSFULLY_INSERT";
 
+    public static final int SUCCESSFULLY_UPDATE_CODE = 200;
+    public static final String SUCCESSFULLY_UPDATE_STATUS = "SUCCESSFULLY_UPDATE";
+    public static final String SUCCESSFULLY_UPDATE_MESSAGE = "SUCCESSFULLY_UPDATE";
+
+    public static final int SUCCESSFULLY_TERMINATE_CODE = 200;
+    public static final String SUCCESSFULLY_TERMINATE_STATUS = "SUCCESSFULLY_TERMINATE";
+    public static final String SUCCESSFULLY_TERMINATE_MESSAGE = "SUCCESSFULLY_TERMINATE";
+
     public static final int SUCCESSFULLY_LOGOUT_CODE = 200;
     public static final String SUCCESSFULLY_LOGOUT_STATUS = "SUCCESSFULLY_LOGOUT";
     public static final String SUCCESSFULLY_LOGOUT_MESSAGE = "SUCCESSFULLY_LOGOUT";
@@ -21,6 +29,7 @@ public class CommonResponseMessages {
     public static final int SUCCESSFULLY_RETRIEVE_CODE = 200;
     public static final String SUCCESSFULLY_RETRIEVE_STATUS = "SUCCESSFULLY_RETRIEVE";
     public static final String SUCCESSFULLY_RETRIEVE_MESSAGE = "SUCCESSFULLY_RETRIEVE";
+
 
     public static final int DATA_RETRIEVE_FAILED_CODE = 200;
     public static final String DATA_RETRIEVE_FAILED_STATUS = "SUCCESSFULLY_RETRIEVE";
