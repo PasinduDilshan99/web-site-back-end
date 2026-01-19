@@ -28,5 +28,9 @@ public class PublicEndpoints {
             "/api/v0/hero-section/destination",
             "/api/v0/hero-section/activity",
 
+            // Why Choose us
+            "/api/v0/why-choose-us/all",
+            "/api/v0/why-choose-us/active",
+
     };
 }
