@@ -117,7 +117,7 @@ public class SecurityConfig {
 //                        .requestMatchers("/api/v0/destination/history/{destinationId}").hasAuthority("DESTINATION_HISTORY_VIEW")
 //                        .requestMatchers("/api/v0/destination/history-images").hasAuthority("DESTINATION_HISTORY_IMAGES_VIEW")
 //                        .requestMatchers("/api/v0/destination/history-images/{destinationId}").hasAuthority("DESTINATION_HISTORY_IMAGES_VIEW")
-//                        .requestMatchers("/api/v0/destination/destination-for-terminate").hasAuthority("DESTINATION_VIEW")
+//                        .requestMatchers("/api/v0/destination/destination-for-terminate").hasAuthority("DESTINATION_TERMINATE")
 //                        .requestMatchers("/api/v0/destination/add-destination").hasAuthority("DESTINATION_CREATE")
 //                        .requestMatchers("/api/v0/destination/update-destination").hasAuthority("DESTINATION_UPDATE")
 //                        .requestMatchers("/api/v0/destination/terminate-destination").hasAuthority("DESTINATION_TERMINATE")
