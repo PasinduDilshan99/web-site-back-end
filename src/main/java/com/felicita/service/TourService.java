@@ -6,33 +6,31 @@ import com.felicita.model.request.TourDataRequest;
 import com.felicita.model.request.TourInsertRequest;
 import com.felicita.model.request.TourUpdateRequest;
 import com.felicita.model.response.*;
-import org.springframework.http.ResponseEntity;
-
 import java.util.List;
 
 public interface TourService {
 
-    ResponseEntity<CommonResponse<List<TourResponseDto>>> getAllTours();
+    CommonResponse<List<TourResponseDto>> getAllTours();
 
-    ResponseEntity<CommonResponse<List<TourResponseDto>>> getActiveTours();
+    CommonResponse<List<TourResponseDto>> getActiveTours();
 
-    ResponseEntity<CommonResponse<List<PopularTourResponseDto>>> getPopularTours();
+    CommonResponse<List<PopularTourResponseDto>> getPopularTours();
 
-    CommonResponse<TourResponseDto> getTourDetailsById(String tourId);
+    CommonResponse<TourResponseDto> getTourDetailsById(Long tourId);
 
     CommonResponse<List<TourReviewDetailsResponse>> getAllTourReviewDetails();
 
-    CommonResponse<List<TourReviewDetailsResponse>> getTourReviewDetailsById(String tourId);
+    CommonResponse<List<TourReviewDetailsResponse>> getTourReviewDetailsById(Long tourId);
 
-    CommonResponse<List<TourDestinationsForMapResponse>> getTourDestinationsForMap(String tourId);
+    CommonResponse<List<TourDestinationsForMapResponse>> getTourDestinationsForMap(Long tourId);
 
     CommonResponse<List<TourHistoryResponse>> getAllTourHistoryDetails();
 
-    CommonResponse<List<TourHistoryResponse>> getTourHistoryDetailsById(String tourId);
+    CommonResponse<List<TourHistoryResponse>> getTourHistoryDetailsById(Long tourId);
 
     CommonResponse<List<TourHistoryImageResponse>> getAllTourHistoryImages();
 
-    CommonResponse<List<TourHistoryImageResponse>> getTourHistoryImagesById(String tourId);
+    CommonResponse<List<TourHistoryImageResponse>> getTourHistoryImagesById(Long tourId);
 
     CommonResponse<ToursDetailsWithParamResponse> getToursToShowWithParam(TourDataRequest tourDataRequest);
 
@@ -57,4 +55,5 @@ public interface TourService {
     CommonResponse<TourAllDetailsResponse> getTourAllDetailsById(Long tourId);
 
     CommonResponse<UpdateResponse> updateTour(TourUpdateRequest tourUpdateRequest);
+
 }

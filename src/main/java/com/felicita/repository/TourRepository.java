@@ -6,27 +6,27 @@ import com.felicita.model.dto.TourDayDestinationActivityIdsDto;
 import com.felicita.model.dto.TourResponseDto;
 import com.felicita.model.request.*;
 import com.felicita.model.response.*;
-
 import java.util.List;
 
 public interface TourRepository {
+
     List<TourResponseDto> getAllTours();
 
     List<PopularTourResponseDto> getPopularTours();
 
-    TourResponseDto getTourDetailsById(String tourId);
+    TourResponseDto getTourDetailsById(Long tourId);
 
     List<TourReviewDetailsResponse> getAllTourReviewDetails();
 
-    List<TourReviewDetailsResponse> getTourReviewDetailsById(String tourId);
+    List<TourReviewDetailsResponse> getTourReviewDetailsById(Long tourId);
 
-    List<TourDestinationsForMapResponse> getTourDestinationsForMap(String tourId);
+    List<TourDestinationsForMapResponse> getTourDestinationsForMap(Long tourId);
 
     List<TourHistoryResponse> getAllTourHistoryDetails();
 
-    List<TourHistoryResponse> getTourHistoryDetailsById(String tourId);
+    List<TourHistoryResponse> getTourHistoryDetailsById(Long tourId);
 
-    List<TourHistoryImageResponse> getTourHistoryImagesById(String tourId);
+    List<TourHistoryImageResponse> getTourHistoryImagesById(Long tourId);
 
     List<TourHistoryImageResponse> getAllTourHistoryImages();
 
@@ -107,4 +107,5 @@ public interface TourRepository {
     void updateTourTravelTips(Long tourId, List<TourTravelTipUpdateRequest> updateTravelTips, Long userId);
 
     TourAssignUserDto getTourAssignUserDetailsByTourId(Long tourId);
+
 }
