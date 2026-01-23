@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -122,6 +123,31 @@ public class SecurityConfig {
 //                        .requestMatchers("/api/v0/destination/update-destination").hasAuthority("DESTINATION_UPDATE")
 //                        .requestMatchers("/api/v0/destination/terminate-destination").hasAuthority("DESTINATION_TERMINATE")
 //                        .requestMatchers("/api/v0/destination/destination-names").hasAuthority("DESTINATION_VIEW")
+
+                        // Tours
+//                        .requestMatchers("/api/v0/tour/all").hasAuthority("TOUR_VIEW")
+//                        .requestMatchers("/api/v0/tour/active").hasAuthority("TOUR_VIEW")
+//                        .requestMatchers(HttpMethod.POST,"/api/v0/tour/tours").hasAuthority("TOUR_VIEW")
+//                        .requestMatchers("/api/v0/tour/popular").hasAuthority("TOUR_VIEW_POPULAR")
+//                        .requestMatchers("/api/v0/tour/*").hasAuthority("TOUR_VIEW")
+//                        .requestMatchers("/api/v0/tour/tout-all-details/*").hasAuthority("TOUR_VIEW")
+//                        .requestMatchers("/api/v0/tour/reviews").hasAuthority("TOUR_REVIEW_VIEW")
+//                        .requestMatchers("/api/v0/tour/reviews/*").hasAuthority("TOUR_REVIEW_VIEW")
+//                        .requestMatchers("/api/v0/tour/history").hasAuthority("TOUR_HISTORY_VIEW")
+//                        .requestMatchers("/api/v0/tour/history/*").hasAuthority("TOUR_HISTORY_VIEW")
+//                        .requestMatchers("/api/v0/tour/tour-map/*").hasAuthority("TOUR_MAP_VIEW")
+//                        .requestMatchers("/api/v0/tour/history-images").hasAuthority("TOUR_HISTORY_IMAGES_VIEW")
+//                        .requestMatchers("/api/v0/tour/history-images/*").hasAuthority("TOUR_HISTORY_IMAGES_VIEW")
+//                        .requestMatchers("/api/v0/tour/tour-details/*").hasAuthority("TOUR_DETAILS_DAY_BY_DAY_VIEW")
+//                        .requestMatchers("/api/v0/tour/tour-extra-details/*").hasAuthority("TOUR_EXTRA_DETAILS_DAY_BY_DAY_VIEW")
+//                        .requestMatchers("/api/v0/tour/tour-schedules/*").hasAuthority("TOUR_SCHEDULE_VIEW")
+//                        .requestMatchers("/api/v0/tour/all-tours-basic").hasAuthority("TOUR_VIEW")
+//                        .requestMatchers("/api/v0/tour/tour-for-terminate").hasAuthority("TOUR_TERMINATE")
+//                        .requestMatchers("/api/v0/tour/terminate-tour").hasAuthority("TOUR_TERMINATE")
+//                        .requestMatchers("/api/v0/tour/add-tour").hasAuthority("TOUR_CREATE")
+//                        .requestMatchers("/api/v0/tour/update-tour").hasAuthority("TOUR_UPDATE")
+//                        .requestMatchers("/api/v0/tour/tourId-and-tourName").hasAuthority("TOUR_VIEW")
+//                        .requestMatchers("/api/v0/tour/tour-details-for-add-package/*").hasAuthority("TOUR_VIEW")
 
                                 .requestMatchers(PublicEndpoints.ENDPOINTS).permitAll()
                         .requestMatchers(AuthorizeEndPoints.ENDPOINTS).authenticated()

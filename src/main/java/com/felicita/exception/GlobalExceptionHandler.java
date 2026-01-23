@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.time.Instant;
 import java.util.List;
@@ -173,4 +174,30 @@ public class GlobalExceptionHandler {
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
+
+
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public ResponseEntity<CommonResponse<String>> handleNotFoundErrorException(
+            NoHandlerFoundException e) {
+
+        logger.error(
+                "{} API Not Found : {} {}",
+                Constant.ERROR_DOTS_START,
+                e.getRequestURL(),
+                Constant.ERROR_DOTS_END
+        );
+
+        CommonResponse<String> response = new CommonResponse<>(
+                CommonResponseMessages.BAD_REQUEST_CODE,
+                CommonResponseMessages.BAD_REQUEST_STATUS,
+                CommonResponseMessages.BAD_REQUEST_MESSAGES,
+                "Endpoint not found: " + e.getRequestURL(),
+                Instant.now()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(response);
+    }
+
 }

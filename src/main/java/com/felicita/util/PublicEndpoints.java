@@ -60,5 +60,31 @@ public class PublicEndpoints {
             "/api/v0/destination/terminate-destination",
             "/api/v0/destination/destination-names",
 
+            // Tours
+            "/api/v0/tour/all",
+            "/api/v0/tour/active",
+            "/api/v0/tour/tours",
+            "/api/v0/tour/popular",
+            "/api/v0/tour/*",
+            "/api/v0/tour/tout-all-details/*",
+            "/api/v0/tour/reviews",
+            "/api/v0/tour/reviews/*",
+            "/api/v0/tour/history",
+            "/api/v0/tour/history/*",
+            "/api/v0/tour/tour-map/*",
+            "/api/v0/tour/history-images",
+            "/api/v0/tour/history-images/*",
+            "/api/v0/tour/tour-details/*",
+            "/api/v0/tour/tour-extra-details/*",
+            "/api/v0/tour/tour-schedules/*",
+            "/api/v0/tour/all-tours-basic",
+            "/api/v0/tour/tour-for-terminate",
+            "/api/v0/tour/terminate-tour",
+            "/api/v0/tour/add-tour",
+            "/api/v0/tour/update-tour",
+            "/api/v0/tour/tourId-and-tourName",
+            "/api/v0/tour/tour-details-for-add-package/*",
+
+
     };
 }
