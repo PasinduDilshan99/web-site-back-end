@@ -85,6 +85,28 @@ public class PublicEndpoints {
             "/api/v0/tour/tourId-and-tourName",
             "/api/v0/tour/tour-details-for-add-package/*",
 
+            // Packages
+            "/api/v0/package/all",
+            "/api/v0/package/active",
+            "/api/v0/package/packages",
+            "/api/v0/package/*",
+            "/api/v0/package/reviews",
+            "/api/v0/package/reviews/*",
+            "/api/v0/package/history",
+            "/api/v0/package/history/*",
+            "/api/v0/package/history-images",
+            "/api/v0/package/history-images/*",
+            "/api/v0/package/package-details/*",
+            "/api/v0/package/package-compare/*",
+            "/api/v0/package/package-extra-details/*",
+            "/api/v0/package/package-schedules-details/*",
+            "/api/v0/package/package-for-terminate",
+            "/api/v0/package/terminate-package",
+            "/api/v0/package/add-package",
+            "/api/v0/package/update-package",
+            "/api/v0/package/package-all-details/*",
+            "/api/v0/package/packageId-and-packageName",
+
 
     };
 }

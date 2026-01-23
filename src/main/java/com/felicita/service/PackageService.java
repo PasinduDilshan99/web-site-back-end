@@ -6,29 +6,27 @@ import com.felicita.model.request.PackageInsertRequest;
 import com.felicita.model.request.PackageTerminateRequest;
 import com.felicita.model.request.PackageUpdateRequest;
 import com.felicita.model.response.*;
-import org.springframework.http.ResponseEntity;
-
 import java.util.List;
 
 public interface PackageService {
 
-    ResponseEntity<CommonResponse<List<PackageResponseDto>>> getAllPackages();
+    CommonResponse<List<PackageResponseDto>> getAllPackages();
 
-    ResponseEntity<CommonResponse<List<PackageResponseDto>>> getActivePackages();
+    CommonResponse<List<PackageResponseDto>> getActivePackages();
 
-    CommonResponse<PackageResponseDto> getPackageDetailsById(String packageId);
+    CommonResponse<PackageResponseDto> getPackageDetailsById(Long packageId);
 
     CommonResponse<List<PackageReviewResponse>> getAllPackageReviewDetails();
 
-    CommonResponse<List<PackageReviewResponse>> getPackageReviewDetailsById(String packageId);
+    CommonResponse<List<PackageReviewResponse>> getPackageReviewDetailsById(Long packageId);
 
     CommonResponse<List<PackageHistoryDetailsResponse>> getAllPackageHistoryDetails();
 
-    CommonResponse<List<PackageHistoryDetailsResponse>> getPackageHistoryDetailsById(String packageId);
+    CommonResponse<List<PackageHistoryDetailsResponse>> getPackageHistoryDetailsById(Long packageId);
 
     CommonResponse<List<PackageHistoryImageResponse>> getAllPackageHistoryImages();
 
-    CommonResponse<List<PackageHistoryImageResponse>> getPackageHistoryImagesById(String packageId);
+    CommonResponse<List<PackageHistoryImageResponse>> getPackageHistoryImagesById(Long packageId);
 
     CommonResponse<PackageWithParamsResponse> getPackagesWithParams(PackageDataRequest packageDataRequest);
 
@@ -61,4 +59,5 @@ public interface PackageService {
     CommonResponse<PackageAllDetailsResponse> getPackageAllDetailsById(Long packageId);
 
     CommonResponse<List<PackageIdAndPackageNameResponse>> getPackageIdsAndPackageNames();
+
 }

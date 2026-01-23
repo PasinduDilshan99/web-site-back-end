@@ -16,13 +16,10 @@ import com.felicita.validation.PackageValidationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class PackageServiceImpl implements PackageService {
@@ -41,123 +38,106 @@ public class PackageServiceImpl implements PackageService {
     }
 
     @Override
-    public ResponseEntity<CommonResponse<List<PackageResponseDto>>> getAllPackages() {
-        LOGGER.info("Start fetching all package from repository");
+    public CommonResponse<List<PackageResponseDto>> getAllPackages() {
+        LOGGER.info("Start fetching all packages from repository");
         try {
             List<PackageResponseDto> packageResponseDtos = packageRepository.getAllPackages();
 
             if (packageResponseDtos.isEmpty()) {
-                LOGGER.warn("No package found in database");
-                throw new DataNotFoundErrorExceptionHandler("No package found");
+                LOGGER.warn("No packages found in database");
+                throw new DataNotFoundErrorExceptionHandler("No packages found");
             }
 
-            LOGGER.info("Fetched {} package successfully", packageResponseDtos.size());
-            return ResponseEntity.ok(
-                    new CommonResponse<>(
+            LOGGER.info("Fetched {} packages successfully", packageResponseDtos.size());
+            return new CommonResponse<>(
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
                             packageResponseDtos,
-                            Instant.now()
-                    )
-            );
+                            Instant.now());
 
-        } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
         } catch (Exception e) {
-            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch package from database");
+            LOGGER.error("Error occurred while fetching packages: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch packages from database");
         } finally {
-            LOGGER.info("End fetching all package from repository");
+            LOGGER.info("End fetching all packages from repository");
         }
     }
 
     @Override
-    public ResponseEntity<CommonResponse<List<PackageResponseDto>>> getActivePackages() {
-        LOGGER.info("Start fetching all active package from repository");
+    public CommonResponse<List<PackageResponseDto>> getActivePackages() {
+        LOGGER.info("Start fetching active packages from repository");
         try {
-            List<PackageResponseDto> packageResponseDtos = packageRepository.getAllPackages();
-
-            if (packageResponseDtos.isEmpty()) {
-                LOGGER.warn("No active package found in database");
-                throw new DataNotFoundErrorExceptionHandler("No package found");
-            }
+            List<PackageResponseDto> packageResponseDtos = getAllPackages().getData();
 
             List<PackageResponseDto> packageResponseDtoList = packageResponseDtos.stream()
                     .filter(data -> CommonStatus.ACTIVE.name().equalsIgnoreCase(data.getPackageStatus()))
-                    .collect(Collectors.toList());
+                    .toList();
 
-            LOGGER.info("Fetched {} active package successfully", packageResponseDtoList.size());
-            return ResponseEntity.ok(
-                    new CommonResponse<>(
+            LOGGER.info("Fetched {} active packages successfully", packageResponseDtoList.size());
+            return new CommonResponse<>(
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
                             packageResponseDtoList,
-                            Instant.now()
-                    )
-            );
+                            Instant.now());
 
-        } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching active package: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
         } catch (Exception e) {
-            LOGGER.error("Error occurred while fetching active package: {}", e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch active package from database");
+            LOGGER.error("Error occurred while fetching active packages: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch active packages from database");
         } finally {
-            LOGGER.info("End fetching all active package from repository");
+            LOGGER.info("End fetching active packages from repository");
         }
     }
 
     @Override
-    public CommonResponse<PackageResponseDto> getPackageDetailsById(String packageId) {
-        LOGGER.info("Start fetching all package from repository");
+    public CommonResponse<PackageResponseDto> getPackageDetailsById(Long packageId) {
+        LOGGER.info("Start fetching package details by id : {} from repository", packageId);
         try {
             PackageResponseDto packageResponseDto = packageRepository.getPackageDetailsById(packageId);
 
             if (packageResponseDto == null) {
-                LOGGER.warn("No package found in database");
-                throw new DataNotFoundErrorExceptionHandler("No package found");
+                LOGGER.warn("No package found in by id : {} database", packageId);
+                throw new DataNotFoundErrorExceptionHandler("No package found in by id : " + packageId);
             }
 
-            return
-                    new CommonResponse<>(
+            return new CommonResponse<>(
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
                             packageResponseDto,
-                            Instant.now()
-                    )
-                    ;
+                            Instant.now());
 
-        } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
         } catch (Exception e) {
-            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch package from database");
+            LOGGER.error("Error occurred while fetching package by id : {} , {}", packageId, e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Error occurred while fetching package by id : " + packageId);
         } finally {
-            LOGGER.info("End fetching all package from repository");
+            LOGGER.info("End fetching package by package id : {} from repository", packageId);
         }
     }
 
     @Override
     public CommonResponse<List<PackageReviewResponse>> getAllPackageReviewDetails() {
-        LOGGER.info("Start fetching all active package from repository");
+        LOGGER.info("Start fetching all packages review details from repository");
         try {
             List<PackageReviewResponse> packageReviewResponses = packageRepository.getAllPackageReviewDetails();
 
             if (packageReviewResponses.isEmpty()) {
-                LOGGER.warn("No active package found in database");
-                throw new DataNotFoundErrorExceptionHandler("No package found");
+                LOGGER.warn("No packages review details found in database");
+                throw new DataNotFoundErrorExceptionHandler("No packages review details found");
             }
 
             List<PackageReviewResponse> packageResponseDtoList = packageReviewResponses.stream()
                     .filter(data -> CommonStatus.ACTIVE.name().equalsIgnoreCase(data.getStatus()))
-                    .collect(Collectors.toList());
+                    .toList();
 
-            LOGGER.info("Fetched {} active package successfully", packageResponseDtoList.size());
+            LOGGER.info("Fetched {} packages review details successfully", packageResponseDtoList.size());
             return new CommonResponse<>(
                     CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
                     CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
@@ -166,174 +146,153 @@ public class PackageServiceImpl implements PackageService {
                     Instant.now()
             );
 
-        } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching active package: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
         } catch (Exception e) {
-            LOGGER.error("Error occurred while fetching active package: {}", e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch active package from database");
+            LOGGER.error("Error occurred while fetching packages review details: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch packages review details from database");
         } finally {
-            LOGGER.info("End fetching all active package from repository");
+            LOGGER.info("End fetching all packages review details from repository");
         }
     }
 
     @Override
-    public CommonResponse<List<PackageReviewResponse>> getPackageReviewDetailsById(String packageId) {
-        LOGGER.info("Start fetching all package from repository");
+    public CommonResponse<List<PackageReviewResponse>> getPackageReviewDetailsById(Long packageId) {
+        LOGGER.info("Start fetching packages review details by package id : {} from repository", packageId);
         try {
             List<PackageReviewResponse> packageReviewResponse = packageRepository.getPackageReviewDetailsById(packageId);
 
             if (packageReviewResponse.isEmpty()) {
-                LOGGER.warn("No active package found in database");
-                throw new DataNotFoundErrorExceptionHandler("No package found");
+                LOGGER.warn("No packages review details by package id : {} found in database", packageId);
+                throw new DataNotFoundErrorExceptionHandler("No packages review details by package id : " + packageId);
             }
 
-            return
-                    new CommonResponse<>(
+            return new CommonResponse<>(
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
                             packageReviewResponse,
-                            Instant.now()
-                    )
-                    ;
+                            Instant.now());
 
-        } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
         } catch (Exception e) {
-            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch package from database");
+            LOGGER.error("Error occurred while fetching packages review details by package id: {} , {}", packageId, e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch packages review details by package id : "+ packageId);
         } finally {
-            LOGGER.info("End fetching all package from repository");
+            LOGGER.info("End fetching packages review details by package id : {} from repository", packageId);
         }
     }
 
     @Override
     public CommonResponse<List<PackageHistoryDetailsResponse>> getAllPackageHistoryDetails() {
-        LOGGER.info("Start fetching all package from repository");
+        LOGGER.info("Start fetching all packages history details from repository");
         try {
             List<PackageHistoryDetailsResponse> packageHistoryDetailsResponses = packageRepository.getAllPackageHistoryDetails();
 
             if (packageHistoryDetailsResponses.isEmpty()) {
-                LOGGER.warn("No active package found in database");
-                throw new DataNotFoundErrorExceptionHandler("No package found");
+                LOGGER.warn("No packages history details found in database");
+                throw new DataNotFoundErrorExceptionHandler("No packages history details found");
             }
 
-            return
-                    new CommonResponse<>(
+            return new CommonResponse<>(
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
                             packageHistoryDetailsResponses,
-                            Instant.now()
-                    )
-                    ;
+                            Instant.now());
 
-        } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
         } catch (Exception e) {
-            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch package from database");
+            LOGGER.error("Error occurred while fetching packages history details: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch packages history details from database");
         } finally {
-            LOGGER.info("End fetching all package from repository");
+            LOGGER.info("End fetching packages history details from repository");
         }
     }
 
     @Override
-    public CommonResponse<List<PackageHistoryDetailsResponse>> getPackageHistoryDetailsById(String packageId) {
-        LOGGER.info("Start fetching all package from repository");
+    public CommonResponse<List<PackageHistoryDetailsResponse>> getPackageHistoryDetailsById(Long packageId) {
+        LOGGER.info("Start fetching package history details by package id : {} from repository", packageId);
         try {
             List<PackageHistoryDetailsResponse> packageHistoryDetailsResponses = packageRepository.getPackageHistoryDetailsById(packageId);
 
             if (packageHistoryDetailsResponses.isEmpty()) {
-                LOGGER.warn("No active package found in database");
-                throw new DataNotFoundErrorExceptionHandler("No package found");
+                LOGGER.warn("No package history details by package id : {} found in database", packageId);
+                throw new DataNotFoundErrorExceptionHandler("No package history details by package id : " + packageId);
             }
 
-            return
-                    new CommonResponse<>(
+            return new CommonResponse<>(
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
                             packageHistoryDetailsResponses,
-                            Instant.now()
-                    )
-                    ;
+                            Instant.now());
 
-        } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
         } catch (Exception e) {
-            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch package from database");
+            LOGGER.error("Error occurred while fetching package history details by package id : {} , {}", packageId, e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch package history details by package id : " + packageId);
         } finally {
-            LOGGER.info("End fetching all package from repository");
+            LOGGER.info("End fetching package history details by package id : {} from repository", packageId);
         }
     }
 
     @Override
     public CommonResponse<List<PackageHistoryImageResponse>> getAllPackageHistoryImages() {
-        LOGGER.info("Start fetching all package from repository");
+        LOGGER.info("Start fetching all package history images from repository");
         try {
             List<PackageHistoryImageResponse> packageHistoryImageResponse = packageRepository.getAllPackageHistoryImages();
 
             if (packageHistoryImageResponse.isEmpty()) {
-                LOGGER.warn("No active package found in database");
-                throw new DataNotFoundErrorExceptionHandler("No package found");
+                LOGGER.warn("No package history images found in database");
+                throw new DataNotFoundErrorExceptionHandler("No package history images found");
             }
 
-            return
-                    new CommonResponse<>(
+            return new CommonResponse<>(
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
                             packageHistoryImageResponse,
-                            Instant.now()
-                    )
-                    ;
+                            Instant.now());
 
-        } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
         } catch (Exception e) {
-            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch package from database");
+            LOGGER.error("Error occurred while fetching package history images: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch package history images from database");
         } finally {
-            LOGGER.info("End fetching all package from repository");
+            LOGGER.info("End fetching package history images from repository");
         }
     }
 
     @Override
-    public CommonResponse<List<PackageHistoryImageResponse>> getPackageHistoryImagesById(String packageId) {
-        LOGGER.info("Start fetching all package from repository");
+    public CommonResponse<List<PackageHistoryImageResponse>> getPackageHistoryImagesById(Long packageId) {
+        LOGGER.info("Start fetching package history images by package id : {} from repository", packageId);
         try {
             List<PackageHistoryImageResponse> packageHistoryImageResponse = packageRepository.getPackageHistoryImagesById(packageId);
 
             if (packageHistoryImageResponse.isEmpty()) {
-                LOGGER.warn("No active package found in database");
-                throw new DataNotFoundErrorExceptionHandler("No package found");
+                LOGGER.warn("No package history images by package id : {} found in database", packageId);
+                throw new DataNotFoundErrorExceptionHandler("No package history images by package id : " + packageId);
             }
 
-            return
-                    new CommonResponse<>(
+            return new CommonResponse<>(
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
                             packageHistoryImageResponse,
-                            Instant.now()
-                    )
-                    ;
+                            Instant.now());
 
-        } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
         } catch (Exception e) {
-            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch package from database");
+            LOGGER.error("Error occurred while fetching package history images by package id : {} , {}", packageId, e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch package history images by package id : " + packageId);
         } finally {
-            LOGGER.info("End fetching all package from repository");
+            LOGGER.info("End fetching package history images by package id : from repository", packageId);
         }
     }
 
@@ -349,8 +308,7 @@ public class PackageServiceImpl implements PackageService {
                         CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                         CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
                         null,
-                        Instant.now()
-                );
+                        Instant.now());
             }
 
             return new CommonResponse<>(
@@ -358,23 +316,21 @@ public class PackageServiceImpl implements PackageService {
                     CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                     CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
                     packageWithParamsResponse,
-                    Instant.now()
-            );
+                    Instant.now());
 
-        } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching packages with params: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
         } catch (Exception e) {
             LOGGER.error("Error occurred while fetching packages with params: {}", e.getMessage(), e);
             throw new InternalServerErrorExceptionHandler("Failed to fetch packages with params from database");
         } finally {
-            LOGGER.info("End fetching all packages with params from repository");
+            LOGGER.info("End fetching packages with params from repository");
         }
     }
 
     @Override
     public CommonResponse<List<PackageDayAccommodationResponse>> getDayToPackageDetailsByTourId(Long tourId) {
-        LOGGER.info("Start fetching all package from repository");
+        LOGGER.info("Start fetching day to day package details by tourId id : {} from repository", tourId);
         try {
             List<PackageDetailsDto> packageDetailsDtos = packageRepository.getDayToPackageDetailsById(tourId);
             LOGGER.info(packageDetailsDtos.toString());
@@ -407,32 +363,27 @@ public class PackageServiceImpl implements PackageService {
                 responses.add(packageDayAccommodationResponse);
             }
 
-            return
-                    new CommonResponse<>(
+            return new CommonResponse<>(
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
                             responses,
-                            Instant.now()
-                    )
-                    ;
+                            Instant.now());
 
-        } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
         } catch (Exception e) {
-            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch package from database");
+            LOGGER.error("Error occurred while fetching day to day package details by tourId id : {} , {}", tourId, e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch day to day package details by tourId id : " + tourId);
         } finally {
-            LOGGER.info("End fetching all package from repository");
+            LOGGER.info("End fetching day to day package details by tourId id : {} from repository", tourId);
         }
     }
 
     @Override
     public CommonResponse<List<PackageExtrasResponse>> getPackageExtraDetailsDayByDay(Long tourId) {
-        LOGGER.info("Start fetching package extra details by tour id from repository");
+        LOGGER.info("Start fetching package extra details by tour id : {} from repository", tourId);
         try {
-
             List<Long> packageIds = packageRepository.getPackageIdsByTourId(tourId);
 
             List<PackageExtrasResponse> responses = new ArrayList<>();
@@ -458,23 +409,21 @@ public class PackageServiceImpl implements PackageService {
                     CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                     CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
                     responses,
-                    Instant.now()
-            );
+                    Instant.now());
 
-        } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching package extra details by tour id: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
         } catch (Exception e) {
-            LOGGER.error("Error occurred while fetching package extra details by tour id: {}", e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch package extra details by tour id from database");
+            LOGGER.error("Error occurred while fetching package extra details by tour id: {} , {}", tourId, e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch package extra details by tour id : "+ tourId);
         } finally {
-            LOGGER.info("End fetching all package extra details by tour id from repository");
+            LOGGER.info("End fetching package extra details by tour id : {} from repository", tourId);
         }
     }
 
     @Override
     public CommonResponse<List<PackageScheduleResponse>> getPackageSchedulesByTourId(Long tourId) {
-        LOGGER.info("Start fetching all package schedules from repository");
+        LOGGER.info("Start fetching package schedules by tour id : {} from repository", tourId);
         try {
             List<Long> packageIds = packageRepository.getPackageIdsByTourId(tourId);
 
@@ -496,23 +445,21 @@ public class PackageServiceImpl implements PackageService {
                     CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                     CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
                     responses,
-                    Instant.now()
-            );
+                    Instant.now());
 
-        } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
         } catch (Exception e) {
-            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch package from database");
+            LOGGER.error("Error occurred while fetching package schedules by tour id : {} , {}", tourId, e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch package schedules by tour id : " + tourId);
         } finally {
-            LOGGER.info("End fetching all package from repository");
+            LOGGER.info("End fetching package schedules by tour id : {} from repository", tourId);
         }
     }
 
     @Override
     public CommonResponse<PackageScheduleDetailsResponse> getPackageSchedulesForId(Long packageId) {
-        LOGGER.info("Start fetching tour schedules from the repository");
+        LOGGER.info("Start fetching package schedules by package id : {} from the repository", packageId);
         try {
             List<PackageScheduleDetailsResponse.PackageScheduleDetails> scheduleDetails =
                     packageRepository.getPackageSchedulesForId(packageId);
@@ -530,30 +477,28 @@ public class PackageServiceImpl implements PackageService {
                     CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                     CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
                     response,
-                    Instant.now()
-            );
+                    Instant.now());
 
-        } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching package schedules by package id: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
         } catch (Exception e) {
-            LOGGER.error("Error occurred while fetching package schedules by package id: {}", e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch package schedules by package id from database");
+            LOGGER.error("Error occurred while fetching package schedules by package id: {}, {}", packageId, e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch package schedules by package id : " + packageId);
         } finally {
-            LOGGER.info("End fetching all package schedules by package id from repository");
+            LOGGER.info("End fetching all package schedules by package id : {} from repository", packageId);
         }
     }
 
     @Override
     public CommonResponse<List<PackageComapreResponse>> getDayToPackageDetailsForComapreByTourId(Long tourId) {
-        LOGGER.info("Start fetching all package from repository");
+        LOGGER.info("Start fetching package for compare by tour id : {} from the repository", tourId);
         try {
             List<PackageComapreResponse> comapreResponses = new ArrayList<>();
             List<PackageExtrasResponse> extrasResponses = getPackageExtraDetailsDayByDay(tourId).getData();
             List<PackageDayAccommodationResponse> accommodationResponses = getDayToPackageDetailsByTourId(tourId).getData();
             List<PackageComapreResponse.PackageImages> images = packageRepository.getAllPackagesImages(tourId);
 
-            for (PackageDayAccommodationResponse accommodationResponse: accommodationResponses){
+            for (PackageDayAccommodationResponse accommodationResponse : accommodationResponses) {
                 PackageComapreResponse packageComapreResponse = new PackageComapreResponse();
                 packageComapreResponse.setPackageId(accommodationResponse.getPackageId());
                 packageComapreResponse.setPackageName(accommodationResponse.getPackageName());
@@ -565,15 +510,15 @@ public class PackageServiceImpl implements PackageService {
                 packageComapreResponse.setHoverColor(accommodationResponse.getHoverColor());
                 packageComapreResponse.setPackageDayByDayDtoList(accommodationResponse.getPackageDayByDayDtoList());
 
-                for (PackageExtrasResponse extrasResponse: extrasResponses){
-                    if (extrasResponse.getPackageId().equals(accommodationResponse.getPackageId())){
+                for (PackageExtrasResponse extrasResponse : extrasResponses) {
+                    if (extrasResponse.getPackageId().equals(accommodationResponse.getPackageId())) {
                         packageComapreResponse.setExtraDetails(extrasResponse);
                     }
                 }
 
                 List<PackageComapreResponse.PackageImages> packageImages = new ArrayList<>();
-                for (PackageComapreResponse.PackageImages image: images){
-                    if (image.getPackageId().equals(accommodationResponse.getPackageId())){
+                for (PackageComapreResponse.PackageImages image : images) {
+                    if (image.getPackageId().equals(accommodationResponse.getPackageId())) {
                         packageImages.add(image);
                     }
                 }
@@ -586,122 +531,113 @@ public class PackageServiceImpl implements PackageService {
                     CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                     CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
                     comapreResponses,
-                    Instant.now()
-            );
+                    Instant.now());
 
-        } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
         } catch (Exception e) {
-            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch package from database");
+            LOGGER.error("Error occurred while fetching package for compare by tour id : {} , {}", tourId, e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch package for compare by tour id : " + tourId);
         } finally {
-            LOGGER.info("End fetching all package from repository");
+            LOGGER.info("End fetching package for compare by tour id : {} from repository", tourId);
         }
     }
 
     @Override
     public PackageBasicDetailsDto getPackageBasicDetailsByScheduleId(Long packageScheduleId) {
-        LOGGER.info("Start fetching package basic details by schedule id from repository");
+        LOGGER.info("Start fetching package basic details by schedule id : {} from repository", packageScheduleId);
         try {
             PackageBasicDetailsDto response = packageRepository.getPackageBasicDetailsByScheduleId(packageScheduleId);
-            LOGGER.info("Successfully fetched package basic details by schedule id from repository.");
+            LOGGER.info("Successfully fetched package basic details by schedule id : {} from repository.", packageScheduleId);
             return response;
+
         } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching packages with params: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+            throw e;
         } catch (Exception e) {
-            LOGGER.error("Error occurred while fetching packages with params: {}", e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch packages with params from database");
+            LOGGER.error("Error occurred while fetching packages basic details by schedule id : {} , {}", packageScheduleId,e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Error occurred while fetching packages basic details by schedule id : " + packageScheduleId);
         } finally {
-            LOGGER.info("End fetching all packages with params from repository");
+            LOGGER.info("End fetching packages basic details by schedule id : {}  from repository", packageScheduleId);
         }
     }
 
     @Override
     public List<PackageActivityPriceDto> getPackageActivityPriceByScheduleId(Long packageScheduleId) {
-        LOGGER.info("Start fetching package basic details by schedule id from repository");
+        LOGGER.info("Start fetching package activity price by schedule id : {} from repository", packageScheduleId);
         try {
             List<PackageActivityPriceDto> response = packageRepository.getPackageActivityPriceByScheduleId(packageScheduleId);
-            LOGGER.info("Successfully fetched package basic details by schedule id from repository.");
+            LOGGER.info("Successfully fetched package activity price by schedule id : {}  from repository.", packageScheduleId);
             return response;
         } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching packages with params: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+            throw e;
         } catch (Exception e) {
-            LOGGER.error("Error occurred while fetching packages with params: {}", e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch packages with params from database");
+            LOGGER.error("Error occurred while fetching packages activity price by schedule id : {} , {}", packageScheduleId, e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Error occurred while fetching packages activity price by schedule id : "+ packageScheduleId);
         } finally {
-            LOGGER.info("End fetching all packages with params from repository");
+            LOGGER.info("End fetching package activity price by schedule id : {}  from repository", packageScheduleId);
         }
     }
 
     @Override
     public List<PackageDestinationExtraPriceDto> getPackageDestinationExtraPriceByScheduleId(Long packageScheduleId) {
-        LOGGER.info("Start fetching package basic details by schedule id from repository");
+        LOGGER.info("Start fetching package destination extra price by schedule id : {} from repository", packageScheduleId);
         try {
             List<PackageDestinationExtraPriceDto> response = packageRepository.getPackageDestinationExtraPriceByScheduleId(packageScheduleId);
-            LOGGER.info("Successfully fetched package basic details by schedule id from repository.");
+            LOGGER.info("Successfully fetched package destination extra price by schedule id : {} from repository.", packageScheduleId);
             return response;
         } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching packages with params: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+            throw e;
         } catch (Exception e) {
-            LOGGER.error("Error occurred while fetching packages with params: {}", e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch packages with params from database");
+            LOGGER.error("Error occurred while fetching destination extra price by schedule id : {} , {}", packageScheduleId, e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch destination extra price by schedule id : {} from database"+ packageScheduleId);
         } finally {
-            LOGGER.info("End fetching all packages with params from repository");
+            LOGGER.info("End fetching packages destination extra price by schedule id : {} from repository", packageScheduleId);
         }
     }
 
     @Override
     public List<PackageDayAccommodationPriceDto> getPackageDayAccommodationPriceByScheduleId(Long packageScheduleId) {
-        LOGGER.info("Start fetching package basic details by schedule id from repository");
+        LOGGER.info("Start fetching package day accommodation price by schedule id : {} from repository", packageScheduleId);
         try {
             List<PackageDayAccommodationPriceDto> response = packageRepository.getPackageDayAccommodationPriceByScheduleId(packageScheduleId);
-            LOGGER.info("Successfully fetched package basic details by schedule id from repository.");
+            LOGGER.info("Successfully fetched package day accommodation price by schedule id : {} from repository.", packageScheduleId);
             return response;
         } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching packages with params: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+            throw e;
         } catch (Exception e) {
-            LOGGER.error("Error occurred while fetching packages with params: {}", e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch packages with params from database");
+            LOGGER.error("Error occurred while fetching package day accommodation price by schedule id : {} , {}", packageScheduleId, e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch package day accommodation price by schedule id : {} from database" + packageScheduleId);
         } finally {
-            LOGGER.info("End fetching all packages with params from repository");
+            LOGGER.info("End fetching package day accommodation price by schedule id : {} from repository", packageScheduleId);
         }
     }
 
     @Override
     public CommonResponse<List<PackageForTerminateResponse>> getPackagesForTerminate() {
-        LOGGER.info("Start fetching active package from repository");
+        LOGGER.info("Start fetching packages for terminate from repository");
         try {
             List<PackageForTerminateResponse> packageForTerminateResponses =
                     packageRepository.getPackagesForTerminate();
 
             if (packageForTerminateResponses.isEmpty()) {
-                LOGGER.warn("No active package found in database");
-                throw new DataNotFoundErrorExceptionHandler("No active package found");
+                LOGGER.warn("No packages for terminate found in database");
+                throw new DataNotFoundErrorExceptionHandler("No packages for terminate found");
             }
 
-            return
-                    new CommonResponse<>(
+            return new CommonResponse<>(
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
                             packageForTerminateResponses,
-                            Instant.now()
-                    )
-                    ;
+                            Instant.now());
 
-        } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching active package: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
         } catch (Exception e) {
-            LOGGER.error("Error occurred while fetching active package: {}", e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch active package from database");
+            LOGGER.error("Error occurred while fetching packages for terminate: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch packages for terminate from database");
         } finally {
-            LOGGER.info("End fetching active package from repository");
+            LOGGER.info("End fetching packages for terminate from repository");
         }
     }
 
@@ -714,17 +650,17 @@ public class PackageServiceImpl implements PackageService {
             packageRepository.terminatePackage(packageTerminateRequest, userId);
             return
                     new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            CommonResponseMessages.SUCCESSFULLY_TERMINATE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_TERMINATE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_TERMINATE_MESSAGE,
                             new TerminateResponse("Successfully terminate package request"),
-                            Instant.now()
-                    );
+                            Instant.now());
+
         } catch (ValidationFailedErrorExceptionHandler vfe) {
             throw new ValidationFailedErrorExceptionHandler("validation failed in the terminate package request", vfe.getValidationFailedResponses());
         } catch (TerminateFailedErrorExceptionHandler tfe) {
             throw new TerminateFailedErrorExceptionHandler(tfe.getMessage());
-        }catch (UnAuthenticateErrorExceptionHandler uae) {
+        } catch (UnAuthenticateErrorExceptionHandler uae) {
             throw new UnAuthenticateErrorExceptionHandler(uae.getMessage());
         } catch (Exception e) {
             throw new InternalServerErrorExceptionHandler("Something went wrong");
@@ -746,9 +682,9 @@ public class PackageServiceImpl implements PackageService {
             packageRepository.insertDayByDayAccommodations(packageId, packageInsertRequest.getDayAccommodations(), userId);
 
             return new CommonResponse<>(
-                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    CommonResponseMessages.SUCCESSFULLY_INSERT_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_INSERT_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_INSERT_MESSAGE,
                     new InsertResponse("Successfully insert package request"),
                     Instant.now());
 
@@ -800,9 +736,9 @@ public class PackageServiceImpl implements PackageService {
             packageRepository.updatePackageTravelTips(packageUpdateRequest.getPackageId(), packageUpdateRequest.getUpdatedTravelTips(), userId);
 
             return new CommonResponse<>(
-                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    CommonResponseMessages.SUCCESSFULLY_UPDATE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_UPDATE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_UPDATE_MESSAGE,
                     new UpdateResponse("Successfully update package request", packageUpdateRequest.getPackageId()),
                     Instant.now());
         } catch (ValidationFailedErrorExceptionHandler vfe) {
@@ -818,10 +754,10 @@ public class PackageServiceImpl implements PackageService {
 
     @Override
     public CommonResponse<PackageAllDetailsResponse> getPackageAllDetailsById(Long packageId) {
-        LOGGER.info("Start fetching all package details by package id from repository");
+        LOGGER.info("Start fetching all package details by package id : {} from repository", packageId);
         try {
             PackageAllDetailsResponse packageAllDetailsResponse = new PackageAllDetailsResponse();
-            PackageResponseDto packageDetailsById = getPackageDetailsById(String.valueOf(packageId)).getData();
+            PackageResponseDto packageDetailsById = getPackageDetailsById(packageId).getData();
 
             packageAllDetailsResponse.setPackageId(packageId);
             packageAllDetailsResponse.setPackageName(packageDetailsById.getPackageName());
@@ -854,28 +790,24 @@ public class PackageServiceImpl implements PackageService {
             packageAllDetailsResponse.setTravelTips(packageTravelTips);
 
             PackageDayAccommodationResponse dayToPackageDetailsByTourId =
-                    getDayToPackageDetailsByTourId(packageAllDetailsResponse.getTourId()).getData().stream().filter(data->data.getPackageId().equals(packageId)).findFirst().get();
-
+                    getDayToPackageDetailsByTourId(packageAllDetailsResponse.getTourId()).getData().stream().filter(data -> data.getPackageId().equals(packageId)).findFirst().get();
 
             packageAllDetailsResponse.setDayAccommodationResponses(dayToPackageDetailsByTourId);
 
-            return
-                    new CommonResponse<>(
+            return new CommonResponse<>(
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
                             packageAllDetailsResponse,
-                            Instant.now()
-                    );
+                            Instant.now());
 
-        } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching package : {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
         } catch (Exception e) {
-            LOGGER.error("Error occurred while fetching package: {}", e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch package from database");
+            LOGGER.error("Error occurred while fetching all package details by package id : {} , {}", packageId, e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch all package details by package id : " + packageId);
         } finally {
-            LOGGER.info("End fetching package all details by package id from repository");
+            LOGGER.info("End fetching all package details by package id : {} from repository", packageId);
         }
     }
 
@@ -887,10 +819,10 @@ public class PackageServiceImpl implements PackageService {
             packageIdAndPackageNameResponses.add(
                     new PackageIdAndPackageNameResponse(
                             packageForTerminateResponse.getPackageId(),
-                            packageForTerminateResponse.getPackageName()
-                    )
+                            packageForTerminateResponse.getPackageName())
             );
         }
+
         return new CommonResponse<>(
                 CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
                 CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
@@ -898,4 +830,5 @@ public class PackageServiceImpl implements PackageService {
                 packageIdAndPackageNameResponses,
                 Instant.now());
     }
+
 }
