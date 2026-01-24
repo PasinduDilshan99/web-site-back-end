@@ -191,6 +191,21 @@ public class SecurityConfig {
 //                        .requestMatchers("/api/v0/activity/update-activity").hasAuthority("ACTIVITY_UPDATE")
 //                        .requestMatchers("/api/v0/activity/activityId-and-activityName").hasAuthority("ACTIVITY_VIEW")
 
+                        // Blogs
+//                        .requestMatchers("/api/v0/blog/all").hasAuthority("BLOG_VIEW")
+//                        .requestMatchers("/api/v0/blog/active").hasAuthority("BLOG_VIEW")
+//                        .requestMatchers("/api/v0/blog/tags").hasAuthority("BLOG_TAG_VIEW")
+//                        .requestMatchers("/api/v0/blog/tags/*").hasAuthority("BLOG_TAG_VIEW")
+//                        .requestMatchers("/api/v0/blog/writer/*").hasAuthority("BLOG_VIEW")
+//                        .requestMatchers("/api/v0/blog/tag/*").hasAuthority("BLOG_VIEW")
+//                        .requestMatchers("/api/v0/blog/blog-details").hasAuthority("BLOG_VIEW")
+//                        .requestMatchers("/api/v0/blog/add-blog").hasAuthority("BLOG_CREATE")
+//                        .requestMatchers("/api/v0/blog/add-bookmark").hasAuthority("BLOG_BOOKMARK_CREATE")
+//                        .requestMatchers("/api/v0/blog/add-react").hasAuthority("BLOG_REACT_CREATE")
+//                        .requestMatchers("/api/v0/blog/add-comment-react").hasAuthority("BLOG_COMMENT_REACT_CREATE")
+//                        .requestMatchers("/api/v0/blog/add-comment").hasAuthority("BLOG_COMMENT_CREATE")
+
+
                                 .requestMatchers(PublicEndpoints.ENDPOINTS).permitAll()
                         .requestMatchers(AuthorizeEndPoints.ENDPOINTS).authenticated()
                         .anyRequest().permitAll()

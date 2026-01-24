@@ -10,11 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/v0/api/blog")
+@RequestMapping(path = "/api/v0/blog")
 public class BlogController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BlogController.class);
@@ -29,17 +28,17 @@ public class BlogController {
     @GetMapping(path = "/all")
     public ResponseEntity<CommonResponse<List<BlogResponse>>> getAllBlogs() {
         LOGGER.info("{} Start execute get all blogs {}", Constant.DOTS, Constant.DOTS);
-        ResponseEntity<CommonResponse<List<BlogResponse>>> response = blogService.getAllBlogs();
+        CommonResponse<List<BlogResponse>> response = blogService.getAllBlogs();
         LOGGER.info("{} End execute get all blogs {}", Constant.DOTS, Constant.DOTS);
-        return response;
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping(path = "/active")
     public ResponseEntity<CommonResponse<List<BlogResponse>>> getAllActiveBlogs() {
-        LOGGER.info("{} Start execute get all active blogs {}", Constant.DOTS, Constant.DOTS);
-        ResponseEntity<CommonResponse<List<BlogResponse>>> response = blogService.getAllActiveBlogs();
-        LOGGER.info("{} End execute get all active blogs {}", Constant.DOTS, Constant.DOTS);
-        return response;
+        LOGGER.info("{} Start execute get active blogs {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<BlogResponse>> response = blogService.getAllActiveBlogs();
+        LOGGER.info("{} End execute get active blogs {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping(path = "/tags")
@@ -52,7 +51,7 @@ public class BlogController {
 
     @GetMapping(path = "/tags/{blogId}")
     public ResponseEntity<CommonResponse<List<BlogTagResponse>>> getAllBlogTagsByBLogId(@PathVariable Long blogId) {
-        LOGGER.info("{} Start execute get all blogs tags by blog id{}", Constant.DOTS, Constant.DOTS);
+        LOGGER.info("{} Start execute get all blogs tags by blog id {}", Constant.DOTS, Constant.DOTS);
         CommonResponse<List<BlogTagResponse>> response = blogService.getAllBlogTagsByBLogId(blogId);
         LOGGER.info("{} End execute get all blogs tags by blog id {}", Constant.DOTS, Constant.DOTS);
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -82,7 +81,7 @@ public class BlogController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping(path = "/create")
+    @PostMapping(path = "/add-blog")
     public ResponseEntity<CommonResponse<InsertResponse>> createBlog(@RequestBody CreateBlogRequest createBlogRequest) {
         LOGGER.info("{} Start execute create blog {}", Constant.DOTS, Constant.DOTS);
         CommonResponse<InsertResponse> response = blogService.createBlog(createBlogRequest);
@@ -90,7 +89,7 @@ public class BlogController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping(path = "/bookmark")
+    @PostMapping(path = "/add-bookmark")
     public ResponseEntity<CommonResponse<InsertResponse>> addBookmarkToBlog(@RequestBody BlogBookmarkRequest blogBookmarkRequest) {
         LOGGER.info("{} Start execute add bookmark to blog {}", Constant.DOTS, Constant.DOTS);
         CommonResponse<InsertResponse> response = blogService.addBookmarkToBlog(blogBookmarkRequest);
@@ -98,7 +97,7 @@ public class BlogController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping(path = "/react")
+    @PostMapping(path = "/add-react")
     public ResponseEntity<CommonResponse<InsertResponse>> addReactToBlog(@RequestBody BlogReactRequest blogReactRequest) {
         LOGGER.info("{} Start execute add react to blog {}", Constant.DOTS, Constant.DOTS);
         CommonResponse<InsertResponse> response = blogService.addReactToBlog(blogReactRequest);
@@ -106,7 +105,7 @@ public class BlogController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping(path = "/comment-react")
+    @PostMapping(path = "/add-comment-react")
     public ResponseEntity<CommonResponse<InsertResponse>> addReactToBlogComment(@RequestBody BlogCommentReactRequest blogCommentReactRequest) {
         LOGGER.info("{} Start execute add react to blog comment {}", Constant.DOTS, Constant.DOTS);
         CommonResponse<InsertResponse> response = blogService.addReactToBlogComment(blogCommentReactRequest);
@@ -114,13 +113,12 @@ public class BlogController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping(path = "/comment")
+    @PostMapping(path = "/add-comment")
     public ResponseEntity<CommonResponse<InsertResponse>> addCommentToBlog(@RequestBody BlogCommentRequest blogCommentRequest) {
         LOGGER.info("{} Start execute add comment to blog {}", Constant.DOTS, Constant.DOTS);
         CommonResponse<InsertResponse> response = blogService.addCommentToBlog(blogCommentRequest);
         LOGGER.info("{} End execute add comment to blog {}", Constant.DOTS, Constant.DOTS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
 
 }

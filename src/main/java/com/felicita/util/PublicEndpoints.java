@@ -127,5 +127,20 @@ public class PublicEndpoints {
             "/api/v0/activity/update-activity",
             "/api/v0/activity/activityId-and-activityName",
 
+            // Blogs
+            "/api/v0/blog/all",
+            "/api/v0/blog/active",
+            "/api/v0/blog/tags",
+            "/api/v0/blog/tags/*",
+            "/api/v0/blog/writer/*",
+            "/api/v0/blog/tag/*",
+            "/api/v0/blog/blog-details",
+            "/api/v0/blog/add-blog",
+            "/api/v0/blog/add-bookmark",
+            "/api/v0/blog/add-react",
+            "/api/v0/blog/add-comment-react",
+            "/api/v0/blog/add-comment",
+
+
     };
 }

@@ -7,14 +7,9 @@ import com.felicita.exception.DataAccessErrorExceptionHandler;
 import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InsertFailedErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
-import com.felicita.model.dto.BlogCommentDto;
-import com.felicita.model.dto.BlogImageDto;
-import com.felicita.model.dto.BlogLikeDto;
 import com.felicita.model.request.*;
 import com.felicita.model.response.*;
 import com.felicita.queries.BlogQueries;
-import com.felicita.queries.DestinationQueries;
-import com.felicita.queries.HistoryManagementQueries;
 import com.felicita.repository.BlogRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,11 +21,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -51,13 +43,12 @@ public class BlogRepositoryImpl implements BlogRepository {
         String GET_ALL_BLOGS = BlogQueries.GET_ALL_BLOGS;
 
         try {
-            LOGGER.info("Executing query to fetch all blogs...");
+            LOGGER.info("Executing query to fetch all blogs");
 
-            // Use jdbcTemplate to fetch the result
             List<BlogResponse> results = jdbcTemplate.query(GET_ALL_BLOGS, (rs, rowNum) -> {
                 BlogResponse blog = new BlogResponse();
                 ObjectMapper objectMapper = new ObjectMapper();
-                objectMapper.findAndRegisterModules(); // for LocalDateTime parsing
+                objectMapper.findAndRegisterModules();
 
                 blog.setBlogId(rs.getLong("blog_id"));
                 blog.setTitle(rs.getString("title"));
@@ -148,7 +139,7 @@ public class BlogRepositoryImpl implements BlogRepository {
 
                         BlogResponse response = new BlogResponse();
                         ObjectMapper objectMapper = new ObjectMapper();
-                        objectMapper.findAndRegisterModules(); // For Java time parsing
+                        objectMapper.findAndRegisterModules();
 
                         response.setBlogId(rs.getLong("blog_id"));
                         response.setTitle(rs.getString("title"));
@@ -192,7 +183,6 @@ public class BlogRepositoryImpl implements BlogRepository {
                             }
                         }
 
-                        // Parse comments JSON
                         String commentsJson = rs.getString("comments");
                         if (commentsJson != null) {
                             try {
@@ -237,9 +227,9 @@ public class BlogRepositoryImpl implements BlogRepository {
                 ps.setString(1, createBlogRequest.getTitle());
                 ps.setString(2, createBlogRequest.getSubTitle());
                 ps.setString(3, createBlogRequest.getDescription());
-                ps.setLong(4, userId); // writer_id
-                ps.setLong(5, userId); // created_by
-                ps.setLong(6, userId); // updated_by
+                ps.setLong(4, userId);
+                ps.setLong(5, userId);
+                ps.setLong(6, userId);
                 return ps;
             }, keyHolder);
 
@@ -271,12 +261,12 @@ public class BlogRepositoryImpl implements BlogRepository {
         String GET_BLOGS_BY_WRITER = BlogQueries.GET_BLOGS_BY_WRITER;
 
         try {
-            LOGGER.info("Executing query to fetch all blogs...");
+            LOGGER.info("Executing query to fetch blogs by writer.");
 
             List<BlogResponse> results = jdbcTemplate.query(GET_BLOGS_BY_WRITER, new Object[]{writerName},(rs, rowNum) -> {
                 BlogResponse blog = new BlogResponse();
                 ObjectMapper objectMapper = new ObjectMapper();
-                objectMapper.findAndRegisterModules(); // for LocalDateTime parsing
+                objectMapper.findAndRegisterModules();
 
                 blog.setBlogId(rs.getLong("blog_id"));
                 blog.setTitle(rs.getString("title"));
@@ -340,15 +330,15 @@ public class BlogRepositoryImpl implements BlogRepository {
                 return blog;
             });
 
-            LOGGER.info("Successfully fetched {} blogs.", results.size());
+            LOGGER.info("Successfully fetched {} blogs by writer.", results.size());
             return results;
 
         } catch (DataAccessException ex) {
-            LOGGER.error("Database error while fetching blogs: {}", ex.getMessage(), ex);
-            throw new DataAccessErrorExceptionHandler("Failed to fetch blogs from database");
+            LOGGER.error("Database error while fetching blogs by writer: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler("Failed to fetch blogs by writer from database");
         } catch (Exception ex) {
-            LOGGER.error("Unexpected error while fetching blogs: {}", ex.getMessage(), ex);
-            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching blogs");
+            LOGGER.error("Unexpected error while fetching blogs by writer: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching blogs by writer");
         }
     }
 
@@ -376,14 +366,12 @@ public class BlogRepositoryImpl implements BlogRepository {
         try {
             LOGGER.info("Fetching blogs for IDs: {}", blogIds);
 
-            // Dynamically build placeholders for IN clause
             String inSql = blogIds.stream()
                     .map(id -> "?")
                     .collect(Collectors.joining(", "));
 
             String sql = BlogQueries.GET_BLOGS_BY_BLOG_IDS.replace(":ids", inSql);
 
-            // Convert List<Long> to Object[] for JdbcTemplate
             Object[] params = blogIds.toArray();
 
             return jdbcTemplate.query(
@@ -392,7 +380,7 @@ public class BlogRepositoryImpl implements BlogRepository {
                     (rs, rowNum) -> {
                         BlogResponse blog = new BlogResponse();
                         ObjectMapper objectMapper = new ObjectMapper();
-                        objectMapper.findAndRegisterModules(); // LocalDateTime support
+                        objectMapper.findAndRegisterModules();
 
                         blog.setBlogId(rs.getLong("blog_id"));
                         blog.setTitle(rs.getString("title"));
@@ -446,11 +434,11 @@ public class BlogRepositoryImpl implements BlogRepository {
             );
 
         } catch (DataAccessException ex) {
-            LOGGER.error("Database error while fetching blogs: {}", ex.getMessage(), ex);
-            throw new DataAccessErrorExceptionHandler("Failed to fetch blogs from database");
+            LOGGER.error("Database error while fetching blogs for ids: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler("Failed to fetch blogs for ids from database");
         } catch (Exception ex) {
-            LOGGER.error("Unexpected error while fetching blogs: {}", ex.getMessage(), ex);
-            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching blogs");
+            LOGGER.error("Unexpected error while fetching blogs for ids: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching blogs for ids");
         }
     }
 
@@ -573,9 +561,9 @@ public class BlogRepositoryImpl implements BlogRepository {
         try {
             int rowsAffected = jdbcTemplate.update(
                     REMOVE_BLOG_BOOKMARK,
-                    userId,                               // terminated_by
-                    blogBookmarkRequest.getBlogId(),      // blog_id
-                    userId                                // user_id
+                    userId,
+                    blogBookmarkRequest.getBlogId(),
+                    userId
             );
 
             if (rowsAffected == 0) {
@@ -613,10 +601,10 @@ public class BlogRepositoryImpl implements BlogRepository {
         try {
             int rowsAffected = jdbcTemplate.update(
                     BlogQueries.ADD_REACTION_TO_BLOG,
-                    blogReactRequest.getBlogId(),   // blog_id
-                    userId,                         // user_id
-                    userId,                         // created_by
-                    blogReactRequest.getReactType() // reaction name (Like, Love, Haha)
+                    blogReactRequest.getBlogId(),
+                    userId,
+                    userId,
+                    blogReactRequest.getReactType()
             );
 
             if (rowsAffected == 0) {
@@ -644,9 +632,9 @@ public class BlogRepositoryImpl implements BlogRepository {
         try {
             int rowsAffected = jdbcTemplate.update(
                     BlogQueries.REMOVE_BLOG_REACTION,
-                    userId,                         // terminated_by
-                    blogReactRequest.getBlogId(),   // blog_id
-                    userId                          // user_id
+                    userId,
+                    blogReactRequest.getBlogId(),
+                    userId
             );
 
             if (rowsAffected == 0) {
@@ -680,11 +668,11 @@ public class BlogRepositoryImpl implements BlogRepository {
         try {
             int rowsAffected = jdbcTemplate.update(
                     BlogQueries.INSERT_BLOG_COMMENT,
-                    blogCommentRequest.getBlogId(),   // blog_id
-                    userId,                           // user_id
-                    blogCommentRequest.getParentId(), // parent_comment_id (nullable)
-                    blogCommentRequest.getComment(),  // comment text
-                    userId                            // created_by
+                    blogCommentRequest.getBlogId(),
+                    userId,
+                    blogCommentRequest.getParentId(),
+                    blogCommentRequest.getComment(),
+                    userId
             );
 
             if (rowsAffected == 0) {
@@ -744,10 +732,10 @@ public class BlogRepositoryImpl implements BlogRepository {
         try {
             int rowsAffected = jdbcTemplate.update(
                     BlogQueries.ADD_REACTION_TO_BLOG_COMMENT,
-                    blogCommentReactRequest.getCommentId(), // comment_id
-                    userId,                                // user_id
-                    userId,                                // created_by
-                    blogCommentReactRequest.getReactType() // reaction name
+                    blogCommentReactRequest.getCommentId(),
+                    userId,
+                    userId,
+                    blogCommentReactRequest.getReactType()
             );
 
             if (rowsAffected == 0) {
@@ -770,16 +758,15 @@ public class BlogRepositoryImpl implements BlogRepository {
         }
     }
 
-
     @Override
     public void removeReactToBlogComment(BlogCommentReactRequest blogCommentReactRequest, Long userId) {
         String REMOVE_BLOG_COMMENT_REACTION = BlogQueries.REMOVE_BLOG_COMMENT_REACTION;
         try {
             int rowsAffected = jdbcTemplate.update(
                     REMOVE_BLOG_COMMENT_REACTION,
-                    userId,                                 // terminated_by
-                    blogCommentReactRequest.getCommentId(), // comment_id
-                    userId                                  // user_id
+                    userId,
+                    blogCommentReactRequest.getCommentId(),
+                    userId
             );
 
             if (rowsAffected == 0) {
@@ -801,7 +788,6 @@ public class BlogRepositoryImpl implements BlogRepository {
             throw ex;
         }
     }
-
 
     @Override
     public void changeReactToBlogComment(BlogCommentReactRequest blogCommentReactRequest, Long userId) {
@@ -835,7 +821,6 @@ public class BlogRepositoryImpl implements BlogRepository {
             throw new InternalServerErrorExceptionHandler("Failed to fetch blog tags from database");
         }
     }
-
 
     public void insertImages(CreateBlogRequest createBlogRequest, Long userId, Long blogId) {
         String INSERT_BLOG_IMAGES = BlogQueries.INSERT_BLOG_IMAGES;

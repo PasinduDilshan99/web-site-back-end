@@ -5,10 +5,10 @@ import com.felicita.model.response.BlogAlreadyReactRespose;
 import com.felicita.model.response.BlogCommentAlreadyReactResponse;
 import com.felicita.model.response.BlogResponse;
 import com.felicita.model.response.BlogTagResponse;
-
 import java.util.List;
 
 public interface BlogRepository {
+
     List<BlogResponse> getAllBlogs();
 
     BlogResponse getBlogDetailsById(BlogDetailsRequest blogDetailsRequest);
@@ -54,4 +54,5 @@ public interface BlogRepository {
     void changeReactToBlogComment(BlogCommentReactRequest blogCommentReactRequest, Long userId);
 
     List<BlogTagResponse> getAllBlogTagsByBLogId(Long blogId);
+
 }
