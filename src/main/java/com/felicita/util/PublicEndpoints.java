@@ -99,6 +99,7 @@ public class PublicEndpoints {
             "/api/v0/package/package-details/*",
             "/api/v0/package/package-compare/*",
             "/api/v0/package/package-extra-details/*",
+            "/api/v0/package/package-schedules/*",
             "/api/v0/package/package-schedules-details/*",
             "/api/v0/package/package-for-terminate",
             "/api/v0/package/terminate-package",
@@ -107,6 +108,24 @@ public class PublicEndpoints {
             "/api/v0/package/package-all-details/*",
             "/api/v0/package/packageId-and-packageName",
 
+            // Activities
+            "/api/v0/activity/all",
+            "/api/v0/activity/activities",
+            "/api/v0/activity/active",
+            "/api/v0/activity/category",
+            "/api/v0/activity/active-category",
+            "/api/v0/activity/*",
+            "/api/v0/activity/reviews",
+            "/api/v0/activity/reviews/*",
+            "/api/v0/activity/history",
+            "/api/v0/activity/history/*",
+            "/api/v0/activity/history-images",
+            "/api/v0/activity/history-images/*",
+            "/api/v0/activity/activity-for-terminate",
+            "/api/v0/activity/terminate-activity",
+            "/api/v0/activity/add-activity",
+            "/api/v0/activity/update-activity",
+            "/api/v0/activity/activityId-and-activityName",
 
     };
 }

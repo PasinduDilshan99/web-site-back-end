@@ -9,8 +9,6 @@ import com.felicita.model.enums.CommonStatus;
 import com.felicita.model.request.*;
 import com.felicita.model.response.*;
 import com.felicita.queries.ActivitiesQueries;
-import com.felicita.queries.DestinationQueries;
-import com.felicita.queries.PartnerQueries;
 import com.felicita.repository.ActivitiesRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,12 +19,9 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.*;
-
-import static com.felicita.queries.DestinationQueries.INSERT_DESTINATION_IMAGES_REQUEST;
 
 @Repository
 public class ActivitiesRepositoryImpl implements ActivitiesRepository {
@@ -34,12 +29,12 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(ActivitiesRepositoryImpl.class);
 
     private final JdbcTemplate jdbcTemplate;
-    private final ObjectMapper objectMapper;  // ADD THIS
+    private final ObjectMapper objectMapper;
 
     @Autowired
     public ActivitiesRepositoryImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.objectMapper = new ObjectMapper();  // ADD THIS
+        this.objectMapper = new ObjectMapper();
     }
 
     @Override
@@ -54,7 +49,7 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
         String GET_ALL_ACTIVITY_CATEGORIES = ActivitiesQueries.GET_ALL_ACTIVITY_CATEGORIES;
 
         try {
-            LOGGER.info("Executing query to fetch all activity categories...");
+            LOGGER.info("Executing query to fetch all activity categories.");
 
             // Use a LinkedHashMap to maintain insertion order and group images under categories
             Map<Integer, ActivityCategoryResponseDto> categoryMap = new LinkedHashMap<>();
@@ -111,11 +106,11 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
     }
 
     @Override
-    public List<ActivityReviewDetailsResponse> getActivityReviewDetailsById(String activityId) {
+    public List<ActivityReviewDetailsResponse> getActivityReviewDetailsById(Long activityId) {
         String GET_ACTIVITY_REVIEW_DETAILS_BY_ID = ActivitiesQueries.GET_ACTIVITY_REVIEW_DETAILS_BY_ID;
 
         try {
-            LOGGER.info("Executing query to fetch activity review details for activityId={}", activityId);
+            LOGGER.info("Executing query to fetch activity review details for activityId : {}", activityId);
 
             // Map to aggregate nested data
             Map<Long, ActivityReviewDetailsResponse> reviewMap = new LinkedHashMap<>();
@@ -239,7 +234,7 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
         String GET_ACTIVITY_REVIEW_DETAILS = ActivitiesQueries.GET_ACTIVITY_REVIEW_DETAILS;
 
         try {
-            LOGGER.info("Executing query to fetch all activity review details...");
+            LOGGER.info("Executing query to fetch all activity review details.");
 
             // Map to store reviews by reviewId for aggregating nested lists
             Map<Long, ActivityReviewDetailsResponse> reviewMap = new LinkedHashMap<>();
@@ -354,7 +349,7 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
     }
 
     @Override
-    public ActivityResponseDto getActivityById(String activityId) {
+    public ActivityResponseDto getActivityById(Long activityId) {
         String GET_ACTIVITY_DETAILS_BY_ID = ActivitiesQueries.GET_ACTIVITY_DETAILS_BY_ID;
 
         try {
@@ -422,11 +417,11 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
     }
 
     @Override
-    public List<ActivityHistoryDetailsResponse> getActivityHistoryDetailsById(String activityId) {
+    public List<ActivityHistoryDetailsResponse> getActivityHistoryDetailsById(Long activityId) {
         String GET_ACTIVITY_HISTORY_DETAILS_BY_ID = ActivitiesQueries.GET_ACTIVITY_HISTORY_DETAILS_BY_ID;
 
         try {
-            LOGGER.info("Fetching activity history details for activityId: {}", activityId);
+            LOGGER.info("Fetching activity history details for activityId : {} ", activityId);
 
             Map<Long, ActivityHistoryDetailsResponse> historyMap = new LinkedHashMap<>();
 
@@ -491,7 +486,7 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
                     historyMap.put(historyId, response);
                 }
 
-                // 🖼️ Add image if exists
+                // Add image if exists
                 Long imageId = rs.getLong("image_id");
                 if (imageId != 0) {
                     ActivityHistoryDetailsResponse.ImageInfo image = ActivityHistoryDetailsResponse.ImageInfo.builder()
@@ -523,13 +518,12 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
         }
     }
 
-
     @Override
     public List<ActivityHistoryDetailsResponse> getAllActivityHistoryDetails() {
         String GET_ACTIVITY_HISTORY_DETAILS = ActivitiesQueries.GET_ACTIVITY_HISTORY_DETAILS;
 
         try {
-            LOGGER.info("Executing query to fetch all activity history details...");
+            LOGGER.info("Executing query to fetch all activity history details.");
 
             Map<Long, ActivityHistoryDetailsResponse> historyMap = new LinkedHashMap<>();
 
@@ -627,13 +621,12 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
         }
     }
 
-
     @Override
     public List<ActivityHistoryImageResponse> getAllActivityHistoryImages() {
         String GET_ACTIVITY_HISTORY_IMAGES = ActivitiesQueries.GET_ACTIVITY_HISTORY_IMAGES;
 
         try {
-            LOGGER.info("Executing query to fetch all activity history images...");
+            LOGGER.info("Executing query to fetch all activity history images.");
 
             List<ActivityHistoryImageResponse> result = new ArrayList<>();
 
@@ -706,7 +699,7 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
     }
 
     @Override
-    public List<ActivityHistoryImageResponse> getActivityHistoryImagesById(String activityId) {
+    public List<ActivityHistoryImageResponse> getActivityHistoryImagesById(Long activityId) {
         String GET_ACTIVITY_HISTORY_IMAGES_BY_ID = ActivitiesQueries.GET_ACTIVITY_HISTORY_IMAGES_BY_ID;
 
         try {
@@ -851,7 +844,7 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
         try {
             return jdbcTemplate.query(
                     GET_ACTIVE_ACTIVITIES_FOR_TERMINATE,
-                    new Object[]{CommonStatus.ACTIVE.toString()}, // parameter for cs.name = ?
+                    new Object[]{CommonStatus.ACTIVE.toString()},
                     (rs, rowNum) -> ActivityForTerminateResponse.builder()
                             .activityId(rs.getLong("id"))
                             .activityName(rs.getString("name"))
@@ -860,6 +853,9 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
         } catch (DataAccessException e) {
             LOGGER.error("Failed to fetch activities for terminate: ", e);
             throw new InternalServerErrorExceptionHandler("Failed to fetch activities");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching activities for terminate: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching activities for terminate");
         }
     }
 
@@ -895,15 +891,15 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
                 ps.setString(3, activityInsertRequest.getDescription());
                 ps.setString(4, activityInsertRequest.getActivitiesCategory());
                 ps.setBigDecimal(5, activityInsertRequest.getDurationHours());
-                ps.setObject(6, activityInsertRequest.getAvailableFrom()); // LocalTime
-                ps.setObject(7, activityInsertRequest.getAvailableTo());   // LocalTime
+                ps.setObject(6, activityInsertRequest.getAvailableFrom());
+                ps.setObject(7, activityInsertRequest.getAvailableTo());
                 ps.setBigDecimal(8, activityInsertRequest.getPriceLocal());
                 ps.setBigDecimal(9, activityInsertRequest.getPriceForeigners());
                 ps.setInt(10, activityInsertRequest.getMinParticipate());
                 ps.setInt(11, activityInsertRequest.getMaxParticipate());
                 ps.setString(12, activityInsertRequest.getSeason());
                 ps.setString(13, activityInsertRequest.getStatus());
-                ps.setLong(14, userId); // created_by (from logged-in user)
+                ps.setLong(14, userId);
 
                 return ps;
             }, keyHolder);
@@ -923,7 +919,6 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
             throw new InternalServerErrorExceptionHandler("Failed to insert activity");
         }
     }
-
 
     @Override
     public void insertActivityImages(
@@ -948,7 +943,7 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
                         ps.setString(3, image.getDescription());
                         ps.setString(4, image.getImageUrl());
                         ps.setString(5, image.getStatus());
-                        ps.setLong(6, userId); // created_by from logged-in user
+                        ps.setLong(6, userId);
                     }
             );
 
@@ -961,7 +956,6 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
             throw new InternalServerErrorExceptionHandler("Failed to insert activity images");
         }
     }
-
 
     @Override
     public void insertActivityRequirements(
@@ -987,14 +981,13 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
                         ps.setString(4, req.getDescription());
                         ps.setString(5, req.getStatus());
                         ps.setString(6, req.getColor());
-                        ps.setLong(7, userId); // created_by from logged-in user
+                        ps.setLong(7, userId);
                     }
             );
 
         } catch (DataAccessException dae) {
             LOGGER.error("DB error while inserting activity requirements", dae);
             throw new InsertFailedErrorExceptionHandler(dae.getMessage());
-
         } catch (Exception e) {
             LOGGER.error("Failed to insert activity requirements", e);
             throw new InternalServerErrorExceptionHandler("Failed to insert activity requirements");
@@ -1008,25 +1001,25 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
 
         try {
             jdbcTemplate.update(sql,
-                    request.getDestinationId(),                       // 1
-                    request.getName(),                                // 2
-                    request.getDescription(),                         // 3
-                    request.getActivitiesCategory(),                 // 4
-                    request.getDurationHours(),                       // 5
+                    request.getDestinationId(),
+                    request.getName(),
+                    request.getDescription(),
+                    request.getActivitiesCategory(),
+                    request.getDurationHours(),
                     request.getAvailableFrom() != null
                             ? Time.valueOf(request.getAvailableFrom())
-                            : null,                                    // 6
+                            : null,
                     request.getAvailableTo() != null
                             ? Time.valueOf(request.getAvailableTo())
-                            : null,                                    // 7
-                    request.getPriceLocal(),                          // 8
-                    request.getPriceForeigners(),                     // 9
-                    request.getMinParticipate(),                      // 10
-                    request.getMaxParticipate(),                      // 11
-                    request.getSeason(),                              // 12
-                    request.getStatus(),                              // 13 → used inside subquery
-                    userId,                                           // 14 → updated_by
-                    request.getActivityId()                           // 15 → WHERE id
+                            : null,
+                    request.getPriceLocal(),
+                    request.getPriceForeigners(),
+                    request.getMinParticipate(),
+                    request.getMaxParticipate(),
+                    request.getSeason(),
+                    request.getStatus(),
+                    userId,
+                    request.getActivityId()
             );
 
         } catch (DataAccessException dae) {
@@ -1038,7 +1031,6 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
             throw new InternalServerErrorExceptionHandler("Failed to update activity");
         }
     }
-
 
     @Override
     public void removeActivityImages(List<Long> removeImagesIds, Long userId) {
@@ -1090,7 +1082,7 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
                                      Long userId) {
 
         if (updatedImages == null || updatedImages.isEmpty()) {
-            return; // nothing to update
+            return;
         }
 
         try {
@@ -1098,26 +1090,24 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
 
                 jdbcTemplate.update(
                         ActivitiesQueries.UPDATE_ACTIVITY_IMAGE,
-                        image.getName(),            // 1
-                        image.getDescription(),     // 2
-                        image.getImageUrl(),        // 3
-                        image.getStatus(),          // 4 (status name)
-                        userId,                     // 5 (updated_by)
-                        image.getImageId(),         // 6 (WHERE id)
-                        activityId                  // 7 (safety check)
+                        image.getName(),
+                        image.getDescription(),
+                        image.getImageUrl(),
+                        image.getStatus(),
+                        userId,
+                        image.getImageId(),
+                        activityId
                 );
             }
 
         } catch (DataAccessException dae) {
             LOGGER.error("Database error while updating activity images", dae);
             throw new UpdateFailedErrorExceptionHandler(dae.getMessage());
-
         } catch (Exception e) {
             LOGGER.error("Failed to update activity images", e);
             throw new InternalServerErrorExceptionHandler("Failed to update activity images");
         }
     }
-
 
     @Override
     public void updateActivityRequirements(Long activityId,
@@ -1125,7 +1115,7 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
                                            Long userId) {
 
         if (updatedRequirements == null || updatedRequirements.isEmpty()) {
-            return; // nothing to update
+            return;
         }
 
         try {
@@ -1133,28 +1123,25 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
 
                 jdbcTemplate.update(
                         ActivitiesQueries.UPDATE_ACTIVITY_REQUIREMENT,
-                        req.getName(),               // 1
-                        req.getValue(),              // 2
-                        req.getDescription(),        // 3
-                        req.getColor(),              // 4
-                        req.getStatus(),             // 5 (status name)
-                        userId,                      // 6
-                        req.getRequirementId(),      // 7
-                        activityId                   // 8 (safety)
+                        req.getName(),
+                        req.getValue(),
+                        req.getDescription(),
+                        req.getColor(),
+                        req.getStatus(),
+                        userId,
+                        req.getRequirementId(),
+                        activityId
                 );
             }
 
         } catch (DataAccessException dae) {
             LOGGER.error("Database error while updating activity requirements", dae);
             throw new UpdateFailedErrorExceptionHandler(dae.getMessage());
-
         } catch (Exception e) {
             LOGGER.error("Failed to update activity requirements", e);
             throw new InternalServerErrorExceptionHandler("Failed to update activity requirements");
         }
     }
-
-
 
     private LocalDateTime getLocalDateTime(ResultSet rs, String column) {
         try {
@@ -1173,7 +1160,6 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
             return null;
         }
     }
-
 
     private class ActivityRowMapper implements RowMapper<ActivityResponseDto> {
         @Override
@@ -1247,8 +1233,8 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
                 LOGGER.error("Error parsing JSON data for activity id: {}", activity.getId(), e);
                 throw new SQLException("Error parsing JSON data", e);
             }
-
             return activity;
         }
     }
+
 }

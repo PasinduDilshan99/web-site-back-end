@@ -4,27 +4,27 @@ import com.felicita.model.dto.ActivityCategoryResponseDto;
 import com.felicita.model.dto.ActivityResponseDto;
 import com.felicita.model.request.*;
 import com.felicita.model.response.*;
-
 import java.util.List;
 
 public interface ActivitiesRepository {
+
     List<ActivityResponseDto> getAllActivities();
 
     List<ActivityCategoryResponseDto> getAllActivityCategories();
 
-    List<ActivityReviewDetailsResponse> getActivityReviewDetailsById(String activityId);
+    List<ActivityReviewDetailsResponse> getActivityReviewDetailsById(Long activityId);
 
     List<ActivityReviewDetailsResponse> getAllActivityReviewDetails();
 
-    ActivityResponseDto getActivityById(String activityId);
+    ActivityResponseDto getActivityById(Long activityId);
 
-    List<ActivityHistoryDetailsResponse> getActivityHistoryDetailsById(String activityId);
+    List<ActivityHistoryDetailsResponse> getActivityHistoryDetailsById(Long activityId);
 
     List<ActivityHistoryDetailsResponse> getAllActivityHistoryDetails();
 
     List<ActivityHistoryImageResponse> getAllActivityHistoryImages();
 
-    List<ActivityHistoryImageResponse> getActivityHistoryImagesById(String activityId);
+    List<ActivityHistoryImageResponse> getActivityHistoryImagesById(Long activityId);
 
     ActivityWithParamsResponse getActivitiesWithParams(ActivityDataRequest activityDataRequest);
 
@@ -48,4 +48,5 @@ public interface ActivitiesRepository {
     void updateActivityImages(Long activityId, List<ActivityImageUpdateRequest> updatedImages, Long userId);
 
     void updateActivityRequirements(Long activityId, List<ActivityRequirementsUpdateRequest> updatedRequirements, Long userId);
+
 }
