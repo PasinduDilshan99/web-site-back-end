@@ -70,6 +70,7 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
                     category.setUpdatedBy(rs.getObject("category_updated_by", Integer.class));
                     category.setTerminatedAt(rs.getTimestamp("category_terminated_at"));
                     category.setTerminatedBy(rs.getObject("category_terminated_by", Integer.class));
+                    category.setNumberOfActivities(rs.getInt("activities_count"));
                     category.setImages(new ArrayList<>());
 
                     categoryMap.put(categoryId, category);

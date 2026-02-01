@@ -32,6 +32,8 @@ public class PackageAllDetailsResponse {
     private BigDecimal pricePerPerson;
     private String packageStatus;
     private String packageTypeName;
+    private String startLocation;
+    private Integer duration;
 
     private Long tourId;
     private String tourName;

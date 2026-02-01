@@ -2,17 +2,16 @@ package com.felicita.controller;
 
 import com.felicita.model.response.CommonResponse;
 import com.felicita.model.response.GalleryResponse;
-import com.felicita.model.response.PartnerResponse;
 import com.felicita.service.GalleryService;
 import com.felicita.util.Constant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.util.List;
 
 @RestController
@@ -31,17 +30,17 @@ public class GalleryController {
     @GetMapping(path = "/all")
     public ResponseEntity<CommonResponse<List<GalleryResponse>>> getAllImages(){
         LOGGER.info("{} Start execute get all images {}", Constant.DOTS, Constant.DOTS);
-        ResponseEntity<CommonResponse<List<GalleryResponse>>> response = galleryService.getAllImages();
+        CommonResponse<List<GalleryResponse>> response = galleryService.getAllImages();
         LOGGER.info("{} End execute get all images {}", Constant.DOTS, Constant.DOTS);
-        return response;
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping(path = "/open")
+    @GetMapping(path = "/active")
     public ResponseEntity<CommonResponse<List<GalleryResponse>>> getOpenImages(){
-        LOGGER.info("{} Start execute get all open images {}", Constant.DOTS, Constant.DOTS);
-        ResponseEntity<CommonResponse<List<GalleryResponse>>> response = galleryService.getOpenImages();
-        LOGGER.info("{} End execute get all open images {}", Constant.DOTS, Constant.DOTS);
-        return response;
+        LOGGER.info("{} Start execute get active images {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<GalleryResponse>> response = galleryService.getOpenImages();
+        LOGGER.info("{} End execute get active images {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 }

@@ -3,9 +3,7 @@ package com.felicita.repository.impl;
 import com.felicita.exception.DataAccessErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
 import com.felicita.model.response.GalleryResponse;
-import com.felicita.model.response.PartnerResponse;
 import com.felicita.queries.GalleryQueries;
-import com.felicita.queries.PartnerQueries;
 import com.felicita.repository.GalleryRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
 
 @Repository
@@ -32,7 +29,7 @@ public class GalleryRepositoryImpl implements GalleryRepository {
     public List<GalleryResponse> getAllImages() {
         String GET_ALL_GALLERY_IMAGES = GalleryQueries.GET_ALL_GALLERY_IMAGES;
         try {
-            LOGGER.info("Executing query to fetch all images...");
+            LOGGER.info("Executing query to fetch all images.");
 
             List<GalleryResponse> results = jdbcTemplate.query(GET_ALL_GALLERY_IMAGES, (rs, rowNum) -> {
                 GalleryResponse gallery = new GalleryResponse();

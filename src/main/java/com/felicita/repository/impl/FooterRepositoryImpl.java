@@ -29,7 +29,7 @@ public class FooterRepositoryImpl implements FooterRepository {
     public List<FooterSectionDto> getAllFooterData() {
         String GET_ALL_FOOTER_DATA = FooterQueries.GET_ALL_FOOTER_DATA;
         try {
-            LOGGER.info("Executing query to fetch all footer data...");
+            LOGGER.info("Executing query to fetch all footer data.");
 
             return jdbcTemplate.query(GET_ALL_FOOTER_DATA, (rs, rowNum) -> {
                 FooterSectionDto section = new FooterSectionDto();
@@ -48,7 +48,6 @@ public class FooterRepositoryImpl implements FooterRepository {
                 subItem.setLinkUrl(rs.getString("sub_item_url"));
                 subItem.setStatus(rs.getString("sub_item_status"));
 
-                // You may need to group subItems under their section later in service
                 section.setSubItems(List.of(subItem));
 
                 return section;
@@ -67,7 +66,7 @@ public class FooterRepositoryImpl implements FooterRepository {
     public List<FooterOtherDto> getAllFooterOthersData() {
         String GET_ALL_OTHERS_FOOTER_DATA = FooterQueries.GET_ALL_OTHERS_FOOTER_DATA;
         try {
-            LOGGER.info("Executing query to fetch footer others data...");
+            LOGGER.info("Executing query to fetch footer others data.");
 
             return jdbcTemplate.query(GET_ALL_OTHERS_FOOTER_DATA, (rs, rowNum) -> {
                 FooterOtherDto dto = new FooterOtherDto();

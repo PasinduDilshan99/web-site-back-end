@@ -1,9 +1,7 @@
 package com.felicita.repository.impl;
 
 import com.felicita.exception.InternalServerErrorExceptionHandler;
-import com.felicita.model.response.BlogTagResponse;
 import com.felicita.model.response.ContactMethodResponse;
-import com.felicita.queries.BlogQueries;
 import com.felicita.queries.ContactUsQueries;
 import com.felicita.repository.ContactUsRepository;
 import org.slf4j.Logger;
@@ -11,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
 
 @Repository
@@ -48,7 +45,5 @@ public class ContactUsRepositoryImpl implements ContactUsRepository {
             );
         }
     }
-
-
 
 }

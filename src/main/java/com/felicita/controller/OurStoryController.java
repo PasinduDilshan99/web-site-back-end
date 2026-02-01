@@ -2,7 +2,6 @@ package com.felicita.controller;
 
 import com.felicita.model.response.CommonResponse;
 import com.felicita.model.response.OurStoryAndValuesResponse;
-import com.felicita.model.response.VehicleResponse;
 import com.felicita.service.OurStoryService;
 import com.felicita.util.Constant;
 import org.slf4j.Logger;
@@ -13,8 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequestMapping(path = "/api/v0/our-story")

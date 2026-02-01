@@ -141,6 +141,22 @@ public class PublicEndpoints {
             "/api/v0/blog/add-comment-react",
             "/api/v0/blog/add-comment",
 
+            // Gallery
+            "/api/v0/gallery/all",
+            "/api/v0/gallery/active",
+
+            // Inquiry
+            "/api/v0/inquiry/create",
+
+            // Footer
+            "/api/v0/footer/all",
+            "/api/v0/footer/active",
+
+            // Our Story
+            "/api/v0/our-story/details",
+
+            // Contact Us
+            "/api/v0/contact-us/contact-methods",
 
     };
 }

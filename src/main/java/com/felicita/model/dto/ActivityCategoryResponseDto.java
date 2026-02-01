@@ -21,7 +21,7 @@ public class ActivityCategoryResponseDto {
     private Integer updatedBy;
     private Timestamp terminatedAt;
     private Integer terminatedBy;
-
+    private Integer numberOfActivities;
     private List<ActivityCategoryImageResponseDto> images;
 }
 

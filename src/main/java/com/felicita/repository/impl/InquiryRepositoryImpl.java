@@ -3,7 +3,6 @@ package com.felicita.repository.impl;
 import com.felicita.exception.InsertFailedErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
 import com.felicita.model.request.CreateInquiryRequest;
-import com.felicita.queries.BlogQueries;
 import com.felicita.queries.InquiryQueries;
 import com.felicita.repository.InquiryRepository;
 import org.slf4j.Logger;
@@ -13,7 +12,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -34,7 +32,6 @@ public class InquiryRepositoryImpl implements InquiryRepository {
     @Override
     public void createInquiry(CreateInquiryRequest createInquiryRequest, Long userId) {
         String CREATE_INQUIRY = InquiryQueries.CREATE_INQUIRY;
-        LOGGER.info("AAAAAAAAAA");
         try {
             KeyHolder keyHolder = new GeneratedKeyHolder();
             int rowsAffected = jdbcTemplate.update(connection -> {

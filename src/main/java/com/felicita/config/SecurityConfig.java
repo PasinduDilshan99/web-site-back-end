@@ -53,6 +53,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
+                                .requestMatchers("/actuator/**").permitAll()
                         // DESTINATIONS
                         .requestMatchers("/v0/api/destination/add-destination").hasAuthority("DESTINATION_CREATE")
                         .requestMatchers("/v0/api/destination/update-destination").hasAuthority("DESTINATION_UPDATE")
@@ -205,6 +206,22 @@ public class SecurityConfig {
 //                        .requestMatchers("/api/v0/blog/add-comment-react").hasAuthority("BLOG_COMMENT_REACT_CREATE")
 //                        .requestMatchers("/api/v0/blog/add-comment").hasAuthority("BLOG_COMMENT_CREATE")
 
+                        // Gallery
+//                        .requestMatchers("/api/v0/gallery/all").hasAuthority("GALLERY_VIEW")
+//                        .requestMatchers("/api/v0/gallery/active").hasAuthority("GALLERY_VIEW")
+
+                        // Inquiry
+//                        .requestMatchers("/api/v0/inquiry/create").hasAuthority("INQUIRY_CREATE")
+
+                        // Footer
+//                        .requestMatchers("/api/v0/footer/all").hasAuthority("FOOTER_VIEW")
+//                        .requestMatchers("/api/v0/footer/active").hasAuthority("FOOTER_VIEW")
+
+                        // Our Story
+//                        .requestMatchers("/api/v0/our-story/details").hasAuthority("OUR_STORY_DETAILS_VIEW")
+
+                        // Contact Us
+//                        .requestMatchers("/api/v0/contact-us/contact-methods").hasAuthority("CONTACT_US_CONTACT_METHODS_VIEW")
 
                                 .requestMatchers(PublicEndpoints.ENDPOINTS).permitAll()
                         .requestMatchers(AuthorizeEndPoints.ENDPOINTS).authenticated()
