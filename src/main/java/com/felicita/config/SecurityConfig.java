@@ -223,6 +223,13 @@ public class SecurityConfig {
                         // Contact Us
 //                        .requestMatchers("/api/v0/contact-us/contact-methods").hasAuthority("CONTACT_US_CONTACT_METHODS_VIEW")
 
+                        // FAQ
+//                        .requestMatchers("/api/v0/faq/all").hasAuthority("FAQ_VIEW")
+//                        .requestMatchers("/api/v0/faq/active").hasAuthority("FAQ_VIEW")
+//                        .requestMatchers("/api/v0/faq/view-count").hasAuthority("FAQ_VIEW_COUNT_UPDATE")
+//                        .requestMatchers("/api/v0/faq/options").hasAuthority("FAQ_OPTIONS_VIEW")
+//                        .requestMatchers("/api/v0/faq/insert-faq-request").hasAuthority("FAQ_REQUEST_CREATE")
+
                                 .requestMatchers(PublicEndpoints.ENDPOINTS).permitAll()
                         .requestMatchers(AuthorizeEndPoints.ENDPOINTS).authenticated()
                         .anyRequest().permitAll()

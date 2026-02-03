@@ -118,7 +118,7 @@ public class DestinationQueries {
             	a.id AS activity_id,
                 a.name AS activity_name,
                 a.description AS activity_description,
-                a.activities_category,
+                ac.name AS activities_category,
                 a.duration_hours,
                 a.available_from,
                 a.available_to,
@@ -137,6 +137,7 @@ public class DestinationQueries {
             LEFT JOIN destination_categories dc ON d.destination_category = dc.id
             LEFT JOIN common_status cs ON d.status = cs.id
             LEFT JOIN activities a ON d.destination_id = a.destination_id
+            LEFT JOIN activity_category ac ON a.activities_category = ac.id
             LEFT JOIN destination_images di ON d.destination_id = di.destination_id
             WHERE t.tour_id = ?
             """;
@@ -629,7 +630,7 @@ public class DestinationQueries {
             	a.id AS activity_id,
             	a.name AS activity_name,
             	a.description AS activity_description,
-            	a.activities_category,
+            	ac.name AS activities_category,
             	a.duration_hours,
             	a.available_from,
             	a.available_to,
@@ -646,6 +647,7 @@ public class DestinationQueries {
             LEFT JOIN destination_categories dc ON d.destination_category = dc.id
             LEFT JOIN common_status cs ON d.status = cs.id
             LEFT JOIN activities a ON d.destination_id = a.destination_id
+            LEFT JOIN activity_category ac ON ac.id = a.activities_category
             LEFT JOIN destination_images di
                ON d.destination_id = di.destination_id
               AND di.status = (

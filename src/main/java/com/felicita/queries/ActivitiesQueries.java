@@ -358,7 +358,7 @@ public class ActivitiesQueries {
             	) AS images
             FROM activities a
             LEFT JOIN common_status cs ON a.status = cs.id
-            LEFT JOIN activity_category ac ON a.activities_category = ac.name
+            LEFT JOIN activity_category ac ON a.activities_category = ac.id
             LEFT JOIN activities_schedule asch ON asch.activity_id = a.id
             	AND asch.terminated_at IS NULL
             WHERE a.terminated_at IS NULL AND a.id = ?

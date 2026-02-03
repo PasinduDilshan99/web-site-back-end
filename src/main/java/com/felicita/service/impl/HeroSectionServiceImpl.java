@@ -481,4 +481,45 @@ public class HeroSectionServiceImpl implements HeroSectionService {
         }
     }
 
+    @Override
+    public CommonResponse<List<ActivityDetailsHeroSectionResponse>> getActivityHeroSectionDetailsByActivityId(Long activityId) {
+        LOGGER.info("Start fetching activity hero section data by activity id : {} from repository", activityId);
+
+        try {
+            List<ActivityDetailsHeroSectionResponse> activityDetailsHeroSectionResponses = heroSectionRepository.getActivityHeroSectionDetailsByActivityId(activityId);
+
+            if (activityDetailsHeroSectionResponses.isEmpty()) {
+                LOGGER.warn("No activity hero section data by activity id : {} found in database", activityId);
+                throw new DataNotFoundErrorExceptionHandler("No activity hero section data by activity id : " + activityId);
+            }
+
+            List<ActivityDetailsHeroSectionResponse> activityDetailsHeroSectionResponseList = activityDetailsHeroSectionResponses.stream()
+                    .filter(item -> CommonStatus.ACTIVE.toString().equalsIgnoreCase(item.getStatus()))
+                    .toList();
+
+            if (activityDetailsHeroSectionResponseList.isEmpty()) {
+                LOGGER.warn("No active activity hero section data by activity id : {} found in database", activityId);
+                throw new DataNotFoundErrorExceptionHandler("No active activity hero section data by activity id : "+ activityId);
+            }
+
+            LOGGER.info("Fetched {} active activity hero section data by activity id : {} successfully",activityDetailsHeroSectionResponseList.size(), activityId);
+
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    activityDetailsHeroSectionResponseList,
+                    Instant.now()
+            );
+
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching active activity hero section data by activity id : {} , {}", activityId, e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch activity hero section data by activity id : " + activityId);
+        } finally {
+            LOGGER.info("End fetching activity hero section data from by activity id : {} repository", activityId);
+        }
+    }
+
 }

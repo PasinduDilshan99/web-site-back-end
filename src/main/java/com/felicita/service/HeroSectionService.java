@@ -29,4 +29,6 @@ public interface HeroSectionService {
 
     CommonResponse<List<BookedTourHeroSectionResponse>> getBookedTourHeroSectionDetails(Long bookingId);
 
+    CommonResponse<List<ActivityDetailsHeroSectionResponse>> getActivityHeroSectionDetailsByActivityId(Long activityId);
+
 }

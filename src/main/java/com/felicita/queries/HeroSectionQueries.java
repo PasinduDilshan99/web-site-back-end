@@ -256,4 +256,20 @@ public class HeroSectionQueries {
             WHERE b.booking_id = ?
             """;
 
+    public static final String GET_ACTIVITY_HERO_SECTION_DATA_BY_ACTIVITY_ID = """
+    SELECT
+        ai.id AS image_id,
+        ai.activity_id AS activity_id,
+        ai.name AS name,
+        ai.description AS description,
+        ai.image_url AS image_url,
+        cs.name AS status
+    FROM activities_images ai
+    LEFT JOIN common_status cs
+        ON cs.id = ai.status
+    WHERE ai.activity_id = ?;
+    """;
+
+
+
 }

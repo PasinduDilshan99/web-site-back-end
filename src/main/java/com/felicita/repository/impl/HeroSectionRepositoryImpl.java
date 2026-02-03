@@ -593,4 +593,55 @@ public class HeroSectionRepositoryImpl implements HeroSectionRepository {
         }
     }
 
+    @Override
+    public List<ActivityDetailsHeroSectionResponse> getActivityHeroSectionDetailsByActivityId(Long activityId) {
+
+        try {
+            LOGGER.info(
+                    "Executing query to fetch activity hero section data by activity id : {}",
+                    activityId
+            );
+
+            List<ActivityDetailsHeroSectionResponse> results = jdbcTemplate.query(
+                    HeroSectionQueries.GET_ACTIVITY_HERO_SECTION_DATA_BY_ACTIVITY_ID,
+                    new Object[]{activityId},
+                    (rs, rowNum) -> ActivityDetailsHeroSectionResponse.builder()
+                            .activityId(rs.getLong("activity_id"))
+                            .imageId(rs.getLong("image_id"))
+                            .name(rs.getString("name"))
+                            .imageUrl(rs.getString("image_url"))
+                            .description(rs.getString("description"))
+                            .status(rs.getString("status"))
+                            .build()
+            );
+
+            LOGGER.info(
+                    "Successfully fetched {} activity hero section data by activity id : {}.",
+                    results.size(),
+                    activityId
+            );
+
+            return results;
+
+        } catch (DataAccessException ex) {
+            LOGGER.error(
+                    "Database error while fetching activity hero section data by activity id : {} , {}",
+                    activityId, ex.getMessage(), ex
+            );
+            throw new DataAccessErrorExceptionHandler(
+                    "Failed to fetch activity hero section data by activity id : " + activityId
+            );
+
+        } catch (Exception ex) {
+            LOGGER.error(
+                    "Unexpected error while fetching activity hero section data by activity id : {} , {}",
+                    activityId, ex.getMessage(), ex
+            );
+            throw new InternalServerErrorExceptionHandler(
+                    "Unexpected error occurred while fetching activity hero section data by activity id : " + activityId
+            );
+        }
+    }
+
+
 }

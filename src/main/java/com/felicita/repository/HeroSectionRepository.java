@@ -27,4 +27,6 @@ public interface HeroSectionRepository {
 
     List<BookedTourHeroSectionResponse> getBookedTourHeroSectionDetails(Long bookingId);
 
+    List<ActivityDetailsHeroSectionResponse> getActivityHeroSectionDetailsByActivityId(Long activityId);
+
 }

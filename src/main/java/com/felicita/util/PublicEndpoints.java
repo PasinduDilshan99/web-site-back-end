@@ -158,5 +158,12 @@ public class PublicEndpoints {
             // Contact Us
             "/api/v0/contact-us/contact-methods",
 
+            // Faq
+            "/api/v0/faq/all",
+            "/api/v0/faq/active",
+            "/api/v0/faq/view-count",
+            "/api/v0/faq/options",
+            "/api/v0/faq/insert-faq-request",
+
     };
 }

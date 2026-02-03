@@ -123,4 +123,12 @@ public class HeroSectionController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping(path = "/activity/{activityId}")
+    public ResponseEntity<CommonResponse<List<ActivityDetailsHeroSectionResponse>>> getActivityHeroSectionDetailsByActivityId(@PathVariable Long activityId){
+        LOGGER.info("{} Start execute get activity hero section data by activity id {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<ActivityDetailsHeroSectionResponse>> response = heroSectionService.getActivityHeroSectionDetailsByActivityId(activityId);
+        LOGGER.info("{} End execute get activity hero section data by activity id {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 }
