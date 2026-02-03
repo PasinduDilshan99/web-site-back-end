@@ -9,7 +9,6 @@ import com.felicita.model.enums.CommonStatus;
 import com.felicita.model.request.*;
 import com.felicita.model.response.*;
 import com.felicita.queries.PackageQueries;
-import com.felicita.queries.TourQueries;
 import com.felicita.repository.PackageRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,11 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -39,7 +36,6 @@ public class PackageRepositoryImpl implements PackageRepository {
     public PackageRepositoryImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
-
 
     @Override
     public List<PackageResponseDto> getAllPackages() {
@@ -68,7 +64,6 @@ public class PackageRepositoryImpl implements PackageRepository {
                         pkg.setPricePerPerson(rs.getBigDecimal("price_per_person"));
                         pkg.setPackageStatus(rs.getString("package_status"));
 
-                        // New fields
                         pkg.setCreatedAt(rs.getObject("created_at", LocalDateTime.class));
                         pkg.setCreatedBy(rs.getObject("created_by", Integer.class));
                         pkg.setPackageTypeName(rs.getString("package_type_name"));
@@ -146,14 +141,14 @@ public class PackageRepositoryImpl implements PackageRepository {
             });
         } catch (DataAccessException ex) {
             LOGGER.error(ex.toString());
-            throw new DataNotFoundErrorExceptionHandler("Database error while fetching packages");
+            throw new DataAccessErrorExceptionHandler("Database error while fetching packages");
         } catch (Exception ex) {
             throw new InternalServerErrorExceptionHandler("Unexpected error while fetching packages");
         }
     }
 
     @Override
-    public PackageResponseDto getPackageDetailsById(String packageId) {
+    public PackageResponseDto getPackageDetailsById(Long packageId) {
         try {
             return jdbcTemplate.query(PackageQueries.GET_PACKAGE_DETAILS_BY_PACKAGE_ID, new Object[]{packageId}, (ResultSet rs) -> {
                 Map<Long, PackageResponseDto> packageMap = new HashMap<>();
@@ -257,7 +252,7 @@ public class PackageRepositoryImpl implements PackageRepository {
             });
         } catch (DataAccessException ex) {
             LOGGER.error("Database error while fetching package details", ex);
-            throw new DataNotFoundErrorExceptionHandler("Database error while fetching package details");
+            throw new DataAccessErrorExceptionHandler("Database error while fetching package details");
         } catch (Exception ex) {
             LOGGER.error("Unexpected error while fetching package details", ex);
             throw new InternalServerErrorExceptionHandler("Unexpected error while fetching package details");
@@ -385,14 +380,12 @@ public class PackageRepositoryImpl implements PackageRepository {
                     }
                 }
             }
-
             return new ArrayList<>(reviewMap.values());
         });
     }
 
-
     @Override
-    public List<PackageReviewResponse> getPackageReviewDetailsById(String packageId) {
+    public List<PackageReviewResponse> getPackageReviewDetailsById(Long packageId) {
         String SQL = PackageQueries.GET_PACKAGE_REVIEWS_DETAILS_BY_ID;
 
         return jdbcTemplate.query(SQL, new Object[]{packageId}, rs -> {
@@ -518,10 +511,10 @@ public class PackageRepositoryImpl implements PackageRepository {
     }
 
     @Override
-    public List<PackageHistoryImageResponse> getPackageHistoryImagesById(String packageId) {
+    public List<PackageHistoryImageResponse> getPackageHistoryImagesById(Long packageId) {
         try {
             return jdbcTemplate.query(PackageQueries.GET_PACKAGE_HISTORY_IMAGES_BY_ID, ps -> {
-                ps.setString(1, packageId);
+                ps.setLong(1, packageId);
             }, (ResultSet rs) -> {
                 List<PackageHistoryImageResponse> result = new ArrayList<>();
                 while (rs.next()) {
@@ -560,7 +553,7 @@ public class PackageRepositoryImpl implements PackageRepository {
             });
         } catch (DataAccessException ex) {
             LOGGER.error(ex.toString());
-            throw new DataNotFoundErrorExceptionHandler("Database error while fetching packages");
+            throw new DataAccessErrorExceptionHandler("Database error while fetching packages");
         } catch (Exception ex) {
             throw new InternalServerErrorExceptionHandler("Unexpected error while fetching packages");
         }
@@ -608,7 +601,7 @@ public class PackageRepositoryImpl implements PackageRepository {
             });
         } catch (DataAccessException ex) {
             LOGGER.error(ex.toString());
-            throw new DataNotFoundErrorExceptionHandler("Database error while fetching packages");
+            throw new DataAccessErrorExceptionHandler("Database error while fetching packages");
         } catch (Exception ex) {
             throw new InternalServerErrorExceptionHandler("Unexpected error while fetching packages");
         }
@@ -616,12 +609,12 @@ public class PackageRepositoryImpl implements PackageRepository {
 
 
     @Override
-    public List<PackageHistoryDetailsResponse> getPackageHistoryDetailsById(String packageId) {
+    public List<PackageHistoryDetailsResponse> getPackageHistoryDetailsById(Long packageId) {
         try {
-            ObjectMapper objectMapper = new ObjectMapper(); // Jackson mapper
+            ObjectMapper objectMapper = new ObjectMapper();
 
             return jdbcTemplate.query(PackageQueries.GET_PACKAGE_HISTORY_DETAILS_BY_ID, ps -> {
-                ps.setString(1, packageId);
+                ps.setLong(1, packageId);
             }, (ResultSet rs) -> {
                 List<PackageHistoryDetailsResponse> result = new ArrayList<>();
 
@@ -698,13 +691,12 @@ public class PackageRepositoryImpl implements PackageRepository {
 
         } catch (DataAccessException ex) {
             LOGGER.error("DataAccessException: {}", ex.toString());
-            throw new DataNotFoundErrorExceptionHandler("Database error while fetching packages");
+            throw new DataAccessErrorExceptionHandler("Database error while fetching packages");
         } catch (Exception ex) {
             LOGGER.error("Exception: {}", ex.toString());
             throw new InternalServerErrorExceptionHandler("Unexpected error while fetching packages");
         }
     }
-
 
     @Override
     public List<PackageHistoryDetailsResponse> getAllPackageHistoryDetails() {
@@ -783,7 +775,7 @@ public class PackageRepositoryImpl implements PackageRepository {
             });
         } catch (DataAccessException ex) {
             LOGGER.error(ex.toString());
-            throw new DataNotFoundErrorExceptionHandler("Database error while fetching packages");
+            throw new DataAccessErrorExceptionHandler("Database error while fetching packages");
         } catch (Exception ex) {
             LOGGER.error(ex.toString());
             throw new InternalServerErrorExceptionHandler("Unexpected error while fetching packages");
@@ -796,9 +788,6 @@ public class PackageRepositoryImpl implements PackageRepository {
         try {
             int offset = (req.getPageNumber() - 1) * req.getPageSize();
 
-            /* -------------------------------------------------
-             * STEP 1: Get paginated package IDs
-             * ------------------------------------------------- */
             List<Long> packageIds = jdbcTemplate.queryForList(
                     PackageQueries.GET_PACKAGE_IDS_WITH_FILTERS,
                     Long.class,
@@ -822,9 +811,6 @@ public class PackageRepositoryImpl implements PackageRepository {
                 return null;
             }
 
-            /* -------------------------------------------------
-             * STEP 2: Get total count (for pagination)
-             * ------------------------------------------------- */
             Integer totalCount = jdbcTemplate.queryForObject(
                     PackageQueries.COUNT_PACKAGES_WITH_FILTERS,
                     Integer.class,
@@ -841,9 +827,6 @@ public class PackageRepositoryImpl implements PackageRepository {
                     req.getToDate(), req.getToDate()
             );
 
-            /* -------------------------------------------------
-             * STEP 3: Fetch full data by IDs
-             * ------------------------------------------------- */
             String inSql = String.join(",", Collections.nCopies(packageIds.size(), "?"));
 
             Map<Long, PackageResponseDto> packageMap = new LinkedHashMap<>();
@@ -954,7 +937,7 @@ public class PackageRepositoryImpl implements PackageRepository {
 
         } catch (DataAccessException ex) {
             LOGGER.error("DB error", ex);
-            throw new DataNotFoundErrorExceptionHandler("Database error while fetching packages");
+            throw new DataAccessErrorExceptionHandler("Database error while fetching packages");
         } catch (Exception ex) {
             LOGGER.error("Unexpected error", ex);
             throw new InternalServerErrorExceptionHandler("Unexpected error while fetching packages");
@@ -1040,7 +1023,7 @@ public class PackageRepositoryImpl implements PackageRepository {
             });
         } catch (DataAccessException ex) {
             LOGGER.error("Database error while fetching package details", ex);
-            throw new DataNotFoundErrorExceptionHandler("Database error while fetching package details");
+            throw new DataAccessErrorExceptionHandler("Database error while fetching package details");
         } catch (Exception ex) {
             LOGGER.error("Unexpected error while fetching package details", ex);
             throw new InternalServerErrorExceptionHandler("Unexpected error while fetching package details");
@@ -1061,7 +1044,7 @@ public class PackageRepositoryImpl implements PackageRepository {
             );
         } catch (DataAccessException ex) {
             LOGGER.error("Database error while fetching package exclusions", ex);
-            throw new DataNotFoundErrorExceptionHandler("Database error while fetching package exclusions");
+            throw new DataAccessErrorExceptionHandler("Database error while fetching package exclusions");
         } catch (Exception ex) {
             LOGGER.error("Unexpected error while fetching package exclusions", ex);
             throw new InternalServerErrorExceptionHandler("Unexpected error while fetching package exclusions");
@@ -1082,7 +1065,7 @@ public class PackageRepositoryImpl implements PackageRepository {
             );
         } catch (DataAccessException ex) {
             LOGGER.error("Database error while fetching package inclusions", ex);
-            throw new DataNotFoundErrorExceptionHandler("Database error while fetching package inclusions");
+            throw new DataAccessErrorExceptionHandler("Database error while fetching package inclusions");
         } catch (Exception ex) {
             LOGGER.error("Unexpected error while fetching package inclusions", ex);
             throw new InternalServerErrorExceptionHandler("Unexpected error while fetching package inclusions");
@@ -1103,7 +1086,7 @@ public class PackageRepositoryImpl implements PackageRepository {
             );
         } catch (DataAccessException ex) {
             LOGGER.error("Database error while fetching package conditions", ex);
-            throw new DataNotFoundErrorExceptionHandler("Database error while fetching package conditions");
+            throw new DataAccessErrorExceptionHandler("Database error while fetching package conditions");
         } catch (Exception ex) {
             LOGGER.error("Unexpected error while fetching package conditions", ex);
             throw new InternalServerErrorExceptionHandler("Unexpected error while fetching package conditions");
@@ -1125,7 +1108,7 @@ public class PackageRepositoryImpl implements PackageRepository {
             );
         } catch (DataAccessException ex) {
             LOGGER.error("Database error while fetching package travel tips", ex);
-            throw new DataNotFoundErrorExceptionHandler("Database error while fetching package travel tips");
+            throw new DataAccessErrorExceptionHandler("Database error while fetching package travel tips");
         } catch (Exception ex) {
             LOGGER.error("Unexpected error while fetching package travel tips", ex);
             throw new InternalServerErrorExceptionHandler("Unexpected error while fetching package travel tips");
@@ -1145,7 +1128,7 @@ public class PackageRepositoryImpl implements PackageRepository {
             });
         } catch (DataAccessException ex) {
             LOGGER.error("Database error while fetching package schedule details", ex);
-            throw new DataNotFoundErrorExceptionHandler("Database error while fetching package schedule details");
+            throw new DataAccessErrorExceptionHandler("Database error while fetching package schedule details");
         } catch (Exception ex) {
             LOGGER.error("Unexpected error while fetching package schedule details", ex);
             throw new InternalServerErrorExceptionHandler("Unexpected error while fetching package schedule details");
@@ -1179,7 +1162,7 @@ public class PackageRepositoryImpl implements PackageRepository {
             });
         } catch (DataAccessException ex) {
             LOGGER.error("Database error while fetching package schedule details", ex);
-            throw new DataNotFoundErrorExceptionHandler("Database error while fetching package schedule details");
+            throw new DataAccessErrorExceptionHandler("Database error while fetching package schedule details");
         } catch (Exception ex) {
             LOGGER.error("Unexpected error while fetching package schedule details", ex);
             throw new InternalServerErrorExceptionHandler("Unexpected error while fetching package schedule details");
@@ -1232,7 +1215,7 @@ public class PackageRepositoryImpl implements PackageRepository {
             });
         } catch (DataAccessException ex) {
             LOGGER.error("Database error while fetching package schedule details", ex);
-            throw new DataNotFoundErrorExceptionHandler("Database error while fetching package schedule details");
+            throw new DataAccessErrorExceptionHandler("Database error while fetching package schedule details");
         } catch (Exception ex) {
             LOGGER.error("Unexpected error while fetching package schedule details", ex);
             throw new InternalServerErrorExceptionHandler("Unexpected error while fetching package schedule details");
@@ -1251,8 +1234,6 @@ public class PackageRepositoryImpl implements PackageRepository {
                 List<PackageScheduleDetailsResponse.PackageImageDetails> images = new ArrayList<>();
 
                 while (rs.next()) {
-
-                    // Initialize package details only once
                     if (packageBuilder == null) {
                         packageBuilder = PackageScheduleDetailsResponse.PackageBasicDetails.builder()
                                 .packageId(rs.getLong("package_id"))
@@ -1291,7 +1272,7 @@ public class PackageRepositoryImpl implements PackageRepository {
 
         } catch (DataAccessException ex) {
             LOGGER.error("Database error while fetching package basic details", ex);
-            throw new DataNotFoundErrorExceptionHandler("Database error while fetching package basic details");
+            throw new DataAccessErrorExceptionHandler("Database error while fetching package basic details");
         } catch (Exception ex) {
             LOGGER.error("Unexpected error while fetching package basic details", ex);
             throw new InternalServerErrorExceptionHandler("Unexpected error while fetching package basic details");
@@ -1302,7 +1283,6 @@ public class PackageRepositoryImpl implements PackageRepository {
     public List<PackageComapreResponse.PackageImages> getAllPackagesImages(Long tourId) {
 
         String sql = PackageQueries.GET_ALL_PACKAGES_IMAGES;
-
         try {
             return jdbcTemplate.query(
                     sql,
@@ -1318,9 +1298,12 @@ public class PackageRepositoryImpl implements PackageRepository {
 
         } catch (DataAccessException ex) {
             LOGGER.error("Database error while fetching package images for tourId {}", tourId, ex);
-            throw new InternalServerErrorExceptionHandler(
+            throw new DataAccessErrorExceptionHandler(
                     "Database error while fetching package images"
             );
+        }catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching package images details", ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error while fetching package images details");
         }
     }
 
@@ -1357,7 +1340,7 @@ public class PackageRepositoryImpl implements PackageRepository {
             throw new DataNotFoundErrorExceptionHandler("No package found for given schedule id");
         } catch (DataAccessException ex) {
             LOGGER.error("Database error while fetching package basic details", ex);
-            throw new DataNotFoundErrorExceptionHandler("Database error while fetching package basic details");
+            throw new DataAccessErrorExceptionHandler("Database error while fetching package basic details");
         } catch (Exception ex) {
             LOGGER.error("Unexpected error while fetching package basic details", ex);
             throw new InternalServerErrorExceptionHandler("Unexpected error while fetching package basic details");
@@ -1397,7 +1380,7 @@ public class PackageRepositoryImpl implements PackageRepository {
 
         } catch (DataAccessException ex) {
             LOGGER.error("Database error while fetching package day accommodation prices", ex);
-            throw new DataNotFoundErrorExceptionHandler("Database error while fetching package day accommodation prices");
+            throw new DataAccessErrorExceptionHandler("Database error while fetching package day accommodation prices");
         } catch (Exception ex) {
             LOGGER.error("Unexpected error while fetching package day accommodation prices", ex);
             throw new InternalServerErrorExceptionHandler("Unexpected error while fetching package day accommodation prices");
@@ -1427,13 +1410,12 @@ public class PackageRepositoryImpl implements PackageRepository {
 
         } catch (DataAccessException ex) {
             LOGGER.error("Database error while fetching destination extra prices", ex);
-            throw new DataNotFoundErrorExceptionHandler("Database error while fetching destination extra prices");
+            throw new DataAccessErrorExceptionHandler("Database error while fetching destination extra prices");
         } catch (Exception ex) {
             LOGGER.error("Unexpected error while fetching destination extra prices", ex);
             throw new InternalServerErrorExceptionHandler("Unexpected error while fetching destination extra prices");
         }
     }
-
 
     @Override
     public List<PackageActivityPriceDto> getPackageActivityPriceByScheduleId(Long packageScheduleId) {
@@ -1460,7 +1442,7 @@ public class PackageRepositoryImpl implements PackageRepository {
 
         } catch (DataAccessException ex) {
             LOGGER.error("Database error while fetching activity prices", ex);
-            throw new DataNotFoundErrorExceptionHandler("Database error while fetching activity prices");
+            throw new DataAccessErrorExceptionHandler("Database error while fetching activity prices");
         } catch (Exception ex) {
             LOGGER.error("Unexpected error while fetching activity prices", ex);
             throw new InternalServerErrorExceptionHandler("Unexpected error while fetching activity prices");
@@ -1482,7 +1464,10 @@ public class PackageRepositoryImpl implements PackageRepository {
             );
         } catch (DataAccessException e) {
             LOGGER.error("Failed to fetch tours for terminate: ", e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch tours");
+            throw new DataAccessErrorExceptionHandler("Failed to fetch tours");
+        }catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching tours for terminate", ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error while fetching tours for terminate prices");
         }
     }
 
@@ -1506,13 +1491,11 @@ public class PackageRepositoryImpl implements PackageRepository {
 
         try {
             KeyHolder keyHolder = new GeneratedKeyHolder();
-
             jdbcTemplate.update(connection -> {
                 PreparedStatement ps = connection.prepareStatement(
                         PackageQueries.INSERT_PACKAGE_BASIC_DETAILS,
                         Statement.RETURN_GENERATED_KEYS
                 );
-
                 ps.setLong(1, request.getPackageType());
                 ps.setLong(2, request.getTourId());
                 ps.setString(3, request.getName());
@@ -1549,14 +1532,10 @@ public class PackageRepositoryImpl implements PackageRepository {
         }
     }
 
-
     @Override
-    public void insertPackageImages(Long packageId,
-                                    List<PackageImageInsertRequest> images,
-                                    Long userId) {
+    public void insertPackageImages(Long packageId, List<PackageImageInsertRequest> images, Long userId) {
 
         if (images == null || images.isEmpty()) return;
-
         try {
             jdbcTemplate.batchUpdate(
                     PackageQueries.INSERT_PACKAGE_IMAGE,
@@ -1577,7 +1556,6 @@ public class PackageRepositoryImpl implements PackageRepository {
             throw new InsertFailedErrorExceptionHandler(dae.getMessage());
         }
     }
-
 
     @Override
     public void insertPackageInclusions(Long packageId,
@@ -1601,7 +1579,6 @@ public class PackageRepositoryImpl implements PackageRepository {
         );
     }
 
-
     @Override
     public void insertPackageExclusions(Long packageId,
                                         List<PackageExclusionInsertRequest> exclusions,
@@ -1623,7 +1600,6 @@ public class PackageRepositoryImpl implements PackageRepository {
                 }
         );
     }
-
 
     @Override
     public void insertPackageConditions(Long packageId,
@@ -1647,7 +1623,6 @@ public class PackageRepositoryImpl implements PackageRepository {
         );
     }
 
-
     @Override
     public void insertPackageTravelTips(Long packageId,
                                         List<PackageTravelTipInsertRequest> travelTips,
@@ -1670,7 +1645,6 @@ public class PackageRepositoryImpl implements PackageRepository {
                 }
         );
     }
-
 
     @Override
     public void insertDayByDayAccommodations(Long packageId,
@@ -1768,7 +1742,6 @@ public class PackageRepositoryImpl implements PackageRepository {
         }
     }
 
-
     @Override
     public void removePackageImages(Long packageId, List<Long> removedImageIds, Long userId) {
         try {
@@ -1794,7 +1767,7 @@ public class PackageRepositoryImpl implements PackageRepository {
     @Override
     public void updatePackageImages(Long packageId, List<PackageImageUpdateRequest> updatedImages, Long userId) {
         if (updatedImages == null || updatedImages.isEmpty()) {
-            return; // nothing to update
+            return;
         }
 
         try {
@@ -1802,13 +1775,13 @@ public class PackageRepositoryImpl implements PackageRepository {
 
                 jdbcTemplate.update(
                         PackageQueries.UPDATE_PACKAGE_IMAGE,
-                        image.getImageName(),            // 1
-                        image.getImageDescription(),     // 2
-                        image.getImageUrl(),        // 3
-                        image.getStatus(),          // 4 (status name)
-                        userId,                     // 5 (updated_by)
-                        image.getImageId(),         // 6 (WHERE id)
-                        packageId                  // 7 (safety check)
+                        image.getImageName(),
+                        image.getImageDescription(),
+                        image.getImageUrl(),
+                        image.getStatus(),
+                        userId,
+                        image.getImageId(),
+                        packageId
                 );
             }
 
@@ -1845,11 +1818,7 @@ public class PackageRepositoryImpl implements PackageRepository {
     }
 
     @Override
-    public void updateDayByDayAccommodations(
-            Long packageId,
-            List<PackageDayAccommodationUpdateRequest> updatedDayAccommodations,
-            Long userId
-    ) {
+    public void updateDayByDayAccommodations(Long packageId, List<PackageDayAccommodationUpdateRequest> updatedDayAccommodations, Long userId) {
         if (updatedDayAccommodations == null || updatedDayAccommodations.isEmpty()) {
             return;
         }
@@ -1892,7 +1861,6 @@ public class PackageRepositoryImpl implements PackageRepository {
         }
     }
 
-
     @Override
     public void removePcakageInclusions(Long packageId, List<Long> removeInclusionIds, Long userId) {
         try {
@@ -1916,11 +1884,7 @@ public class PackageRepositoryImpl implements PackageRepository {
     }
 
     @Override
-    public void updatePackageInclusions(
-            Long packageId,
-            List<PackageInclusionUpdateRequest> updatedInclusions,
-            Long userId
-    ) {
+    public void updatePackageInclusions(Long packageId, List<PackageInclusionUpdateRequest> updatedInclusions, Long userId) {
         if (updatedInclusions == null || updatedInclusions.isEmpty()) return;
 
         try {
@@ -1943,7 +1907,6 @@ public class PackageRepositoryImpl implements PackageRepository {
             throw new InternalServerErrorExceptionHandler("Failed to update package inclusions");
         }
     }
-
 
     @Override
     public void removePackageExclusions(Long packageId, List<Long> removeExclusionIds, Long userId) {
@@ -1968,11 +1931,7 @@ public class PackageRepositoryImpl implements PackageRepository {
     }
 
     @Override
-    public void updatePackageExclusions(
-            Long packageId,
-            List<PackageExclusionUpdateRequest> updatedExclusions,
-            Long userId
-    ) {
+    public void updatePackageExclusions(Long packageId, List<PackageExclusionUpdateRequest> updatedExclusions, Long userId) {
         if (updatedExclusions == null || updatedExclusions.isEmpty()) return;
 
         try {
@@ -1995,7 +1954,6 @@ public class PackageRepositoryImpl implements PackageRepository {
             throw new InternalServerErrorExceptionHandler("Failed to update package exclusions");
         }
     }
-
 
     @Override
     public void removePcakageConditions(Long packageId, List<Long> removeConditionIds, Long userId) {
@@ -2020,11 +1978,7 @@ public class PackageRepositoryImpl implements PackageRepository {
     }
 
     @Override
-    public void updatePackageConditions(
-            Long packageId,
-            List<PackageConditionUpdateRequest> updatedConditions,
-            Long userId
-    ) {
+    public void updatePackageConditions(Long packageId, List<PackageConditionUpdateRequest> updatedConditions, Long userId) {
         if (updatedConditions == null || updatedConditions.isEmpty()) return;
 
         try {
@@ -2047,7 +2001,6 @@ public class PackageRepositoryImpl implements PackageRepository {
             throw new InternalServerErrorExceptionHandler("Failed to update package conditions");
         }
     }
-
 
     @Override
     public void removePcakageTravelTips(Long packageId, List<Long> removeTravelTipIds, Long userId) {
@@ -2072,11 +2025,7 @@ public class PackageRepositoryImpl implements PackageRepository {
     }
 
     @Override
-    public void updatePackageTravelTips(
-            Long packageId,
-            List<PackageTravelTipUpdateRequest> updatedTravelTips,
-            Long userId
-    ) {
+    public void updatePackageTravelTips(Long packageId, List<PackageTravelTipUpdateRequest> updatedTravelTips, Long userId) {
         if (updatedTravelTips == null || updatedTravelTips.isEmpty()) return;
 
         try {
@@ -2103,11 +2052,7 @@ public class PackageRepositoryImpl implements PackageRepository {
     }
 
     @Override
-    public void insertPackageFeatures(
-            Long packageId,
-            List<PackageFeaturesInsertRequest> addFeatures,
-            Long userId
-    ) {
+    public void insertPackageFeatures(Long packageId, List<PackageFeaturesInsertRequest> addFeatures, Long userId) {
         if (addFeatures == null || addFeatures.isEmpty()) return;
 
         try {
@@ -2134,7 +2079,6 @@ public class PackageRepositoryImpl implements PackageRepository {
         }
     }
 
-
     @Override
     public void removePackageFeatures(Long packageId, List<Long> removeFeatureIds, Long userId) {
         try {
@@ -2158,11 +2102,7 @@ public class PackageRepositoryImpl implements PackageRepository {
     }
 
     @Override
-    public void updatePackageFeatures(
-            Long packageId,
-            List<PackageFeaturesUpdateRequest> updatedFeatures,
-            Long userId
-    ) {
+    public void updatePackageFeatures(Long packageId, List<PackageFeaturesUpdateRequest> updatedFeatures, Long userId) {
         if (updatedFeatures == null || updatedFeatures.isEmpty()) return;
 
         try {
@@ -2172,12 +2112,12 @@ public class PackageRepositoryImpl implements PackageRepository {
                         feature.getFeatureName(),
                         feature.getFeatureValue(),
                         feature.getFeatureDescription(),
-                        feature.getStatus(), // converts string to int
+                        feature.getStatus(),
                         feature.getColor(),
                         feature.getHoverColor(),
                         feature.getSpecialNote(),
                         userId,
-                        feature.getFeatureId(), // id of the feature
+                        feature.getFeatureId(),
                         packageId
                 );
             }
@@ -2189,7 +2129,5 @@ public class PackageRepositoryImpl implements PackageRepository {
             throw new InternalServerErrorExceptionHandler("Failed to update package feature");
         }
     }
-
-
 
 }

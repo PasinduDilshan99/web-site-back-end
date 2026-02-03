@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
 
 @Repository
@@ -31,10 +30,10 @@ public class FaqRepositoryImpl implements FaqRepository {
     }
 
     @Override
-    public List<FaqResponse> getAllFaqItems() {
+    public List<FaqResponse> getAllFaqData() {
         String GET_ALL_FAQ = FaqQueries.GET_ALL_FAQ_DATA;
         try {
-            LOGGER.info("Executing query to fetch all faq items...");
+            LOGGER.info("Executing query to fetch all faq data.");
 
             List<FaqResponse> results = jdbcTemplate.query(GET_ALL_FAQ, (rs, rowNum) -> {
                 FaqResponse response = new FaqResponse();
@@ -65,15 +64,15 @@ public class FaqRepositoryImpl implements FaqRepository {
                 return response;
             });
 
-            LOGGER.info("Successfully fetched {} faq items.", results.size());
+            LOGGER.info("Successfully fetched {} faq data.", results.size());
             return results;
 
         } catch (DataAccessException ex) {
-            LOGGER.error("Database error while fetching faq items: {}", ex.getMessage(), ex);
-            throw new DataAccessErrorExceptionHandler("Failed to fetch faq items from database");
+            LOGGER.error("Database error while fetching faq data: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler("Failed to fetch faq data from database");
         } catch (Exception ex) {
-            LOGGER.error("Unexpected error while fetching faq items: {}", ex.getMessage(), ex);
-            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching faq items");
+            LOGGER.error("Unexpected error while fetching faq data: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching faq data");
         }
     }
 
@@ -105,7 +104,6 @@ public class FaqRepositoryImpl implements FaqRepository {
             );
         }
     }
-
 
     @Override
     public FaqResponse getFaqItemById(long faqId) {
@@ -154,7 +152,7 @@ public class FaqRepositoryImpl implements FaqRepository {
         String GET_FAQ_OPTIONS = FaqQueries.GET_FAQ_OPTIONS;
 
         try {
-            LOGGER.info("Executing query to fetch all FAQ options...");
+            LOGGER.info("Executing query to fetch all FAQ options.");
 
             List<FaqOptionDetailsResponse> results = jdbcTemplate.query(GET_FAQ_OPTIONS, (rs, rowNum) -> {
                 return FaqOptionDetailsResponse.builder()
@@ -210,6 +208,5 @@ public class FaqRepositoryImpl implements FaqRepository {
             throw new InternalServerErrorExceptionHandler("Something went wrong");
         }
     }
-
 
 }

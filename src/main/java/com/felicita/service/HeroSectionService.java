@@ -1,14 +1,13 @@
 package com.felicita.service;
 
 import com.felicita.model.response.*;
-import org.springframework.http.ResponseEntity;
-
 import java.util.List;
 
 public interface HeroSectionService {
-    ResponseEntity<CommonResponse<List<HeroSectionResponse>>> getAllHeroSectionItems();
 
-    ResponseEntity<CommonResponse<List<HeroSectionResponse>>> getAllVisibleHeroSectionItems();
+    CommonResponse<List<HeroSectionResponse>> getAllHomeHeroSectionData();
+
+    CommonResponse<List<HeroSectionResponse>> getHomeHeroSectionDetails();
 
     CommonResponse<List<AboutUsHeroSectionResponse>> getAboutUsHeroSectionDetails();
 
@@ -29,4 +28,7 @@ public interface HeroSectionService {
     CommonResponse<List<PackageScheduleHeroSectionResponse>> getPackageScheduleHeroSectionDetails(Long packageScheduleId);
 
     CommonResponse<List<BookedTourHeroSectionResponse>> getBookedTourHeroSectionDetails(Long bookingId);
+
+    CommonResponse<List<ActivityDetailsHeroSectionResponse>> getActivityHeroSectionDetailsByActivityId(Long activityId);
+
 }

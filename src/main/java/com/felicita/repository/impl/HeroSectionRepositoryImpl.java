@@ -5,14 +5,12 @@ import com.felicita.exception.InternalServerErrorExceptionHandler;
 import com.felicita.model.response.*;
 import com.felicita.queries.HeroSectionQueries;
 import com.felicita.repository.HeroSectionRepository;
-import com.felicita.service.impl.HeroSectionServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
 
 @Repository
@@ -28,10 +26,10 @@ public class HeroSectionRepositoryImpl implements HeroSectionRepository {
     }
 
     @Override
-    public List<HeroSectionResponse> getAllHeroSectionItems() {
+    public List<HeroSectionResponse> getAllHomeHeroSectionData() {
         String GET_ALL_HERO_SECTION = HeroSectionQueries.GET_ALL_HERO_SECTION_DATA;
         try {
-            LOGGER.info("Executing query to fetch all hero section items...");
+            LOGGER.info("Executing query to fetch home hero section all data");
 
             List<HeroSectionResponse> results = jdbcTemplate.query(GET_ALL_HERO_SECTION, (rs, rowNum) -> {
                 HeroSectionResponse hero = new HeroSectionResponse();
@@ -55,19 +53,18 @@ public class HeroSectionRepositoryImpl implements HeroSectionRepository {
                 hero.setImageUpdatedBy(rs.getInt("IMAGE_UPDATED_BY"));
                 hero.setImageTerminatedAt(rs.getTimestamp("IMAGE_TERMINATED_AT") != null ? rs.getTimestamp("IMAGE_TERMINATED_AT").toLocalDateTime() : null);
                 hero.setImageTerminatedBy(rs.getInt("IMAGE_TERMINATED_BY"));
-
                 return hero;
             });
 
-            LOGGER.info("Successfully fetched {} hero section items.", results.size());
+            LOGGER.info("Successfully fetched {} home hero section data.", results.size());
             return results;
 
         } catch (DataAccessException ex) {
-            LOGGER.error("Database error while fetching hero section items: {}", ex.getMessage(), ex);
-            throw new DataAccessErrorExceptionHandler("Failed to fetch hero section items from database");
+            LOGGER.error("Database error while fetching home hero section data : {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler("Failed to fetch home hero section data from database");
         } catch (Exception ex) {
-            LOGGER.error("Unexpected error while fetching hero section items: {}", ex.getMessage(), ex);
-            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching hero section items");
+            LOGGER.error("Unexpected error while fetching home hero section data : {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching home hero section data");
         }
     }
 
@@ -75,7 +72,7 @@ public class HeroSectionRepositoryImpl implements HeroSectionRepository {
     public List<AboutUsHeroSectionResponse> getAboutUsHeroSectionDetails() {
         String GET_ALL_ABOUT_US_HERO_SECTION_DATA = HeroSectionQueries.GET_ALL_ABOUT_US_HERO_SECTION_DATA;
         try {
-            LOGGER.info("Executing query to fetch all hero section items...");
+            LOGGER.info("Executing query to fetch about us hero section data");
 
             List<AboutUsHeroSectionResponse> results = jdbcTemplate.query(GET_ALL_ABOUT_US_HERO_SECTION_DATA, (rs, rowNum) -> {
                 AboutUsHeroSectionResponse hero = AboutUsHeroSectionResponse.builder()
@@ -103,15 +100,15 @@ public class HeroSectionRepositoryImpl implements HeroSectionRepository {
                 return hero;
             });
 
-            LOGGER.info("Successfully fetched {} hero section items.", results.size());
+            LOGGER.info("Successfully fetched {} about us hero section data.", results.size());
             return results;
 
         } catch (DataAccessException ex) {
-            LOGGER.error("Database error while fetching hero section items: {}", ex.getMessage(), ex);
-            throw new DataAccessErrorExceptionHandler("Failed to fetch hero section items from database");
+            LOGGER.error("Database error while fetching about us hero section data: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler("Failed to fetch about us hero section data from database");
         } catch (Exception ex) {
-            LOGGER.error("Unexpected error while fetching hero section items: {}", ex.getMessage(), ex);
-            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching hero section items");
+            LOGGER.error("Unexpected error while fetching about us hero section data: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching about us hero section data");
         }
     }
 
@@ -122,7 +119,7 @@ public class HeroSectionRepositoryImpl implements HeroSectionRepository {
                 HeroSectionQueries.GET_ALL_CONTACT_US_HERO_SECTION_DATA;
 
         try {
-            LOGGER.info("Executing query to fetch all contact us hero section items...");
+            LOGGER.info("Executing query to fetch contact us hero section data");
 
             List<ContactUsHeroSectionResponse> results =
                     jdbcTemplate.query(GET_ALL_CONTACT_US_HERO_SECTION_DATA, (rs, rowNum) -> {
@@ -148,19 +145,19 @@ public class HeroSectionRepositoryImpl implements HeroSectionRepository {
                                 .build();
                     });
 
-            LOGGER.info("Successfully fetched {} contact us hero section items.", results.size());
+            LOGGER.info("Successfully fetched {} contact us hero section data.", results.size());
             return results;
 
         } catch (DataAccessException ex) {
-            LOGGER.error("Database error while fetching contact us hero section items: {}", ex.getMessage(), ex);
+            LOGGER.error("Database error while fetching contact us hero section data: {}", ex.getMessage(), ex);
             throw new DataAccessErrorExceptionHandler(
-                    "Failed to fetch contact us hero section items from database"
+                    "Failed to fetch contact us hero section data from database"
             );
 
         } catch (Exception ex) {
-            LOGGER.error("Unexpected error while fetching contact us hero section items: {}", ex.getMessage(), ex);
+            LOGGER.error("Unexpected error while fetching contact us hero section data: {}", ex.getMessage(), ex);
             throw new InternalServerErrorExceptionHandler(
-                    "Unexpected error occurred while fetching contact us hero section items"
+                    "Unexpected error occurred while fetching contact us hero section data"
             );
         }
     }
@@ -171,7 +168,7 @@ public class HeroSectionRepositoryImpl implements HeroSectionRepository {
         String GET_ALL_BLOG_HERO_SECTION_DATA = HeroSectionQueries.GET_ALL_BLOG_HERO_SECTION_DATA;
 
         try {
-            LOGGER.info("Executing query to fetch all blog hero section items...");
+            LOGGER.info("Executing query to fetch blog hero section data");
 
             List<BlogHeroSectionResponse> results = jdbcTemplate.query(
                     GET_ALL_BLOG_HERO_SECTION_DATA,
@@ -201,19 +198,19 @@ public class HeroSectionRepositoryImpl implements HeroSectionRepository {
                     }
             );
 
-            LOGGER.info("Successfully fetched {} blog hero section items.", results.size());
+            LOGGER.info("Successfully fetched {} blog hero section data.", results.size());
             return results;
 
         } catch (DataAccessException ex) {
-            LOGGER.error("Database error while fetching blog hero section items: {}", ex.getMessage(), ex);
+            LOGGER.error("Database error while fetching blog hero section data: {}", ex.getMessage(), ex);
             throw new DataAccessErrorExceptionHandler(
-                    "Failed to fetch blog hero section items from database"
+                    "Failed to fetch blog hero section data from database"
             );
 
         } catch (Exception ex) {
-            LOGGER.error("Unexpected error while fetching blog hero section items: {}", ex.getMessage(), ex);
+            LOGGER.error("Unexpected error while fetching blog hero section data: {}", ex.getMessage(), ex);
             throw new InternalServerErrorExceptionHandler(
-                    "Unexpected error occurred while fetching blog hero section items"
+                    "Unexpected error occurred while fetching blog hero section data"
             );
         }
     }
@@ -223,7 +220,7 @@ public class HeroSectionRepositoryImpl implements HeroSectionRepository {
         String GET_ALL_FAQ_HERO_SECTION_DATA = HeroSectionQueries.GET_ALL_FAQ_HERO_SECTION_DATA;
 
         try {
-            LOGGER.info("Executing query to fetch all FAQ hero section items...");
+            LOGGER.info("Executing query to fetch faq hero section data");
 
             List<FaqHeroSectionResponse> results = jdbcTemplate.query(
                     GET_ALL_FAQ_HERO_SECTION_DATA,
@@ -257,19 +254,19 @@ public class HeroSectionRepositoryImpl implements HeroSectionRepository {
                     }
             );
 
-            LOGGER.info("Successfully fetched {} FAQ hero section items.", results.size());
+            LOGGER.info("Successfully fetched {} faq hero section data.", results.size());
             return results;
 
         } catch (DataAccessException ex) {
-            LOGGER.error("Database error while fetching FAQ hero section items: {}", ex.getMessage(), ex);
+            LOGGER.error("Database error while fetching faq hero section data: {}", ex.getMessage(), ex);
             throw new DataAccessErrorExceptionHandler(
-                    "Failed to fetch FAQ hero section items from database"
+                    "Failed to fetch faq hero section data from database"
             );
 
         } catch (Exception ex) {
-            LOGGER.error("Unexpected error while fetching FAQ hero section items: {}", ex.getMessage(), ex);
+            LOGGER.error("Unexpected error while fetching faq hero section data: {}", ex.getMessage(), ex);
             throw new InternalServerErrorExceptionHandler(
-                    "Unexpected error occurred while fetching FAQ hero section items"
+                    "Unexpected error occurred while fetching faq hero section data"
             );
         }
     }
@@ -278,7 +275,7 @@ public class HeroSectionRepositoryImpl implements HeroSectionRepository {
     public List<TourHeroSectionResponse> getTourHeroSectionDetails() {
         String GET_ALL_TOUR_HERO_SECTION_DATA = HeroSectionQueries.GET_ALL_TOUR_HERO_SECTION_DATA;
         try {
-            LOGGER.info("Executing query to fetch all tour hero section items...");
+            LOGGER.info("Executing query to fetch tour hero section data");
             List<TourHeroSectionResponse> results = jdbcTemplate.query(
                     GET_ALL_TOUR_HERO_SECTION_DATA,
                     (rs, rowNum) -> {
@@ -308,19 +305,19 @@ public class HeroSectionRepositoryImpl implements HeroSectionRepository {
                                 .build();
                     }
             );
-            LOGGER.info("Successfully fetched {} tour hero section items.", results.size());
+            LOGGER.info("Successfully fetched {} tour hero section data.", results.size());
             return results;
 
         } catch (DataAccessException ex) {
-            LOGGER.error("Database error while fetching tour hero section items: {}", ex.getMessage(), ex);
+            LOGGER.error("Database error while fetching tour hero section data: {}", ex.getMessage(), ex);
             throw new DataAccessErrorExceptionHandler(
-                    "Failed to fetch tour hero section items from database"
+                    "Failed to fetch tour hero section data from database"
             );
 
         } catch (Exception ex) {
-            LOGGER.error("Unexpected error while fetching tour hero section items: {}", ex.getMessage(), ex);
+            LOGGER.error("Unexpected error while fetching tour hero section data: {}", ex.getMessage(), ex);
             throw new InternalServerErrorExceptionHandler(
-                    "Unexpected error occurred while fetching tour hero section items"
+                    "Unexpected error occurred while fetching tour hero section data"
             );
         }
     }
@@ -331,7 +328,7 @@ public class HeroSectionRepositoryImpl implements HeroSectionRepository {
                 HeroSectionQueries.GET_ALL_ACTIVITY_HERO_SECTION_DATA;
 
         try {
-            LOGGER.info("Executing query to fetch all activity hero section items...");
+            LOGGER.info("Executing query to fetch activity hero section data");
 
             List<ActivityHeroSectionResponse> results = jdbcTemplate.query(
                     GET_ALL_ACTIVITY_HERO_SECTION_DATA,
@@ -377,23 +374,22 @@ public class HeroSectionRepositoryImpl implements HeroSectionRepository {
                     }
             );
 
-            LOGGER.info("Successfully fetched {} activity hero section items.", results.size());
+            LOGGER.info("Successfully fetched {} activity hero section data.", results.size());
             return results;
 
         } catch (DataAccessException ex) {
-            LOGGER.error("Database error while fetching activity hero section items: {}", ex.getMessage(), ex);
+            LOGGER.error("Database error while fetching activity hero section data: {}", ex.getMessage(), ex);
             throw new DataAccessErrorExceptionHandler(
-                    "Failed to fetch activity hero section items from database"
+                    "Failed to fetch activity hero section data from database"
             );
 
         } catch (Exception ex) {
-            LOGGER.error("Unexpected error while fetching activity hero section items: {}", ex.getMessage(), ex);
+            LOGGER.error("Unexpected error while fetching activity hero section data: {}", ex.getMessage(), ex);
             throw new InternalServerErrorExceptionHandler(
-                    "Unexpected error occurred while fetching activity hero section items"
+                    "Unexpected error occurred while fetching activity hero section data"
             );
         }
     }
-
 
     @Override
     public List<DestinationHeroSectionResponse> getDestinationHeroSectionDetails() {
@@ -401,7 +397,7 @@ public class HeroSectionRepositoryImpl implements HeroSectionRepository {
                 HeroSectionQueries.GET_ALL_DESTINATION_HERO_SECTION_DATA;
 
         try {
-            LOGGER.info("Executing query to fetch all destination hero section items...");
+            LOGGER.info("Executing query to fetch destination hero section data");
 
             List<DestinationHeroSectionResponse> results = jdbcTemplate.query(
                     GET_ALL_DESTINATION_HERO_SECTION_DATA,
@@ -447,30 +443,29 @@ public class HeroSectionRepositoryImpl implements HeroSectionRepository {
                     }
             );
 
-            LOGGER.info("Successfully fetched {} destination hero section items.", results.size());
+            LOGGER.info("Successfully fetched {} destination hero section data.", results.size());
             return results;
 
         } catch (DataAccessException ex) {
-            LOGGER.error("Database error while fetching destination hero section items: {}", ex.getMessage(), ex);
+            LOGGER.error("Database error while fetching destination hero section data: {}", ex.getMessage(), ex);
             throw new DataAccessErrorExceptionHandler(
-                    "Failed to fetch destination hero section items from database"
+                    "Failed to fetch destination hero section data from database"
             );
 
         } catch (Exception ex) {
-            LOGGER.error("Unexpected error while fetching destination hero section items: {}", ex.getMessage(), ex);
+            LOGGER.error("Unexpected error while fetching destination hero section data: {}", ex.getMessage(), ex);
             throw new InternalServerErrorExceptionHandler(
-                    "Unexpected error occurred while fetching destination hero section items"
+                    "Unexpected error occurred while fetching destination hero section data"
             );
         }
     }
-
 
     @Override
     public List<PackageHeroSectionResponse> getPackageHeroSectionDetails() {
         String GET_ALL_PACKAGE_HERO_SECTION_DATA = HeroSectionQueries.GET_ALL_PACKAGE_HERO_SECTION_DATA;
 
         try {
-            LOGGER.info("Executing query to fetch all package hero section items...");
+            LOGGER.info("Executing query to fetch package hero section data");
 
             List<PackageHeroSectionResponse> results = jdbcTemplate.query(
                     GET_ALL_PACKAGE_HERO_SECTION_DATA,
@@ -516,19 +511,19 @@ public class HeroSectionRepositoryImpl implements HeroSectionRepository {
                     }
             );
 
-            LOGGER.info("Successfully fetched {} package hero section items.", results.size());
+            LOGGER.info("Successfully fetched {} package hero section data.", results.size());
             return results;
 
         } catch (DataAccessException ex) {
-            LOGGER.error("Database error while fetching package hero section items: {}", ex.getMessage(), ex);
+            LOGGER.error("Database error while fetching package hero section data: {}", ex.getMessage(), ex);
             throw new DataAccessErrorExceptionHandler(
-                    "Failed to fetch package hero section items from database"
+                    "Failed to fetch package hero section data from database"
             );
 
         } catch (Exception ex) {
-            LOGGER.error("Unexpected error while fetching package hero section items: {}", ex.getMessage(), ex);
+            LOGGER.error("Unexpected error while fetching package hero section data: {}", ex.getMessage(), ex);
             throw new InternalServerErrorExceptionHandler(
-                    "Unexpected error occurred while fetching package hero section items"
+                    "Unexpected error occurred while fetching package hero section data"
             );
         }
     }
@@ -538,6 +533,8 @@ public class HeroSectionRepositoryImpl implements HeroSectionRepository {
         String GET_ALL_PACKAGE_SCHEDULE_HERO_SECTION_DATA = HeroSectionQueries.GET_ALL_PACKAGE_SCHEDULE_HERO_SECTION_DATA;
 
         try {
+            LOGGER.info("Executing query to fetch package schedule hero section data");
+
             List<PackageScheduleHeroSectionResponse> results = jdbcTemplate.query(
                     GET_ALL_PACKAGE_SCHEDULE_HERO_SECTION_DATA,
                     new Object[]{packageScheduleId},
@@ -551,15 +548,15 @@ public class HeroSectionRepositoryImpl implements HeroSectionRepository {
             );
             return results;
         } catch (DataAccessException ex) {
-            LOGGER.error("Database error while fetching package hero section items: {}", ex.getMessage(), ex);
+            LOGGER.error("Database error while fetching package hero section data: {}", ex.getMessage(), ex);
             throw new DataAccessErrorExceptionHandler(
-                    "Failed to fetch package hero section items from database"
+                    "Failed to fetch package hero section data from database"
             );
 
         } catch (Exception ex) {
-            LOGGER.error("Unexpected error while fetching package hero section items: {}", ex.getMessage(), ex);
+            LOGGER.error("Unexpected error while fetching package hero section data: {}", ex.getMessage(), ex);
             throw new InternalServerErrorExceptionHandler(
-                    "Unexpected error occurred while fetching package hero section items"
+                    "Unexpected error occurred while fetching package hero section data"
             );
         }
     }
@@ -569,6 +566,8 @@ public class HeroSectionRepositoryImpl implements HeroSectionRepository {
         String GET_BOOKED_TOUR_HERO_SECTION_DATA = HeroSectionQueries.GET_BOOKED_TOUR_HERO_SECTION_DATA;
 
         try {
+            LOGGER.info("Executing query to fetch booked tour hero section data");
+
             List<BookedTourHeroSectionResponse> results = jdbcTemplate.query(
                     GET_BOOKED_TOUR_HERO_SECTION_DATA,
                     new Object[]{bookingId},
@@ -581,15 +580,65 @@ public class HeroSectionRepositoryImpl implements HeroSectionRepository {
             );
             return results;
         } catch (DataAccessException ex) {
-            LOGGER.error("Database error while fetching booked tour hero section items: {}", ex.getMessage(), ex);
+            LOGGER.error("Database error while fetching booked tour hero section data: {}", ex.getMessage(), ex);
             throw new DataAccessErrorExceptionHandler(
-                    "Failed to fetch booked tour hero section items from database"
+                    "Failed to fetch booked tour hero section data from database"
             );
 
         } catch (Exception ex) {
-            LOGGER.error("Unexpected error while fetching booked tour hero section items: {}", ex.getMessage(), ex);
+            LOGGER.error("Unexpected error while fetching booked tour hero section data: {}", ex.getMessage(), ex);
             throw new InternalServerErrorExceptionHandler(
-                    "Unexpected error occurred while fetching booked tour hero section items"
+                    "Unexpected error occurred while fetching booked tour hero section data"
+            );
+        }
+    }
+
+    @Override
+    public List<ActivityDetailsHeroSectionResponse> getActivityHeroSectionDetailsByActivityId(Long activityId) {
+
+        try {
+            LOGGER.info(
+                    "Executing query to fetch activity hero section data by activity id : {}",
+                    activityId
+            );
+
+            List<ActivityDetailsHeroSectionResponse> results = jdbcTemplate.query(
+                    HeroSectionQueries.GET_ACTIVITY_HERO_SECTION_DATA_BY_ACTIVITY_ID,
+                    new Object[]{activityId},
+                    (rs, rowNum) -> ActivityDetailsHeroSectionResponse.builder()
+                            .activityId(rs.getLong("activity_id"))
+                            .imageId(rs.getLong("image_id"))
+                            .name(rs.getString("name"))
+                            .imageUrl(rs.getString("image_url"))
+                            .description(rs.getString("description"))
+                            .status(rs.getString("status"))
+                            .build()
+            );
+
+            LOGGER.info(
+                    "Successfully fetched {} activity hero section data by activity id : {}.",
+                    results.size(),
+                    activityId
+            );
+
+            return results;
+
+        } catch (DataAccessException ex) {
+            LOGGER.error(
+                    "Database error while fetching activity hero section data by activity id : {} , {}",
+                    activityId, ex.getMessage(), ex
+            );
+            throw new DataAccessErrorExceptionHandler(
+                    "Failed to fetch activity hero section data by activity id : " + activityId
+            );
+
+        } catch (Exception ex) {
+            LOGGER.error(
+                    "Unexpected error while fetching activity hero section data by activity id : {} , {}",
+                    activityId, ex.getMessage(), ex
+            );
+            throw new InternalServerErrorExceptionHandler(
+                    "Unexpected error occurred while fetching activity hero section data by activity id : " + activityId
             );
         }
     }

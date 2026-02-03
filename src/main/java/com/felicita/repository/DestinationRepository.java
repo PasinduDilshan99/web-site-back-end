@@ -6,10 +6,10 @@ import com.felicita.model.request.DestinationInsertRequest;
 import com.felicita.model.request.DestinationTerminateRequest;
 import com.felicita.model.request.DestinationUpdateRequest;
 import com.felicita.model.response.*;
-
 import java.util.List;
 
 public interface DestinationRepository {
+
     List<DestinationResponseDto> getAllDestinations();
 
     List<DestinationCategoryResponseDto> getAllDestinationsCategories();
@@ -20,21 +20,21 @@ public interface DestinationRepository {
 
     List<DestinationsForTourMapDto> getDestinationsForTourMap();
 
-    List<DestinationResponseDto> getDestinationDetailsByTourId(String tourId);
+    List<DestinationResponseDto> getDestinationDetailsByTourId(Long tourId);
 
-    List<DestinationReviewDetailsResponse> getDestinationReviewDetailsById(String destinationId);
+    List<DestinationReviewDetailsResponse> getDestinationReviewDetailsById(Long destinationId);
 
     List<DestinationReviewDetailsResponse> getAllDestinationsReviewDetails();
 
-    DestinationResponseDto getDestinationDetailsById(String destinationId);
+    DestinationResponseDto getDestinationDetailsById(Long destinationId);
 
     List<DestinationHistoryDetailsResponse> getAllDestinationHistoryDetails();
 
-    List<DestinationHistoryDetailsResponse> getDestinationHistoryDetailsById(String destinationId);
+    List<DestinationHistoryDetailsResponse> getDestinationHistoryDetailsById(Long destinationId);
 
     List<DestinationHistoryImageResponse> getAllDestinationHistoryImages();
 
-    List<DestinationHistoryImageResponse> getDestinationHistoryImagesById(String destinationId);
+    List<DestinationHistoryImageResponse> getDestinationHistoryImagesById(Long destinationId);
 
     DestinationsWithParamsResponse getDestinationWithParams(DestinationDataRequest destinationDataRequest);
 
@@ -53,4 +53,5 @@ public interface DestinationRepository {
     void removeDestinationActivities(List<Long> removeActivities, Long userId);
 
     void addNewActivitiesToDestination(List<DestinationUpdateRequest.Activity> newActivities, Long destinationId, Long userId);
+
 }

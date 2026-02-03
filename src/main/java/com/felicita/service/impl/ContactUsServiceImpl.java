@@ -2,8 +2,6 @@ package com.felicita.service.impl;
 
 import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
-import com.felicita.model.enums.CommonStatus;
-import com.felicita.model.response.BlogTagResponse;
 import com.felicita.model.response.CommonResponse;
 import com.felicita.model.response.ContactMethodResponse;
 import com.felicita.repository.ContactUsRepository;
@@ -13,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.time.Instant;
 import java.util.List;
 
@@ -40,19 +37,15 @@ public class ContactUsServiceImpl implements ContactUsService {
                 throw new DataNotFoundErrorExceptionHandler("No contact methods found");
             }
 
-            return
-                    new CommonResponse<>(
+            return new CommonResponse<>(
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
                             contactMethodResponses,
-                            Instant.now()
-
-                    );
+                            Instant.now());
 
         } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching active contact methods: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+            throw e;
         } catch (Exception e) {
             LOGGER.error("Error occurred while fetching active contact methods: {}", e.getMessage(), e);
             throw new InternalServerErrorExceptionHandler("Failed to fetch contact methods from database");
@@ -60,4 +53,5 @@ public class ContactUsServiceImpl implements ContactUsService {
             LOGGER.info("End fetching all active contact methods from repository");
         }
     }
+
 }

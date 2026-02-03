@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
 
 @Repository
@@ -25,7 +24,7 @@ public class OurStoryRepositoryImpl implements OurStoryRepository {
 
     @Override
     public List<OurStoryAndValuesResponse.Timeline> getOurStoryDetails() {
-        LOGGER.info("Fetching all our story details...");
+        LOGGER.info("Fetching all our story details.");
 
         return jdbcTemplate.query(
                 OurStoryQueries.GET_ALL_OUR_STORY_DETAILS,
@@ -49,7 +48,7 @@ public class OurStoryRepositoryImpl implements OurStoryRepository {
 
     @Override
     public List<OurStoryAndValuesResponse.CoreValue> getOurCoreValues() {
-        LOGGER.info("Fetching all our core values...");
+        LOGGER.info("Fetching all our core values.");
 
         return jdbcTemplate.query(
                 OurStoryQueries.GET_ALL_OUR_KEY_VALUES,
@@ -69,4 +68,5 @@ public class OurStoryRepositoryImpl implements OurStoryRepository {
                         .build()
         );
     }
+
 }

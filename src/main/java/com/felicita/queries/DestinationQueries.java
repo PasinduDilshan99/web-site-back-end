@@ -2,6 +2,9 @@ package com.felicita.queries;
 
 public class DestinationQueries {
 
+    private DestinationQueries() {
+    }
+
     public static final String GET_ALL_DESTINATIONS = """
             SELECT
                 d.destination_id,
@@ -36,7 +39,6 @@ public class DestinationQueries {
             LEFT JOIN destination_images di ON d.destination_id = di.destination_id
             """;
 
-
     public static final String GET_PAGINATED_DESTINATION_IDS = """
                 SELECT d.destination_id
                 FROM destination d
@@ -50,7 +52,7 @@ public class DestinationQueries {
                   AND (? IS NULL OR a.season = ?)
                   AND (? IS NULL OR cs.name = ?)
                 GROUP BY d.destination_id
-                LIMIT ? OFFSET ?;
+                LIMIT ? OFFSET ?
             """;
 
     public static final String GET_DESTINATIONS_BY_IDS = """
@@ -102,7 +104,6 @@ public class DestinationQueries {
                   AND (? IS NULL OR cs.name = ?);
             """;
 
-
     public static final String GET_ALL_DESTINATIONS_BY_TOUR_ID = """
             SELECT
                 d.destination_id,
@@ -117,7 +118,7 @@ public class DestinationQueries {
             	a.id AS activity_id,
                 a.name AS activity_name,
                 a.description AS activity_description,
-                a.activities_category,
+                ac.name AS activities_category,
                 a.duration_hours,
                 a.available_from,
                 a.available_to,
@@ -136,6 +137,7 @@ public class DestinationQueries {
             LEFT JOIN destination_categories dc ON d.destination_category = dc.id
             LEFT JOIN common_status cs ON d.status = cs.id
             LEFT JOIN activities a ON d.destination_id = a.destination_id
+            LEFT JOIN activity_category ac ON a.activities_category = ac.id
             LEFT JOIN destination_images di ON d.destination_id = di.destination_id
             WHERE t.tour_id = ?
             """;
@@ -164,14 +166,12 @@ public class DestinationQueries {
             ORDER BY dc.id, dci.id
             """;
 
-
     public static final String GET_POPULAR_DESTINATIONS = """
             SELECT
                 pd.id AS popular_id,
                 pd.rating,
                 pd.popularity,
                 pd.created_at AS popular_created_at,
-            
                 d.destination_id,
                 d.name AS destination_name,
                 d.description AS destination_description,
@@ -179,18 +179,15 @@ public class DestinationQueries {
                 d.latitude,
                 d.longitude,
                 cs_dest.name AS destination_status,
-            
                 dc.id AS category_id,
                 dc.category AS category_name,
                 dc.description AS category_description,
                 cs_cat.name AS category_status,
-            
                 di.id AS image_id,
                 di.name AS image_name,
                 di.description AS image_description,
                 di.image_url,
                 cs_img.name AS image_status
-            
             FROM popular_destination pd
             JOIN destination d
                 ON pd.destination_id = d.destination_id
@@ -204,9 +201,7 @@ public class DestinationQueries {
                 ON d.destination_id = di.destination_id
             LEFT JOIN common_status cs_img
                 ON di.status = cs_img.id
-            
             ORDER BY pd.popularity DESC, pd.rating DESC;
-            
             """;
 
     public static final String GET_TRENDING_DESTINATIONS = """
@@ -215,7 +210,6 @@ public class DestinationQueries {
                 pd.rating,
                 pd.popularity,
                 pd.created_at AS popular_created_at,
-            
                 d.destination_id,
                 d.name AS destination_name,
                 d.description AS destination_description,
@@ -223,19 +217,16 @@ public class DestinationQueries {
                 d.latitude,
                 d.longitude,
                 cs_dest.name AS destination_status,
-            
                 dc.id AS category_id,
                 dc.category AS category_name,
                 dc.description AS category_description,
                 cs_cat.name AS category_status,
-            
                 di.id AS image_id,
                 di.name AS image_name,
                 di.description AS image_description,
                 di.image_url,
                 cs_img.name AS image_status,
                 di.created_at AS image_created_at,
-            
                 a.id AS activity_id,
                 a.name AS activity_name,
                 a.description AS activity_description,
@@ -248,7 +239,6 @@ public class DestinationQueries {
                 a.min_participate,
                 a.max_participate,
                 a.season
-            
             FROM popular_destination pd
             JOIN destination d ON pd.destination_id = d.destination_id
             JOIN common_status cs_dest ON d.status = cs_dest.id
@@ -258,15 +248,12 @@ public class DestinationQueries {
             LEFT JOIN common_status cs_img ON di.status = cs_img.id
             LEFT JOIN activities a ON d.destination_id = a.destination_id
             LEFT JOIN common_status cs_act ON a.status = cs_act.id
-            
             WHERE pd.rating > 4.0
-            
             ORDER BY pd.popularity DESC, pd.rating DESC
-            
             """;
 
     public static final String GET_ALL_DESTINATIONS_CATEGORY = """
-                        SELECT
+                SELECT
                 dc.id AS CATEGORY_ID,
                 dc.name AS CATEGORY_NAME,
                 dc.description AS CATEGORY_DESCRIPTION,
@@ -408,7 +395,6 @@ public class DestinationQueries {
                 WHERE d.id IN (:ids)
             """;
 
-
     public static final String GET_ALL_DESTINATIONS_LOCATIONS = """
             SELECT
             	d.id AS DESTINATION_ID,
@@ -466,7 +452,6 @@ public class DestinationQueries {
                 ON cs4.id = dci.status
             WHERE cs1.name = 'ACTIVE'
             """;
-
 
     public static final String GET_DESTINATIONS_REVIEW_DETAILS = """
             SELECT
@@ -645,7 +630,7 @@ public class DestinationQueries {
             	a.id AS activity_id,
             	a.name AS activity_name,
             	a.description AS activity_description,
-            	a.activities_category,
+            	ac.name AS activities_category,
             	a.duration_hours,
             	a.available_from,
             	a.available_to,
@@ -662,6 +647,7 @@ public class DestinationQueries {
             LEFT JOIN destination_categories dc ON d.destination_category = dc.id
             LEFT JOIN common_status cs ON d.status = cs.id
             LEFT JOIN activities a ON d.destination_id = a.destination_id
+            LEFT JOIN activity_category ac ON ac.id = a.activities_category
             LEFT JOIN destination_images di
                ON d.destination_id = di.destination_id
               AND di.status = (
@@ -669,7 +655,6 @@ public class DestinationQueries {
               )
             WHERE d.destination_id=?
             """;
-
 
     public static final String GET_DESTINATION_REVIEW_DETAILS = """
             SELECT
@@ -862,17 +847,18 @@ public class DestinationQueries {
             )
             """;
 
-
     public static final String INSERT_DESTINATION_IMAGES_REQUEST = """
             INSERT INTO destination_images
             (destination_id, name, description, image_url, status, created_by)
             VALUES (?, ?, ?, ?, (SELECT cs.id FROM common_status cs WHERE cs.name = ? LIMIT 1), ?)
             """;
+
     public static final String DESTINATION_TERMINATE = """
             UPDATE destination
             SET status = (SELECT id FROM common_status WHERE name = ? LIMIT 1),terminated_at = now(), terminated_by = ?
             WHERE destination_id = ?
             """;
+
     public static final String GET_ACTIVE_DESTINATIONS_FOR_TERMINATE = """
             SELECT
             	d.destination_id,
@@ -898,6 +884,7 @@ public class DestinationQueries {
                 extra_price_note =?
             WHERE destination_id = ?
             """;
+
     public static final String DESTINATION_IMAGES_REMOVE = """
             UPDATE destination_images
             SET status = (SELECT id FROM common_status WHERE name = ? LIMIT 1),
@@ -906,7 +893,6 @@ public class DestinationQueries {
             WHERE id = ?
             """;
 
-
     public static final String DESTINATION_ACTIVITIES_REMOVE = """
             UPDATE activities
             SET status = ( SELECT id FROM common_status WHERE name = ? LIMIT 1),
@@ -914,8 +900,9 @@ public class DestinationQueries {
                 terminated_by = ?
             WHERE id = ?
             """;
+
     public static final String INSERT_DESTINATION_ACTIVITY = """
-                        INSERT INTO activities
+            INSERT INTO activities
             (
                 destination_id,
                 name,
@@ -945,9 +932,11 @@ public class DestinationQueries {
                 ?
             )
             """;
+
     public static final String INSERT_DESTINATION_ACTIVITY_IMAGE = """
-                        INSERT INTO activities_images
+            INSERT INTO activities_images
             (activity_id, name, description, image_url, status, created_by)
             VALUES (?, ?, ?, ?, (SELECT cs.id FROM common_status cs WHERE cs.name = ? LIMIT 1), ?)
             """;
+
 }

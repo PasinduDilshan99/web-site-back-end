@@ -1,8 +1,6 @@
 package com.felicita.controller;
 
-import com.felicita.model.request.BlogDetailsRequest;
 import com.felicita.model.request.CreateInquiryRequest;
-import com.felicita.model.response.BlogResponse;
 import com.felicita.model.response.CommonResponse;
 import com.felicita.model.response.InsertResponse;
 import com.felicita.service.InquiryService;

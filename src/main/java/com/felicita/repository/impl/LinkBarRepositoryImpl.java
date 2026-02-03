@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
 
 @Repository
@@ -27,10 +26,10 @@ public class LinkBarRepositoryImpl implements LinkBarRepository {
     }
 
     @Override
-    public List<LinkBarResponse> getAllLinkBarItems(){
+    public List<LinkBarResponse> getAllLinkBarData(){
         String GET_ALL_LINK_BAR = LinkBarQueries.GET_ALL_LINK_BAR_DATA;
         try {
-            LOGGER.info("Executing query to fetch all LinkBar items...");
+            LOGGER.info("Executing query to fetch all link bar data");
 
             List<LinkBarResponse> results = jdbcTemplate.query(GET_ALL_LINK_BAR, (rs, rowNum) -> {
                 LinkBarResponse response = new LinkBarResponse();
@@ -51,16 +50,17 @@ public class LinkBarRepositoryImpl implements LinkBarRepository {
                 return response;
             });
 
-            LOGGER.info("Successfully fetched {} LinkBar items.", results.size());
+            LOGGER.info("Successfully fetched {} link bar data.", results.size());
             return results;
 
         } catch (DataAccessException ex) {
-            LOGGER.error("Database error while fetching LinkBar items: {}", ex.getMessage(), ex);
-            throw new DataAccessErrorExceptionHandler("Failed to fetch LinkBar items from database");
+            LOGGER.error("Database error while fetching link bar data : {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler("Failed to fetch link bar data from database");
         } catch (Exception ex) {
-            LOGGER.error("Unexpected error while fetching LinkBar items: {}", ex.getMessage(), ex);
-            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching LinkBar items");
+            LOGGER.error("Unexpected error while fetching link bar data: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching link bar data");
         }
     }
+
 }
 

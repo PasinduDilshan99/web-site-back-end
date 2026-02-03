@@ -2,10 +2,8 @@ package com.felicita.service.impl;
 
 import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
-import com.felicita.model.enums.CommonStatus;
 import com.felicita.model.response.CommonResponse;
 import com.felicita.model.response.OurStoryAndValuesResponse;
-import com.felicita.model.response.VehicleResponse;
 import com.felicita.repository.OurStoryRepository;
 import com.felicita.service.OurStoryService;
 import com.felicita.util.CommonResponseMessages;
@@ -13,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.time.Instant;
 import java.util.List;
 
@@ -44,15 +41,12 @@ public class OurStoryServiceImpl implements OurStoryService {
 
             LOGGER.info("Fetched our story details successfully");
 
-            return (
-                    new CommonResponse<>(
+            return new CommonResponse<>(
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
                             ourStoryAndValuesResponse,
-                            Instant.now()
-                    )
-            );
+                            Instant.now());
 
         }catch (DataNotFoundErrorExceptionHandler e) {
             LOGGER.error("Error occurred while fetching our story details: {}", e.getMessage(), e);
@@ -64,4 +58,5 @@ public class OurStoryServiceImpl implements OurStoryService {
             LOGGER.info("End fetching our story details from repository");
         }
     }
+
 }

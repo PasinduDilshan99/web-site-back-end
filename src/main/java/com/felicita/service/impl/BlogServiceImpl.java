@@ -1,11 +1,7 @@
 package com.felicita.service.impl;
 
-import com.felicita.exception.DataNotFoundErrorExceptionHandler;
-import com.felicita.exception.InsertFailedErrorExceptionHandler;
-import com.felicita.exception.InternalServerErrorExceptionHandler;
-import com.felicita.exception.ValidationFailedErrorExceptionHandler;
+import com.felicita.exception.*;
 import com.felicita.model.enums.CommonStatus;
-import com.felicita.model.enums.PartnerStatus;
 import com.felicita.model.request.*;
 import com.felicita.model.response.*;
 import com.felicita.repository.BlogRepository;
@@ -16,9 +12,7 @@ import com.felicita.validation.BlogValidationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import java.time.Instant;
 import java.util.List;
 
@@ -41,7 +35,7 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    public ResponseEntity<CommonResponse<List<BlogResponse>>> getAllBlogs() {
+    public CommonResponse<List<BlogResponse>> getAllBlogs() {
         LOGGER.info("Start fetching all blogs from repository");
         try {
             List<BlogResponse> blogResponses = blogRepository.getAllBlogs();
@@ -52,19 +46,15 @@ public class BlogServiceImpl implements BlogService {
             }
 
             LOGGER.info("Fetched {} blogs successfully", blogResponses.size());
-            return ResponseEntity.ok(
-                    new CommonResponse<>(
+            return new CommonResponse<>(
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
                             blogResponses,
-                            Instant.now()
-                    )
-            );
+                            Instant.now());
 
-        } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching blogs: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
         } catch (Exception e) {
             LOGGER.error("Error occurred while fetching blogs: {}", e.getMessage(), e);
             throw new InternalServerErrorExceptionHandler("Failed to fetch blogs from database");
@@ -74,16 +64,11 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    public ResponseEntity<CommonResponse<List<BlogResponse>>> getAllActiveBlogs() {
-        LOGGER.info("Start fetching all visible blogs from repository");
+    public CommonResponse<List<BlogResponse>> getAllActiveBlogs() {
+        LOGGER.info("Start fetching active blogs from repository");
 
         try {
-            List<BlogResponse> blogResponses = blogRepository.getAllBlogs();
-
-            if (blogResponses.isEmpty()) {
-                LOGGER.warn("No blogs found in database");
-                throw new DataNotFoundErrorExceptionHandler("No blogs found");
-            }
+            List<BlogResponse> blogResponses = getAllBlogs().getData();
 
             List<BlogResponse> blogResponseList = blogResponses.stream()
                     .filter(item -> CommonStatus.ACTIVE.toString().equalsIgnoreCase(item.getBlogStatus()))
@@ -91,36 +76,32 @@ public class BlogServiceImpl implements BlogService {
                     .toList();
 
             if (blogResponseList.isEmpty()) {
-                LOGGER.warn("No visible blogs found in database");
-                throw new DataNotFoundErrorExceptionHandler("No visible blogs found");
+                LOGGER.warn("No active blogs found in database");
+                throw new DataNotFoundErrorExceptionHandler("No active blogs found");
             }
 
-            LOGGER.info("Fetched {} visible blogs successfully", blogResponseList.size());
+            LOGGER.info("Fetched {} active blogs successfully", blogResponseList.size());
 
-            return ResponseEntity.ok(
-                    new CommonResponse<>(
+            return new CommonResponse<>(
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
                             blogResponseList,
-                            Instant.now()
-                    )
-            );
+                            Instant.now());
 
-        } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching visible blogs: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
         } catch (Exception e) {
-            LOGGER.error("Error occurred while fetching visible blogs: {}", e.getMessage(), e);
+            LOGGER.error("Error occurred while fetching active blogs: {}", e.getMessage(), e);
             throw new InternalServerErrorExceptionHandler("Failed to fetch blogs from database");
         } finally {
-            LOGGER.info("End fetching all visible blogs from repository");
+            LOGGER.info("End fetching active blogs from repository");
         }
     }
 
     @Override
     public CommonResponse<BlogResponse> getBlogDetailsById(BlogDetailsRequest blogDetailsRequest) {
-        LOGGER.info("Start fetching blog details by id from repository");
+        LOGGER.info("Start fetching blog details by id : {} from repository", blogDetailsRequest.getId());
 
         try {
             BlogResponse blogResponse = blogRepository.getBlogDetailsById(blogDetailsRequest);
@@ -131,25 +112,22 @@ public class BlogServiceImpl implements BlogService {
                 blogResponse.setIsBookmark(isBookmarked);
             }
 
-            LOGGER.info("Fetched blog details by id successfully");
+            LOGGER.info("Fetched blog details by id : {} successfully", blogDetailsRequest.getId());
 
-            return
-                    new CommonResponse<>(
+            return new CommonResponse<>(
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
                             blogResponse,
-                            Instant.now()
-                    );
+                            Instant.now());
 
-        } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching blog details by id: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
         } catch (Exception e) {
             LOGGER.error("Error occurred while fetching blog details by id: {}", e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch blog details by id from database");
+            throw new InternalServerErrorExceptionHandler("Failed to fetch blog details by id : " + blogDetailsRequest.getId());
         } finally {
-            LOGGER.info("End fetching all blog details by id from repository");
+            LOGGER.info("End fetching blog details by id : {} from repository", blogDetailsRequest.getId());
         }
     }
 
@@ -159,19 +137,18 @@ public class BlogServiceImpl implements BlogService {
             blogValidationService.validateCreateBlogRequest(createBlogRequest);
             Long userId = commonService.getUserIdBySecurityContext();
             blogRepository.createBlog(createBlogRequest, userId);
-            return
-                    new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+
+            return new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_INSERT_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_INSERT_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_INSERT_MESSAGE,
                             new InsertResponse("Successfully insert blog request"),
-                            Instant.now()
-                    );
+                            Instant.now());
+
         } catch (ValidationFailedErrorExceptionHandler vfe) {
             throw new ValidationFailedErrorExceptionHandler("validation failed in the insert blog request", vfe.getValidationFailedResponses());
         } catch (InsertFailedErrorExceptionHandler ife) {
             throw new InsertFailedErrorExceptionHandler(ife.getMessage());
-
         } catch (Exception e) {
             LOGGER.error(e.toString());
             throw new InternalServerErrorExceptionHandler("Something went wrong");
@@ -180,7 +157,7 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     public CommonResponse<List<BlogResponse>> getBlogsByWriter(String writerName) {
-        LOGGER.info("Start fetching all blogs by writer from repository");
+        LOGGER.info("Start fetching blogs by writer from repository");
         try {
             List<BlogResponse> blogResponses = blogRepository.getBlogsByWriter(writerName);
 
@@ -190,17 +167,15 @@ public class BlogServiceImpl implements BlogService {
             }
 
             LOGGER.info("Fetched {} blogs from writer successfully", blogResponses.size());
-            return
-                    new CommonResponse<>(
+            return new CommonResponse<>(
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
                             blogResponses,
                             Instant.now());
 
-        } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching blogs from writer: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
         } catch (Exception e) {
             LOGGER.error("Error occurred while fetching blogs from writer: {}", e.getMessage(), e);
             throw new InternalServerErrorExceptionHandler("Failed to fetch blogs from writer from database");
@@ -222,17 +197,15 @@ public class BlogServiceImpl implements BlogService {
             }
 
             LOGGER.info("Fetched {} blogs from tag name successfully", blogResponses.size());
-            return
-                    new CommonResponse<>(
+            return new CommonResponse<>(
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
                             blogResponses,
                             Instant.now());
 
-        } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching blogs from tag name: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
         } catch (Exception e) {
             LOGGER.error("Error occurred while fetching blogs from writer: {}", e.getMessage(), e);
             throw new InternalServerErrorExceptionHandler("Failed to fetch blogs from tag name from database");
@@ -264,19 +237,15 @@ public class BlogServiceImpl implements BlogService {
 
             LOGGER.info("Fetched {} active blog tags successfully", blogResponseList.size());
 
-            return
-                    new CommonResponse<>(
+            return new CommonResponse<>(
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
                             blogResponseList,
-                            Instant.now()
+                            Instant.now());
 
-                    );
-
-        } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching active blog tags: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
         } catch (Exception e) {
             LOGGER.error("Error occurred while fetching active blog tags: {}", e.getMessage(), e);
             throw new InternalServerErrorExceptionHandler("Failed to fetch blog tags from database");
@@ -294,18 +263,18 @@ public class BlogServiceImpl implements BlogService {
             if (isBookmarked) {
                 blogRepository.removeBookmarkToBlog(blogBookmarkRequest, userId);
                 return new CommonResponse<>(
-                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                        CommonResponseMessages.SUCCESSFULLY_TERMINATE_CODE,
+                        CommonResponseMessages.SUCCESSFULLY_TERMINATE_STATUS,
+                        CommonResponseMessages.SUCCESSFULLY_TERMINATE_MESSAGE,
                         new InsertResponse("Successfully remove blog bookmark request"),
                         Instant.now()
                 );
             } else {
                 blogRepository.addBookmarkToBlog(blogBookmarkRequest, userId);
                 return new CommonResponse<>(
-                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                        CommonResponseMessages.SUCCESSFULLY_INSERT_CODE,
+                        CommonResponseMessages.SUCCESSFULLY_INSERT_STATUS,
+                        CommonResponseMessages.SUCCESSFULLY_INSERT_MESSAGE,
                         new InsertResponse("Successfully insert blog bookmark request"),
                         Instant.now()
                 );
@@ -331,27 +300,27 @@ public class BlogServiceImpl implements BlogService {
             if (blogAlreadyReactRespose == null) {
                 blogRepository.addReactToBlog(blogReactRequest, userId);
                 return new CommonResponse<>(
-                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                        CommonResponseMessages.SUCCESSFULLY_INSERT_CODE,
+                        CommonResponseMessages.SUCCESSFULLY_INSERT_STATUS,
+                        CommonResponseMessages.SUCCESSFULLY_INSERT_MESSAGE,
                         new InsertResponse("Successfully add blog react request"),
                         Instant.now()
                 );
             } else if (blogAlreadyReactRespose.getReactType().equalsIgnoreCase(blogReactRequest.getReactType())) {
                 blogRepository.removeReactToBlog(blogReactRequest, userId);
                 return new CommonResponse<>(
-                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                        CommonResponseMessages.SUCCESSFULLY_TERMINATE_CODE,
+                        CommonResponseMessages.SUCCESSFULLY_TERMINATE_STATUS,
+                        CommonResponseMessages.SUCCESSFULLY_TERMINATE_MESSAGE,
                         new InsertResponse("Successfully remove blog react request"),
                         Instant.now()
                 );
             } else {
                 blogRepository.changeReactToBlog(blogReactRequest, userId);
                 return new CommonResponse<>(
-                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                        CommonResponseMessages.SUCCESSFULLY_UPDATE_CODE,
+                        CommonResponseMessages.SUCCESSFULLY_UPDATE_STATUS,
+                        CommonResponseMessages.SUCCESSFULLY_UPDATE_MESSAGE,
                         new InsertResponse("Successfully change blog react request"),
                         Instant.now()
                 );
@@ -361,7 +330,6 @@ public class BlogServiceImpl implements BlogService {
             throw new ValidationFailedErrorExceptionHandler("validation failed in the insert blog reaction request", vfe.getValidationFailedResponses());
         } catch (InsertFailedErrorExceptionHandler ife) {
             throw new InsertFailedErrorExceptionHandler(ife.getMessage());
-
         } catch (Exception e) {
             LOGGER.error(e.toString());
             throw new InternalServerErrorExceptionHandler("Something went wrong");
@@ -375,18 +343,16 @@ public class BlogServiceImpl implements BlogService {
             Long userId = commonService.getUserIdBySecurityContext();
             blogRepository.addCommentToBlog(blogCommentRequest, userId);
             return new CommonResponse<>(
-                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    CommonResponseMessages.SUCCESSFULLY_INSERT_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_INSERT_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_INSERT_MESSAGE,
                     new InsertResponse("Successfully add comment to blog"),
-                    Instant.now()
-            );
+                    Instant.now());
 
         } catch (ValidationFailedErrorExceptionHandler vfe) {
             throw new ValidationFailedErrorExceptionHandler("validation failed in the insert blog comment request", vfe.getValidationFailedResponses());
         } catch (InsertFailedErrorExceptionHandler ife) {
             throw new InsertFailedErrorExceptionHandler(ife.getMessage());
-
         } catch (Exception e) {
             LOGGER.error(e.toString());
             throw new InternalServerErrorExceptionHandler("Something went wrong");
@@ -402,27 +368,27 @@ public class BlogServiceImpl implements BlogService {
             if (blogCommentAlreadyReactResponse == null) {
                 blogRepository.addReactToBlogComment(blogCommentReactRequest, userId);
                 return new CommonResponse<>(
-                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                        CommonResponseMessages.SUCCESSFULLY_INSERT_CODE,
+                        CommonResponseMessages.SUCCESSFULLY_INSERT_STATUS,
+                        CommonResponseMessages.SUCCESSFULLY_INSERT_MESSAGE,
                         new InsertResponse("Successfully add blog comment react request"),
                         Instant.now()
                 );
             } else if (blogCommentAlreadyReactResponse.getReactType().equalsIgnoreCase(blogCommentReactRequest.getReactType())) {
                 blogRepository.removeReactToBlogComment(blogCommentReactRequest, userId);
                 return new CommonResponse<>(
-                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                        CommonResponseMessages.SUCCESSFULLY_TERMINATE_CODE,
+                        CommonResponseMessages.SUCCESSFULLY_TERMINATE_STATUS,
+                        CommonResponseMessages.SUCCESSFULLY_TERMINATE_MESSAGE,
                         new InsertResponse("Successfully remove blog comment react request"),
                         Instant.now()
                 );
             } else {
                 blogRepository.changeReactToBlogComment(blogCommentReactRequest, userId);
                 return new CommonResponse<>(
-                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                        CommonResponseMessages.SUCCESSFULLY_UPDATE_CODE,
+                        CommonResponseMessages.SUCCESSFULLY_UPDATE_STATUS,
+                        CommonResponseMessages.SUCCESSFULLY_UPDATE_MESSAGE,
                         new InsertResponse("Successfully change blog comment react request"),
                         Instant.now()
                 );
@@ -432,7 +398,6 @@ public class BlogServiceImpl implements BlogService {
             throw new ValidationFailedErrorExceptionHandler("validation failed in the insert blog comment reaction request", vfe.getValidationFailedResponses());
         } catch (InsertFailedErrorExceptionHandler ife) {
             throw new InsertFailedErrorExceptionHandler(ife.getMessage());
-
         } catch (Exception e) {
             LOGGER.error(e.toString());
             throw new InternalServerErrorExceptionHandler("Something went wrong");
@@ -441,14 +406,14 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     public CommonResponse<List<BlogTagResponse>> getAllBlogTagsByBLogId(Long blogId) {
-        LOGGER.info("Start fetching all blog tags by blog id from repository");
+        LOGGER.info("Start fetching all blog tags by blog id : {} from repository",blogId);
 
         try {
             List<BlogTagResponse> blogTagResponses = blogRepository.getAllBlogTagsByBLogId(blogId);
 
             if (blogTagResponses.isEmpty()) {
-                LOGGER.warn("No blog tags by blog id found in database");
-                throw new DataNotFoundErrorExceptionHandler("No blog tags by blog id found");
+                LOGGER.warn("No blog tags by blog id : {} found in database",blogId);
+                throw new DataNotFoundErrorExceptionHandler("No blog tags by blog id : "+ blogId);
             }
 
             List<BlogTagResponse> blogResponseList = blogTagResponses.stream()
@@ -456,30 +421,27 @@ public class BlogServiceImpl implements BlogService {
                     .toList();
 
             if (blogResponseList.isEmpty()) {
-                LOGGER.warn("No active blog tags by blog id found in database");
-                throw new DataNotFoundErrorExceptionHandler("No active blog tags by blog id found");
+                LOGGER.warn("No active blog tags by blog id : {} found in database",blogId);
+                throw new DataNotFoundErrorExceptionHandler("No active blog tags by blog id : "+ blogId);
             }
 
-            LOGGER.info("Fetched {} active blog tags by blog id successfully", blogResponseList.size());
+            LOGGER.info("Fetched {} active blog tags by blog id : {} successfully", blogId,blogResponseList.size());
 
-            return
-                    new CommonResponse<>(
+            return new CommonResponse<>(
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
                             blogResponseList,
-                            Instant.now()
+                            Instant.now());
 
-                    );
-
-        } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching active blog tags by blog id: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
         } catch (Exception e) {
-            LOGGER.error("Error occurred while fetching active blog tags by blog id: {}", e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch blog tags by blog id from database");
+            LOGGER.error("Error occurred while fetching active blog tags by blog id: {} , {}",blogId, e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch blog tags by blog id : "+ blogId);
         } finally {
-            LOGGER.info("End fetching all active blog tags by blog id from repository");
+            LOGGER.info("End fetching all active blog tags by blog id : {} from repository" , blogId);
         }
     }
+
 }

@@ -3,23 +3,23 @@ package com.felicita.repository;
 import com.felicita.model.dto.*;
 import com.felicita.model.request.*;
 import com.felicita.model.response.*;
-
 import java.util.List;
 
 public interface PackageRepository {
+
     List<PackageResponseDto> getAllPackages();
 
-    PackageResponseDto getPackageDetailsById(String packageId);
+    PackageResponseDto getPackageDetailsById(Long packageId);
 
     List<PackageReviewResponse> getAllPackageReviewDetails();
 
-    List<PackageReviewResponse> getPackageReviewDetailsById(String packageId);
+    List<PackageReviewResponse> getPackageReviewDetailsById(Long packageId);
 
-    List<PackageHistoryImageResponse> getPackageHistoryImagesById(String packageId);
+    List<PackageHistoryImageResponse> getPackageHistoryImagesById(Long packageId);
 
     List<PackageHistoryImageResponse> getAllPackageHistoryImages();
 
-    List<PackageHistoryDetailsResponse> getPackageHistoryDetailsById(String packageId);
+    List<PackageHistoryDetailsResponse> getPackageHistoryDetailsById(Long packageId);
 
     List<PackageHistoryDetailsResponse> getAllPackageHistoryDetails();
 
@@ -106,4 +106,5 @@ public interface PackageRepository {
     void removePackageFeatures(Long packageId, List<Long> removeFeatureIds, Long userId);
 
     void updatePackageFeatures(Long packageId, List<PackageFeaturesUpdateRequest> updatedFeatures, Long userId);
+
 }

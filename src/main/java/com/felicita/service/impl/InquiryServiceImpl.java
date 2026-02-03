@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.time.Instant;
 
 @Service
@@ -39,25 +38,26 @@ public class InquiryServiceImpl implements InquiryService {
     @Override
     public CommonResponse<InsertResponse> createInquiry(CreateInquiryRequest createInquiryRequest) {
         try {
+            LOGGER.info("Start execute insert inquiry request");
             inquiryValidationService.validateCreateInquiryRequest(createInquiryRequest);
             Long userId = commonService.getUserIdBySecurityContextWithOutException();
             inquiryRepository.createInquiry(createInquiryRequest, userId);
-            return
-                    new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+
+            return new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_INSERT_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_INSERT_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_INSERT_MESSAGE,
                             new InsertResponse("Successfully create a inquiry"),
-                            Instant.now()
-                    );
+                            Instant.now());
+
         } catch (ValidationFailedErrorExceptionHandler vfe) {
             throw new ValidationFailedErrorExceptionHandler("validation failed in the create inquiry request", vfe.getValidationFailedResponses());
         } catch (InsertFailedErrorExceptionHandler ife) {
             throw new InsertFailedErrorExceptionHandler(ife.getMessage());
-
         } catch (Exception e) {
             LOGGER.error(e.toString());
             throw new InternalServerErrorExceptionHandler("Something went wrong");
         }
     }
+
 }

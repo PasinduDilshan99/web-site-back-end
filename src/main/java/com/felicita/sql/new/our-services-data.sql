@@ -1,0 +1,53 @@
+INSERT INTO `travelagencydb`.`our_service_status`
+(`id`,
+`name`,
+`description`,
+`common_status_id`,
+`created_at`,
+`created_by`,
+`updated_at`,
+`updated_by`,
+`terminated_at`,
+`terminated_by`)
+VALUES
+(<{id: }>,
+<{name: }>,
+<{description: }>,
+<{common_status_id: }>,
+<{created_at: CURRENT_TIMESTAMP}>,
+<{created_by: }>,
+<{updated_at: CURRENT_TIMESTAMP}>,
+<{updated_by: }>,
+<{terminated_at: }>,
+<{terminated_by: }>);
+
+INSERT INTO `travelagencydb`.`our_services`
+(`id`,
+`title`,
+`sub_title`,
+`description`,
+`image_url`,
+`color`,
+`our_service_status_id`,
+`created_at`,
+`created_by`,
+`updated_at`,
+`updated_by`,
+`terminated_at`,
+`terminated_by`,
+`icon_url`)
+VALUES
+(<{id: }>,
+<{title: }>,
+<{sub_title: }>,
+<{description: }>,
+<{image_url: }>,
+<{color: }>,
+<{our_service_status_id: }>,
+<{created_at: CURRENT_TIMESTAMP}>,
+<{created_by: }>,
+<{updated_at: CURRENT_TIMESTAMP}>,
+<{updated_by: }>,
+<{terminated_at: }>,
+<{terminated_by: }>,
+<{icon_url: }>);

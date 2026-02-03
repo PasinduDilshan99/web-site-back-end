@@ -588,7 +588,7 @@ public class TourQueries {
                 a.destination_id,
                 a.name,
                 a.description,
-                a.activities_category,
+                ac.name AS activities_category,
                 a.duration_hours,
                 a.available_from,
                 a.available_to,
@@ -642,7 +642,7 @@ public class TourQueries {
             
             FROM activities a
             LEFT JOIN common_status cs ON a.status = cs.id
-            LEFT JOIN activity_category ac ON a.activities_category = ac.name
+            LEFT JOIN activity_category ac ON a.activities_category = ac.id
             WHERE a.terminated_at IS NULL
             GROUP BY
                 a.id,

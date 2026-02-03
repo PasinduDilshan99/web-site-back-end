@@ -91,6 +91,7 @@ public class ActivitiesQueries {
                 ac.terminated_at AS category_terminated_at,
                 ac.terminated_by AS category_terminated_by,
                 cs1.name AS category_status,
+                IFNULL(act.activity_count, 0) AS activities_count,
                 aci.id AS image_id,
                 aci.name AS image_name,
                 aci.description AS image_description,
@@ -102,14 +103,27 @@ public class ActivitiesQueries {
                 aci.updated_by AS image_updated_by,
                 aci.terminated_at AS image_terminated_at,
                 aci.terminated_by AS image_terminated_by
-            FROM activity_category ac
-            LEFT JOIN activity_category_images aci
+              FROM activity_category ac
+
+              LEFT JOIN (
+                SELECT
+                    activities_category,
+                    COUNT(*) AS activity_count
+                FROM activities
+                GROUP BY activities_category
+              ) act
+                ON act.activities_category = ac.id
+
+              LEFT JOIN activity_category_images aci
                 ON ac.id = aci.activity_category_id
-            LEFT JOIN common_status cs1
-            	ON cs1.id = ac.status
-            LEFT JOIN common_status cs2
-            	ON cs2.id = aci.status
-            ORDER BY ac.id, aci.id
+
+              LEFT JOIN common_status cs1
+                ON cs1.id = ac.status
+
+              LEFT JOIN common_status cs2
+                ON cs2.id = aci.status
+
+              ORDER BY ac.id, aci.id
             """;
 
 
@@ -344,7 +358,7 @@ public class ActivitiesQueries {
             	) AS images
             FROM activities a
             LEFT JOIN common_status cs ON a.status = cs.id
-            LEFT JOIN activity_category ac ON a.activities_category = ac.name
+            LEFT JOIN activity_category ac ON a.activities_category = ac.id
             LEFT JOIN activities_schedule asch ON asch.activity_id = a.id
             	AND asch.terminated_at IS NULL
             WHERE a.terminated_at IS NULL AND a.id = ?
@@ -602,12 +616,13 @@ public class ActivitiesQueries {
                 SELECT a.id
                 FROM activities a
                 LEFT JOIN common_status cs ON a.status = cs.id
+                LEFT JOIN activity_category ac ON ac.id = a.activities_category
                 WHERE a.terminated_at IS NULL
                   AND (? IS NULL OR a.name LIKE CONCAT('%', ?, '%'))
                   AND (? IS NULL OR a.price_local >= ?)
                   AND (? IS NULL OR a.price_local <= ?)
                   AND (? IS NULL OR a.duration_hours = ?)
-                  AND (? IS NULL OR a.activities_category = ?)
+                  AND (? IS NULL OR ac.name = ?)
                   AND (? IS NULL OR a.season = ?)
                   AND (? IS NULL OR cs.name = ?)
                 ORDER BY a.created_at DESC
@@ -618,12 +633,13 @@ public class ActivitiesQueries {
                 SELECT COUNT(*)
                 FROM activities a
                 LEFT JOIN common_status cs ON a.status = cs.id
+                LEFT JOIN activity_category ac ON ac.id = a.activities_category
                 WHERE a.terminated_at IS NULL
                   AND (? IS NULL OR a.name LIKE CONCAT('%', ?, '%'))
                   AND (? IS NULL OR a.price_local >= ?)
                   AND (? IS NULL OR a.price_local <= ?)
                   AND (? IS NULL OR a.duration_hours = ?)
-                  AND (? IS NULL OR a.activities_category = ?)
+                  AND (? IS NULL OR ac.name = ?)
                   AND (? IS NULL OR a.season = ?)
                   AND (? IS NULL OR cs.name = ?)
             """;
@@ -635,7 +651,7 @@ public class ActivitiesQueries {
                     a.destination_id,
                     a.name,
                     a.description,
-                    a.activities_category,
+                    ac.name AS activities_category,
                     a.duration_hours,
                     a.available_from,
                     a.available_to,
@@ -699,7 +715,7 @@ public class ActivitiesQueries {
             
                 FROM activities a
                 LEFT JOIN common_status cs ON a.status = cs.id
-                LEFT JOIN activity_category ac ON a.activities_category = ac.name
+                LEFT JOIN activity_category ac ON a.activities_category = ac.id
                 LEFT JOIN activities_schedule asch ON asch.activity_id = a.id
                     AND asch.terminated_at IS NULL
                 WHERE a.id IN (%s)

@@ -1,6 +1,10 @@
 package com.felicita.queries;
 
 public class HeroSectionQueries {
+
+    private HeroSectionQueries() {
+    }
+
     public static final String GET_ALL_HERO_SECTION_DATA = """
             SELECT
             	hs.id AS IMAGE_ID,
@@ -120,6 +124,7 @@ public class HeroSectionQueries {
             JOIN common_status cs ON fhs.status = cs.id
             ORDER BY fhs.`order` ASC
             """;
+
     public static final String GET_ALL_TOUR_HERO_SECTION_DATA = """
             SELECT
                 ths.id,
@@ -144,6 +149,7 @@ public class HeroSectionQueries {
             JOIN common_status cs ON ths.status = cs.id
             ORDER BY ths.`order` ASC
             """;
+
     public static final String GET_ALL_DESTINATION_HERO_SECTION_DATA = """
             SELECT
                 dhs.id,
@@ -168,6 +174,7 @@ public class HeroSectionQueries {
             JOIN common_status cs ON dhs.status = cs.id
             ORDER BY dhs.`order` ASC
             """;
+
     public static final String GET_ALL_ACTIVITY_HERO_SECTION_DATA = """
             SELECT
                 ahs.id,
@@ -192,6 +199,7 @@ public class HeroSectionQueries {
             JOIN common_status cs ON ahs.status = cs.id
             ORDER BY ahs.`order` ASC
             """;
+
     public static final String GET_ALL_PACKAGE_HERO_SECTION_DATA = """
             SELECT
                 phs.id,
@@ -216,6 +224,7 @@ public class HeroSectionQueries {
             JOIN common_status cs ON phs.status = cs.id
             ORDER BY phs.`order` ASC
             """;
+
     public static final String GET_ALL_PACKAGE_SCHEDULE_HERO_SECTION_DATA = """
             SELECT
                 pi.id,
@@ -228,6 +237,7 @@ public class HeroSectionQueries {
             	ON p.package_id = pi.package_id
             WHERE p.package_id = ?
             """;
+
     public static final String GET_BOOKED_TOUR_HERO_SECTION_DATA = """
             SELECT
             	ti.id,
@@ -245,4 +255,21 @@ public class HeroSectionQueries {
             	ON ti.tour_id = t.tour_id
             WHERE b.booking_id = ?
             """;
+
+    public static final String GET_ACTIVITY_HERO_SECTION_DATA_BY_ACTIVITY_ID = """
+    SELECT
+        ai.id AS image_id,
+        ai.activity_id AS activity_id,
+        ai.name AS name,
+        ai.description AS description,
+        ai.image_url AS image_url,
+        cs.name AS status
+    FROM activities_images ai
+    LEFT JOIN common_status cs
+        ON cs.id = ai.status
+    WHERE ai.activity_id = ?;
+    """;
+
+
+
 }

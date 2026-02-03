@@ -5,5 +5,7 @@ import com.felicita.model.response.LinkBarResponse;
 import java.util.List;
 
 public interface LinkBarRepository {
-    List<LinkBarResponse> getAllLinkBarItems();
+
+    List<LinkBarResponse> getAllLinkBarData();
+
 }

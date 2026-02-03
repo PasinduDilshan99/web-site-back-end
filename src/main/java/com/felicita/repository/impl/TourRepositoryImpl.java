@@ -8,7 +8,6 @@ import com.felicita.model.dto.*;
 import com.felicita.model.enums.CommonStatus;
 import com.felicita.model.request.*;
 import com.felicita.model.response.*;
-import com.felicita.queries.ActivitiesQueries;
 import com.felicita.queries.TourQueries;
 import com.felicita.repository.TourRepository;
 import org.slf4j.Logger;
@@ -20,13 +19,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-
 import static com.felicita.queries.TourQueries.GET_PAGINATED_TOUR_IDS;
 import static com.felicita.queries.TourQueries.GET_TOURS_BY_IDS;
 
@@ -54,7 +51,6 @@ public class TourRepositoryImpl implements TourRepository {
                 while (rs.next()) {
                     int tourId = rs.getInt("tour_id");
 
-                    // If we haven't seen this tour before, create it
                     TourResponseDto tour = tourMap.get(tourId);
                     if (tour == null) {
                         tour = new TourResponseDto();
@@ -120,7 +116,7 @@ public class TourRepositoryImpl implements TourRepository {
             });
 
         } catch (DataAccessException ex) {
-            throw new DataNotFoundErrorExceptionHandler("Database error while fetching tours");
+            throw new DataAccessErrorExceptionHandler("Database error while fetching tours");
         } catch (Exception ex) {
             throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching tours");
         }
@@ -132,13 +128,11 @@ public class TourRepositoryImpl implements TourRepository {
 
         try {
             return jdbcTemplate.query(GET_POPULAR_TOURS, rs -> {
-                // Map to hold tours by tourId
                 Map<Integer, PopularTourResponseDto> tourMap = new LinkedHashMap<>();
 
                 while (rs.next()) {
                     int tourId = rs.getInt("tour_id");
 
-                    // Create or get existing tour DTO
                     PopularTourResponseDto tour = tourMap.computeIfAbsent(tourId, id -> {
                         try {
                             return new PopularTourResponseDto(
@@ -242,14 +236,14 @@ public class TourRepositoryImpl implements TourRepository {
             });
 
         } catch (DataAccessException ex) {
-            throw new DataNotFoundErrorExceptionHandler("Database error while fetching tours");
+            throw new DataAccessErrorExceptionHandler("Database error while fetching tours");
         } catch (Exception ex) {
             throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching tours");
         }
     }
 
     @Override
-    public TourResponseDto getTourDetailsById(String tourId) {
+    public TourResponseDto getTourDetailsById(Long tourId) {
         String GET_TOUR_DETAILS_BY_ID = TourQueries.GET_TOUR_DETAILS_BY_ID;
 
         try {
@@ -325,7 +319,7 @@ public class TourRepositoryImpl implements TourRepository {
 
         } catch (DataAccessException ex) {
             LOGGER.error("Database error while fetching tour details", ex);
-            throw new DataNotFoundErrorExceptionHandler("Database error while fetching tour details");
+            throw new DataAccessErrorExceptionHandler("Database error while fetching tour details");
         } catch (Exception ex) {
             LOGGER.error("Unexpected error while fetching tour details", ex);
             throw new InternalServerErrorExceptionHandler("Unexpected error while fetching tour details");
@@ -492,34 +486,22 @@ public class TourRepositoryImpl implements TourRepository {
 
         } catch (DataAccessException ex) {
             LOGGER.error("Database error while fetching tour details", ex);
-            throw new DataNotFoundErrorExceptionHandler("Database error while fetching tour details");
+            throw new DataAccessErrorExceptionHandler("Database error while fetching tour details");
         } catch (Exception ex) {
             LOGGER.error("Unexpected error while fetching tour details", ex);
             throw new InternalServerErrorExceptionHandler("Unexpected error while fetching tour details");
         }
     }
 
-    /**
-     * Utility method to safely get LocalDateTime from ResultSet.
-     */
-    private LocalDateTime getLocalDateTime(ResultSet rs, String columnLabel) {
-        try {
-            Timestamp timestamp = rs.getTimestamp(columnLabel);
-            return timestamp != null ? timestamp.toLocalDateTime() : null;
-        } catch (SQLException e) {
-            return null;
-        }
-    }
-
 
     @Override
-    public List<TourReviewDetailsResponse> getTourReviewDetailsById(String tourId) {
+    public List<TourReviewDetailsResponse> getTourReviewDetailsById(Long tourId) {
         String GET_TOUR_REVIEW_DETAILS_BY_ID = TourQueries.GET_TOUR_REVIEW_DETAILS_BY_ID;
 
         try {
             return jdbcTemplate.query(con -> {
                 var ps = con.prepareStatement(GET_TOUR_REVIEW_DETAILS_BY_ID);
-                ps.setString(1, tourId);
+                ps.setLong(1, tourId);
                 return ps;
             }, rs -> {
                 Map<Integer, TourReviewDetailsResponse> reviewMap = new LinkedHashMap<>();
@@ -643,7 +625,7 @@ public class TourRepositoryImpl implements TourRepository {
 
         } catch (DataAccessException ex) {
             LOGGER.error("Database error while fetching tour reviews for ID {}", tourId, ex);
-            throw new DataNotFoundErrorExceptionHandler("Database error while fetching tour reviews");
+            throw new DataAccessErrorExceptionHandler("Database error while fetching tour reviews");
         } catch (Exception ex) {
             LOGGER.error("Unexpected error while fetching tour reviews for ID {}", tourId, ex);
             throw new InternalServerErrorExceptionHandler("Unexpected error while fetching tour reviews");
@@ -651,13 +633,13 @@ public class TourRepositoryImpl implements TourRepository {
     }
 
     @Override
-    public List<TourDestinationsForMapResponse> getTourDestinationsForMap(String tourId) {
+    public List<TourDestinationsForMapResponse> getTourDestinationsForMap(Long tourId) {
         String GET_TOUR_DESTINATIONS_FOR_MAP = TourQueries.GET_TOUR_DESTINATIONS_FOR_MAP;
 
         try {
             return jdbcTemplate.query(connection -> {
                 var ps = connection.prepareStatement(GET_TOUR_DESTINATIONS_FOR_MAP);
-                ps.setString(1, tourId);
+                ps.setLong(1, tourId);
                 return ps;
             }, (ResultSet rs) -> {
 
@@ -698,7 +680,7 @@ public class TourRepositoryImpl implements TourRepository {
             });
 
         } catch (DataAccessException ex) {
-            throw new DataNotFoundErrorExceptionHandler("Database error while fetching tour destinations");
+            throw new DataAccessErrorExceptionHandler("Database error while fetching tour destinations");
         } catch (Exception ex) {
             throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching tour destinations");
         }
@@ -790,7 +772,7 @@ public class TourRepositoryImpl implements TourRepository {
             });
 
         } catch (DataAccessException ex) {
-            throw new DataNotFoundErrorExceptionHandler("Database error while fetching tours");
+            throw new DataAccessErrorExceptionHandler("Database error while fetching tours");
         } catch (Exception ex) {
             throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching tours");
         }
@@ -798,11 +780,11 @@ public class TourRepositoryImpl implements TourRepository {
 
 
     @Override
-    public List<TourHistoryResponse> getTourHistoryDetailsById(String tourId) {
+    public List<TourHistoryResponse> getTourHistoryDetailsById(Long tourId) {
         String GET_TOUR_HISTORY_DETAILS_BY_ID = TourQueries.GET_TOUR_HISTORY_DETAILS_BY_ID;
 
         try {
-            return jdbcTemplate.query(GET_TOUR_HISTORY_DETAILS_BY_ID, ps -> ps.setString(1, tourId), rs -> {
+            return jdbcTemplate.query(GET_TOUR_HISTORY_DETAILS_BY_ID, ps -> ps.setLong(1, tourId), rs -> {
                 Map<Long, TourHistoryResponse> historyMap = new LinkedHashMap<>();
 
                 while (rs.next()) {
@@ -883,18 +865,18 @@ public class TourRepositoryImpl implements TourRepository {
             });
 
         } catch (DataAccessException ex) {
-            throw new DataNotFoundErrorExceptionHandler("Database error while fetching tour history for tourId: " + tourId);
+            throw new DataAccessErrorExceptionHandler("Database error while fetching tour history for tourId: " + tourId);
         } catch (Exception ex) {
             throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching tour history for tourId: " + tourId);
         }
     }
 
     @Override
-    public List<TourHistoryImageResponse> getTourHistoryImagesById(String tourId) {
+    public List<TourHistoryImageResponse> getTourHistoryImagesById(Long tourId) {
         String GET_ALL_TOUR_HISTORY_IMAGES_BY_ID = TourQueries.GET_ALL_TOUR_HISTORY_IMAGES_BY_ID;
 
         try {
-            return jdbcTemplate.query(GET_ALL_TOUR_HISTORY_IMAGES_BY_ID, ps -> ps.setString(1, tourId), rs -> {
+            return jdbcTemplate.query(GET_ALL_TOUR_HISTORY_IMAGES_BY_ID, ps -> ps.setLong(1, tourId), rs -> {
                 List<TourHistoryImageResponse> images = new ArrayList<>();
                 while (rs.next()) {
                     TourHistoryImageResponse image = TourHistoryImageResponse.builder()
@@ -918,7 +900,7 @@ public class TourRepositoryImpl implements TourRepository {
             });
 
         } catch (DataAccessException ex) {
-            throw new DataNotFoundErrorExceptionHandler(
+            throw new DataAccessErrorExceptionHandler(
                     "Database error while fetching tour history for tourId: ");
         } catch (Exception ex) {
             throw new InternalServerErrorExceptionHandler(
@@ -956,7 +938,7 @@ public class TourRepositoryImpl implements TourRepository {
             });
 
         } catch (DataAccessException ex) {
-            throw new DataNotFoundErrorExceptionHandler("Database error while fetching tours");
+            throw new DataAccessErrorExceptionHandler("Database error while fetching tours");
         } catch (Exception ex) {
             throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching tours");
         }
@@ -1058,7 +1040,7 @@ public class TourRepositoryImpl implements TourRepository {
             return new ToursDetailsWithParamResponse(totalTourIds.size(), query);
 
         } catch (DataAccessException ex) {
-            throw new DataNotFoundErrorExceptionHandler("Database error while fetching tours");
+            throw new DataAccessErrorExceptionHandler("Database error while fetching tours");
         } catch (Exception ex) {
             throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching tours");
         }
@@ -1087,7 +1069,7 @@ public class TourRepositoryImpl implements TourRepository {
             );
 
         } catch (DataAccessException ex) {
-            throw new DataNotFoundErrorExceptionHandler(
+            throw new DataAccessErrorExceptionHandler(
                     "Database error while fetching tour day-to-day details for tourId: " + tourId);
         } catch (Exception ex) {
             throw new InternalServerErrorExceptionHandler(
@@ -2241,9 +2223,15 @@ public class TourRepositoryImpl implements TourRepository {
         }
     }
 
+    private LocalDateTime getLocalDateTime(ResultSet rs, String columnLabel) {
+        try {
+            Timestamp timestamp = rs.getTimestamp(columnLabel);
+            return timestamp != null ? timestamp.toLocalDateTime() : null;
+        } catch (SQLException e) {
+            return null;
+        }
+    }
 
-
-    // ✅ Helper methods (avoid null pointer issues)
     private String getSafeString(ResultSet rs, String column) {
         try {
             return rs.getString(column);
@@ -2260,6 +2248,5 @@ public class TourRepositoryImpl implements TourRepository {
             return null;
         }
     }
-
 
 }

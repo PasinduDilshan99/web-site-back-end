@@ -7,32 +7,31 @@ import com.felicita.model.request.ActivityInsertRequest;
 import com.felicita.model.request.ActivityTerminateRequest;
 import com.felicita.model.request.ActivityUpdateRequest;
 import com.felicita.model.response.*;
-import org.springframework.http.ResponseEntity;
-
 import java.util.List;
 
 public interface ActivitiesService {
-    ResponseEntity<CommonResponse<List<ActivityResponseDto>>> getAllActivities();
 
-    ResponseEntity<CommonResponse<List<ActivityResponseDto>>> getActiveActivities();
+    CommonResponse<List<ActivityResponseDto>> getAllActivities();
 
-    ResponseEntity<CommonResponse<List<ActivityCategoryResponseDto>>> getAllActivityCategories();
+    CommonResponse<List<ActivityResponseDto>> getActiveActivities();
 
-    ResponseEntity<CommonResponse<List<ActivityCategoryResponseDto>>> getActiveActivityCategories();
+    CommonResponse<List<ActivityCategoryResponseDto>> getAllActivityCategories();
+
+    CommonResponse<List<ActivityCategoryResponseDto>> getActiveActivityCategories();
 
     CommonResponse<List<ActivityReviewDetailsResponse>> getAllActivityReviewDetails();
 
-    CommonResponse<List<ActivityReviewDetailsResponse>> getActivityReviewDetailsById(String activityId);
+    CommonResponse<List<ActivityReviewDetailsResponse>> getActivityReviewDetailsById(Long activityId);
 
-    CommonResponse<ActivityResponseDto> getActivityById(String activityId);
+    CommonResponse<ActivityResponseDto> getActivityById(Long activityId);
 
     CommonResponse<List<ActivityHistoryDetailsResponse>> getAllActivityHistoryDetails();
 
-    CommonResponse<List<ActivityHistoryDetailsResponse>> getActivityHistoryDetailsById(String activityId);
+    CommonResponse<List<ActivityHistoryDetailsResponse>> getActivityHistoryDetailsById(Long activityId);
 
     CommonResponse<List<ActivityHistoryImageResponse>> getAllActivityHistoryImages();
 
-    CommonResponse<List<ActivityHistoryImageResponse>> getActivityHistoryImagesById(String activityId);
+    CommonResponse<List<ActivityHistoryImageResponse>> getActivityHistoryImagesById(Long activityId);
 
     CommonResponse<ActivityWithParamsResponse> getActivitiesWithParams(ActivityDataRequest activityDataRequest);
 
@@ -46,5 +45,4 @@ public interface ActivitiesService {
 
     CommonResponse<List<ActivityIdAndNameResponse>> getTourIdsAndTourNames();
 
-//    CommonResponse<List<ActivityBasicDetailsResponse>> getActivitiesByDestinationId(String destinationId);
 }

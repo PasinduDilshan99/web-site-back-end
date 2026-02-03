@@ -30,17 +30,15 @@ public class NavBarRepositoryImpl implements NavBarRepository {
     }
 
     @Override
-    public List<NavBarResponse> getAllNavBarItems() {
+    public List<NavBarResponse> getAllNavBarData() {
         try {
             LOGGER.info("Executing query to fetch all nav bar items with submenus...");
 
-            // Step 1: Get all nav bars
             List<NavBarResponse> navBars = jdbcTemplate.query(
                     NavBarQueries.GET_ALL_NAV_BAR_DATA,
                     (rs, rowNum) -> createNavBarResponse(rs)
             );
 
-            // Step 2: For each nav bar, get its submenus
             for (NavBarResponse navBar : navBars) {
                 List<NavBarSubmenuResponse> submenus = jdbcTemplate.query(
                         NavBarQueries.GET_SUBMENU_BY_NAV_BAR_ID,
@@ -64,22 +62,17 @@ public class NavBarRepositoryImpl implements NavBarRepository {
 
     private NavBarResponse createNavBarResponse(ResultSet rs) throws SQLException {
         NavBarResponse response = new NavBarResponse();
-
         response.setId(rs.getInt("NAV_BAR_ID"));
         response.setName(rs.getString("NAME"));
         response.setDescription(rs.getString("DESCRIPTION"));
         response.setStatus(rs.getString("STATUS"));
         response.setLinkUrl(rs.getString("LINK_URL"));
-
-        // Set timestamps
         setNavBarTimestamps(response, rs);
-
         return response;
     }
 
     private NavBarSubmenuResponse createSubmenuResponse(ResultSet rs) throws SQLException {
         NavBarSubmenuResponse submenu = new NavBarSubmenuResponse();
-
         submenu.setId(rs.getInt("SUBMENU_ID"));
         submenu.setNavBarId(rs.getInt("NAV_BAR_ID"));
         submenu.setName(rs.getString("NAME"));
@@ -90,50 +83,36 @@ public class NavBarRepositoryImpl implements NavBarRepository {
         submenu.setOpensInNewTab(rs.getBoolean("OPENS_IN_NEW_TAB"));
         submenu.setIsFeatured(rs.getBoolean("IS_FEATURED"));
         submenu.setStatus(rs.getString("STATUS"));
-
-        // Set timestamps for submenu
         setSubmenuTimestamps(submenu, rs);
-
         return submenu;
     }
 
     private void setNavBarTimestamps(NavBarResponse response, ResultSet rs) throws SQLException {
         Timestamp createdTs = rs.getTimestamp("CREATED_AT");
         response.setCreatedAt(createdTs != null ? createdTs.toLocalDateTime() : null);
-
         response.setCreatedBy(getNullableInt(rs, "CREATED_BY"));
-
         Timestamp updatedTs = rs.getTimestamp("UPDATED_AT");
         response.setUpdatedAt(updatedTs != null ? updatedTs.toLocalDateTime() : null);
-
         response.setUpdatedBy(getNullableInt(rs, "UPDATED_BY"));
-
         Timestamp terminatedTs = rs.getTimestamp("TERMINATED_AT");
         response.setTerminatedAt(terminatedTs != null ? terminatedTs.toLocalDateTime() : null);
-
         response.setTerminatedBy(getNullableInt(rs, "TERMINATED_BY"));
     }
 
     private void setSubmenuTimestamps(NavBarSubmenuResponse submenu, ResultSet rs) throws SQLException {
         Timestamp createdTs = rs.getTimestamp("CREATED_AT");
         submenu.setCreatedAt(createdTs != null ? createdTs.toLocalDateTime() : null);
-
         submenu.setCreatedBy(getNullableInt(rs, "CREATED_BY"));
-
         Timestamp updatedTs = rs.getTimestamp("UPDATED_AT");
         submenu.setUpdatedAt(updatedTs != null ? updatedTs.toLocalDateTime() : null);
-
         submenu.setUpdatedBy(getNullableInt(rs, "UPDATED_BY"));
-
         Timestamp terminatedTs = rs.getTimestamp("TERMINATED_AT");
         submenu.setTerminatedAt(terminatedTs != null ? terminatedTs.toLocalDateTime() : null);
-
         submenu.setTerminatedBy(getNullableInt(rs, "TERMINATED_BY"));
     }
 
     private Integer getNullableInt(ResultSet rs, String column) throws SQLException {
         return rs.getObject(column) != null ? rs.getInt(column) : null;
     }
-
 
 }
