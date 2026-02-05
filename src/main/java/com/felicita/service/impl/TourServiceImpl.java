@@ -8,6 +8,7 @@ import com.felicita.model.request.TourInsertRequest;
 import com.felicita.model.request.TourUpdateRequest;
 import com.felicita.model.response.*;
 import com.felicita.repository.TourRepository;
+import com.felicita.repository.WishListRepository;
 import com.felicita.service.CommonService;
 import com.felicita.service.DestinationService;
 import com.felicita.service.TourService;
@@ -17,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -30,16 +32,15 @@ public class TourServiceImpl implements TourService {
     private final DestinationService destinationService;
     private final TourValidationService tourValidationService;
     private final CommonService commonService;
+    private final WishListRepository wishListRepository;
 
     @Autowired
-    public TourServiceImpl(TourRepository tourRepository,
-                           DestinationService destinationService,
-                           TourValidationService tourValidationService,
-                           CommonService commonService) {
+    public TourServiceImpl(TourRepository tourRepository, DestinationService destinationService, TourValidationService tourValidationService, CommonService commonService, WishListRepository wishListRepository) {
         this.tourRepository = tourRepository;
         this.destinationService = destinationService;
         this.tourValidationService = tourValidationService;
         this.commonService = commonService;
+        this.wishListRepository = wishListRepository;
     }
 
     @Override
@@ -48,6 +49,22 @@ public class TourServiceImpl implements TourService {
         try {
             List<TourResponseDto> tourResponseDtos = tourRepository.getAllTours();
 
+            Long userId = commonService.getUserIdBySecurityContextWithOutException();
+
+            Set<Long> tourIdSet = new HashSet<>();
+            if (userId != null) {
+                List<Long> tourIds = wishListRepository.getAllTourWishListByUserId(userId);
+                if (tourIds != null) {
+                    tourIdSet.addAll(tourIds);
+                }
+            }
+            if (tourResponseDtos != null) {
+                for (TourResponseDto tourResponseDto : tourResponseDtos) {
+                    tourResponseDto.setWish(tourIdSet.contains(tourResponseDto.getTourId()));
+                }
+
+            }
+
             if (tourResponseDtos.isEmpty()) {
                 LOGGER.warn("No tours found in database");
                 throw new DataNotFoundErrorExceptionHandler("No tours found");
@@ -55,11 +72,11 @@ public class TourServiceImpl implements TourService {
 
             LOGGER.info("Fetched {} tours successfully", tourResponseDtos.size());
             return new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            tourResponseDtos,
-                            Instant.now());
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    tourResponseDtos,
+                    Instant.now());
 
         } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
             throw e;
@@ -83,11 +100,11 @@ public class TourServiceImpl implements TourService {
 
             LOGGER.info("Fetched {} active tours successfully", tourResponseDtoList.size());
             return new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            tourResponseDtoList,
-                            Instant.now());
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    tourResponseDtoList,
+                    Instant.now());
 
         } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
             throw e;
@@ -112,11 +129,11 @@ public class TourServiceImpl implements TourService {
 
             LOGGER.info("Fetched {} popular tours successfully", popularTours.size());
             return new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            popularTours,
-                            Instant.now());
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    popularTours,
+                    Instant.now());
 
         } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
             throw e;
@@ -140,11 +157,11 @@ public class TourServiceImpl implements TourService {
             }
 
             return new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            tourResponseDto,
-                            Instant.now());
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    tourResponseDto,
+                    Instant.now());
 
         } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
             throw e;
@@ -202,11 +219,11 @@ public class TourServiceImpl implements TourService {
             }
 
             return new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            tourReviewDetailsResponses,
-                            Instant.now());
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    tourReviewDetailsResponses,
+                    Instant.now());
 
         } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
             throw e;
@@ -230,11 +247,11 @@ public class TourServiceImpl implements TourService {
             }
 
             return new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            tourDestinationsForMapResponses,
-                            Instant.now());
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    tourDestinationsForMapResponses,
+                    Instant.now());
 
         } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
             throw e;
@@ -242,7 +259,7 @@ public class TourServiceImpl implements TourService {
             LOGGER.error("Error occurred while fetching tour destinations for map by tour id : {} , {}", tourId, e.getMessage(), e);
             throw new InternalServerErrorExceptionHandler("Error occurred while fetching tour destinations for map by tour id : " + tourId);
         } finally {
-            LOGGER.info("End fetching tour destinations for map by tour id : {}" , tourId);
+            LOGGER.info("End fetching tour destinations for map by tour id : {}", tourId);
         }
     }
 
@@ -286,11 +303,11 @@ public class TourServiceImpl implements TourService {
             }
 
             return new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            tourHistoryResponses,
-                            Instant.now());
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    tourHistoryResponses,
+                    Instant.now());
 
         } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
             throw e;
@@ -343,11 +360,11 @@ public class TourServiceImpl implements TourService {
             }
 
             return new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            tourHistoryImageResponses,
-                            Instant.now());
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    tourHistoryImageResponses,
+                    Instant.now());
 
         } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
             throw e;
@@ -364,6 +381,26 @@ public class TourServiceImpl implements TourService {
         LOGGER.info("Start fetching tours for params from repository");
         try {
             ToursDetailsWithParamResponse toursDetailsWithParamResponse = tourRepository.getToursToShowWithParam(tourDataRequest);
+
+            Long userId = commonService.getUserIdBySecurityContextWithOutException();
+
+            Set<Long> tourIdSet = new HashSet<>();
+            if (userId != null) {
+                LOGGER.info("USER ID : {}, FETCHING WISHLIST ACTIVITY IDS", userId);
+                List<Long> tourIds = wishListRepository.getAllTourWishListByUserId(userId);
+                if (tourIds != null) {
+                    tourIdSet.addAll(tourIds);
+                    LOGGER.info("USER ID : {} , WISHLIST ACTIVITY IDS : {}", userId, tourIdSet);
+                }
+            }
+            if (toursDetailsWithParamResponse != null) {
+                List<TourResponseDto> tourResponseDtos = toursDetailsWithParamResponse.getTourResponseDtoList();
+                if (tourResponseDtos != null) {
+                    for (TourResponseDto tourResponseDto : tourResponseDtos) {
+                        tourResponseDto.setWish(tourIdSet.contains(tourResponseDto.getTourId()));
+                    }
+                }
+            }
 
             if (toursDetailsWithParamResponse == null) {
                 LOGGER.warn("No tours for param found in database");
@@ -527,7 +564,7 @@ public class TourServiceImpl implements TourService {
             throw e;
         } catch (Exception e) {
             LOGGER.error("Error occurred while fetching tour extra details by tour id: {} ,{}", tourId, e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Failed to fetch tour extra details by tour id : "+ tourId);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch tour extra details by tour id : " + tourId);
         } finally {
             LOGGER.info("End fetching all tour extra details by tour id : {} from repository", tourId);
         }
@@ -609,11 +646,11 @@ public class TourServiceImpl implements TourService {
             }
 
             return new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            tourForTerminateResponses,
-                            Instant.now());
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    tourForTerminateResponses,
+                    Instant.now());
 
         } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
             throw e;
@@ -634,11 +671,11 @@ public class TourServiceImpl implements TourService {
             tourRepository.terminateTour(tourTerminateRequest, userId);
 
             return new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_TERMINATE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_TERMINATE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_TERMINATE_MESSAGE,
-                            new TerminateResponse("Successfully terminate tour request"),
-                            Instant.now());
+                    CommonResponseMessages.SUCCESSFULLY_TERMINATE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_TERMINATE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_TERMINATE_MESSAGE,
+                    new TerminateResponse("Successfully terminate tour request"),
+                    Instant.now());
 
         } catch (ValidationFailedErrorExceptionHandler vfe) {
             throw new ValidationFailedErrorExceptionHandler("validation failed in the terminate tour request", vfe.getValidationFailedResponses());
@@ -741,7 +778,7 @@ public class TourServiceImpl implements TourService {
 
     @Override
     public CommonResponse<TourAllDetailsResponse> getTourAllDetailsById(Long tourId) {
-        LOGGER.info("Start fetching all tour details by tour id : {} from repository" , tourId);
+        LOGGER.info("Start fetching all tour details by tour id : {} from repository", tourId);
         try {
             TourAllDetailsResponse tourAllDetailsResponse = new TourAllDetailsResponse();
             TourResponseDto tourResponseDto = tourRepository.getTourDetailsById(tourId);
@@ -878,19 +915,19 @@ public class TourServiceImpl implements TourService {
             }
 
             return new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            tourAllDetailsResponse,
-                            Instant.now());
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    tourAllDetailsResponse,
+                    Instant.now());
 
         } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
             throw e;
         } catch (Exception e) {
             LOGGER.error("Error occurred while fetching all tour details by tour id : {} , {}", tourId, e.getMessage(), e);
-            throw new InternalServerErrorExceptionHandler("Error occurred while fetching all tour details by tour id : " +  tourId);
+            throw new InternalServerErrorExceptionHandler("Error occurred while fetching all tour details by tour id : " + tourId);
         } finally {
-            LOGGER.info("End fetching all tour details by tour id : {} from repository" , tourId);
+            LOGGER.info("End fetching all tour details by tour id : {} from repository", tourId);
         }
     }
 

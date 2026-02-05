@@ -10,6 +10,7 @@ import com.felicita.model.request.ActivityTerminateRequest;
 import com.felicita.model.request.ActivityUpdateRequest;
 import com.felicita.model.response.*;
 import com.felicita.repository.ActivitiesRepository;
+import com.felicita.repository.WishListRepository;
 import com.felicita.service.ActivitiesService;
 import com.felicita.service.CommonService;
 import com.felicita.util.CommonResponseMessages;
@@ -21,7 +22,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,14 +35,14 @@ public class ActivitiesServiceImpl implements ActivitiesService {
     private final ActivitiesRepository activitiesRepository;
     private final ActivityValidationService activityValidationService;
     private final CommonService commonService;
+    private final WishListRepository wishListRepository;
 
     @Autowired
-    public ActivitiesServiceImpl(ActivitiesRepository activitiesRepository,
-                                 ActivityValidationService activityValidationService,
-                                 CommonService commonService) {
+    public ActivitiesServiceImpl(ActivitiesRepository activitiesRepository, ActivityValidationService activityValidationService, CommonService commonService, WishListRepository wishListRepository) {
         this.activitiesRepository = activitiesRepository;
         this.activityValidationService = activityValidationService;
         this.commonService = commonService;
+        this.wishListRepository = wishListRepository;
     }
 
     @Override
@@ -362,6 +365,27 @@ public class ActivitiesServiceImpl implements ActivitiesService {
         LOGGER.info("Start fetching all activities for request from repository");
         try {
             ActivityWithParamsResponse activityWithParamsResponse = activitiesRepository.getActivitiesWithParams(activityDataRequest);
+            Long userId = commonService.getUserIdBySecurityContextWithOutException();
+
+            Set<Long> activityIdSet = new HashSet<>();
+            if (userId != null) {
+                LOGGER.info("USER ID : {}, FETCHING WISHLIST ACTIVITY IDS", userId);
+                List<Long> activityIds = wishListRepository.getAllActivityWishListByUserId(userId);
+                if (activityIds != null) {
+                    activityIdSet.addAll(activityIds);
+                    LOGGER.info("USER ID : {} , WISHLIST ACTIVITY IDS : {}", userId, activityIdSet);
+                }
+            }
+
+            if (activityWithParamsResponse != null) {
+                List<ActivityResponseDto> activityResponseDtos = activityWithParamsResponse.getActivityResponseDtos();
+                if (activityResponseDtos != null) {
+                    for (ActivityResponseDto activityResponseDto : activityResponseDtos) {
+                        activityResponseDto.setWish(activityIdSet.contains(activityResponseDto.getId()));
+                    }
+                }
+            }
+
 
             if (activityWithParamsResponse == null) {
                 return new CommonResponse<>(

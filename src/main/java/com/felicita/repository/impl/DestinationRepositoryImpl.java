@@ -44,10 +44,10 @@ public class DestinationRepositoryImpl implements DestinationRepository {
             LOGGER.info("Executing query to fetch all destinations.");
 
             return jdbcTemplate.query(GET_ALL_DESTINATIONS, rs -> {
-                Map<Integer, DestinationResponseDto> destinationMap = new HashMap<>();
+                Map<Long, DestinationResponseDto> destinationMap = new HashMap<>();
 
                 while (rs.next()) {
-                    int destinationId = rs.getInt("destination_id");
+                    Long destinationId = rs.getLong("destination_id");
 
                     DestinationResponseDto destination = destinationMap.get(destinationId);
                     if (destination == null) {
@@ -417,10 +417,10 @@ public class DestinationRepositoryImpl implements DestinationRepository {
             LOGGER.info("Executing query to fetch all destinations for tourId: {}", tourId);
 
             return jdbcTemplate.query(GET_ALL_DESTINATIONS, new Object[]{tourId}, rs -> {
-                Map<Integer, DestinationResponseDto> destinationMap = new HashMap<>();
+                Map<Long, DestinationResponseDto> destinationMap = new HashMap<>();
 
                 while (rs.next()) {
-                    int destinationId = rs.getInt("destination_id");
+                    Long destinationId = rs.getLong("destination_id");
 
                     DestinationResponseDto destination = destinationMap.computeIfAbsent(destinationId, id -> {
                         DestinationResponseDto dto = new DestinationResponseDto();
@@ -751,7 +751,7 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                 while (rs.next()) {
                     if (destination == null) {
                         destination = new DestinationResponseDto();
-                        destination.setDestinationId(rs.getInt("destination_id"));
+                        destination.setDestinationId(rs.getLong("destination_id"));
                         destination.setDestinationName(rs.getString("destination_name"));
                         destination.setDestinationDescription(rs.getString("destination_description"));
                         destination.setLocation(rs.getString("location"));
@@ -1232,10 +1232,10 @@ public class DestinationRepositoryImpl implements DestinationRepository {
             String fullQuery = String.format(GET_DESTINATIONS_BY_IDS, inSql);
 
             return jdbcTemplate.query(fullQuery, destinationIds.toArray(), (ResultSet rs) -> {
-                Map<Integer, DestinationResponseDto> destinationMap = new HashMap<>();
+                Map<Long, DestinationResponseDto> destinationMap = new HashMap<>();
 
                 while (rs.next()) {
-                    int destinationId = rs.getInt("destination_id");
+                    Long destinationId = rs.getLong("destination_id");
 
                     DestinationResponseDto destination = destinationMap.get(destinationId);
                     if (destination == null) {

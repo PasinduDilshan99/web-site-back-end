@@ -6,6 +6,7 @@ import com.felicita.exception.InternalServerErrorExceptionHandler;
 import com.felicita.exception.ValidationFailedErrorExceptionHandler;
 import com.felicita.model.enums.CommonStatus;
 import com.felicita.model.enums.PartnerStatus;
+import com.felicita.model.request.BrowsingHistoryRequest;
 import com.felicita.model.request.InsertHistoryData;
 import com.felicita.model.response.BrowserHistoryResponse;
 import com.felicita.model.response.CommonResponse;
@@ -68,38 +69,25 @@ public class HistoryManagementServiceImpl implements HistoryManagementService {
     }
 
     @Override
-    public CommonResponse<List<BrowserHistoryResponse>> getHistoryData() {
+    public CommonResponse<BrowserHistoryResponse> getHistoryData(BrowsingHistoryRequest browsingHistoryRequest) {
         LOGGER.info("Start fetching browser history data from repository");
 
         try {
             Long userId = commonService.getUserIdBySecurityContext();
-            List<BrowserHistoryResponse> browserHistoryResponses =
-                    historyManagementRepository.getHistoryData(userId);
+            BrowserHistoryResponse browserHistoryResponses =
+                    historyManagementRepository.getHistoryData(userId, browsingHistoryRequest);
 
-            if (browserHistoryResponses.isEmpty()) {
+            if (browserHistoryResponses == null) {
                 LOGGER.warn("No browser history data found in database");
                 throw new DataNotFoundErrorExceptionHandler("No browser history data found");
             }
 
-            List<BrowserHistoryResponse> browserHistoryResponseList = browserHistoryResponses.stream()
-                    .filter(item -> CommonStatus.ACTIVE.toString().equalsIgnoreCase(item.getStatusName()))
-                    .toList();
-
-            if (browserHistoryResponseList.isEmpty()) {
-                LOGGER.warn("No active history data found in database");
-                throw new DataNotFoundErrorExceptionHandler("No active history data found");
-            }
-
-            LOGGER.info("Fetched {} active history data successfully", browserHistoryResponseList.size());
-
-            return
-                    new CommonResponse<>(
+            return new CommonResponse<>(
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            browserHistoryResponseList,
-                            Instant.now()
-                    );
+                    browserHistoryResponses,
+                            Instant.now());
 
         } catch (DataNotFoundErrorExceptionHandler e) {
             LOGGER.error("Error occurred while fetching active history data: {}", e.getMessage(), e);

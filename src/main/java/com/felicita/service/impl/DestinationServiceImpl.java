@@ -9,6 +9,7 @@ import com.felicita.model.request.DestinationTerminateRequest;
 import com.felicita.model.request.DestinationUpdateRequest;
 import com.felicita.model.response.*;
 import com.felicita.repository.DestinationRepository;
+import com.felicita.repository.WishListRepository;
 import com.felicita.service.CommonService;
 import com.felicita.service.DestinationService;
 import com.felicita.util.CommonResponseMessages;
@@ -19,7 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class DestinationServiceImpl implements DestinationService {
@@ -29,14 +32,14 @@ public class DestinationServiceImpl implements DestinationService {
     private final DestinationRepository destinationRepository;
     private final DestinationValidationService destinationValidationService;
     private final CommonService commonService;
+    private final WishListRepository wishListRepository;
 
     @Autowired
-    public DestinationServiceImpl(DestinationRepository destinationRepository,
-                                  DestinationValidationService destinationValidationService,
-                                  CommonService commonService) {
+    public DestinationServiceImpl(DestinationRepository destinationRepository, DestinationValidationService destinationValidationService, CommonService commonService, WishListRepository wishListRepository) {
         this.destinationRepository = destinationRepository;
         this.destinationValidationService = destinationValidationService;
         this.commonService = commonService;
+        this.wishListRepository = wishListRepository;
     }
 
     @Override
@@ -511,6 +514,25 @@ public class DestinationServiceImpl implements DestinationService {
         LOGGER.info("Start fetching all destinations with params from repository");
         try {
             DestinationsWithParamsResponse destinationsWithParamsResponse = destinationRepository.getDestinationWithParams(destinationDataRequest);
+            Long userId = commonService.getUserIdBySecurityContextWithOutException();
+
+            Set<Long> destinationIdSet = new HashSet<>();
+            if (userId != null) {
+                LOGGER.info("USER ID : {}, FETCHING WISHLIST DESTINATION IDS", userId);
+                List<Long> destinationIds = wishListRepository.getAllDestinationWishListByUserId(userId);
+                LOGGER.info("USER ID : {} , WISHLIST DESTINATION IDS : {}", userId, destinationIds);
+                if (destinationIds != null) {
+                    destinationIdSet.addAll(destinationIds);
+                }
+            }
+            if (destinationsWithParamsResponse != null) {
+                List<DestinationResponseDto> destinationResponseDtos = destinationsWithParamsResponse.getDestinationResponseDtos();
+                if (destinationResponseDtos != null) {
+                    for (DestinationResponseDto destinationResponseDto : destinationResponseDtos) {
+                        destinationResponseDto.setWish(destinationIdSet.contains(destinationResponseDto.getDestinationId()));
+                    }
+                }
+            }
 
             return new CommonResponse<>(
                     CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,

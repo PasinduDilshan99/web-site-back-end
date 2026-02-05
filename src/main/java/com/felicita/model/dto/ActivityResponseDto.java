@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ActivityResponseDto {
-    private Integer id;
+    private Long id;
 
     @JsonProperty("destination_id")
     private Integer destinationId;
@@ -66,4 +66,6 @@ public class ActivityResponseDto {
     private List<ActivityScheduleDto> schedules;
     private List<ActivityRequirementDto> requirements;
     private List<ActivityImageDto> images;
+
+    private boolean wish = false;
 }

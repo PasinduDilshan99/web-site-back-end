@@ -46,10 +46,10 @@ public class TourRepositoryImpl implements TourRepository {
 
         try {
             return jdbcTemplate.query(GET_ALL_TOURS, (ResultSet rs) -> {
-                Map<Integer, TourResponseDto> tourMap = new HashMap<>();
+                Map<Long, TourResponseDto> tourMap = new HashMap<>();
 
                 while (rs.next()) {
-                    int tourId = rs.getInt("tour_id");
+                    Long tourId = rs.getLong("tour_id");
 
                     TourResponseDto tour = tourMap.get(tourId);
                     if (tour == null) {
@@ -248,10 +248,10 @@ public class TourRepositoryImpl implements TourRepository {
 
         try {
             return jdbcTemplate.query(GET_TOUR_DETAILS_BY_ID, new Object[]{tourId}, (ResultSet rs) -> {
-                Map<Integer, TourResponseDto> tourMap = new HashMap<>();
+                Map<Long, TourResponseDto> tourMap = new HashMap<>();
 
                 while (rs.next()) {
-                    int tId = rs.getInt("tour_id");
+                    Long tId = rs.getLong("tour_id");
 
                     // Create or get existing tour
                     TourResponseDto tour = tourMap.get(tId);
@@ -977,10 +977,10 @@ public class TourRepositoryImpl implements TourRepository {
             String fullQuery = String.format(GET_TOURS_BY_IDS, inSql);
 
             ArrayList<TourResponseDto> query = jdbcTemplate.query(fullQuery, tourIds.toArray(), (ResultSet rs) -> {
-                Map<Integer, TourResponseDto> tourMap = new HashMap<>();
+                Map<Long, TourResponseDto> tourMap = new HashMap<>();
 
                 while (rs.next()) {
-                    int tourId = rs.getInt("tour_id");
+                    Long tourId = rs.getLong("tour_id");
                     TourResponseDto tour = tourMap.get(tourId);
                     if (tour == null) {
                         tour = new TourResponseDto();

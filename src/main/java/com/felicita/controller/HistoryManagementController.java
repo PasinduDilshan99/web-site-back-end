@@ -1,5 +1,6 @@
 package com.felicita.controller;
 
+import com.felicita.model.request.BrowsingHistoryRequest;
 import com.felicita.model.request.InsertFaqRequest;
 import com.felicita.model.request.InsertHistoryData;
 import com.felicita.model.response.BrowserHistoryResponse;
@@ -39,10 +40,10 @@ public class HistoryManagementController {
     }
 
 
-    @GetMapping(path = "/history-data")
-    public ResponseEntity<CommonResponse<List<BrowserHistoryResponse>>> getHistoryData(){
+    @PostMapping(path = "/history-data")
+    public ResponseEntity<CommonResponse<BrowserHistoryResponse>> getHistoryData(@RequestBody BrowsingHistoryRequest browsingHistoryRequest){
         LOGGER.info("{} Start execute get history data {}", Constant.DOTS, Constant.DOTS);
-        CommonResponse<List<BrowserHistoryResponse>> response = historyManagementService.getHistoryData();
+        CommonResponse<BrowserHistoryResponse> response = historyManagementService.getHistoryData(browsingHistoryRequest);
         LOGGER.info("{} End execute get history data {}", Constant.DOTS, Constant.DOTS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

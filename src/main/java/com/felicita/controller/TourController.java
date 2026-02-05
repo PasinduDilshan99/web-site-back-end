@@ -46,7 +46,6 @@ public class TourController {
     @PostMapping(path = "/tours")
     public ResponseEntity<CommonResponse<ToursDetailsWithParamResponse>> getToursToShowWithParam(@RequestBody TourDataRequest tourDataRequest) {
         LOGGER.info("{} Start execute get active tours for request {}", Constant.DOTS, Constant.DOTS);
-        LOGGER.info("Request body: {}", tourDataRequest);
         CommonResponse<ToursDetailsWithParamResponse> response = tourService.getToursToShowWithParam(tourDataRequest);
         LOGGER.info("{} End execute get active tours for request {}", Constant.DOTS, Constant.DOTS);
         return new ResponseEntity<>(response, HttpStatus.OK);

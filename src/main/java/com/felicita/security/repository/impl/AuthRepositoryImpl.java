@@ -123,6 +123,7 @@ public class AuthRepositoryImpl implements AuthRepository {
                     .email(rs.getString("email"))
                     .mobileNumber1(rs.getString("mobile_number1"))
                     .mobileNumber2(rs.getString("mobile_number2"))
+                    .imageUrl(rs.getString("image_url"))
                     .build());
 
             if (user != null) {

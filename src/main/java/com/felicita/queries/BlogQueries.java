@@ -599,4 +599,6 @@ public class BlogQueries {
             LEFT JOIN common_status cs ON t.status = cs.id
             WHERE b.id = ?
             """;
+
+
 }

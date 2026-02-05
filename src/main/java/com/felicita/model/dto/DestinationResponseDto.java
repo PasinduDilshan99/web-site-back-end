@@ -10,13 +10,13 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DestinationResponseDto {
-    private int destinationId;
+    private Long destinationId;
     private String destinationName;
     private String destinationDescription;
     private String location;
     private Double latitude;
     private Double longitude;
-
+    private Boolean wish = false;
     private String categoryName;
     private String categoryDescription;
     private String statusName;

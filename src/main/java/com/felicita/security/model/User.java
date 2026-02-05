@@ -22,6 +22,7 @@ public class User {
     private String email;
     private String mobileNumber1;
     private String mobileNumber2;
+    private String imageUrl;
     @Builder.Default
     private Set<String> roles = new HashSet<>();
     @Builder.Default

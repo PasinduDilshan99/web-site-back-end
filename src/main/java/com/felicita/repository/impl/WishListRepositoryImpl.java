@@ -1,9 +1,16 @@
 package com.felicita.repository.impl;
 
 import com.felicita.exception.DataAccessErrorExceptionHandler;
+import com.felicita.exception.InsertFailedErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
+import com.felicita.exception.UpdateFailedErrorExceptionHandler;
 import com.felicita.model.dto.*;
+import com.felicita.model.request.ActivityWishListInsertRequest;
+import com.felicita.model.request.DestinationWishListInsertRequest;
+import com.felicita.model.request.PackageWishListInsertRequest;
+import com.felicita.model.request.TourWishListInsertRequest;
 import com.felicita.model.response.WishlistItemResponse;
+import com.felicita.queries.BlogQueries;
 import com.felicita.queries.WishItemsQueries;
 import com.felicita.repository.WishListRepository;
 
@@ -14,9 +21,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.*;
 
 @Repository
@@ -229,17 +240,13 @@ public class WishListRepositoryImpl implements WishListRepository {
     public List<ActivityWishResponseDto> getActivitiesWishList(List<Long> ids) {
         try {
             Map<String, Object> params = Map.of("ids", ids);
-
             return namedJdbc.query(
                     WishItemsQueries.GET_ACTIVITIES_WISH_LIST_DETAILS,
                     params,
                     rs -> {
-
                         Map<Long, ActivityWishResponseDto> map = new LinkedHashMap<>();
-
                         while (rs.next()) {
                             Long id = rs.getLong("activity_id");
-
                             ActivityWishResponseDto dto = map.computeIfAbsent(id, k ->
                                     {
                                         try {
@@ -273,4 +280,673 @@ public class WishListRepositoryImpl implements WishListRepository {
             throw new DataAccessErrorExceptionHandler("Failed to fetch activity wishlist");
         }
     }
+
+    @Override
+    public Long addActivityWishList(ActivityWishListInsertRequest activityWishListInsertRequest, Long userId) {
+        String INSERT_ACTIVITY_WISH_DATA = WishItemsQueries.INSERT_ACTIVITY_WISH_DATA;
+        try {
+            KeyHolder keyHolder = new GeneratedKeyHolder();
+
+            int rowsAffected = jdbcTemplate.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(INSERT_ACTIVITY_WISH_DATA, Statement.RETURN_GENERATED_KEYS);
+                ps.setLong(1, userId);
+                ps.setLong(2, activityWishListInsertRequest.getActivityId());
+                return ps;
+            }, keyHolder);
+
+            if (rowsAffected == 0) {
+                throw new InsertFailedErrorExceptionHandler("No rows affected when inserting activity wish data");
+            }
+            Number generatedId = keyHolder.getKey();
+            if (generatedId == null) {
+                throw new InsertFailedErrorExceptionHandler("Failed to retrieve inserted activity wish ID");
+            }
+            Long activityWishId = generatedId.longValue();
+            LOGGER.info("Inserted activity wish ID: {}", activityWishId);
+            return activityWishId;
+        } catch (InsertFailedErrorExceptionHandler e) {
+            throw e;
+        } catch (Exception e) {
+            LOGGER.error(e.toString(), e);
+            throw new InternalServerErrorExceptionHandler("Something went wrong");
+        }
+    }
+
+    @Override
+    public void addActivityWishListHistory(ActivityWishListInsertRequest activityWishListInsertRequest,
+                                           Long userId,
+                                           Long wishListId,
+                                           String status) {
+        String INSERT_ACTIVITY_WISHLIST_HISTORY = WishItemsQueries.INSERT_ACTIVITY_WISHLIST_HISTORY;
+        try {
+            int rowsAffected = jdbcTemplate.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(INSERT_ACTIVITY_WISHLIST_HISTORY);
+                ps.setLong(1, userId);
+                ps.setLong(2, activityWishListInsertRequest.getActivityId());
+                ps.setLong(3, wishListId);
+                ps.setString(4, status);
+                return ps;
+            });
+            if (rowsAffected == 0) {
+                throw new InsertFailedErrorExceptionHandler(
+                        "No rows affected when inserting activity wishlist history"
+                );
+            }
+            LOGGER.info("Inserted activity wishlist history for wishlist ID: {}", wishListId);
+        } catch (InsertFailedErrorExceptionHandler e) {
+            throw e;
+        } catch (Exception e) {
+            LOGGER.error("Error inserting activity wishlist history", e);
+            throw new InternalServerErrorExceptionHandler("Something went wrong");
+        }
+    }
+
+
+    @Override
+    public void updateActivityWishList(ActivityWishListInsertRequest activityWishListInsertRequest,
+                                       Long userId,
+                                       ExistActivityWishListDataDto existActivityWishListDataDto) {
+        try {
+            if (existActivityWishListDataDto == null) {
+                LOGGER.warn("Wishlist data not found");
+                return;
+            }
+            String currentStatus = existActivityWishListDataDto.getStatus();
+            Long wishListId = existActivityWishListDataDto.getWishListId();
+            String newStatus;
+
+            if ("ACTIVE".equalsIgnoreCase(currentStatus)) {
+                newStatus = "INACTIVE";
+            } else if ("INACTIVE".equalsIgnoreCase(currentStatus)) {
+                newStatus = "ACTIVE";
+            } else {
+                LOGGER.warn("Status is neither ACTIVE nor INACTIVE. No update performed.");
+                return;
+            }
+
+            int rowsAffected = jdbcTemplate.update(
+                    WishItemsQueries.UPDATE_ACTIVITY_WISHLIST_STATUS,
+                    newStatus,
+                    wishListId,
+                    userId
+            );
+            if (rowsAffected == 0) {
+                throw new UpdateFailedErrorExceptionHandler("Failed to update activity wishlist");
+            }
+            LOGGER.info("Wishlist status toggled successfully. Wishlist ID: {}, New Status: {}", wishListId, newStatus);
+        } catch (UpdateFailedErrorExceptionHandler e) {
+            throw e;
+        } catch (Exception e) {
+            LOGGER.error("Error updating wishlist status", e);
+            throw new InternalServerErrorExceptionHandler("Something went wrong");
+        }
+    }
+
+    @Override
+    public ExistActivityWishListDataDto getExistingWishListData(
+            Long userId,
+            ActivityWishListInsertRequest activityWishListInsertRequest) {
+        try {
+            return jdbcTemplate.query(
+                    WishItemsQueries.GET_EXISTING_ACTIVITY_WISHLIST_DATA,
+                    new Object[]{
+                            userId,
+                            activityWishListInsertRequest.getActivityId()
+                    },
+                    rs -> {
+                        if (rs.next()) {
+                            return ExistActivityWishListDataDto.builder()
+                                    .wishListId(rs.getLong("wishListId"))
+                                    .activityId(rs.getLong("activityId"))
+                                    .userId(rs.getLong("userId"))
+                                    .status(rs.getString("status"))
+                                    .createdAt(
+                                            rs.getTimestamp("createdAt") != null
+                                                    ? rs.getTimestamp("createdAt").toLocalDateTime()
+                                                    : null
+                                    )
+                                    .updatedAt(
+                                            rs.getTimestamp("updatedAt") != null
+                                                    ? rs.getTimestamp("updatedAt").toLocalDateTime()
+                                                    : null
+                                    )
+                                    .build();
+                        }
+                        return null;
+                    }
+            );
+        } catch (Exception e) {
+            LOGGER.error("Error fetching existing wishlist data", e);
+            throw new InternalServerErrorExceptionHandler("Something went wrong");
+        }
+    }
+
+    @Override
+    public Long addDestinationWishList(DestinationWishListInsertRequest destinationWishListInsertRequest, Long userId) {
+        String INSERT_DESTINATION_WISH_DATA = WishItemsQueries.INSERT_DESTINATION_WISH_DATA;
+        try {
+            KeyHolder keyHolder = new GeneratedKeyHolder();
+
+            int rowsAffected = jdbcTemplate.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(INSERT_DESTINATION_WISH_DATA, Statement.RETURN_GENERATED_KEYS);
+                ps.setLong(1, userId);
+                ps.setLong(2, destinationWishListInsertRequest.getDestinationId());
+                return ps;
+            }, keyHolder);
+
+            if (rowsAffected == 0) {
+                throw new InsertFailedErrorExceptionHandler("No rows affected when inserting destination wish data");
+            }
+            Number generatedId = keyHolder.getKey();
+            if (generatedId == null) {
+                throw new InsertFailedErrorExceptionHandler("Failed to retrieve inserted destination wish ID");
+            }
+            Long destinationWishId = generatedId.longValue();
+            LOGGER.info("Inserted destination wish ID: {}", destinationWishId);
+            return destinationWishId;
+        } catch (InsertFailedErrorExceptionHandler e) {
+            throw e;
+        } catch (Exception e) {
+            LOGGER.error(e.toString(), e);
+            throw new InternalServerErrorExceptionHandler("Something went wrong");
+        }
+    }
+
+
+    @Override
+    public void addDestinationWishListHistory(DestinationWishListInsertRequest destinationWishListInsertRequest,
+                                              Long userId,
+                                              Long wishListId,
+                                              String status) {
+        String INSERT_DESTINATION_WISHLIST_HISTORY = WishItemsQueries.INSERT_DESTINATION_WISHLIST_HISTORY;
+        try {
+            int rowsAffected = jdbcTemplate.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(INSERT_DESTINATION_WISHLIST_HISTORY);
+                ps.setLong(1, userId);
+                ps.setLong(2, destinationWishListInsertRequest.getDestinationId());
+                ps.setLong(3, wishListId);
+                ps.setString(4, status);
+                return ps;
+            });
+            if (rowsAffected == 0) {
+                throw new InsertFailedErrorExceptionHandler(
+                        "No rows affected when inserting destination wishlist history"
+                );
+            }
+            LOGGER.info("Inserted destination wishlist history for wishlist ID: {}", wishListId);
+        } catch (InsertFailedErrorExceptionHandler e) {
+            throw e;
+        } catch (Exception e) {
+            LOGGER.error("Error inserting destination wishlist history", e);
+            throw new InternalServerErrorExceptionHandler("Something went wrong");
+        }
+    }
+
+
+    @Override
+    public void updateDestinationWishList(DestinationWishListInsertRequest destinationWishListInsertRequest,
+                                          Long userId,
+                                          ExistDestinationWishListDataDto existDestinationWishListDataDto) {
+        try {
+            if (existDestinationWishListDataDto == null) {
+                LOGGER.warn("Wishlist data not found");
+                return;
+            }
+            String currentStatus = existDestinationWishListDataDto.getStatus();
+            Long wishListId = existDestinationWishListDataDto.getWishListId();
+            String newStatus;
+
+            if ("ACTIVE".equalsIgnoreCase(currentStatus)) {
+                newStatus = "INACTIVE";
+            } else if ("INACTIVE".equalsIgnoreCase(currentStatus)) {
+                newStatus = "ACTIVE";
+            } else {
+                LOGGER.warn("Status is neither ACTIVE nor INACTIVE. No update performed.");
+                return;
+            }
+
+            int rowsAffected = jdbcTemplate.update(
+                    WishItemsQueries.UPDATE_DESTINATION_WISHLIST_STATUS,
+                    newStatus,
+                    wishListId,
+                    userId
+            );
+            if (rowsAffected == 0) {
+                throw new UpdateFailedErrorExceptionHandler("Failed to update destination wishlist");
+            }
+            LOGGER.info("Wishlist status toggled successfully. Wishlist ID: {}, New Status: {}", wishListId, newStatus);
+        } catch (UpdateFailedErrorExceptionHandler e) {
+            throw e;
+        } catch (Exception e) {
+            LOGGER.error("Error updating wishlist status", e);
+            throw new InternalServerErrorExceptionHandler("Something went wrong");
+        }
+    }
+
+    @Override
+    public ExistDestinationWishListDataDto getExistingDestinationWishListData(
+            Long userId,
+            DestinationWishListInsertRequest destinationWishListInsertRequest) {
+        try {
+            return jdbcTemplate.query(
+                    WishItemsQueries.GET_EXISTING_DESTINATION_WISHLIST_DATA,
+                    new Object[]{
+                            userId,
+                            destinationWishListInsertRequest.getDestinationId()
+                    },
+                    rs -> {
+                        if (rs.next()) {
+                            return ExistDestinationWishListDataDto.builder()
+                                    .wishListId(rs.getLong("wishListId"))
+                                    .destinationId(rs.getLong("destinationId"))
+                                    .userId(rs.getLong("userId"))
+                                    .status(rs.getString("status"))
+                                    .createdAt(
+                                            rs.getTimestamp("createdAt") != null
+                                                    ? rs.getTimestamp("createdAt").toLocalDateTime()
+                                                    : null
+                                    )
+                                    .updatedAt(
+                                            rs.getTimestamp("updatedAt") != null
+                                                    ? rs.getTimestamp("updatedAt").toLocalDateTime()
+                                                    : null
+                                    )
+                                    .build();
+                        }
+                        return null;
+                    }
+            );
+        } catch (Exception e) {
+            LOGGER.error("Error fetching existing wishlist data", e);
+            throw new InternalServerErrorExceptionHandler("Something went wrong");
+        }
+    }
+
+    @Override
+    public Long addTourWishList(TourWishListInsertRequest tourWishListInsertRequest, Long userId) {
+        String INSERT_TOUR_WISH_DATA = WishItemsQueries.INSERT_TOUR_WISH_DATA;
+        try {
+            KeyHolder keyHolder = new GeneratedKeyHolder();
+
+            int rowsAffected = jdbcTemplate.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(INSERT_TOUR_WISH_DATA, Statement.RETURN_GENERATED_KEYS);
+                ps.setLong(1, userId);
+                ps.setLong(2, tourWishListInsertRequest.getTourId());
+                return ps;
+            }, keyHolder);
+
+            if (rowsAffected == 0) {
+                throw new InsertFailedErrorExceptionHandler("No rows affected when inserting tour wish data");
+            }
+            Number generatedId = keyHolder.getKey();
+            if (generatedId == null) {
+                throw new InsertFailedErrorExceptionHandler("Failed to retrieve inserted tour wish ID");
+            }
+            Long tourWishId = generatedId.longValue();
+            LOGGER.info("Inserted tour wish ID: {}", tourWishId);
+            return tourWishId;
+        } catch (InsertFailedErrorExceptionHandler e) {
+            throw e;
+        } catch (Exception e) {
+            LOGGER.error(e.toString(), e);
+            throw new InternalServerErrorExceptionHandler("Something went wrong");
+        }
+    }
+
+    @Override
+    public void addTourWishListHistory(TourWishListInsertRequest tourWishListInsertRequest,
+                                       Long userId,
+                                       Long wishListId,
+                                       String status) {
+        String INSERT_TOUR_WISHLIST_HISTORY = WishItemsQueries.INSERT_TOUR_WISHLIST_HISTORY;
+        try {
+            int rowsAffected = jdbcTemplate.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(INSERT_TOUR_WISHLIST_HISTORY);
+                ps.setLong(1, userId);
+                ps.setLong(2, tourWishListInsertRequest.getTourId());
+                ps.setLong(3, wishListId);
+                ps.setString(4, status);
+                return ps;
+            });
+            if (rowsAffected == 0) {
+                throw new InsertFailedErrorExceptionHandler(
+                        "No rows affected when inserting tour wishlist history"
+                );
+            }
+            LOGGER.info("Inserted tour wishlist history for wishlist ID: {}", wishListId);
+        } catch (InsertFailedErrorExceptionHandler e) {
+            throw e;
+        } catch (Exception e) {
+            LOGGER.error("Error inserting tour wishlist history", e);
+            throw new InternalServerErrorExceptionHandler("Something went wrong");
+        }
+    }
+
+
+    @Override
+    public void updateTourWishList(TourWishListInsertRequest tourWishListInsertRequest,
+                                   Long userId,
+                                   ExistTourWishListDataDto existTourWishListDataDto) {
+        try {
+            if (existTourWishListDataDto == null) {
+                LOGGER.warn("Wishlist data not found");
+                return;
+            }
+            String currentStatus = existTourWishListDataDto.getStatus();
+            Long wishListId = existTourWishListDataDto.getWishListId();
+            String newStatus;
+
+            if ("ACTIVE".equalsIgnoreCase(currentStatus)) {
+                newStatus = "INACTIVE";
+            } else if ("INACTIVE".equalsIgnoreCase(currentStatus)) {
+                newStatus = "ACTIVE";
+            } else {
+                LOGGER.warn("Status is neither ACTIVE nor INACTIVE. No update performed.");
+                return;
+            }
+
+            int rowsAffected = jdbcTemplate.update(
+                    WishItemsQueries.UPDATE_TOUR_WISHLIST_STATUS,
+                    newStatus,
+                    wishListId,
+                    userId
+            );
+            if (rowsAffected == 0) {
+                throw new UpdateFailedErrorExceptionHandler("Failed to update tour wishlist");
+            }
+            LOGGER.info("Wishlist status toggled successfully. Wishlist ID: {}, New Status: {}", wishListId, newStatus);
+        } catch (UpdateFailedErrorExceptionHandler e) {
+            throw e;
+        } catch (Exception e) {
+            LOGGER.error("Error updating wishlist status", e);
+            throw new InternalServerErrorExceptionHandler("Something went wrong");
+        }
+    }
+
+    @Override
+    public List<Long> getAllActivityWishListByUserId(Long userId) {
+        String sql = """
+                    SELECT activity_id 
+                    FROM activity_wishlist 
+                    WHERE user_id = ? 
+                      AND status_id = (
+                          SELECT cs.id
+                          FROM common_status cs
+                          WHERE cs.name = ?
+                          LIMIT 1
+                      )
+                """;
+
+        try {
+            return jdbcTemplate.query(
+                    sql,
+                    new Object[]{userId, "ACTIVE"},
+                    (rs, rowNum) -> rs.getLong("activity_id")
+            );
+        } catch (Exception e) {
+            LOGGER.error("Error fetching existing wishlist data", e);
+            throw new InternalServerErrorExceptionHandler("Something went wrong");
+        }
+    }
+
+    @Override
+    public List<Long> getAllDestinationWishListByUserId(Long userId) {
+        String sql = """
+                    SELECT destination_id 
+                    FROM destination_wishlist 
+                    WHERE user_id = ? 
+                      AND status_id = (
+                          SELECT cs.id
+                          FROM common_status cs
+                          WHERE cs.name = ?
+                          LIMIT 1
+                      )
+                """;
+
+        try {
+            return jdbcTemplate.query(
+                    sql,
+                    new Object[]{userId, "ACTIVE"},
+                    (rs, rowNum) -> rs.getLong("destination_id")
+            );
+        } catch (Exception e) {
+            LOGGER.error("Error fetching existing wishlist data", e);
+            throw new InternalServerErrorExceptionHandler("Something went wrong");
+        }
+    }
+
+    @Override
+    public List<Long> getAllTourWishListByUserId(Long userId) {
+        String sql = """
+                    SELECT tour_id 
+                    FROM tour_wishlist 
+                    WHERE user_id = ? 
+                      AND status_id = (
+                          SELECT cs.id
+                          FROM common_status cs
+                          WHERE cs.name = ?
+                          LIMIT 1
+                      )
+                """;
+
+        try {
+            return jdbcTemplate.query(
+                    sql,
+                    new Object[]{userId, "ACTIVE"},
+                    (rs, rowNum) -> rs.getLong("tour_id")
+            );
+        } catch (Exception e) {
+            LOGGER.error("Error fetching existing wishlist data", e);
+            throw new InternalServerErrorExceptionHandler("Something went wrong");
+        }
+    }
+
+    @Override
+    public List<Long> getAllPackageWishListByUserId(Long userId) {
+        String sql = """
+                    SELECT package_id 
+                    FROM package_wishlist 
+                    WHERE user_id = ? 
+                      AND status_id = (
+                          SELECT cs.id
+                          FROM common_status cs
+                          WHERE cs.name = ?
+                          LIMIT 1
+                      )
+                """;
+
+        try {
+            return jdbcTemplate.query(
+                    sql,
+                    new Object[]{userId, "ACTIVE"},
+                    (rs, rowNum) -> rs.getLong("package_id")
+            );
+        } catch (Exception e) {
+            LOGGER.error("Error fetching existing wishlist data", e);
+            throw new InternalServerErrorExceptionHandler("Something went wrong");
+        }
+    }
+
+
+    @Override
+    public ExistTourWishListDataDto getExistingTourWishListData(
+            Long userId,
+            TourWishListInsertRequest tourWishListInsertRequest) {
+        try {
+            return jdbcTemplate.query(
+                    WishItemsQueries.GET_EXISTING_TOUR_WISHLIST_DATA,
+                    new Object[]{
+                            userId,
+                            tourWishListInsertRequest.getTourId()
+                    },
+                    rs -> {
+                        if (rs.next()) {
+                            return ExistTourWishListDataDto.builder()
+                                    .wishListId(rs.getLong("wishListId"))
+                                    .tourId(rs.getLong("tourId"))
+                                    .userId(rs.getLong("userId"))
+                                    .status(rs.getString("status"))
+                                    .createdAt(
+                                            rs.getTimestamp("createdAt") != null
+                                                    ? rs.getTimestamp("createdAt").toLocalDateTime()
+                                                    : null
+                                    )
+                                    .updatedAt(
+                                            rs.getTimestamp("updatedAt") != null
+                                                    ? rs.getTimestamp("updatedAt").toLocalDateTime()
+                                                    : null
+                                    )
+                                    .build();
+                        }
+                        return null;
+                    }
+            );
+        } catch (Exception e) {
+            LOGGER.error("Error fetching existing wishlist data", e);
+            throw new InternalServerErrorExceptionHandler("Something went wrong");
+        }
+    }
+
+    @Override
+    public Long addPackageWishList(PackageWishListInsertRequest packageWishListInsertRequest, Long userId) {
+        String INSERT_PACKAGE_WISH_DATA = WishItemsQueries.INSERT_PACKAGE_WISH_DATA;
+        try {
+            KeyHolder keyHolder = new GeneratedKeyHolder();
+
+            int rowsAffected = jdbcTemplate.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(INSERT_PACKAGE_WISH_DATA, Statement.RETURN_GENERATED_KEYS);
+                ps.setLong(1, userId);
+                ps.setLong(2, packageWishListInsertRequest.getPackageId());
+                return ps;
+            }, keyHolder);
+
+            if (rowsAffected == 0) {
+                throw new InsertFailedErrorExceptionHandler("No rows affected when inserting package wish data");
+            }
+            Number generatedId = keyHolder.getKey();
+            if (generatedId == null) {
+                throw new InsertFailedErrorExceptionHandler("Failed to retrieve inserted package wish ID");
+            }
+            Long packageWishId = generatedId.longValue();
+            LOGGER.info("Inserted package wish ID: {}", packageWishId);
+            return packageWishId;
+        } catch (InsertFailedErrorExceptionHandler e) {
+            throw e;
+        } catch (Exception e) {
+            LOGGER.error(e.toString(), e);
+            throw new InternalServerErrorExceptionHandler("Something went wrong");
+        }
+    }
+
+    @Override
+    public void addPackageWishListHistory(PackageWishListInsertRequest packageWishListInsertRequest,
+                                          Long userId,
+                                          Long wishListId,
+                                          String status) {
+        String INSERT_PACKAGE_WISHLIST_HISTORY = WishItemsQueries.INSERT_PACKAGE_WISHLIST_HISTORY;
+        try {
+            int rowsAffected = jdbcTemplate.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(INSERT_PACKAGE_WISHLIST_HISTORY);
+                ps.setLong(1, userId);
+                ps.setLong(2, packageWishListInsertRequest.getPackageId());
+                ps.setLong(3, wishListId);
+                ps.setString(4, status);
+                return ps;
+            });
+            if (rowsAffected == 0) {
+                throw new InsertFailedErrorExceptionHandler(
+                        "No rows affected when inserting package wishlist history"
+                );
+            }
+            LOGGER.info("Inserted package wishlist history for wishlist ID: {}", wishListId);
+        } catch (InsertFailedErrorExceptionHandler e) {
+            throw e;
+        } catch (Exception e) {
+            LOGGER.error("Error inserting package wishlist history", e);
+            throw new InternalServerErrorExceptionHandler("Something went wrong");
+        }
+    }
+
+
+    @Override
+    public void updatePackageWishList(PackageWishListInsertRequest packageWishListInsertRequest,
+                                      Long userId,
+                                      ExistPackageWishListDataDto existPackageWishListDataDto) {
+        try {
+            if (existPackageWishListDataDto == null) {
+                LOGGER.warn("Wishlist data not found");
+                return;
+            }
+            String currentStatus = existPackageWishListDataDto.getStatus();
+            Long wishListId = existPackageWishListDataDto.getWishListId();
+            String newStatus;
+
+            if ("ACTIVE".equalsIgnoreCase(currentStatus)) {
+                newStatus = "INACTIVE";
+            } else if ("INACTIVE".equalsIgnoreCase(currentStatus)) {
+                newStatus = "ACTIVE";
+            } else {
+                LOGGER.warn("Status is neither ACTIVE nor INACTIVE. No update performed.");
+                return;
+            }
+
+            int rowsAffected = jdbcTemplate.update(
+                    WishItemsQueries.UPDATE_PACKAGE_WISHLIST_STATUS,
+                    newStatus,
+                    wishListId,
+                    userId
+            );
+            if (rowsAffected == 0) {
+                throw new UpdateFailedErrorExceptionHandler("Failed to update package wishlist");
+            }
+            LOGGER.info("Wishlist status toggled successfully. Wishlist ID: {}, New Status: {}", wishListId, newStatus);
+        } catch (UpdateFailedErrorExceptionHandler e) {
+            throw e;
+        } catch (Exception e) {
+            LOGGER.error("Error updating wishlist status", e);
+            throw new InternalServerErrorExceptionHandler("Something went wrong");
+        }
+    }
+
+
+    @Override
+    public ExistPackageWishListDataDto getExistingPackageWishListData(
+            Long userId,
+            PackageWishListInsertRequest packageWishListInsertRequest) {
+        try {
+            return jdbcTemplate.query(
+                    WishItemsQueries.GET_EXISTING_PACKAGE_WISHLIST_DATA,
+                    new Object[]{
+                            userId,
+                            packageWishListInsertRequest.getPackageId()
+                    },
+                    rs -> {
+                        if (rs.next()) {
+                            return ExistPackageWishListDataDto.builder()
+                                    .wishListId(rs.getLong("wishListId"))
+                                    .packageId(rs.getLong("packageId"))
+                                    .userId(rs.getLong("userId"))
+                                    .status(rs.getString("status"))
+                                    .createdAt(
+                                            rs.getTimestamp("createdAt") != null
+                                                    ? rs.getTimestamp("createdAt").toLocalDateTime()
+                                                    : null
+                                    )
+                                    .updatedAt(
+                                            rs.getTimestamp("updatedAt") != null
+                                                    ? rs.getTimestamp("updatedAt").toLocalDateTime()
+                                                    : null
+                                    )
+                                    .build();
+                        }
+                        return null;
+                    }
+            );
+        } catch (Exception e) {
+            LOGGER.error("Error fetching existing wishlist data", e);
+            throw new InternalServerErrorExceptionHandler("Something went wrong");
+        }
+    }
+
+
 }
