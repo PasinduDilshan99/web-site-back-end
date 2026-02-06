@@ -1,6 +1,10 @@
 package com.felicita.controller;
 
-import com.felicita.model.response.CommonResponse;
+import com.felicita.model.request.PasswordChangeRequest;
+import com.felicita.model.request.ResetPasswordRequest;
+import com.felicita.model.request.SecretQuestionsUpdateRequest;
+import com.felicita.model.request.UsernamePasswordValidationRequest;
+import com.felicita.model.response.*;
 import com.felicita.security.model.LoginRequest;
 import com.felicita.security.model.LoginResponse;
 import com.felicita.security.model.RegisterUser;
@@ -14,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/api/v0/auth")
@@ -39,6 +45,36 @@ public class AuthController {
                                                HttpServletResponse response){
         CommonResponse<LoginResponse> loginResponse = authService.login(loginRequest, response);
         return ResponseEntity.ok(loginResponse);
+    }
+
+    @PostMapping(path = "/reset-password")
+    public ResponseEntity<CommonResponse<ResetPasswordResponse>> resetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest){
+        CommonResponse<ResetPasswordResponse> response = authService.resetPassword(resetPasswordRequest);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping(path = "/change-password")
+    public ResponseEntity<CommonResponse<PasswordChangeResponse>> changePassword(@RequestBody PasswordChangeRequest passwordChangeRequest){
+        CommonResponse<PasswordChangeResponse> response = authService.changePassword(passwordChangeRequest);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping(path = "/update-secret-questions")
+    public ResponseEntity<CommonResponse<UpdateResponse>> updateSecretQuestions(@RequestBody SecretQuestionsUpdateRequest secretQuestionsUpdateRequest){
+        CommonResponse<UpdateResponse> response = authService.updateSecretQuestions(secretQuestionsUpdateRequest);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping(path = "/secret-questions")
+    public ResponseEntity<CommonResponse<List<SecretQuestionResponse>>> getActiveScretQuestions(){
+        CommonResponse<List<SecretQuestionResponse>> response = authService.getActiveScretQuestions();
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping(path = "/username-password-validation")
+    public ResponseEntity<CommonResponse<Boolean>> usernamePasswordValidation(@RequestBody UsernamePasswordValidationRequest usernamePasswordValidationRequest){
+        CommonResponse<Boolean> response = authService.usernamePasswordValidation(usernamePasswordValidationRequest);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping(path = "/logout")

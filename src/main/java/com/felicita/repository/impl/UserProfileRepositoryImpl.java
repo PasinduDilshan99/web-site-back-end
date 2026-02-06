@@ -1,8 +1,10 @@
 package com.felicita.repository.impl;
 
 import com.felicita.exception.DataAccessErrorExceptionHandler;
+import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
 import com.felicita.model.request.UserProfileDetailsRequest;
+import com.felicita.model.request.UserUpdateRequest;
 import com.felicita.model.response.*;
 import com.felicita.queries.*;
 import com.felicita.repository.UserProfileRepository;
@@ -706,7 +708,48 @@ public class UserProfileRepositoryImpl implements UserProfileRepository {
         }
     }
 
+    @Override
+    public void updateUserProfileDetails(UserUpdateRequest request, Long userId) {
 
+        try {
+            LOGGER.info("Updating user profile details for userId: {}", userId);
+
+            int rowsAffected = jdbcTemplate.update(
+                    UserProfileQueries.UPDATE_USER_PROFILE_DETAILS,
+                    request.getFirstName(),
+                    request.getMiddleName(),
+                    request.getLastName(),
+                    request.getAddressId(),
+                    request.getNic(),
+                    request.getGenderId(),
+                    request.getPassportNumber(),
+                    request.getDrivingLicenseNumber(),
+                    request.getEmail(),
+                    request.getEmail2(),
+                    request.getMobileNumber1(),
+                    request.getMobileNumber2(),
+                    request.getRegionId(),
+                    request.getReligionId(),
+                    request.getDateOfBirth(),
+                    request.getImageUrl(),
+                    userId
+            );
+
+            if (rowsAffected == 0) {
+                LOGGER.warn("User not found with userId: {}", userId);
+                throw new DataNotFoundErrorExceptionHandler("User not found");
+            }
+
+            LOGGER.info("User profile updated successfully for userId: {}", userId);
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while updating user profile: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler("Failed to update user profile");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while updating user profile: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while updating user profile");
+        }
+    }
 
     private List<UserProfileSidebarResponse> buildSidebarTree(List<UserProfileSidebarResponse> flatList) {
         Map<Integer, UserProfileSidebarResponse> map = new HashMap<>();

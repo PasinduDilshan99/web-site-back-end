@@ -47,6 +47,8 @@ public class PackageResponseDto {
     private String endLocation;
     private String tourStatus;
 
+    private Boolean wish;
+
     private List<PackageScheduleResponseDto> schedules;
     private List<PackageFeatureResponseDto> features;
     private List<PackageImageResponseDto> images;

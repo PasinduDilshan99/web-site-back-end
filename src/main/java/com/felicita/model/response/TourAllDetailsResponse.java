@@ -18,7 +18,7 @@ import java.util.List;
 @Builder
 public class TourAllDetailsResponse {
 
-    private int tourId;
+    private Long tourId;
     private String tourName;
     private String tourDescription;
     private Integer duration;

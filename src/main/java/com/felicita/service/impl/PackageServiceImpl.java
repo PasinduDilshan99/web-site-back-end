@@ -9,6 +9,7 @@ import com.felicita.model.request.PackageTerminateRequest;
 import com.felicita.model.request.PackageUpdateRequest;
 import com.felicita.model.response.*;
 import com.felicita.repository.PackageRepository;
+import com.felicita.repository.WishListRepository;
 import com.felicita.service.CommonService;
 import com.felicita.service.PackageService;
 import com.felicita.util.CommonResponseMessages;
@@ -19,7 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class PackageServiceImpl implements PackageService {
@@ -29,12 +32,14 @@ public class PackageServiceImpl implements PackageService {
     private final PackageRepository packageRepository;
     private final PackageValidationService packageValidationService;
     private final CommonService commonService;
+    private final WishListRepository wishListRepository;
 
     @Autowired
-    public PackageServiceImpl(PackageRepository packageRepository, PackageValidationService packageValidationService, CommonService commonService) {
+    public PackageServiceImpl(PackageRepository packageRepository, PackageValidationService packageValidationService, CommonService commonService, WishListRepository wishListRepository) {
         this.packageRepository = packageRepository;
         this.packageValidationService = packageValidationService;
         this.commonService = commonService;
+        this.wishListRepository = wishListRepository;
     }
 
     @Override
@@ -301,6 +306,25 @@ public class PackageServiceImpl implements PackageService {
         LOGGER.info("Start fetching packages with params from repository");
         try {
             PackageWithParamsResponse packageWithParamsResponse = packageRepository.getPackagesWithParams(packageDataRequest);
+
+            Long userId = commonService.getUserIdBySecurityContextWithOutException();
+
+            Set<Long> packageIdSet = new HashSet<>();
+            if (userId != null) {
+                List<Long> packageIds = wishListRepository.getAllPackageWishListByUserId(userId);
+                if (packageIds != null) {
+                    packageIdSet.addAll(packageIds);
+                }
+            }
+
+            if (packageWithParamsResponse != null) {
+                List<PackageResponseDto> packageResponseDtos = packageWithParamsResponse.getPackageResponseDtos();
+                if (packageResponseDtos != null) {
+                    for (PackageResponseDto packageResponseDto : packageResponseDtos) {
+                        packageResponseDto.setWish(packageIdSet.contains(packageResponseDto.getPackageId()));
+                    }
+                }
+            }
 
             if (packageWithParamsResponse == null) {
                 return new CommonResponse<>(

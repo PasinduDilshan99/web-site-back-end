@@ -356,7 +356,7 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
         try {
             return jdbcTemplate.queryForObject(GET_ACTIVITY_DETAILS_BY_ID, new Object[]{activityId}, (rs, rowNum) -> {
                 ActivityResponseDto activity = new ActivityResponseDto();
-                activity.setId(rs.getInt("id"));
+                activity.setId(rs.getLong("id"));
                 activity.setDestinationId(rs.getInt("destination_id"));
                 activity.setName(rs.getString("name"));
                 activity.setDescription(rs.getString("description"));
@@ -1168,7 +1168,7 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
             ActivityResponseDto activity = new ActivityResponseDto();
 
             // Map basic fields
-            activity.setId(rs.getInt("id"));
+            activity.setId(rs.getLong("id"));
             activity.setDestinationId(rs.getInt("destination_id"));
             activity.setName(rs.getString("name"));
             activity.setDescription(rs.getString("description"));

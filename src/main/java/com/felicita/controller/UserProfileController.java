@@ -1,6 +1,7 @@
 package com.felicita.controller;
 
 import com.felicita.model.request.UserProfileDetailsRequest;
+import com.felicita.model.request.UserUpdateRequest;
 import com.felicita.model.response.*;
 import com.felicita.service.UserProfileService;
 import com.felicita.util.Constant;
@@ -24,6 +25,14 @@ public class UserProfileController {
     @Autowired
     public UserProfileController(UserProfileService userProfileService) {
         this.userProfileService = userProfileService;
+    }
+
+    @GetMapping(path = "/update-account")
+    public ResponseEntity<CommonResponse<UpdateResponse>> updateUserProfileDetails(@RequestBody UserUpdateRequest userUpdateRequest) {
+        LOGGER.info("{} Start execute update user profile details {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<UpdateResponse> response = userProfileService.updateUserProfileDetails(userUpdateRequest);
+        LOGGER.info("{} End execute update user profile details {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping(path = "/side-bar")
