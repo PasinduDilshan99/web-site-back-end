@@ -419,4 +419,28 @@ public class UserProfileQueries {
             WHERE u.user_id = ?
             """;
 
+    public static final String UPDATE_USER_PROFILE_DETAILS = """
+                UPDATE user
+                SET
+                    first_name = ?,
+                    middle_name = ?,
+                    last_name = ?,
+                    address_id = ?,
+                    nic = ?,
+                    gender_id = ?,
+                    passport_number = ?,
+                    driving_license_number = ?,
+                    email = ?,
+                    email2 = ?,
+                    mobile_number1 = ?,
+                    mobile_number2 = ?,
+                    region_id = ?,
+                    religion_id = ?,
+                    date_of_birth = ?,
+                    image_url = ?,
+                    updated_at = CURRENT_TIMESTAMP
+                WHERE user_id = ?
+            """;
+
+
 }

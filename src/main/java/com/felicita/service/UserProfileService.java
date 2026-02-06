@@ -1,6 +1,7 @@
 package com.felicita.service;
 
 import com.felicita.model.request.UserProfileDetailsRequest;
+import com.felicita.model.request.UserUpdateRequest;
 import com.felicita.model.response.*;
 
 import java.util.List;
@@ -21,4 +22,6 @@ public interface UserProfileService {
     CommonResponse<List<UserProfileTourReviewResponse>> getUserProfileTourReviews();
 
     CommonResponse<UserProfileWalletResponse> getUserProfileWalletDetails();
+
+    CommonResponse<UpdateResponse> updateUserProfileDetails(UserUpdateRequest userUpdateRequest);
 }

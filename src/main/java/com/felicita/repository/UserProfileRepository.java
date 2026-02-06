@@ -1,6 +1,7 @@
 package com.felicita.repository;
 
 import com.felicita.model.request.UserProfileDetailsRequest;
+import com.felicita.model.request.UserUpdateRequest;
 import com.felicita.model.response.*;
 
 import java.util.List;
@@ -21,4 +22,6 @@ public interface UserProfileRepository {
     List<UserProfileTourReviewResponse> getUserProfileTourReviews(Long userId);
 
     UserProfileWalletResponse getUserProfileWalletDetails(Long userId);
+
+    void updateUserProfileDetails(UserUpdateRequest userUpdateRequest, Long userId);
 }

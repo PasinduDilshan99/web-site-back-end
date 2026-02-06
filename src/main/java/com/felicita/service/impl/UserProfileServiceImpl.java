@@ -2,8 +2,10 @@ package com.felicita.service.impl;
 
 import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
+import com.felicita.exception.UpdateFailedErrorExceptionHandler;
 import com.felicita.model.enums.CommonStatus;
 import com.felicita.model.request.UserProfileDetailsRequest;
+import com.felicita.model.request.UserUpdateRequest;
 import com.felicita.model.response.*;
 import com.felicita.repository.UserProfileRepository;
 import com.felicita.security.model.CustomUserDetails;
@@ -11,6 +13,7 @@ import com.felicita.security.model.User;
 import com.felicita.service.CommonService;
 import com.felicita.service.UserProfileService;
 import com.felicita.util.CommonResponseMessages;
+import com.felicita.validation.UserProfileValidationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,12 +35,15 @@ public class UserProfileServiceImpl implements UserProfileService {
 
     private final UserProfileRepository userProfileRepository;
     private final CommonService commonService;
+    private final UserProfileValidationService userProfileValidationService;
 
     @Autowired
     public UserProfileServiceImpl(UserProfileRepository userProfileRepository,
-                                  CommonService commonService) {
+                                  CommonService commonService,
+                                  UserProfileValidationService userProfileValidationService) {
         this.userProfileRepository = userProfileRepository;
         this.commonService = commonService;
+        this.userProfileValidationService = userProfileValidationService;
     }
 
     @Override
@@ -288,6 +294,35 @@ public class UserProfileServiceImpl implements UserProfileService {
             throw new InternalServerErrorExceptionHandler("Failed to fetch user profile wallet details from database");
         } finally {
             LOGGER.info("End fetching user profile wallet details from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<UpdateResponse> updateUserProfileDetails(UserUpdateRequest userUpdateRequest) {
+        LOGGER.info("Start updating user profile details.");
+        try {
+            UserProfileValidationService.validateUserUpdateRequest(userUpdateRequest);
+            Long userId = commonService.getUserIdBySecurityContext();
+
+            userProfileRepository.updateUserProfileDetails(userUpdateRequest, userId);
+
+            LOGGER.info("updated user profile details successfully");
+            return (
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            new UpdateResponse("User profile details successfully updated", userId),
+                            Instant.now()
+                    )
+            );
+        } catch (DataNotFoundErrorExceptionHandler | UpdateFailedErrorExceptionHandler e) {
+            throw e;
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while updating user profile details: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to updating user profile details from database");
+        } finally {
+            LOGGER.info("End updating user profile details from repository");
         }
     }
 

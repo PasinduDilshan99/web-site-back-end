@@ -1,16 +1,21 @@
 package com.felicita.security.service.impl;
 
-import com.felicita.exception.DataRetrieveFailedErrorExceptionHandler;
-import com.felicita.exception.InternalServerErrorExceptionHandler;
-import com.felicita.exception.UserRegisterFailedErrorExceptionHandler;
-import com.felicita.model.response.CommonResponse;
+import com.felicita.exception.*;
+import com.felicita.model.dto.SecretQuesionsAnswersDto;
+import com.felicita.model.request.PasswordChangeRequest;
+import com.felicita.model.request.ResetPasswordRequest;
+import com.felicita.model.request.SecretQuestionsUpdateRequest;
+import com.felicita.model.request.UsernamePasswordValidationRequest;
+import com.felicita.model.response.*;
 import com.felicita.security.model.*;
 import com.felicita.security.repository.AuthRepository;
 import com.felicita.security.service.AuthService;
 import com.felicita.security.service.JwtService;
 import com.felicita.security.service.RefreshTokenService;
+import com.felicita.service.CommonService;
 import com.felicita.service.HelperService;
 import com.felicita.util.CommonResponseMessages;
+import com.felicita.validation.AuthValidationService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -30,6 +35,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -42,6 +49,8 @@ public class AuthServiceImpl implements AuthService {
     private final JwtService jwtService;
     private final RefreshTokenService refreshTokenService;
     private final HelperService helperService;
+    private final AuthValidationService authValidationService;
+    private final CommonService commonService;
 
     private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(12);
 
@@ -50,12 +59,16 @@ public class AuthServiceImpl implements AuthService {
                            AuthenticationManager authenticationManager,
                            JwtService jwtService,
                            RefreshTokenService refreshTokenService,
-                           HelperService helperService) {
+                           HelperService helperService,
+                           AuthValidationService authValidationService,
+                           CommonService commonService) {
         this.authRepository = authRepository;
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
         this.helperService = helperService;
         this.refreshTokenService = refreshTokenService;
+        this.authValidationService = authValidationService;
+        this.commonService = commonService;
     }
 
     @Override
@@ -155,10 +168,178 @@ public class AuthServiceImpl implements AuthService {
                     user,
                     Instant.now()
             );
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new DataRetrieveFailedErrorExceptionHandler("No authenticated user");
         }
 
     }
+
+    @Override
+    public CommonResponse<ResetPasswordResponse> resetPassword(ResetPasswordRequest resetPasswordRequest) {
+        LOGGER.info("Start reset password username : {}", resetPasswordRequest.getUsername());
+        try {
+            authValidationService.validateResetPasswordRequest(resetPasswordRequest);
+            List<SecretQuesionsAnswersDto> secretQuesionsAnswersDtos = authRepository.getSecretQuestionsAndAnswersByUsername(resetPasswordRequest.getUsername());
+            Boolean isValidQuestion1 = validateSecurityQuestionsAndAnswers(secretQuesionsAnswersDtos, resetPasswordRequest.getSecretQuestion1(), resetPasswordRequest.getSecretQuestion1Answer());
+            LOGGER.info("Security question 1 validation result: {}", isValidQuestion1);
+            Boolean isValidQuestion2 = validateSecurityQuestionsAndAnswers(secretQuesionsAnswersDtos, resetPasswordRequest.getSecretQuestion2(), resetPasswordRequest.getSecretQuestion2Answer());
+            LOGGER.info("Security question 2 validation result: {}", isValidQuestion2);
+            Boolean isValidQuestion3 = validateSecurityQuestionsAndAnswers(secretQuesionsAnswersDtos, resetPasswordRequest.getSecretQuestion3(), resetPasswordRequest.getSecretQuestion3Answer());
+            LOGGER.info("Security question 3 validation result: {}", isValidQuestion3);
+
+            if (isValidQuestion1 && isValidQuestion2 && isValidQuestion3) {
+                authRepository.resetPassword(resetPasswordRequest.getUsername(), bCryptPasswordEncoder.encode(resetPasswordRequest.getNewPassword()));
+                return new CommonResponse<>(
+                        CommonResponseMessages.SUCCESSFULLY_UPDATE_CODE,
+                        CommonResponseMessages.SUCCESSFULLY_UPDATE_STATUS,
+                        CommonResponseMessages.SUCCESSFULLY_UPDATE_MESSAGE,
+                        new ResetPasswordResponse("Password reset successfully"),
+                        Instant.now());
+            } else {
+                return new CommonResponse<>(
+                        CommonResponseMessages.UNSUCCESSFULLY_UPDATE_CODE,
+                        CommonResponseMessages.UNSUCCESSFULLY_UPDATE_STATUS,
+                        CommonResponseMessages.UNSUCCESSFULLY_UPDATE_MESSAGE,
+                        new ResetPasswordResponse("Password reset failed"),
+                        Instant.now());
+            }
+
+
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while reset password by username: {} , {}", resetPasswordRequest.getUsername(), e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Error occurred while reset password by username: " + resetPasswordRequest.getUsername());
+        } finally {
+            LOGGER.info("End reset password by username : {} from repository", resetPasswordRequest.getUsername());
+        }
+    }
+
+    @Override
+    public CommonResponse<PasswordChangeResponse> changePassword(PasswordChangeRequest passwordChangeRequest) {
+        LOGGER.info("Start change password username : {}", passwordChangeRequest.getUsername());
+        try {
+            authValidationService.validatePasswordChangeRequest(passwordChangeRequest);
+            Long userId = commonService.getUserIdBySecurityContext();
+
+            authRepository.changePassword(userId, bCryptPasswordEncoder.encode(passwordChangeRequest.getNewPassword()), passwordChangeRequest.getNewPassword());
+
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_UPDATE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_UPDATE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_UPDATE_MESSAGE,
+                    new PasswordChangeResponse("Password change successful."),
+                    Instant.now());
+
+
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while change password by username: {} , {}", passwordChangeRequest.getUsername(), e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Error occurred while change password by username: " + passwordChangeRequest.getUsername());
+        } finally {
+            LOGGER.info("End change password by username : {} from repository", passwordChangeRequest.getUsername());
+        }
+    }
+
+    @Override
+    public CommonResponse<UpdateResponse> updateSecretQuestions(SecretQuestionsUpdateRequest secretQuestionsUpdateRequest) {
+        LOGGER.info("Start update secret questions.");
+        try {
+            authValidationService.validateSecretQuestionsUpdateRequest(secretQuestionsUpdateRequest);
+            Long userId = commonService.getUserIdBySecurityContext();
+
+            authRepository.addSecretQuestions(userId, secretQuestionsUpdateRequest.getAddQuestions());
+            authRepository.updateSecretQuestions(userId, secretQuestionsUpdateRequest.getUpdateQuestions());
+            authRepository.removeSecretQuestions(userId, secretQuestionsUpdateRequest.getRemoveQuestionsIds());
+
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_UPDATE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_UPDATE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_UPDATE_MESSAGE,
+                    new UpdateResponse("Secret questions updated successfully.", userId),
+                    Instant.now());
+
+
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler |
+                 UpdateFailedErrorExceptionHandler e) {
+            throw e;
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while change secret questions, {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Error occurred while change secret questions.");
+        } finally {
+            LOGGER.info("End change secret questions from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<List<SecretQuestionResponse>> getActiveScretQuestions() {
+        LOGGER.info("Start fetching active secret questions.");
+        try {
+            List<SecretQuestionResponse> secretQuestionResponses = authRepository.getActiveScretQuestions();
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    secretQuestionResponses,
+                    Instant.now());
+
+
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching secret questions, {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Error occurred while fetching secret questions.");
+        } finally {
+            LOGGER.info("End fetching secret questions from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<Boolean> usernamePasswordValidation(UsernamePasswordValidationRequest usernamePasswordValidationRequest) {
+        LOGGER.info("Start validation username password username : {} .", usernamePasswordValidationRequest.getUsername());
+        try {
+            String encodedPassword = authRepository.getPasswordByUsername(usernamePasswordValidationRequest.getUsername());
+            if (bCryptPasswordEncoder.matches(usernamePasswordValidationRequest.getPassword(), encodedPassword)) {
+                return new CommonResponse<>(
+                        CommonResponseMessages.SUCCESSFULLY_VALIDATE_CODE,
+                        CommonResponseMessages.SUCCESSFULLY_VALIDATE_STATUS,
+                        CommonResponseMessages.SUCCESSFULLY_VALIDATE_MESSAGE,
+                        true,
+                        Instant.now());
+            } else {
+                return new CommonResponse<>(
+                        CommonResponseMessages.UNSUCCESSFULLY_VALIDATE_CODE,
+                        CommonResponseMessages.UNSUCCESSFULLY_VALIDATE_STATUS,
+                        CommonResponseMessages.UNSUCCESSFULLY_VALIDATE_MESSAGE,
+                        false,
+                        Instant.now());
+            }
+
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while validation username password, {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Error occurred while validation username password.");
+        } finally {
+            LOGGER.info("End validation username password from repository");
+        }
+    }
+
+    private Boolean validateSecurityQuestionsAndAnswers(
+            List<SecretQuesionsAnswersDto> secretQuesionsAnswersDtos,
+            Long questionId,
+            String providedAnswer) {
+
+        return secretQuesionsAnswersDtos.stream()
+                .filter(dto -> Objects.equals(dto.getSecretQuestionId(), questionId))
+                .anyMatch(dto -> {
+                    String dbAnswer = dto.getAnswer();
+                    LOGGER.info("Validating Security Question ID {}: providedAnswer='{}', dbAnswer='{}'",
+                            questionId, providedAnswer, dbAnswer);
+                    return Objects.equals(providedAnswer, dbAnswer);
+                });
+    }
+
 
 }
