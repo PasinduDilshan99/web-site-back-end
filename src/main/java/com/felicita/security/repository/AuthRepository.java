@@ -29,4 +29,6 @@ public interface AuthRepository {
     List<SecretQuestionResponse> getActiveScretQuestions();
 
     String getPasswordByUsername(String username);
+
+    List<SecretQuesionsAnswersDto> getSecretQuestionsAndAnswersByUserId(Long userId);
 }

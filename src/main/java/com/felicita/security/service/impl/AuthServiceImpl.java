@@ -326,6 +326,30 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
+    @Override
+    public CommonResponse<List<SecretQuesionsAnswersDto>> getActiveScretQuestionsByUser() {
+        LOGGER.info("Start fetching secret questions");
+        try {
+            Long userId = commonService.getUserIdBySecurityContext();
+            List<SecretQuesionsAnswersDto> secretQuesionsAnswersDtos = authRepository.getSecretQuestionsAndAnswersByUserId(userId);
+                return new CommonResponse<>(
+                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                        CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                        secretQuesionsAnswersDtos,
+                        Instant.now());
+
+
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching secret questions : {} ", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Error occurred while fetching secret questions.");
+        } finally {
+            LOGGER.info("End fetching secret questions from repository");
+        }
+    }
+
     private Boolean validateSecurityQuestionsAndAnswers(
             List<SecretQuesionsAnswersDto> secretQuesionsAnswersDtos,
             Long questionId,

@@ -1,5 +1,6 @@
 package com.felicita.security.service;
 
+import com.felicita.model.dto.SecretQuesionsAnswersDto;
 import com.felicita.model.request.PasswordChangeRequest;
 import com.felicita.model.request.ResetPasswordRequest;
 import com.felicita.model.request.SecretQuestionsUpdateRequest;
@@ -32,4 +33,6 @@ public interface AuthService {
     CommonResponse<List<SecretQuestionResponse>> getActiveScretQuestions();
 
     CommonResponse<Boolean> usernamePasswordValidation(UsernamePasswordValidationRequest usernamePasswordValidationRequest);
+
+    CommonResponse<List<SecretQuesionsAnswersDto>> getActiveScretQuestionsByUser();
 }

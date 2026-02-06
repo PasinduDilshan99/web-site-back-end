@@ -1,5 +1,6 @@
 package com.felicita.controller;
 
+import com.felicita.model.dto.SecretQuesionsAnswersDto;
 import com.felicita.model.request.PasswordChangeRequest;
 import com.felicita.model.request.ResetPasswordRequest;
 import com.felicita.model.request.SecretQuestionsUpdateRequest;
@@ -68,6 +69,12 @@ public class AuthController {
     @GetMapping(path = "/secret-questions")
     public ResponseEntity<CommonResponse<List<SecretQuestionResponse>>> getActiveScretQuestions(){
         CommonResponse<List<SecretQuestionResponse>> response = authService.getActiveScretQuestions();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping(path = "/secret-questions-by-user")
+    public ResponseEntity<CommonResponse<List<SecretQuesionsAnswersDto>>> getActiveScretQuestionsByUser(){
+        CommonResponse<List<SecretQuesionsAnswersDto>> response = authService.getActiveScretQuestionsByUser();
         return ResponseEntity.ok(response);
     }
 

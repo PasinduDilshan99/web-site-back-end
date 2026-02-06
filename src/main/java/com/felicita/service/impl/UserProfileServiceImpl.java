@@ -309,9 +309,9 @@ public class UserProfileServiceImpl implements UserProfileService {
             LOGGER.info("updated user profile details successfully");
             return (
                     new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            CommonResponseMessages.SUCCESSFULLY_UPDATE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_UPDATE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_UPDATE_MESSAGE,
                             new UpdateResponse("User profile details successfully updated", userId),
                             Instant.now()
                     )
