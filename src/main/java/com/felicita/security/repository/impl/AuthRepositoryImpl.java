@@ -339,6 +339,29 @@ public class AuthRepositoryImpl implements AuthRepository {
         }
     }
 
+    @Override
+    public List<SecretQuesionsAnswersDto> getSecretQuestionsAndAnswersByUserId(Long userId) {
+        try {
+            LOGGER.info("Fetching secret questions and answers for userId: {}", userId);
+
+            return jdbcTemplate.query(
+                    AuthQueries.GET_SECRET_QUESTIONS_AND_ANSWERS_BY_USER_ID,
+                    new Object[]{userId},
+                    (rs, rowNum) -> SecretQuesionsAnswersDto.builder()
+                            .secretQuestionId(rs.getLong("secret_question_id"))
+                            .secretQuestion(rs.getString("question"))
+                            .answer(rs.getString("secret_answer"))
+                            .build()
+            );
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching secret questions and answers: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler("Failed to fetch secret questions and answers");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching secret questions and answers: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching secret questions and answers");
+        }
+    }
 
 
 }

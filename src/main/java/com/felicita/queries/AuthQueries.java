@@ -90,4 +90,19 @@ public class AuthQueries {
 """;
 
 
+    public static final String GET_SECRET_QUESTIONS_AND_ANSWERS_BY_USER_ID = """
+                            SELECT 
+                    sq.secret_question_id,
+                    sq.question,
+                    usq.secret_answer
+                FROM user u
+                INNER JOIN user_secret_question usq 
+                    ON u.user_id = usq.user_id
+                INNER JOIN secret_question sq 
+                    ON sq.secret_question_id = usq.secret_question_id
+                WHERE u.user_id = ?
+                AND usq.status_id = (
+                    SELECT id FROM common_status WHERE name = 'ACTIVE' LIMIT 1
+                )
+            """;
 }

@@ -27,7 +27,7 @@ public class UserProfileController {
         this.userProfileService = userProfileService;
     }
 
-    @GetMapping(path = "/update-account")
+    @PostMapping(path = "/update-account")
     public ResponseEntity<CommonResponse<UpdateResponse>> updateUserProfileDetails(@RequestBody UserUpdateRequest userUpdateRequest) {
         LOGGER.info("{} Start execute update user profile details {}", Constant.DOTS, Constant.DOTS);
         CommonResponse<UpdateResponse> response = userProfileService.updateUserProfileDetails(userUpdateRequest);
