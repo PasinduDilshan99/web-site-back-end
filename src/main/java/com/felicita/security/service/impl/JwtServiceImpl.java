@@ -142,10 +142,12 @@ public class JwtServiceImpl implements JwtService {
     public ResponseCookie buildAccessTokenCookie(String token) {
         return ResponseCookie.from(accessCookieName, token)
                 .httpOnly(true)
-                .secure(false)
+                .secure(false) // change to true if you serve over HTTPS
                 .path("/")
                 .maxAge(Duration.ofSeconds(accessCookieMaxAge))
-                .sameSite("Strict")
+//                .sameSite("Strict")
+                .sameSite("None") // <- allow cross-site requests
+                .domain(".felicitatrips.com") // <- allow cookies for all subdomains
                 .build();
     }
 
@@ -156,7 +158,8 @@ public class JwtServiceImpl implements JwtService {
                 .secure(false)
                 .path("/")
                 .maxAge(Duration.ofSeconds(refreshCookieMaxAge))
-                .sameSite("Strict")
+                .sameSite("None")
+                .domain(".felicitatrips.com")
                 .build();
     }
 
