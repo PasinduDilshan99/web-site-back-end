@@ -75,6 +75,9 @@ public class WishListRepositoryImpl implements WishListRepository {
 
     @Override
     public List<PackageWishResponseDto> getPackageWishList(List<Long> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return new ArrayList<>();
+        }
         try {
             Map<String, Object> params = Map.of("ids", ids);
 
@@ -133,6 +136,9 @@ public class WishListRepositoryImpl implements WishListRepository {
 
     @Override
     public List<TourWishResponsesDto> getTourWishList(List<Long> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return new ArrayList<>();
+        }
         try {
             Map<String, Object> params = Map.of("ids", ids);
 
@@ -186,6 +192,9 @@ public class WishListRepositoryImpl implements WishListRepository {
 
     @Override
     public List<DestinationWishResponseDto> getDestinationWishList(List<Long> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return new ArrayList<>();
+        }
         try {
             Map<String, Object> params = Map.of("ids", ids);
 
@@ -238,6 +247,9 @@ public class WishListRepositoryImpl implements WishListRepository {
 
     @Override
     public List<ActivityWishResponseDto> getActivitiesWishList(List<Long> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return new ArrayList<>();
+        }
         try {
             Map<String, Object> params = Map.of("ids", ids);
             return namedJdbc.query(

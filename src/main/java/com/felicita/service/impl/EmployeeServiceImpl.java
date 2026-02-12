@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -141,15 +142,13 @@ public class EmployeeServiceImpl implements EmployeeService {
             List<EmployeesForAssignTourResponse> employeesForAssignTourResponses =
                     employeeRepository.getEmployeeDetailsForAssignTour();
 
-            return (
-                    new CommonResponse<>(
+            return new CommonResponse<>(
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
                             CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
                             employeesForAssignTourResponses,
-                            Instant.now()
-                    )
-            );
+                            Instant.now());
+
         } catch (DataNotFoundErrorExceptionHandler e) {
             LOGGER.error("Error occurred while fetching employee assign for tour  : {}", e.getMessage(), e);
             throw new DataNotFoundErrorExceptionHandler(e.getMessage());
@@ -160,4 +159,25 @@ public class EmployeeServiceImpl implements EmployeeService {
             LOGGER.info("End fetching employee assign for tour from repository");
         }
     }
+
+    @Override
+    public CommonResponse<CeoDetailsReponse> getCeoDetails() {
+
+        List<String> speech = new ArrayList<>();
+        speech.add("Welcome to our journey of innovation and excellence. Since our founding, we have been committed to delivering exceptional experiences to our clients and creating meaningful opportunities for our team.");
+        speech.add("Our vision extends beyond business success—we aim to make a lasting positive impact on the communities we serve. Through dedication, creativity, and unwavering integrity, we continue to push boundaries and set new standards in our industry.");
+        speech.add("Together, we are building something truly remarkable.");
+
+        return new CommonResponse<>(
+                CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                new CeoDetailsReponse(
+                        1L,
+                        "Pasindu Dilshan",
+                        "Chief Executive Officer",
+                        speech,
+                        "/images/users/user-1.jpg"
+                ),
+                Instant.now());    }
 }

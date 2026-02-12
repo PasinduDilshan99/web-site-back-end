@@ -69,4 +69,12 @@ public class EmployeeController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping(path = "/ceo-details")
+    public ResponseEntity<CommonResponse<CeoDetailsReponse>> getCeoDetails(){
+        LOGGER.info("{} Start execute get ceo details {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<CeoDetailsReponse> response = employeeService.getCeoDetails();
+        LOGGER.info("{} End execute get ceo details {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 }
