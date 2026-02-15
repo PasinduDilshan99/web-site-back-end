@@ -1,13 +1,11 @@
 package com.felicita.service.impl;
 
-import com.felicita.exception.DataNotFoundErrorExceptionHandler;
-import com.felicita.exception.InsertFailedErrorExceptionHandler;
-import com.felicita.exception.InternalServerErrorExceptionHandler;
-import com.felicita.exception.ValidationFailedErrorExceptionHandler;
+import com.felicita.exception.*;
 import com.felicita.helper.BookingHelperService;
 import com.felicita.model.dto.*;
 import com.felicita.model.enums.BookingStatus;
 import com.felicita.model.request.BookingRequest;
+import com.felicita.model.request.TourBookingInquiryRequest;
 import com.felicita.model.response.*;
 import com.felicita.repository.BookingRepository;
 import com.felicita.service.BookingService;
@@ -392,11 +390,11 @@ public class BookingServiceImpl implements BookingService {
 
             LOGGER.info("Fetched {} booked tours details successfully", userBookingSummaryResponses.size());
             return new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
                     userBookingSummaryResponses,
-                            Instant.now()
+                    Instant.now()
             );
 
         } catch (DataNotFoundErrorExceptionHandler e) {
@@ -410,5 +408,71 @@ public class BookingServiceImpl implements BookingService {
         }
     }
 
+    @Override
+    public CommonResponse<List<PendingToursResponse>> getPendingBookingToursDetailsById() {
+        LOGGER.info("Start fetching all pending booking tours details from repository");
+        try {
+            Long userId = commonService.getUserIdBySecurityContext();
+            List<PendingToursResponse> pendingToursResponses = bookingRepository.getPendingBookingToursDetailsById(userId);
+
+            if (pendingToursResponses.isEmpty()) {
+                LOGGER.warn("No pending booking tours details found in database");
+                throw new DataNotFoundErrorExceptionHandler("No pending booking tours details found");
+            }
+
+            LOGGER.info("Fetched {} pending booking tours details successfully", pendingToursResponses.size());
+            return (
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            pendingToursResponses,
+                            Instant.now()
+                    )
+            );
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching pending booking tours details: {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching pending booking tours details: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch pending booking tours details from database");
+        } finally {
+            LOGGER.info("End fetching all pending booking tours details from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<InsertResponse> tourBookingInquiry(TourBookingInquiryRequest tourBookingInquiryRequest) {
+        LOGGER.info("Start insert tour booking inquiry request.");
+        try {
+            Long userId = commonService.getUserIdBySecurityContextWithOutException();
+            bookingValidationService.validateTourBookingInquiryRequest(tourBookingInquiryRequest);
+            if (userId != null){
+                String bookingReference = bookingHelperService.generateUniqueBookingReferance();
+                bookingRepository.insertBookingInquiryToBookings(tourBookingInquiryRequest, userId,bookingReference);
+            }
+            Long tourBookingInquiryId = bookingRepository.insertTourBookingInquiry(tourBookingInquiryRequest, userId);
+
+            if (tourBookingInquiryId == null || tourBookingInquiryId <= 0) {
+                throw new InsertFailedErrorExceptionHandler("Failed to insert tour booking inquiry");
+            }
+
+            return new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_INSERT_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_INSERT_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_INSERT_MESSAGE,
+                            new InsertResponse("Successfully insert tour booking inquiry."),
+                            Instant.now());
+
+        } catch (InsertFailedErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while insert booking tours inquiry : {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to insert booking tours inquiry to database");
+        } finally {
+            LOGGER.info("End insert booking tours inquiry to repository");
+        }
+    }
 
 }

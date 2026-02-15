@@ -4,6 +4,7 @@ import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
 import com.felicita.exception.UpdateFailedErrorExceptionHandler;
 import com.felicita.model.enums.CommonStatus;
+import com.felicita.model.request.UserProfileAddressInsertRequest;
 import com.felicita.model.request.UserProfileDetailsRequest;
 import com.felicita.model.request.UserUpdateRequest;
 import com.felicita.model.response.*;
@@ -303,7 +304,23 @@ public class UserProfileServiceImpl implements UserProfileService {
         try {
             UserProfileValidationService.validateUserUpdateRequest(userUpdateRequest);
             Long userId = commonService.getUserIdBySecurityContext();
-
+            Long addressId = userProfileRepository.getUserProfileAddressId(userId);
+            if (addressId != null) {
+                userProfileRepository.updateUserProfileAddress(userUpdateRequest, addressId);
+            }else{
+                addressId = userProfileRepository.insertUserProfileAddress(new UserProfileAddressInsertRequest(
+                        userUpdateRequest.getAddressNumber(),
+                        userUpdateRequest.getAddressLine1(),
+                        userUpdateRequest.getAddressLine2(),
+                        userUpdateRequest.getCity(),
+                        userUpdateRequest.getDistrict(),
+                        userUpdateRequest.getProvince(),
+                        userUpdateRequest.getCountry(),
+                        userUpdateRequest.getPostalCode()
+                ));
+                userUpdateRequest.setAddressId(addressId);
+            }
+            LOGGER.info(userUpdateRequest.toString());
             userProfileRepository.updateUserProfileDetails(userUpdateRequest, userId);
 
             LOGGER.info("updated user profile details successfully");

@@ -92,6 +92,7 @@ public class AuthController {
 
     @GetMapping(path = "/me")
     public ResponseEntity<CommonResponse<User>> me(){
+        LOGGER.info("Fetching current user profile");
         CommonResponse<User> user = authService.getCurrentUserProfile();
         return ResponseEntity.ok(user);
     }

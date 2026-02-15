@@ -1,6 +1,7 @@
 package com.felicita.validation.impl;
 
 import com.felicita.model.request.BookingRequest;
+import com.felicita.model.request.TourBookingInquiryRequest;
 import com.felicita.service.CommonService;
 import com.felicita.validation.BookingValidationService;
 import org.slf4j.Logger;
@@ -22,6 +23,11 @@ public class BookingValidationServiceImpl implements BookingValidationService {
 
     @Override
     public void validateBookingRequest(BookingRequest bookingRequest) {
+
+    }
+
+    @Override
+    public void validateTourBookingInquiryRequest(TourBookingInquiryRequest tourBookingInquiryRequest) {
 
     }
 }

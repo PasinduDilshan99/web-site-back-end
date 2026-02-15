@@ -1,6 +1,7 @@
 package com.felicita.controller;
 
 import com.felicita.model.request.BookingRequest;
+import com.felicita.model.request.TourBookingInquiryRequest;
 import com.felicita.model.response.*;
 import com.felicita.service.BookingService;
 import com.felicita.util.Constant;
@@ -24,6 +25,14 @@ public class BookingController {
     @Autowired
     public BookingController(BookingService bookingService) {
         this.bookingService = bookingService;
+    }
+
+    @GetMapping(path = "/pending")
+    public ResponseEntity<CommonResponse<List<PendingToursResponse>>> getPendingBookingToursDetailsById() {
+        LOGGER.info("{} Start execute get pending booking tours details {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<PendingToursResponse>> response = bookingService.getPendingBookingToursDetailsById();
+        LOGGER.info("{} End execute get pending booking tours details {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping(path = "/completed")
@@ -80,6 +89,14 @@ public class BookingController {
         LOGGER.info("Booking request: {}", bookingRequest);
         CommonResponse<BookInsertResponse> response = bookingService.bookingTour(bookingRequest);
         LOGGER.info("{} End execute booking a tour {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping(path = "/tour-book-inquiry")
+    public ResponseEntity<CommonResponse<InsertResponse>> tourBookingInquiry(@RequestBody TourBookingInquiryRequest tourBookingInquiryRequest) {
+        LOGGER.info("{} Start execute booking a tour inquiry {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<InsertResponse> response = bookingService.tourBookingInquiry(tourBookingInquiryRequest);
+        LOGGER.info("{} End execute booking a tour inquiry {}", Constant.DOTS, Constant.DOTS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
