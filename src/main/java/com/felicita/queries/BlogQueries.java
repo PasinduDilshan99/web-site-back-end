@@ -120,6 +120,7 @@ public class BlogQueries {
                             b.views,
                             bc.name AS blog_category,
                             u_writer.username AS writer_name,
+                            u_writer.image_url AS writer_image_url,
                             cs_blog.name AS blog_status,
                             b.created_at AS blog_created_at,
                                         (SELECT JSON_ARRAYAGG(JSON_OBJECT(
@@ -158,12 +159,14 @@ public class BlogQueries {
                                     'comment_id', bc.id,
                                     'user_id', bc.user_id,
                                     'username', u_comment.username,
+                                    'image_url', u_comment.image_url,
                                     'comment', bc.comment,
                                     'comment_date', bc.comment_date,
                                     'reactions', (
                                         SELECT JSON_ARRAYAGG(JSON_OBJECT(
                                             'user_id', cr.user_id,
                                             'username', u_react.username,
+                                            'image_url', u_react.image_url,
                                             'reaction_type', bcrt.name
                                         ))
                                         FROM blog_comment_reactions cr
@@ -178,12 +181,14 @@ public class BlogQueries {
                                                 'comment_id', r.id,
                                                 'user_id', r.user_id,
                                                 'username', u_reply.username,
+                                                'image_url', u_reply.image_url,
                                                 'comment', r.comment,
                                                 'comment_date', r.comment_date,
                                                 'reactions', (
                                                     SELECT JSON_ARRAYAGG(JSON_OBJECT(
                                                         'user_id', cr2.user_id,
                                                         'username', u_react2.username,
+                                                        'image_url', u_react2.image_url,
                                                         'reaction_type', bcrt2.name
                                                     ))
                                                     FROM blog_comment_reactions cr2
