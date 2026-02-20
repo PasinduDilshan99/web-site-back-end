@@ -24,10 +24,7 @@ public class PopularDestinationResponseDto {
     private Double longitude;
     private String destinationStatus;
 
-    private int categoryId;
-    private String categoryName;
-    private String categoryDescription;
-    private String categoryStatus;
+    List<DestinationCategoryDetailsDto> destinationCategoryDetailsDtos;
 
     private List<DestinationImageResponseDto> images;
 }

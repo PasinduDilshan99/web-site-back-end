@@ -19,6 +19,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -351,62 +352,78 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
 
     @Override
     public ActivityResponseDto getActivityById(Long activityId) {
-        String GET_ACTIVITY_DETAILS_BY_ID = ActivitiesQueries.GET_ACTIVITY_DETAILS_BY_ID;
 
         try {
-            return jdbcTemplate.queryForObject(GET_ACTIVITY_DETAILS_BY_ID, new Object[]{activityId}, (rs, rowNum) -> {
-                ActivityResponseDto activity = new ActivityResponseDto();
-                activity.setId(rs.getLong("id"));
-                activity.setDestinationId(rs.getInt("destination_id"));
-                activity.setName(rs.getString("name"));
-                activity.setDescription(rs.getString("description"));
-                activity.setActivitiesCategory(rs.getString("activities_category"));
-                activity.setDurationHours(rs.getBigDecimal("duration_hours"));
-                activity.setAvailableFrom(rs.getTime("available_from"));
-                activity.setAvailableTo(rs.getTime("available_to"));
-                activity.setPriceLocal(rs.getBigDecimal("price_local"));
-                activity.setPriceForeigners(rs.getBigDecimal("price_foreigners"));
-                activity.setMinParticipate(rs.getInt("min_participate"));
-                activity.setMaxParticipate(rs.getInt("max_participate"));
-                activity.setSeason(rs.getString("season"));
-                activity.setStatus(rs.getString("status_name"));
-                activity.setCreatedAt(rs.getTimestamp("created_at"));
-                activity.setUpdatedAt(rs.getTimestamp("updated_at"));
-                activity.setCategoryName(rs.getString("category_name"));
-                activity.setCategoryDescription(rs.getString("category_description"));
+            return jdbcTemplate.queryForObject(
+                    ActivitiesQueries.GET_ACTIVITY_DETAILS_BY_ID,
+                    new Object[]{activityId},
+                    (rs, rowNum) -> {
 
-                ObjectMapper mapper = new ObjectMapper();
+                        ActivityResponseDto activity = new ActivityResponseDto();
 
-                // Deserialize JSON arrays into DTO lists
-                String schedulesJson = rs.getString("schedules");
-                try {
-                    activity.setSchedules(schedulesJson != null ?
-                            mapper.readValue(schedulesJson, new TypeReference<List<ActivityScheduleDto>>() {
-                            }) : List.of());
-                } catch (JsonProcessingException e) {
-                    throw new RuntimeException(e);
-                }
+                        // Basic fields
+                        activity.setId(rs.getLong("id"));
+                        activity.setDestinationId(rs.getInt("destination_id"));
+                        activity.setName(rs.getString("name"));
+                        activity.setDescription(rs.getString("description"));
+                        activity.setDurationHours(rs.getBigDecimal("duration_hours"));
+                        activity.setAvailableFrom(rs.getTime("available_from"));
+                        activity.setAvailableTo(rs.getTime("available_to"));
+                        activity.setPriceLocal(rs.getBigDecimal("price_local"));
+                        activity.setPriceForeigners(rs.getBigDecimal("price_foreigners"));
+                        activity.setMinParticipate(rs.getInt("min_participate"));
+                        activity.setMaxParticipate(rs.getInt("max_participate"));
+                        activity.setSeason(rs.getString("season"));
+                        activity.setStatus(rs.getString("status_name"));
+                        activity.setCreatedAt(rs.getTimestamp("created_at"));
+                        activity.setUpdatedAt(rs.getTimestamp("updated_at"));
 
-                String requirementsJson = rs.getString("requirements");
-                try {
-                    activity.setRequirements(requirementsJson != null ?
-                            mapper.readValue(requirementsJson, new TypeReference<List<ActivityRequirementDto>>() {
-                            }) : List.of());
-                } catch (JsonProcessingException e) {
-                    throw new RuntimeException(e);
-                }
+                        ObjectMapper mapper = new ObjectMapper();
 
-                String imagesJson = rs.getString("images");
-                try {
-                    activity.setImages(imagesJson != null ?
-                            mapper.readValue(imagesJson, new TypeReference<List<ActivityImageDto>>() {
-                            }) : List.of());
-                } catch (JsonProcessingException e) {
-                    throw new RuntimeException(e);
-                }
+                        try {
+                            // Categories
+                            String categoriesJson = rs.getString("categories");
+                            activity.setActivityCategoryDtos(
+                                    categoriesJson != null
+                                            ? mapper.readValue(categoriesJson,
+                                            new TypeReference<List<ActivityCategoryDto>>() {})
+                                            : List.of()
+                            );
 
-                return activity;
-            });
+                            // Schedules
+                            String schedulesJson = rs.getString("schedules");
+                            activity.setSchedules(
+                                    schedulesJson != null
+                                            ? mapper.readValue(schedulesJson,
+                                            new TypeReference<List<ActivityScheduleDto>>() {})
+                                            : List.of()
+                            );
+
+                            // Requirements
+                            String requirementsJson = rs.getString("requirements");
+                            activity.setRequirements(
+                                    requirementsJson != null
+                                            ? mapper.readValue(requirementsJson,
+                                            new TypeReference<List<ActivityRequirementDto>>() {})
+                                            : List.of()
+                            );
+
+                            // Images
+                            String imagesJson = rs.getString("images");
+                            activity.setImages(
+                                    imagesJson != null
+                                            ? mapper.readValue(imagesJson,
+                                            new TypeReference<List<ActivityImageDto>>() {})
+                                            : List.of()
+                            );
+
+                        } catch (JsonProcessingException e) {
+                            throw new RuntimeException("Error parsing JSON fields", e);
+                        }
+
+                        return activity;
+                    }
+            );
 
         } catch (DataAccessException ex) {
             LOGGER.error("Database error while fetching activity details: {}", ex.getMessage(), ex);
@@ -437,7 +454,6 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
                                     .activityId(rs.getLong("activity_id"))
                                     .activityName(rs.getString("activity_name"))
                                     .activityDescription(rs.getString("activity_description"))
-                                    .activityCategory(rs.getString("activity_category"))
                                     .durationHours(rs.getInt("duration_hours"))
                                     .availableFrom(getLocalDateTime(rs, "available_from"))
                                     .availableTo(getLocalDateTime(rs, "available_to"))
@@ -483,9 +499,25 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
                                     .build())
                             .images(new ArrayList<>())
                             .build();
+                    ObjectMapper mapper = new ObjectMapper();
+
+                    String categoriesJson = rs.getString("activity_categories");
+                    List<String> categories;
+
+                    try {
+                        categories = categoriesJson != null
+                                ? mapper.readValue(categoriesJson, new TypeReference<List<String>>() {
+                        })
+                                : List.of();
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException("Error parsing activity categories JSON", e);
+                    }
+
+//                    response.getActivity().setActivityCategory(categories);
 
                     historyMap.put(historyId, response);
                 }
+
 
                 // Add image if exists
                 Long imageId = rs.getLong("image_id");
@@ -521,104 +553,126 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
 
     @Override
     public List<ActivityHistoryDetailsResponse> getAllActivityHistoryDetails() {
-        String GET_ACTIVITY_HISTORY_DETAILS = ActivitiesQueries.GET_ACTIVITY_HISTORY_DETAILS;
 
         try {
-            LOGGER.info("Executing query to fetch all activity history details.");
 
             Map<Long, ActivityHistoryDetailsResponse> historyMap = new LinkedHashMap<>();
 
-            jdbcTemplate.query(GET_ACTIVITY_HISTORY_DETAILS, rs -> {
+            jdbcTemplate.query(ActivitiesQueries.GET_ACTIVITY_HISTORY_DETAILS, rs -> {
+
                 Long historyId = rs.getLong("history_id");
                 ActivityHistoryDetailsResponse response = historyMap.get(historyId);
 
                 if (response == null) {
-                    // Build base response object
+
                     response = ActivityHistoryDetailsResponse.builder()
                             .historyId(historyId)
-                            .activity(ActivityHistoryDetailsResponse.ActivityInfo.builder()
-                                    .activityId(rs.getLong("activity_id"))
-                                    .activityName(rs.getString("activity_name"))
-                                    .activityDescription(rs.getString("activity_description"))
-                                    .activityCategory(rs.getString("activity_category"))
-                                    .durationHours(rs.getInt("duration_hours"))
-                                    .availableFrom(getLocalDateTime(rs, "available_from"))
-                                    .availableTo(getLocalDateTime(rs, "available_to"))
-                                    .priceLocal(rs.getDouble("price_local"))
-                                    .priceForeigners(rs.getDouble("price_foreigners"))
-                                    .minParticipate(rs.getInt("min_participate"))
-                                    .maxParticipate(rs.getInt("max_participate"))
-                                    .season(rs.getString("season"))
-                                    .destination(ActivityHistoryDetailsResponse.DestinationInfo.builder()
-                                            .destinationId(rs.getString("destination_id"))
-                                            .destinationName(rs.getString("destination_name"))
-                                            .destinationDescription(rs.getString("destination_description"))
-                                            .destinationLocation(rs.getString("destination_location"))
-                                            .latitude(getDouble(rs, "latitude"))
-                                            .longitude(getDouble(rs, "longitude"))
-                                            .build())
-                                    .build())
-                            .schedule(ActivityHistoryDetailsResponse.ScheduleInfo.builder()
-                                    .scheduleId(rs.getLong("schedule_id"))
-                                    .scheduleName(rs.getString("schedule_name"))
-                                    .scheduleDescription(rs.getString("schedule_description"))
-                                    .assumeStartDate(getLocalDateTime(rs, "assume_start_date"))
-                                    .assumeEndDate(getLocalDateTime(rs, "assume_end_date"))
-                                    .durationHoursStart(rs.getInt("duration_hours_start"))
-                                    .durationHoursEnd(rs.getInt("duration_hours_end"))
-                                    .specialNote(rs.getString("schedule_special_note"))
-                                    .build())
-                            .history(ActivityHistoryDetailsResponse.HistoryInfo.builder()
-                                    .historyName(rs.getString("history_name"))
-                                    .historyDescription(rs.getString("history_description"))
-                                    .numberOfParticipate(rs.getInt("number_of_participate"))
-                                    .activityStart(getLocalDateTime(rs, "activity_start"))
-                                    .activityEnd(getLocalDateTime(rs, "activity_end"))
-                                    .rating(rs.getDouble("rating"))
-                                    .specialNote(rs.getString("history_special_note"))
-                                    .statusName(rs.getString("history_status_name"))
-                                    .createdByUsername(rs.getString("history_created_by_username"))
-                                    .updatedByUsername(rs.getString("history_updated_by_username"))
-                                    .terminatedByUsername(rs.getString("history_terminated_by_username"))
-                                    .createdAt(getLocalDateTime(rs, "history_created_at"))
-                                    .updatedAt(getLocalDateTime(rs, "history_updated_at"))
-                                    .terminatedAt(getLocalDateTime(rs, "history_terminated_at"))
-                                    .build())
+                            .activity(
+                                    ActivityHistoryDetailsResponse.ActivityInfo.builder()
+                                            .activityId(rs.getLong("activity_id"))
+                                            .activityName(rs.getString("activity_name"))
+                                            .activityDescription(rs.getString("activity_description"))
+                                            .durationHours(rs.getInt("duration_hours"))
+                                            .availableFrom(getLocalDateTime(rs, "available_from"))
+                                            .availableTo(getLocalDateTime(rs, "available_to"))
+                                            .priceLocal(rs.getDouble("price_local"))
+                                            .priceForeigners(rs.getDouble("price_foreigners"))
+                                            .minParticipate(rs.getInt("min_participate"))
+                                            .maxParticipate(rs.getInt("max_participate"))
+                                            .season(rs.getString("season"))
+                                            .destination(
+                                                    ActivityHistoryDetailsResponse.DestinationInfo.builder()
+                                                            .destinationId(rs.getString("destination_id"))
+                                                            .destinationName(rs.getString("destination_name"))
+                                                            .destinationDescription(rs.getString("destination_description"))
+                                                            .destinationLocation(rs.getString("destination_location"))
+                                                            .latitude(getDouble(rs, "latitude"))
+                                                            .longitude(getDouble(rs, "longitude"))
+                                                            .build()
+                                            )
+                                            .build()
+                            )
+                            .schedule(
+                                    ActivityHistoryDetailsResponse.ScheduleInfo.builder()
+                                            .scheduleId(rs.getLong("schedule_id"))
+                                            .scheduleName(rs.getString("schedule_name"))
+                                            .scheduleDescription(rs.getString("schedule_description"))
+                                            .assumeStartDate(getLocalDateTime(rs, "assume_start_date"))
+                                            .assumeEndDate(getLocalDateTime(rs, "assume_end_date"))
+                                            .durationHoursStart(rs.getInt("duration_hours_start"))
+                                            .durationHoursEnd(rs.getInt("duration_hours_end"))
+                                            .specialNote(rs.getString("schedule_special_note"))
+                                            .build()
+                            )
+                            .history(
+                                    ActivityHistoryDetailsResponse.HistoryInfo.builder()
+                                            .historyName(rs.getString("history_name"))
+                                            .historyDescription(rs.getString("history_description"))
+                                            .numberOfParticipate(rs.getInt("number_of_participate"))
+                                            .activityStart(getLocalDateTime(rs, "activity_start"))
+                                            .activityEnd(getLocalDateTime(rs, "activity_end"))
+                                            .rating(rs.getDouble("rating"))
+                                            .specialNote(rs.getString("history_special_note"))
+                                            .statusName(rs.getString("history_status_name"))
+                                            .createdByUsername(rs.getString("history_created_by_username"))
+                                            .updatedByUsername(rs.getString("history_updated_by_username"))
+                                            .terminatedByUsername(rs.getString("history_terminated_by_username"))
+                                            .createdAt(getLocalDateTime(rs, "history_created_at"))
+                                            .updatedAt(getLocalDateTime(rs, "history_updated_at"))
+                                            .terminatedAt(getLocalDateTime(rs, "history_terminated_at"))
+                                            .build()
+                            )
                             .images(new ArrayList<>())
                             .build();
+
+                    ObjectMapper mapper = new ObjectMapper();
+
+                    String categoriesJson = rs.getString("activity_categories");
+
+                    try {
+                        List<ActivityCategoryDto> categories =
+                                categoriesJson != null
+                                        ? mapper.readValue(
+                                        categoriesJson,
+                                        new TypeReference<List<ActivityCategoryDto>>() {}
+                                )
+                                        : List.of();
+
+                        response.getActivity().setActivityCategoryDtos(categories);
+
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException("Error parsing activity categories JSON", e);
+                    }
 
                     historyMap.put(historyId, response);
                 }
 
-                // Add image if exists
+                // Add image
                 Long imageId = rs.getLong("image_id");
-                if (imageId != 0) {
-                    ActivityHistoryDetailsResponse.ImageInfo image = ActivityHistoryDetailsResponse.ImageInfo.builder()
-                            .imageId(imageId)
-                            .imageName(rs.getString("image_name"))
-                            .imageDescription(rs.getString("image_description"))
-                            .imageUrl(rs.getString("image_url"))
-                            .statusName(rs.getString("image_status_name"))
-                            .createdByUsername(rs.getString("image_created_by_username"))
-                            .updatedByUsername(rs.getString("image_updated_by_username"))
-                            .terminatedByUsername(rs.getString("image_terminated_by_username"))
-                            .createdAt(getLocalDateTime(rs, "image_created_at"))
-                            .updatedAt(getLocalDateTime(rs, "image_updated_at"))
-                            .terminatedAt(getLocalDateTime(rs, "image_terminated_at"))
-                            .build();
-
-                    response.getImages().add(image);
+                if (!rs.wasNull()) {
+                    response.getImages().add(
+                            ActivityHistoryDetailsResponse.ImageInfo.builder()
+                                    .imageId(imageId)
+                                    .imageName(rs.getString("image_name"))
+                                    .imageDescription(rs.getString("image_description"))
+                                    .imageUrl(rs.getString("image_url"))
+                                    .statusName(rs.getString("image_status_name"))
+                                    .createdByUsername(rs.getString("image_created_by_username"))
+                                    .updatedByUsername(rs.getString("image_updated_by_username"))
+                                    .terminatedByUsername(rs.getString("image_terminated_by_username"))
+                                    .createdAt(getLocalDateTime(rs, "image_created_at"))
+                                    .updatedAt(getLocalDateTime(rs, "image_updated_at"))
+                                    .terminatedAt(getLocalDateTime(rs, "image_terminated_at"))
+                                    .build()
+                    );
                 }
+
             });
 
             return new ArrayList<>(historyMap.values());
 
-        } catch (DataAccessException ex) {
-            LOGGER.error("Database error while fetching activity history details: {}", ex.getMessage(), ex);
-            throw new DataAccessErrorExceptionHandler("Failed to fetch activity history details from database");
         } catch (Exception ex) {
-            LOGGER.error("Unexpected error while fetching activity history details: {}", ex.getMessage(), ex);
-            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching activity history details");
+            throw new RuntimeException("Error fetching activity history details", ex);
         }
     }
 
@@ -1163,77 +1217,88 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
     }
 
     private class ActivityRowMapper implements RowMapper<ActivityResponseDto> {
+
         @Override
         public ActivityResponseDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+
             ActivityResponseDto activity = new ActivityResponseDto();
 
-            // Map basic fields
-            activity.setId(rs.getLong("id"));
-            activity.setDestinationId(rs.getInt("destination_id"));
-            activity.setName(rs.getString("name"));
-            activity.setDescription(rs.getString("description"));
-            activity.setActivitiesCategory(rs.getString("activities_category"));
-            activity.setDurationHours(rs.getBigDecimal("duration_hours"));
-            activity.setAvailableFrom(rs.getTime("available_from"));
-            activity.setAvailableTo(rs.getTime("available_to"));
-            activity.setPriceLocal(rs.getBigDecimal("price_local"));
-            activity.setPriceForeigners(rs.getBigDecimal("price_foreigners"));
-            activity.setMinParticipate(rs.getInt("min_participate"));
-            activity.setMaxParticipate(rs.getInt("max_participate"));
-            activity.setSeason(rs.getString("season"));
-            activity.setStatus(rs.getString("status_name"));
-            activity.setCreatedAt(rs.getTimestamp("created_at"));
-            activity.setUpdatedAt(rs.getTimestamp("updated_at"));
-
-            // Map category details
-            activity.setCategoryName(rs.getString("category_name"));
-            activity.setCategoryDescription(rs.getString("category_description"));
-
-            // Parse JSON arrays
             try {
-                // Parse schedules
-                String schedulesJson = rs.getString("schedules");
-                if (schedulesJson != null && !schedulesJson.equals("[]")) {
-                    List<ActivityScheduleDto> schedules = objectMapper.readValue(
-                            schedulesJson,
-                            new TypeReference<List<ActivityScheduleDto>>() {
-                            }
-                    );
-                    activity.setSchedules(schedules);
-                } else {
-                    activity.setSchedules(List.of());
-                }
+                // Basic fields
+                activity.setId(rs.getLong("id"));
+                activity.setDestinationId(rs.getInt("destination_id"));
+                activity.setName(rs.getString("name"));
+                activity.setDescription(rs.getString("description"));
+                activity.setDurationHours(rs.getBigDecimal("duration_hours"));
+                activity.setAvailableFrom(rs.getTime("available_from"));
+                activity.setAvailableTo(rs.getTime("available_to"));
+                activity.setPriceLocal(rs.getBigDecimal("price_local"));
+                activity.setPriceForeigners(rs.getBigDecimal("price_foreigners"));
+                activity.setMinParticipate(rs.getInt("min_participate"));
+                activity.setMaxParticipate(rs.getInt("max_participate"));
+                activity.setSeason(rs.getString("season"));
+                activity.setStatus(rs.getString("status_name"));
+                activity.setCreatedAt(rs.getTimestamp("created_at"));
+                activity.setUpdatedAt(rs.getTimestamp("updated_at"));
 
-                // Parse requirements
-                String requirementsJson = rs.getString("requirements");
-                if (requirementsJson != null && !requirementsJson.equals("[]")) {
-                    List<ActivityRequirementDto> requirements = objectMapper.readValue(
-                            requirementsJson,
-                            new TypeReference<List<ActivityRequirementDto>>() {
-                            }
-                    );
-                    activity.setRequirements(requirements);
-                } else {
-                    activity.setRequirements(List.of());
-                }
+                // Categories
+                List<ActivityCategoryDto> categories;
+                try {
+                    Object obj = rs.getObject("categories");
+                    String categoriesJson = obj != null ? obj.toString() : null;
 
-                // Parse images
-                String imagesJson = rs.getString("images");
-                if (imagesJson != null && !imagesJson.equals("[]")) {
-                    List<ActivityImageDto> images = objectMapper.readValue(
-                            imagesJson,
-                            new TypeReference<List<ActivityImageDto>>() {
-                            }
-                    );
-                    activity.setImages(images);
-                } else {
-                    activity.setImages(List.of());
+                    categories = (categoriesJson != null && !categoriesJson.equals("[]"))
+                            ? objectMapper.readValue(categoriesJson, new TypeReference<List<ActivityCategoryDto>>() {})
+                            : List.of();
+                } catch (Exception e) {
+                    LOGGER.warn("Error parsing categories JSON for activity id {}: {}", rs.getLong("id"), e.getMessage());
+                    categories = List.of();
                 }
+                activity.setActivityCategoryDtos(categories);
+
+// Schedules
+                List<ActivityScheduleDto> schedules;
+                try {
+                    String schedulesJson = rs.getString("schedules");
+                    schedules = (schedulesJson != null && !schedulesJson.equals("[]"))
+                            ? objectMapper.readValue(schedulesJson, new TypeReference<List<ActivityScheduleDto>>() {})
+                            : List.of();
+                } catch (Exception e) {
+                    LOGGER.warn("Error parsing schedules JSON for activity id {}: {}", rs.getLong("id"), e.getMessage());
+                    schedules = List.of();
+                }
+                activity.setSchedules(schedules);
+
+// Requirements
+                List<ActivityRequirementDto> requirements;
+                try {
+                    String requirementsJson = rs.getString("requirements");
+                    requirements = (requirementsJson != null && !requirementsJson.equals("[]"))
+                            ? objectMapper.readValue(requirementsJson, new TypeReference<List<ActivityRequirementDto>>() {})
+                            : List.of();
+                } catch (Exception e) {
+                    LOGGER.warn("Error parsing requirements JSON for activity id {}: {}", rs.getLong("id"), e.getMessage());
+                    requirements = List.of();
+                }
+                activity.setRequirements(requirements);
+
+// Images
+                List<ActivityImageDto> images;
+                try {
+                    String imagesJson = rs.getString("images");
+                    images = (imagesJson != null && !imagesJson.equals("[]"))
+                            ? objectMapper.readValue(imagesJson, new TypeReference<List<ActivityImageDto>>() {})
+                            : List.of();
+                } catch (Exception e) {
+                    LOGGER.warn("Error parsing images JSON for activity id {}: {}", rs.getLong("id"), e.getMessage());
+                    images = List.of();
+                }
+                activity.setImages(images);
 
             } catch (Exception e) {
-                LOGGER.error("Error parsing JSON data for activity id: {}", activity.getId(), e);
-                throw new SQLException("Error parsing JSON data", e);
+                throw new SQLException("Error parsing JSON for activity id: " + activity.getId(), e);
             }
+
             return activity;
         }
     }

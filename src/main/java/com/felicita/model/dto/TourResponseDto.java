@@ -1,6 +1,7 @@
 package com.felicita.model.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +10,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class TourResponseDto {
     private Long tourId;
     private String tourName;
@@ -19,10 +21,8 @@ public class TourResponseDto {
     private String startLocation;
     private String endLocation;
 
-    private String tourTypeName;
-    private String tourTypeDescription;
-    private String tourCategoryName;
-    private String tourCategoryDescription;
+    private List<TourTypeDto> tourTypeDtos;
+    private List<TourCategoryDto> tourCategoryDto;
     private String seasonName;
     private String seasonDescription;
     private String statusName;

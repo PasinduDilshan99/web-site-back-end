@@ -1,6 +1,8 @@
 package com.felicita.model.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.felicita.model.dto.ActivityCategoryDto;
+import com.felicita.model.dto.DestinationCategoryDetailsDto;
 import com.felicita.model.dto.DestinationCategoryDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -48,8 +50,7 @@ public class TourDetailsWithDayToDayResponse {
         private String destinationName;
         private String destinationDescription;
         private String destinationStatus;
-        private String category;
-        private String categoryDescription;
+        private List<DestinationCategoryDetailsDto> destinationCategoryDetailsDtos;
         private String location;
         private Double latitude;
         private Double longitude;
@@ -91,8 +92,8 @@ public class TourDetailsWithDayToDayResponse {
         private Long destinationId;
         private String name;
         private String description;
-        private String activitiesCategory;
 
+        private List<ActivityCategoryDto> activityCategoryDtos;
         private BigDecimal durationHours;
         private Time availableFrom;
         private Time availableTo;

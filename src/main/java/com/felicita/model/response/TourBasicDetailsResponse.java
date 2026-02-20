@@ -22,8 +22,8 @@ public class TourBasicDetailsResponse {
         private Long tourId;
         private String tourName;
         private String tourDescription;
-        private String tourCategory;
-        private String tourType;
+        private List<String> tourTypes;
+        private List<String> tourCategories;
         private Integer duration;
         private Double latitude;
         private Double longitude;

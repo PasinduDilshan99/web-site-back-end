@@ -23,7 +23,7 @@ public class ActivityResponseDto {
     private String description;
 
     @JsonProperty("activities_category")
-    private String activitiesCategory;
+    private List<ActivityCategoryDto> activityCategoryDtos;
 
     @JsonProperty("duration_hours")
     private BigDecimal durationHours;
@@ -54,13 +54,6 @@ public class ActivityResponseDto {
 
     @JsonProperty("updated_at")
     private Timestamp updatedAt;
-
-    // Category details
-    @JsonProperty("category_name")
-    private String categoryName;
-
-    @JsonProperty("category_description")
-    private String categoryDescription;
 
     // Related data
     private List<ActivityScheduleDto> schedules;

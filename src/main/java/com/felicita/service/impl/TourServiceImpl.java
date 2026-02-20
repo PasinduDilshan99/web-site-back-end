@@ -792,11 +792,9 @@ public class TourServiceImpl implements TourService {
             tourAllDetailsResponse.setLatitude(tourResponseDto.getLatitude());
             tourAllDetailsResponse.setStartLocation(tourResponseDto.getStartLocation());
             tourAllDetailsResponse.setEndLocation(tourResponseDto.getEndLocation());
-            tourAllDetailsResponse.setTourTypeName(tourResponseDto.getTourTypeName());
-            tourAllDetailsResponse.setTourCategoryName(tourResponseDto.getTourCategoryName());
+            tourAllDetailsResponse.setTourTypeDtos(tourResponseDto.getTourTypeDtos());
+            tourAllDetailsResponse.setTourCategoryDto(tourResponseDto.getTourCategoryDto());
             tourAllDetailsResponse.setSeasonName(tourResponseDto.getSeasonName());
-            tourAllDetailsResponse.setTourTypeDescription(tourResponseDto.getTourTypeDescription());
-            tourAllDetailsResponse.setTourCategoryDescription(tourResponseDto.getTourCategoryDescription());
             tourAllDetailsResponse.setSeasonDescription(tourResponseDto.getSeasonDescription());
             tourAllDetailsResponse.setStatusName(tourResponseDto.getStatusName());
             tourAllDetailsResponse.setSchedules(tourResponseDto.getSchedules());
@@ -839,7 +837,7 @@ public class TourServiceImpl implements TourService {
                     destDetails.setDestinationId(srcDest.getDestinationId());
                     destDetails.setDestinationName(srcDest.getDestinationName());
                     destDetails.setDestinationDescription(srcDest.getDestinationDescription());
-                    destDetails.setCategory(srcDest.getCategory());
+                    destDetails.setCategory(srcDest.getDestinationCategoryDetailsDtos());
                     destDetails.setLocation(srcDest.getLocation());
                     destDetails.setLatitude(srcDest.getLatitude());
                     destDetails.setLongitude(srcDest.getLongitude());
@@ -872,7 +870,7 @@ public class TourServiceImpl implements TourService {
                         actTarget.setDestinationId(actSource.getDestinationId());
                         actTarget.setActivityName(actSource.getName());
                         actTarget.setActivityDescription(actSource.getDescription());
-                        actTarget.setActivitiesCategory(actSource.getActivitiesCategory());
+                        actTarget.setActivitiesCategory(actSource.getActivityCategoryDtos());
                         actTarget.setDurationHours(actSource.getDurationHours());
                         actTarget.setAvailableFrom(actSource.getAvailableFrom());
                         actTarget.setAvailableTo(actSource.getAvailableTo());

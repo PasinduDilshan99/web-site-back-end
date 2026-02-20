@@ -1,0 +1,11337 @@
+-- MySQL dump 10.13  Distrib 8.0.44, for macos15 (arm64)
+--
+-- Host: 127.0.0.1    Database: travelagencydb
+-- ------------------------------------------------------
+-- Server version	8.4.7
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `about_us_hero_section`
+--
+
+DROP TABLE IF EXISTS `about_us_hero_section`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `about_us_hero_section` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `image_url` varchar(255) NOT NULL,
+  `title` varchar(100) DEFAULT NULL,
+  `subtitle` varchar(100) DEFAULT NULL,
+  `description` text,
+  `primary_button_text` varchar(50) DEFAULT NULL,
+  `primary_button_link` varchar(255) DEFAULT NULL,
+  `secondary_button_text` varchar(50) DEFAULT NULL,
+  `secondary_button_link` varchar(255) DEFAULT NULL,
+  `status` int NOT NULL,
+  `order` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `status` (`status`),
+  CONSTRAINT `about_us_hero_section_ibfk_1` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `about_us_hero_section`
+--
+
+LOCK TABLES `about_us_hero_section` WRITE;
+/*!40000 ALTER TABLE `about_us_hero_section` DISABLE KEYS */;
+INSERT INTO `about_us_hero_section` VALUES (6,'Our Company','https://images.unsplash.com/photo-1589394815804-964ed0be2eb5','Discover Sri Lanka With Us','Your Local Travel Experts','We\'re a team of passionate Sri Lankans dedicated to showing you the real island - beyond the guidebooks.','Meet Us','/about-us','Get in Touch','/contact-us',1,1,'2026-02-19 19:02:19',1,'2026-02-19 19:02:19',NULL,NULL,NULL),(7,'Where We Go','https://images.unsplash.com/photo-1590212869245-5b2c09f1b70b','Magical Destinations','From Coast to Highlands','Explore ancient cities, wildlife parks, tea estates, and tropical beaches. Sri Lanka has it all.','All Destinations','/destinations','Popular Tours','/sri-lankan-tours',1,2,'2026-02-19 19:02:19',1,'2026-02-19 19:02:19',NULL,NULL,NULL),(8,'Our Tours','https://images.unsplash.com/photo-1549366021-9f761d450615','Journeys to Remember','Classic & Custom Tours','Choose from our signature tours or let us create a custom itinerary just for you.','View All Tours','/sri-lankan-tours','Best Packages','/packages',1,3,'2026-02-19 19:02:19',1,'2026-02-19 19:02:19',NULL,NULL,NULL),(9,'Special Offers','https://images.unsplash.com/photo-1579232088694-9a1cdc74b27f','Amazing Deals','Best Value Guarantee','Exclusive packages with great value. Early bird discounts and seasonal specials available.','View Packages','/packages','Terms Apply','/terms-and-conditions',1,4,'2026-02-19 19:02:19',1,'2026-02-19 19:02:19',NULL,NULL,NULL),(10,'Things to Do','https://images.unsplash.com/photo-1586696986435-23af6d3c5b08','Endless Adventures','Make Every Day Count','Wildlife safaris, surfing, hiking, cooking classes, cultural shows, and so much more.','All Activities','/activities','Travel Tips','/faq',1,5,'2026-02-19 19:02:19',1,'2026-02-19 19:02:19',NULL,NULL,NULL),(11,'Travel Information','https://images.unsplash.com/photo-1604329760661-e71dc83f8f26','Plan Perfectly','Everything You Need to Know','Visa requirements, best travel times, packing tips, and answers to common questions.','FAQs','/faq','Contact Support','/contact-us',1,6,'2026-02-19 19:02:19',1,'2026-02-19 19:02:19',NULL,NULL,NULL),(12,'Legal & Policies','https://images.unsplash.com/photo-1587486913049-53fe6b26295b','Travel With Confidence','Your Rights Protected','Clear terms, secure bookings, and your privacy matters to us. Read our policies before you travel.','Terms & Conditions','/terms-and-conditions','Privacy Policy','/privacy-policy',1,7,'2026-02-19 19:02:19',1,'2026-02-19 19:02:19',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `about_us_hero_section` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `accepted_payment_methods`
+--
+
+DROP TABLE IF EXISTS `accepted_payment_methods`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `accepted_payment_methods` (
+  `payment_method_id` int NOT NULL AUTO_INCREMENT,
+  `service_provider_id` int NOT NULL,
+  `method_type` varchar(50) NOT NULL,
+  `method_details` json DEFAULT NULL,
+  `is_available` tinyint(1) DEFAULT '1',
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`payment_method_id`),
+  KEY `service_provider_id` (`service_provider_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `accepted_payment_methods_ibfk_1` FOREIGN KEY (`service_provider_id`) REFERENCES `service_provider` (`service_provider_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `accepted_payment_methods_ibfk_2` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `accepted_payment_methods`
+--
+
+LOCK TABLES `accepted_payment_methods` WRITE;
+/*!40000 ALTER TABLE `accepted_payment_methods` DISABLE KEYS */;
+/*!40000 ALTER TABLE `accepted_payment_methods` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `accommodation`
+--
+
+DROP TABLE IF EXISTS `accommodation`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `accommodation` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `sub_title` varchar(255) DEFAULT NULL,
+  `description` text,
+  `icon_url` varchar(255) DEFAULT NULL,
+  `color` varchar(20) DEFAULT NULL,
+  `hover_color` varchar(20) DEFAULT NULL,
+  `link_url` varchar(255) DEFAULT NULL,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  `image_url` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_accommodation_status` (`status_id`),
+  CONSTRAINT `fk_accommodation_status` FOREIGN KEY (`status_id`) REFERENCES `accommodation_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `accommodation`
+--
+
+LOCK TABLES `accommodation` WRITE;
+/*!40000 ALTER TABLE `accommodation` DISABLE KEYS */;
+/*!40000 ALTER TABLE `accommodation` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `accommodation_status`
+--
+
+DROP TABLE IF EXISTS `accommodation_status`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `accommodation_status` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `common_status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_common_status` (`common_status_id`),
+  CONSTRAINT `fk_common_status` FOREIGN KEY (`common_status_id`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `accommodation_status`
+--
+
+LOCK TABLES `accommodation_status` WRITE;
+/*!40000 ALTER TABLE `accommodation_status` DISABLE KEYS */;
+INSERT INTO `accommodation_status` VALUES (25,'Available','Ready for bookings - rooms/villas available',1,'2026-02-19 19:11:41',1,'2026-02-19 19:11:41',NULL,NULL,NULL),(26,'Limited Availability','Only few rooms left - high demand period',1,'2026-02-19 19:11:41',1,'2026-02-19 19:11:41',NULL,NULL,NULL),(27,'Fully Booked','No vacancies for selected dates',1,'2026-02-19 19:11:41',1,'2026-02-19 19:11:41',NULL,NULL,NULL),(28,'Early Bird Special','Discounted rates for advanced bookings',1,'2026-02-19 19:11:41',1,'2026-02-19 19:11:41',NULL,NULL,NULL),(29,'Last Minute Deal','Special rates for upcoming dates',1,'2026-02-19 19:11:41',1,'2026-02-19 19:11:41',NULL,NULL,NULL),(30,'Seasonal Closure','Closed during off-season (monsoon period)',1,'2026-02-19 19:11:41',1,'2026-02-19 19:11:41',NULL,NULL,NULL),(31,'New Property','Recently added to our portfolio',1,'2026-02-19 19:11:41',1,'2026-02-19 19:11:41',NULL,NULL,NULL),(32,'Staff Pick','Recommended by our travel experts',1,'2026-02-19 19:11:41',1,'2026-02-19 19:11:41',NULL,NULL,NULL),(33,'Luxury Collection','Premium high-end accommodation',1,'2026-02-19 19:11:41',1,'2026-02-19 19:11:41',NULL,NULL,NULL),(34,'Budget Friendly','Affordable options for travelers',1,'2026-02-19 19:11:41',1,'2026-02-19 19:11:41',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `accommodation_status` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `achievements`
+--
+
+DROP TABLE IF EXISTS `achievements`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `achievements` (
+  `achievement_id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `color` varchar(7) DEFAULT NULL,
+  `hover_color` varchar(7) DEFAULT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `status_id` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`achievement_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `achievements_ibfk_1` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `achievements`
+--
+
+LOCK TABLES `achievements` WRITE;
+/*!40000 ALTER TABLE `achievements` DISABLE KEYS */;
+/*!40000 ALTER TABLE `achievements` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `achievements_images`
+--
+
+DROP TABLE IF EXISTS `achievements_images`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `achievements_images` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `achievement_id` int NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text,
+  `image_url` varchar(500) DEFAULT NULL,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `achievement_id` (`achievement_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `achievements_images_ibfk_1` FOREIGN KEY (`achievement_id`) REFERENCES `achievements` (`achievement_id`),
+  CONSTRAINT `achievements_images_ibfk_2` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `achievements_images`
+--
+
+LOCK TABLES `achievements_images` WRITE;
+/*!40000 ALTER TABLE `achievements_images` DISABLE KEYS */;
+/*!40000 ALTER TABLE `achievements_images` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `activities`
+--
+
+DROP TABLE IF EXISTS `activities`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `activities` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `destination_id` int NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text,
+  `activities_category` varchar(100) DEFAULT NULL,
+  `duration_hours` decimal(5,2) DEFAULT NULL,
+  `available_from` time DEFAULT NULL,
+  `available_to` time DEFAULT NULL,
+  `price_local` decimal(10,2) DEFAULT NULL,
+  `price_foreigners` decimal(10,2) DEFAULT NULL,
+  `min_participate` int DEFAULT NULL,
+  `max_participate` int DEFAULT NULL,
+  `season` varchar(255) DEFAULT NULL,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `destination_id` (`destination_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `activities_ibfk_1` FOREIGN KEY (`destination_id`) REFERENCES `destination` (`destination_id`),
+  CONSTRAINT `activities_ibfk_2` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=277 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `activities`
+--
+
+LOCK TABLES `activities` WRITE;
+/*!40000 ALTER TABLE `activities` DISABLE KEYS */;
+INSERT INTO `activities` VALUES (51,64,'Climb the Sigiriya Rock Fortress','Conquer the UNESCO-listed \'Lion Rock,\' a spectacular 5th-century fortress-palace. Ascend 1,200 steps past the iconic Lion\'s Paw gateway, ancient frescoes, and the Mirror Wall to explore the royal ruins atop the summit for breathtaking panoramic views.','7',2.50,'05:00:00','18:30:00',NULL,35.00,1,60,'All year',1,'2026-02-10 14:28:57',NULL,'2026-02-10 15:16:44',NULL,NULL,NULL),(52,64,'Visit the Sigiriya Museum','Begin your exploration at the state-of-the-art Sigiriya Museum to gain fascinating historical and archaeological context. Through detailed models, artifacts, and exhibits, understand the grandeur of King Kashyapa\'s citadel before your climb.','7',1.50,'06:00:00','18:00:00',NULL,6.00,1,12,'All year',1,'2026-02-10 14:39:07',NULL,'2026-02-10 15:16:44',NULL,NULL,NULL),(53,64,'Traditional Bullock Cart Ride','Experience the timeless rhythm of rural Sri Lanka with a gentle bullock cart ride through rustic village paths. This scenic journey offers a unique perspective on local life and the surrounding paddy fields.','7',0.50,'06:00:00','18:00:00',NULL,6.00,1,NULL,'All year',1,'2026-02-10 15:16:44',NULL,'2026-02-10 15:16:44',NULL,NULL,NULL),(54,64,'Boat Ride','Enjoy a tranquil catamaran ride on a peaceful village tank (lake). Glide across calm waters, taking in the serene natural beauty and birdlife—a perfect moment of relaxation.','3',0.50,'06:00:00','18:00:00',NULL,6.00,1,NULL,'All year',1,'2026-02-10 15:16:44',NULL,'2026-02-10 15:24:34',NULL,NULL,NULL),(55,64,'Village Life & Cooking Experience','Immerse yourself in authentic local culture. Visit a village home to participate in a hands-on traditional cooking demonstration, savor a delicious home-cooked meal, and interact with the community during a guided walk.','3',3.00,'06:00:00','18:00:00',NULL,30.00,1,NULL,'All year',1,'2026-02-10 15:16:44',NULL,'2026-02-10 15:22:19',NULL,NULL,NULL),(56,64,'Minneriya National Park Safari','Embark on an exciting jeep safari in Minneriya National Park, famous for \'The Gathering.\' Witness hundreds of Asian elephants congregating around the ancient tank, along with spotted deer, sambar, and abundant birdlife.','1',4.00,'06:00:00','18:00:00',NULL,85.00,1,NULL,'All year',1,'2026-02-10 15:16:44',NULL,'2026-02-10 15:22:19',NULL,NULL,NULL),(57,64,'Pidurangala Hike','Hike up the neighboring Pidurangala Rock for the most iconic view of Sigiriya. The moderate climb rewards you with an unparalleled vista, especially magical during sunset.','1',1.50,'06:00:00','18:00:00',NULL,5.00,1,NULL,'All year',1,'2026-02-10 15:16:44',NULL,'2026-02-10 15:25:28',NULL,NULL,NULL),(58,64,'Kayaking on Kalawewa Lake','Paddle across the vast, tranquil waters of the ancient Kalawewa Reservoir. This kayaking adventure offers a peaceful way to explore hidden corners, observe birds, and enjoy stunning views of the surrounding countryside.','7',2.00,'06:00:00','18:00:00',NULL,50.00,1,NULL,'All year',1,'2026-02-10 15:16:44',NULL,'2026-02-10 15:16:44',NULL,NULL,NULL),(59,64,'Explore Ritigala Forest Monastery','Discover the mystical ruins of Ritigala, an ancient forest monastery hidden in a biodiversity hotspot. Trek through serene jungle paths to explore stone pathways, meditation platforms, and monastic structures shrouded in legend.','11',3.00,'06:00:00','18:00:00',NULL,1.00,1,NULL,'All year',1,'2026-02-10 15:16:44',NULL,'2026-02-10 15:22:19',NULL,NULL,NULL),(60,64,'Trek Sanjeewani Mountain (Dolu Kanda)','Trek to the summit of Sanjeewani Mountain (Dolu Kanda), believed to be a fragment of the legendary Himalayan herb-bearing mountain. The trail offers a spiritual journey through diverse forest to a summit with sweeping views.','1',3.00,'06:00:00','18:00:00',NULL,0.00,1,NULL,'All year',1,'2026-02-10 15:16:44',NULL,'2026-02-10 15:22:19',NULL,NULL,NULL),(61,64,'Discover the Ridi Viharaya','Visit the historic \'Silver Temple,\' Ridi Viharaya, a cave temple complex founded in the 2nd century BC. Admire its exquisite Kandyan-era frescoes, carved ivory tusks, and serene Buddha statues nestled within rock caves.','11',1.50,'06:00:00','18:00:00',NULL,0.00,1,NULL,'All year',1,'2026-02-10 15:16:44',NULL,'2026-02-10 15:22:19',NULL,NULL,NULL),(62,64,'Marvel at the Aukana Buddha Statue','Stand in awe before the magnificent Aukana Buddha, a towering 12-meter (40-foot) free-standing granite statue carved in the 5th century. Renowned for its exquisite craftsmanship and precise proportions, it is a masterpiece of ancient Sinhalese rock carving.','11',1.50,'06:00:00','18:00:00',NULL,0.00,1,NULL,'All year',1,'2026-02-10 15:16:44',NULL,'2026-02-10 15:22:19',NULL,NULL,NULL),(63,64,'Visit Dolukanda Raja Maha Viharaya','Explore the sacred hilltop temple of Dolukanda, another site linked to the Sanjeewani legend. Climb to the temple to see ancient inscriptions, a reclining Buddha statue, and enjoy peaceful views over the forests and reservoirs below.','11',2.00,'06:00:00','18:00:00',NULL,0.00,1,NULL,'All year',1,'2026-02-10 15:16:44',NULL,'2026-02-10 15:22:19',NULL,NULL,NULL),(64,64,'Visit Pinnawala Elephant Orphanage (en route activity)','Experience one of the world\'s only elephant orphanages, dedicated to caring for abandoned, injured, and orphaned elephants. The highlight is watching the herd\'s daily walk to the river for a playful bath.','3',3.00,'08:30:00','17:30:00',NULL,16.00,1,NULL,'All Year',1,'2026-02-10 15:33:26',NULL,'2026-02-10 15:36:53',NULL,NULL,NULL),(65,64,'Hot Air Ballooning in Sigiriya','Experience a breathtaking sunrise flight over the Cultural Triangle. Float silently above the ancient Sigiriya Rock Fortress, lush jungles, and villages for unique aerial perspectives and wildlife spotting. Includes a champagne toast and flight certificate upon landing','1',3.00,'05:00:00','12:00:00',NULL,235.00,1,NULL,'All Year',1,'2026-02-10 15:42:13',NULL,'2026-02-10 15:42:13',NULL,NULL,NULL),(66,64,'Explore Dambulla Cave Temple','Visit the UNESCO-listed Golden Temple of Dambulla, the largest and best-preserved cave temple complex in Sri Lanka. Discover five sanctuaries housing over 150 stunning Buddha statues and intricate ceiling frescoes that date back to the 1st century BCE. The site offers panoramic views of the surrounding plains.','11',2.00,'07:30:00','17:00:00',NULL,10.00,1,NULL,'All Year',1,'2026-02-10 15:52:11',NULL,'2026-02-10 15:52:11',NULL,NULL,NULL),(67,65,'Temple of the Sacred Tooth Relic','A UNESCO World Heritage Site and one of Buddhism\'s most sacred shrines, housing the relic of the Buddha\'s tooth within a magnificent architectural complex.','11',1.50,'05:30:00','20:00:00',0.00,6.00,1,NULL,'Year-Round',1,'2026-02-10 19:35:38',NULL,'2026-02-10 19:38:01',NULL,NULL,NULL),(68,65,'Kandy Lake','A scenic, man-made lake in the heart of the city, built by the last king of Kandy. Ideal for a peaceful stroll offering beautiful views of the city and surrounding hills.','5',1.00,'06:00:00','18:00:00',0.00,0.00,1,NULL,'Year-Round',1,'2026-02-10 19:35:38',NULL,'2026-02-10 19:38:01',NULL,NULL,NULL),(69,65,'Traditional Kandy Cultural Show','A vibrant performance featuring traditional Kandyan and low-country dances, drumming, and thrilling fire-walking acts.','7',1.00,'17:00:00','18:00:00',1500.00,20.00,2,100,'Year-Round',1,'2026-02-10 19:35:38',NULL,'2026-02-10 19:38:01',NULL,NULL,NULL),(70,65,'Ceylon Gem Museum & Factory Visit','Tour a museum and workshop to learn about Sri Lanka\'s famous gemstones (like sapphires and rubies), see the cutting process, and browse certified jewelry.','7',1.00,'09:00:00','17:00:00',0.00,0.00,1,20,'Year-Round',1,'2026-02-10 19:35:38',NULL,'2026-02-10 19:38:01',NULL,NULL,NULL),(71,65,'Ceylon Batik Factory Visit','Discover the traditional wax-resist dyeing technique used to create colorful batik fabrics. Watch artisans at work and browse finished garments and crafts.','7',1.00,'09:00:00','17:00:00',0.00,0.00,1,20,'Year-Round',1,'2026-02-10 19:35:38',NULL,'2026-02-10 19:38:01',NULL,NULL,NULL),(72,65,'Spice Garden Visit','A guided tour of a lush herbal garden to discover Sri Lanka\'s world-famous aromatic spices, while learning about their traditional culinary and medicinal uses. Guests who wish to deepen their relaxation may choose to add an authentic Ayurvedic massage session.','7',1.00,'08:30:00','17:00:00',0.00,0.00,1,20,'Year-Round',1,'2026-02-10 19:35:38',NULL,'2026-02-12 13:24:44',NULL,NULL,NULL),(73,65,'Handicraft & Wood Carving Workshop','Visit a workshop to observe master craftsmen creating intricate wood carvings, sculptures, and traditional masks.','7',0.75,'09:00:00','17:00:00',0.00,0.00,1,15,'Year-Round',1,'2026-02-10 19:35:38',NULL,'2026-02-10 19:38:01',NULL,NULL,NULL),(74,65,'Kandy Central Market','A bustling local market where you can find fresh produce, spices, textiles, and handicrafts. A lively place to experience everyday life.','7',1.50,'06:00:00','18:00:00',0.00,0.00,1,NULL,'Year-Round',1,'2026-02-10 19:35:38',NULL,'2026-02-10 19:38:01',NULL,NULL,NULL),(75,65,'Ambakke Devalaya (Temple)','A unique 15th-century temple renowned for its exceptionally detailed and intricate wood carvings depicting mythical stories and designs.','11',1.00,'08:00:00','18:00:00',100.00,2.00,1,NULL,'Year-Round',1,'2026-02-10 19:35:38',NULL,'2026-02-10 19:38:01',NULL,NULL,NULL),(76,65,'Muthumariamman Kovil','A prominent Hindu temple in Kandy dedicated to Goddess Amman. Known for its colorful, ornate Dravidian-style architecture and vibrant religious festivals.','7',0.75,'06:00:00','19:00:00',0.00,0.00,1,NULL,'Year-Round',1,'2026-02-10 19:35:38',NULL,'2026-02-10 19:38:01',NULL,NULL,NULL),(77,65,'Hanthana Tea Museum','Located in a historic tea factory, this museum chronicles the history of Ceylon Tea with antique machinery and exhibits, often including a tea tasting.','7',1.50,'08:30:00','16:30:00',300.00,2.00,1,30,'Year-Round',1,'2026-02-10 19:35:38',NULL,'2026-02-10 19:38:01',NULL,NULL,NULL),(78,65,'Royal Botanical Garden, Peradeniya','One of the finest botanical gardens in Asia, spanning 147 acres. Famous for its orchid house, giant Javan fig tree, and vast collection of tropical plants.','5',2.50,'07:30:00','17:30:00',100.00,10.00,1,NULL,'Year-Round',1,'2026-02-10 19:35:38',NULL,'2026-02-10 19:38:01',NULL,NULL,NULL),(79,65,'Gadaladeniya Temple','A 14th-century rock temple built in the Gampola Kingdom, showcasing a fusion of South Indian and Sinhalese architectural styles on a scenic hilltop.','11',1.00,'08:00:00','18:00:00',50.00,1.00,1,NULL,'Year-Round',1,'2026-02-10 19:35:38',NULL,'2026-02-10 19:38:01',NULL,NULL,NULL),(80,65,'Lankathilaka Temple','An imposing 14th-century Buddhist temple built on a large rock, famous for its magnificent ancient frescoes, Buddha statues, and panoramic views.','11',1.00,'08:00:00','18:00:00',50.00,1.00,1,NULL,'Year-Round',1,'2026-02-10 19:35:38',NULL,'2026-02-10 19:38:01',NULL,NULL,NULL),(81,65,'Kandy View Point','A popular lookout (often Bahirawakanda or Arthur\'s Seat) offering a classic, elevated panoramic view of Kandy city, the lake, and the temple.','5',0.50,'06:00:00','18:00:00',0.00,0.00,1,NULL,'Year-Round',1,'2026-02-10 19:35:38',NULL,'2026-02-10 19:38:01',NULL,NULL,NULL),(82,65,'Udawaththa Kale Sanctuary','A serene forest reserve bordering the Temple of the Tooth, with walking trails through lush jungle, home to many bird species, monkeys, and flora.','3',1.50,'07:00:00','17:00:00',100.00,2.00,1,NULL,'Year-Round (Best Dry Season)',1,'2026-02-10 19:35:38',NULL,'2026-02-10 19:38:01',NULL,NULL,NULL),(83,65,'Bahirawakanda Temple (Big Buddha)','Home to a giant white Buddha statue seated on a hilltop, providing commanding views over Kandy. Reached by a climb of over 300 steps.','5',1.00,'06:00:00','20:00:00',0.00,0.00,1,NULL,'Year-Round',1,'2026-02-10 19:35:38',NULL,'2026-02-10 19:38:01',NULL,NULL,NULL),(84,65,'Nalanda Gedige','An ancient and unique stone temple dating back to the 8th-10th centuries, showcasing a remarkable blend of Hindu and Buddhist architecture.','11',1.00,'08:00:00','17:00:00',50.00,1.00,1,NULL,'Year-Round',1,'2026-02-10 19:35:38',NULL,'2026-02-10 19:38:01',NULL,NULL,NULL),(85,65,'Hanthana Mountain Range Hike','A hike through the scenic Hanthana range, offering trails of varying difficulty, beautiful vistas, and a cool climate.','6',3.50,'06:00:00','16:00:00',500.00,15.00,2,10,'Dry Season (Dec-Apr)',1,'2026-02-10 19:35:38',NULL,'2026-02-10 19:38:01',NULL,NULL,NULL),(86,65,'Hanthana Bird Park','An ornithological park dedicated to the conservation and display of a variety of Sri Lankan bird species in landscaped, naturalistic settings.','3',1.50,'09:00:00','17:00:00',300.00,5.00,1,NULL,'Year-Round',1,'2026-02-10 19:35:38',NULL,'2026-02-10 19:38:01',NULL,NULL,NULL),(87,65,'Katusu Konda Hike','A moderately challenging hike up Katusu Konda hill, rewarding climbers with excellent views of the Knuckles Mountain Range and surrounding valleys.','6',4.50,'06:00:00','16:00:00',500.00,20.00,2,8,'Dry Season (Dec-Apr)',1,'2026-02-10 19:35:38',NULL,'2026-02-10 19:38:01',NULL,NULL,NULL),(88,65,'Kandy Victoria Golf Club','An 18-hole, par-70 golf course set in a picturesque, hilly landscape. One of the oldest and most scenic golf courses in Sri Lanka.','1',4.50,'07:00:00','18:00:00',5000.00,80.00,1,4,'Year-Round',1,'2026-02-10 19:35:38',NULL,'2026-02-10 19:38:01',NULL,NULL,NULL),(89,65,'Ambuluwawa Tower Climb','A climb up the distinctive, multi-tiered conical tower at the Ambuluwawa Biodiversity Complex for 360-degree panoramic views.','1',2.00,'08:00:00','17:00:00',200.00,2.00,1,NULL,'Year-Round',1,'2026-02-10 19:35:38',NULL,'2026-02-10 19:38:01',NULL,NULL,NULL),(90,65,'Dambulla Cave Temple','A UNESCO World Heritage Site featuring five caves housing over 150 stunning Buddha statues and intricate ceiling frescoes dating back over 2,000 years.','11',2.00,'07:00:00','19:00:00',50.00,10.00,1,NULL,'Year-Round',1,'2026-02-10 19:35:38',NULL,'2026-02-10 19:38:01',NULL,NULL,NULL),(91,65,'Pinnawala Elephant Orphanage','A renowned conservation center caring for orphaned and injured elephants. Famous for the daily herd walk to the river for bathing.','3',3.00,'08:30:00','17:30:00',100.00,16.00,1,NULL,'Year-Round',1,'2026-02-10 19:35:38',NULL,'2026-02-10 19:38:01',NULL,NULL,NULL),(92,65,'Kandy Esala Perahera Festival','Witness Sri Lanka\'s grandest Buddhist festival a spectacular night procession of magnificently decorated elephants, traditional Kandyan dancers, drummers, whip crackers, and fire performers parading through Kandy\'s streets. The Sacred Tooth Relic casket, representing the living Buddha, is carried atop the main tusker. This UNESCO-recognized Intangible Cultural Heritage event dates back over 2,000 years and was originally performed to invoke blessings and timely rains.','7',4.00,'17:05:00','22:00:00',NULL,0.00,1,NULL,'August Only (Annual Festival)',1,'2026-02-12 13:35:13',NULL,'2026-02-12 13:35:13',NULL,NULL,NULL),(96,66,'Gregory Park with Pony Ride','A scenic lakeside park named after British Governor Sir William Gregory (1873). Enjoy a leisurely stroll along paved walkways, swan-shaped pedal boats, motorboats, and the main attraction—pony rides around the lake for children and adults. Multiple food stalls serve local snacks. Three phases with different entrance points.','5',1.75,'08:00:00','18:00:00',3.00,3.00,NULL,NULL,'Year-Round',1,'2026-02-12 19:50:16',1,'2026-02-12 19:50:16',1,NULL,NULL),(97,66,'Sri Bhaktha Hanuman Hindu Temple','A prominent Hindu temple in Ramboda dedicated to Lord Hanuman. Open with a midday closure. A peaceful spiritual site with traditional South Indian architecture.','7',0.75,'07:00:00','18:30:00',0.00,0.00,NULL,NULL,'Year-Round',1,'2026-02-12 19:50:16',1,'2026-02-12 19:50:16',1,NULL,NULL),(98,66,'Ramboda Waterfall','A series of four beautiful waterfalls along the Kandy-Nuwara Eliya road. Three are visible from the roadside; the fourth requires a short 500m walk/climb. Visitors can swim in the natural pools.','5',1.00,'07:00:00','18:00:00',0.70,0.70,NULL,NULL,'Year-Round',1,'2026-02-12 19:50:16',1,'2026-02-12 19:50:16',1,NULL,NULL),(99,66,'Labookellie Tea Garden & Factory','A guided tour of a working tea factory (Damro or Labookellie). Learn the tea production process from plucking to brewing, walk through rolling tea fields, and enjoy a complimentary tasting of authentic Ceylon tea. Tea-picking experience available at select factories.','7',1.50,'08:30:00','17:00:00',0.00,0.00,NULL,NULL,'Year-Round',1,'2026-02-12 19:50:16',1,'2026-02-12 19:50:16',1,NULL,NULL),(100,66,'Indian Food Dining','Authentic North Indian and South Indian cuisine at Indian Summer Restaurant, located near Gregory Lake. Open daily for lunch and dinner.','10',1.25,'10:00:00','22:00:00',5.00,5.00,NULL,NULL,'Year-Round',1,'2026-02-12 19:50:16',1,'2026-02-12 19:50:16',1,NULL,NULL),(101,66,'Ambewela Milk & Cheese Farm','Known as \"Little New Zealand,\" this picturesque dairy farm offers a guided farm tour, factory visit, and shopping for fresh dairy products including milk, cheese, yogurt, and butter. Eco-friendly architecture blending with the landscape.','5',1.25,'09:00:00','17:30:00',0.80,0.80,NULL,NULL,'Year-Round',1,'2026-02-12 19:50:16',1,'2026-02-12 19:50:16',1,NULL,NULL),(102,66,'Sitha Amman Kovil','A historic Hindu temple believed to be the site where Princess Sita was held captive by King Ravana, as described in the Ramayana. Features colorful statues and a sacred grove.','11',1.00,'07:00:00','19:00:00',0.00,0.00,NULL,NULL,'Year-Round',1,'2026-02-12 19:50:16',1,'2026-02-12 19:50:16',1,NULL,NULL),(103,66,'Hakgala Botanical Garden','A 27-hectare floral wonderland established in 1861 at 1,800m elevation. Features rose gardens, orchid house, fernery, Japanese garden, rockery, and arboretum with endemic trees. Best visited during March-April peak bloom.','5',2.50,'07:30:00','18:00:00',12.00,12.00,NULL,NULL,'Peak: Mar-Apr, Year-Round',1,'2026-02-12 19:50:16',1,'2026-02-12 19:50:16',1,NULL,NULL),(104,66,'Strawberry Farm Visit','A working strawberry farm in the cool highlands. Visitors can pick fresh strawberries, sample jams, preserves, and fresh juices, and purchase farm products.','10',1.00,'09:00:00','17:00:00',0.00,0.00,NULL,NULL,'Year-Round',1,'2026-02-12 19:50:16',1,'2026-02-12 19:50:16',1,NULL,NULL),(105,66,'Horton Plains National Park','A UNESCO World Heritage site and Sri Lanka\'s only cloud forest. Home to World\'s End (sheer 870m cliff), Baker\'s Falls, and unique biodiversity. Early morning start required for clear views.','3',4.50,'06:00:00','16:00:00',25.00,25.00,NULL,NULL,'Best Dec-Apr, Year-Round',1,'2026-02-12 19:50:16',1,'2026-02-12 19:50:16',1,NULL,NULL),(106,66,'Gayathri Amman Temple','A serene Hindu temple dedicated to Goddess Gayathri, featuring Dravidian architecture and peaceful surroundings for meditation and worship.','7',0.75,'06:00:00','20:00:00',0.00,0.00,NULL,NULL,'Year-Round',1,'2026-02-12 19:50:16',1,'2026-02-12 19:50:16',1,NULL,NULL),(107,66,'Divurumpola Temple','A historic Buddhist temple with Ramayana connections, believed to be the site where Princess Sita underwent the trial by fire. Sacred bodhi tree and ancient shrines.','11',1.00,'07:00:00','19:00:00',0.00,0.00,NULL,NULL,'Year-Round',1,'2026-02-12 19:50:16',1,'2026-02-12 19:50:16',1,NULL,NULL),(108,66,'Train Ride: Kandy to Nuwara Eliya','One of the world\'s most scenic railway journeys, winding through misty mountains, emerald tea plantations, waterfalls, and quaint stations. Ideal photography opportunity.','5',4.50,'06:00:00','18:00:00',3.00,10.00,NULL,NULL,'Year-Round',1,'2026-02-12 19:50:16',1,'2026-02-12 19:50:16',1,NULL,NULL),(109,67,'Scenic Train Ride: Nanu Oya to Ella (Ella Odyssey)','Experience one of the world\'s most scenic railway journeys through Sri Lanka\'s misty hill country. The Ella Odyssey is a special tourist train launched in 2022 with larger windows, scenic stops, and 10-minute photo breaks at Nine Arches Bridge. Operates weekends only (Saturday & Sunday).','5',7.50,'09:45:00','17:22:00',5000.00,7000.00,1,100,'Year-Round (Best Dec-May)',1,'2026-02-12 19:53:48',1,'2026-02-12 19:53:48',1,NULL,NULL),(110,67,'Nine Arches Bridge','A masterpiece of colonial-era railway construction, this iconic stone bridge is surrounded by dense greenery and offers magical moments when trains pass over. Hike through tea plantations and a tunnel to reach this Instagram-favorite landmark.','11',1.25,'06:00:00','18:00:00',0.00,0.00,1,100,'Year-Round (Best Dec-Apr)',1,'2026-02-12 19:53:48',1,'2026-02-12 19:53:48',1,NULL,NULL),(111,67,'Ravana Falls','A stunning 25-meter (82-foot) three-tiered waterfall associated with the Ramayana epic. Visitors can hike to the base, dip their feet in cool pools, photograph cascading waters, and enjoy snacks from local vendors. Open 24/7 with free entry.','5',1.50,'00:00:00','23:59:00',0.00,0.00,1,100,'Year-Round (Best Nov-Apr)',1,'2026-02-12 19:53:48',1,'2026-02-12 19:53:48',1,NULL,NULL),(112,67,'Ravana Cave','A legendary cave perched at 1,370m above sea level, believed to be where King Ravana held Princess Sita captive. Requires a 40-45 minute uphill trek with ~700 steps. Inside, dark chambers whisper stories of the Ramayana era.','6',1.75,'08:30:00','17:30:00',200.00,200.00,1,50,'Year-Round (Best Dec-Apr)',1,'2026-02-12 19:53:48',1,'2026-02-12 19:53:48',1,NULL,NULL),(113,67,'Tea Plantation Visit','Walk through emerald-green tea estates surrounding Ella, observe tea pluckers at work, and learn about Ceylon tea cultivation against a backdrop of rolling hills and misty valleys.','7',1.25,'06:00:00','18:00:00',0.00,0.00,1,100,'Year-Round (Best Dec-May)',1,'2026-02-12 19:53:48',1,'2026-02-12 19:53:48',1,NULL,NULL),(114,67,'Ella Swing Experience','The famous photo spot overlooking Ella Gap—a simple wooden swing with breathtaking panoramic views of the valley. Best visited during golden hour for iconic travel photographs.','5',0.50,'06:00:00','18:00:00',0.00,0.00,1,50,'Year-Round',1,'2026-02-12 19:53:48',1,'2026-02-12 19:53:48',1,NULL,NULL),(115,67,'Ravana Pool Club with Sundown Cocktails','Chill at a heated pool overlooking Ella\'s lush greenery. Package includes 2-3 hours free pool time, a three-course meal (starter, main, dessert), and 2 complimentary cocktails. Optional Ella Flying Ravana Zipline add-on. Pickup/drop-off within 10-mile radius included.','10',3.50,'10:00:00','22:00:00',0.00,45.00,2,20,'Year-Round',1,'2026-02-12 19:53:48',1,'2026-02-12 19:53:48',1,NULL,NULL),(116,67,'Bibilegama Village Experience','Immerse in authentic rural Sri Lankan life near Ella. Experience traditional village activities, interact with local families, and learn about community-based agriculture and crafts.','7',3.50,'08:30:00','16:30:00',0.00,30.00,2,15,'Year-Round',1,'2026-02-12 19:53:48',1,'2026-02-12 19:53:48',1,NULL,NULL),(117,67,'Little Adam\'s Peak Hike','An easy 30-45 minute hike to a stunning viewpoint overlooking Ella\'s lush valleys, tea plantations, and distant mountains. Well-marked trail suitable for all fitness levels. Perfect for sunrise or sunset.','6',1.25,'05:00:00','18:00:00',0.00,0.00,1,100,'Year-Round (Best Dec-Apr)',1,'2026-02-12 19:53:48',1,'2026-02-12 19:53:48',1,NULL,NULL),(118,67,'Ella Rock Hike','A challenging 2-3 hour trek through railway tracks, dense forests, and tea estates leading to a summit with 360-degree panoramic views of Ella town, valleys, and surrounding hills. Best started early morning.','6',4.50,'05:00:00','16:00:00',0.00,0.00,1,50,'Year-Round (Best Dec-Apr)',1,'2026-02-12 19:53:48',1,'2026-02-12 19:53:48',1,NULL,NULL),(119,67,'Ella Gap','The dramatic escarpment viewpoint offering sweeping vistas of the lowlands far below. Particularly magical at sunrise when mist fills the valley or at sunset with golden light. Often viewed from accommodation balconies or dedicated lookout points.','5',0.75,'05:30:00','18:30:00',0.00,0.00,1,100,'Year-Round',1,'2026-02-12 19:53:48',1,'2026-02-12 19:53:48',1,NULL,NULL),(120,67,'Udawalawe National Park Safari with Elephant Transit Home','Embark on an exciting jeep safari in Udawalawe National Park, home to approximately 500 elephants, leopards, water buffalo, crocodiles, and over 180 bird species. Includes visit to the Elephant Transit Home to watch orphaned baby elephants being bottle-fed from a viewing platform. Feeding times: 09:15, 12:15, 15:15.','3',4.50,'06:00:00','17:00:00',0.00,65.00,2,6,'Year-Round (Best Dry Season)',1,'2026-02-12 19:53:48',1,'2026-02-12 19:53:48',1,NULL,NULL),(121,67,'Train Ride: Ella to Nanu Oya','A scenic train segment through the heart of hill country, passing tea plantations, waterfalls, and misty valleys. Perfect for travelers continuing to Nuwara Eliya. Often included in multi-day tour packages.','5',3.50,'06:00:00','18:00:00',500.00,10.00,1,100,'Year-Round (Best Dec-May)',1,'2026-02-12 19:53:48',1,'2026-02-12 19:53:48',1,NULL,NULL),(122,67,'Train Ride: Kandy to Ella','The full legendary 7+ hour journey often hailed as the world\'s most scenic train ride. Passes through tunnels, tea-covered valleys, dramatic viewpoints around Haputale, and approaches the Nine Arches Bridge near Ella.','5',7.50,'05:30:00','16:00:00',1000.00,20.00,1,100,'Year-Round (Best Dec-May)',1,'2026-02-12 19:53:48',1,'2026-02-12 19:53:48',1,NULL,NULL),(123,68,'Buduruwagala Ancient Rock Temple','A magnificent 8th-10th century Mahayana Buddhist temple complex featuring seven colossal rock-cut Buddha statues carved into a 20-meter-high cliff face. The central Buddha statue stands 15 meters tall—one of the island\'s largest. The name means \"rock of carved images.\" A serene, off-the-beaten-path spiritual site surrounded by forest.','11',1.25,'08:00:00','17:00:00',NULL,NULL,NULL,NULL,'Year-Round',1,'2026-02-12 19:55:55',NULL,'2026-02-12 19:55:55',NULL,NULL,NULL),(124,68,'Yala National Park Safari','Sri Lanka\'s premier wildlife destination, home to the world\'s highest density of leopards. Embark on an exhilarating 4WD jeep safari across diverse landscapes—scrub jungles, rocky outcrops, freshwater lakes, and coastline. Spot leopards, sloth bears, Asian elephants, mugger crocodiles, water buffalo, spotted deer, sambur, jackals, mongooses, and over 200 bird species including peacocks, eagles, kingfishers, and hornbills. Morning safari: 04:30-05:30 pickup, park entry ~06:00. Afternoon safari: 13:30-14:30 pickup, park entry ~15:00.','3',4.50,'04:30:00','18:00:00',25.00,43.00,NULL,NULL,'Best Feb-Jun, Aug-Sep (Park may close Sept-Oct)',1,'2026-02-12 19:55:55',NULL,'2026-02-12 19:55:55',NULL,NULL,NULL),(125,68,'Hambantota Birds Park & Research Centre','Asia\'s largest bird park, spanning 35 acres with over 180 bird varieties and 3,200 birds, including endemic and exotic species. Features six exhibit areas: Wetlands, Wings of Asia, Flightless Birds, Macaw & Cockatoo Zone, and Parrot Paradise. Signature experience: Step inside large enclosures for close interaction—birds perch on your head, hands, and shoulders (separate ticket ~$3.30). Air-conditioned dining, buggy carts available. Supports conservation, research, and local employment.','3',2.50,'08:30:00','17:30:00',830.00,16.50,NULL,NULL,'Year-Round',1,'2026-02-12 19:55:55',NULL,'2026-02-12 19:55:55',NULL,NULL,NULL),(126,68,'Katharagama Hindu Temple (Kataragama Devalaya)','One of Sri Lanka\'s most sacred multi-faith pilgrimage sites, dedicated to God Skanda (Murugan/Kataragama Deviyo). Hindus, Buddhists, and Muslims worship here. The main shrine features intricate Dravidian architecture. Especially vibrant during July-August festival season with fire-walking ceremonies and kavadi performances.','7',1.25,'05:00:00','20:00:00',NULL,NULL,NULL,NULL,'Year-Round (Peak Jul-Aug)',1,'2026-02-12 19:55:55',NULL,'2026-02-12 19:55:55',NULL,NULL,NULL),(127,68,'Udawalawe National Park Safari with Elephant Transit Home','Combine a thrilling Udawalawe safari—famous for guaranteed wild Asian elephant sightings (500-600+ resident elephants)—with a visit to the Elephant Transit Home (ETH). Udawalawe offers open landscapes, fewer crowds than Yala, and excellent birdlife. ETH: Established 1995, rehabilitates orphaned/injured elephant calves for release. Feeding times: 09:15, 12:15, 15:15—watch baby elephants bottle-feed from viewing platform (no direct interaction). Perfect family-friendly wildlife day.','3',4.50,'06:00:00','18:00:00',40.00,85.00,NULL,NULL,'Year-Round (Elephants always visible)',1,'2026-02-12 19:55:55',NULL,'2026-02-12 19:55:55',NULL,NULL,NULL),(128,69,'Pearl Bay Theme Park','A popular family entertainment center in Bentota featuring a variety of amusement rides, water slides, and recreational activities. Ideal for families with children seeking fun and excitement beyond the beach.','5',2.50,'09:00:00','18:00:00',3000.00,15.00,1,50,'Year-Round',1,'2026-02-12 19:57:39',1,'2026-02-12 19:57:39',1,NULL,NULL),(129,69,'Kande Viharaya Temple','An 18th-century Buddhist temple complex housing a 48-meter-high seated Buddha statue—one of the tallest in the world. Features a 300-year-old Bodhi tree, colorful murals depicting Jataka stories, a small museum, and panoramic countryside views from the hilltop location. A serene spiritual site frequented by monks and devotees.','7',2.00,'06:00:00','20:00:00',0.00,0.00,1,100,'Year-Round',1,'2026-02-12 19:57:39',1,'2026-02-12 19:57:39',1,NULL,NULL),(130,69,'Lunuganga Estate','The magnificent country home and garden of Sri Lanka\'s most influential 20th-century architect and founder of tropical modernism. Wander through whimsical gardens blending Asian and European art, sculptures, and water features. Each corner reveals Bawa\'s artistic vision of seamless architecture-landscape integration.','11',1.50,'08:00:00','16:30:00',3000.00,15.00,1,30,'Year-Round',1,'2026-02-12 19:57:39',1,'2026-02-12 19:57:39',1,NULL,NULL),(131,69,'Sri Lankan Stilt Fishermen','Witness Sri Lanka\'s iconic traditional fishing method where fishermen perch on narrow stilts (petta) driven into the surf, casting lines into the waves. Once a practical livelihood, now a cultural spectacle best photographed at golden hour. Mostly staged for visitors today but remains an enduring symbol of Sri Lankan coastal heritage.','9',0.50,'05:30:00','18:00:00',0.00,0.00,1,50,'Year-Round',1,'2026-02-12 19:57:39',1,'2026-02-12 19:57:39',1,NULL,NULL),(132,69,'Water Sports Adventure Bundle','Sri Lanka\'s water sports capital! Thrill-seekers can enjoy jet skiing, banana boat rides, tube boating, scuba diving, snorkeling, windsurfing, kayaking, and deep-sea fishing. Top centers: Sunrise Water Sports, Club Inter Sport, Lanka Sportsreizen. Available at own expense through local operators.','2',3.00,'08:30:00','17:30:00',6000.00,30.00,1,20,'December-April',1,'2026-02-12 19:57:39',1,'2026-02-12 19:57:39',1,NULL,NULL),(133,69,'Kosgoda Turtle Hatchery','A dedicated sea turtle conservation center established in 1988, breeding and protecting endangered species including Olive Ridley, Hawksbill, Green, Loggerhead, and Leatherback turtles. Visitors tour incubation centers, view rescued adult and disabled turtles, and may release baby turtles into the ocean (typically after 6 PM). A meaningful, family-friendly conservation experience.','3',1.25,'08:30:00','18:30:00',1500.00,7.00,1,50,'Year-Round',1,'2026-02-12 19:57:39',1,'2026-02-12 19:57:39',1,NULL,NULL),(134,69,'Madu River Boat Safari','A scenic 1.5-2 hour boat safari through the Madu Ganga wetland estuary—a Ramsar Convention-protected wetland spanning 900 hectares with 64 islands. Glide through pristine mangrove tunnels, spot crocodiles, water monitors, monkeys, and exotic birds (kingfishers, herons). Stops include Cinnamon Island for traditional peeling demonstrations, a Buddhist monastery, and kraal fishing views.','3',1.75,'07:30:00','16:30:00',4000.00,20.00,2,8,'Year-Round',1,'2026-02-12 19:57:39',1,'2026-02-12 19:57:39',1,NULL,NULL),(135,69,'Madu River Fish Farm & Fish Therapy','A quirky, relaxing stop during the Madu River Safari. Experience fish therapy (fish foot massage) where tiny Garra rufa fish gently nibble dead skin from feet and hands. Located at floating fish farms along the river. A popular, Instagram-worthy indulgence.','8',0.50,'08:00:00','17:00:00',500.00,3.00,1,10,'Year-Round',1,'2026-02-12 19:57:39',1,'2026-02-12 19:57:39',1,NULL,NULL),(136,69,'Galle City Tour','Explore the UNESCO World Heritage-listed Galle Dutch Fort, a 16th-century fortified city founded by Portuguese and expanded by Dutch colonists. Walk along ancient ramparts with sweeping Indian Ocean views, visit the iconic Galle Lighthouse, Dutch Reformed Church, and colonial-era streets lined with cafes, boutiques, and galleries.','11',2.50,'08:30:00','17:30:00',0.00,0.00,1,50,'Year-Round',1,'2026-02-12 19:57:39',1,'2026-02-12 19:57:39',1,NULL,NULL),(137,69,'Moonstone Mines','Visit Sri Lanka\'s only natural moonstone mine in Meetiyagoda, approximately 30 minutes from Bentota. Witness traditional gem extraction methods and observe miners washing gravel to reveal shimmering moonstones with their characteristic blue \"schiller\" effect. Purchase genuine stones and jewelry at factory prices—often half retail value.','7',0.75,'08:30:00','17:00:00',0.00,0.00,1,20,'Year-Round',1,'2026-02-12 19:57:39',1,'2026-02-12 19:57:39',1,NULL,NULL),(138,69,'Relaxing on Bentota Beach','Unwind on Bentota\'s stunning coastline—golden sands fringed with swaying coconut palms, calm waves perfect for swimming. For a secret, crowd-free alternative, visit the Lunuganga Beach area near the Bentota River mouth. This local-favorite hidden gem offers pristine beach walks, simple sea swings and hammocks, spectacular river-meets-ocean sunset views, and authentic fishermen\'s coffee stalls serving King Coconut water.','5',2.00,'00:00:00','23:59:00',0.00,0.00,1,100,'December-April',1,'2026-02-12 19:57:39',1,'2026-02-12 19:57:39',1,NULL,NULL),(139,69,'Brief Garden','The artistic country estate of Geoffrey Bawa\'s elder brother, Bevis Bawa—a renowned landscape designer. A lush, whimsical garden filled with sculptures, exotic plants, and eccentric art collections. Less formal than Lunuganga, equally enchanting. Often combined with Lunuganga on the Geoffrey Bawa Architecture Tour.','5',1.00,'08:30:00','16:30:00',2000.00,10.00,1,30,'Year-Round',1,'2026-02-12 19:57:39',1,'2026-02-12 19:57:39',1,NULL,NULL),(140,70,'Sri Lankan Stilt Fishermen','Witness Sri Lanka\'s iconic traditional fishing method where fishermen perch on narrow stilts (petta) driven into the surf, casting lines into the waves. Once a practical livelihood, now a cultural spectacle best photographed at golden hour. Mostly staged for visitors today but remains an enduring symbol of Sri Lankan coastal heritage. Best viewed along the coast between Galle and Bentota.','9',0.50,'05:30:00','18:00:00',NULL,NULL,NULL,NULL,'Year-Round (Best Sunrise/Sunset)',1,'2026-02-12 20:00:32',NULL,'2026-02-12 20:00:32',NULL,NULL,NULL),(141,70,'Galle Dutch Fort City Walk','Explore the UNESCO World Heritage-listed Galle Fort, a 16th-century fortified city founded by the Portuguese (1587) and expanded by the Dutch (1640-1796). Walk along ancient ramparts with sweeping Indian Ocean views, discover cobblestone streets, colonial-era buildings, boutiques, and cafes. This comprehensive city walk includes the Old Gate (with VOC emblem), Dutch Reformed Church, National Museum, Old Post Office, and Library.','11',3.50,'08:00:00','18:00:00',NULL,NULL,NULL,NULL,'Year-Round',1,'2026-02-12 20:00:32',NULL,'2026-02-12 20:00:32',NULL,NULL,NULL),(142,70,'Galle National Museum','Housed in the oldest remaining Dutch building in Galle Fort (built 1656 as a commissariat store), this museum opened in 1986. Features three galleries: cottage industries (turtle shell jewellery, Beeralu lace weaving, traditional mask carving); Dutch period furniture and weaponry; and the \'Sri Lanka China Friendship Gallery\' dedicated to trade relations with China and monks Faxian and Zheng He.','11',1.00,'09:00:00','17:00:00',NULL,1500.00,NULL,NULL,'Year-Round',1,'2026-02-12 20:00:32',NULL,'2026-02-12 20:00:32',NULL,NULL,NULL),(143,70,'Galle Fort Post Office','One of Sri Lanka\'s first five post offices established in 1820, relocated to its current Dutch-era building (former Dutch Governor\'s residence and VOC Trade Office) in 1872. The building dates to the Dutch occupation and served as the official residence of the chief clerk and Administrator. An Archaeological Protected Monument (1974) within the UNESCO World Heritage site. The 1872 building features cabook (coral stone) construction and a columned portico.','11',0.50,'08:30:00','17:00:00',NULL,NULL,NULL,NULL,'Year-Round',1,'2026-02-12 20:00:32',NULL,'2026-02-12 20:00:32',NULL,NULL,NULL),(144,70,'Galle Library','Established in 1832, believed to be the oldest public library in Sri Lanka. Located next to the Dutch Reformed Church on Church Street within Galle Fort. Houses an extensive collection of over 7,500 valuable ancient books and rare manuscripts. Features English-language books donated by Velsen Public Library (Netherlands) through the sister city relationship. Visitors can access the collection for a small fee. Charming historical architecture and friendly volunteer staff.','11',0.50,'09:00:00','17:00:00',NULL,100.00,NULL,NULL,'Year-Round (Closed Sundays & Public Holidays)',1,'2026-02-12 20:00:32',NULL,'2026-02-12 20:00:32',NULL,NULL,NULL),(145,70,'Dutch Reformed Church (Groote Kerk)','One of Sri Lanka\'s oldest Protestant churches still in use, built by the Dutch in 1755 on the site of a Portuguese Capuchin Convent. Constructed in Doric style on the highest point in Galle Fort (12m above sea level). Features a hexagonal calamander wood pulpit, high pews for VOC officials, a 1760 organ from Colombo, and a floor paved with gravestones from Dutch cemeteries. The detached belfry (1701) stands across the road. Restored with Dutch Embassy funding; won a 2005 UNESCO Asia Pacific Heritage Award.','7',0.75,'09:00:00','17:00:00',NULL,NULL,NULL,NULL,'Year-Round',1,'2026-02-12 20:00:32',NULL,'2026-02-12 20:00:32',NULL,NULL,NULL),(146,70,'Galle Lighthouse','Sri Lanka\'s oldest light station. First lighthouse built by the British in 1848 (24.4m iron tower, destroyed by fire 1936). Current 26.5m concrete tower constructed in 1939, approximately 100m from original site. Located on the Point Utrecht Bastion of Galle Fort, 6m above road level. White cylindrical tower with balcony and lantern, focal height 28m, range 47 nautical miles. Fully automated, operated by Sri Lanka Ports Authority.','5',0.50,'06:00:00','18:00:00',NULL,NULL,NULL,NULL,'Year-Round',1,'2026-02-12 20:00:32',NULL,'2026-02-12 20:00:32',NULL,NULL,NULL),(147,70,'National Maritime Museum','Housed in a 1671 Dutch East India Company (VOC) warehouse embedded in the ancient city wall—a two-story long building with original VOC salt seals and British lion emblems. Damaged by 2004 tsunami (80% exhibits lost), rebuilt with Dutch government funding, reopened 2010 as \"National Maritime Archaeology Museum.\" Features artifacts from 20+ shipwrecks (porcelain, coins, wine glasses), model ships, marine ecological displays, tsunami education, and coastal erosion exhibits. Open Tuesday-Saturday.','11',1.25,'09:00:00','16:30:00',NULL,300.00,NULL,NULL,'Year-Round (Closed Sun-Mon)',1,'2026-02-12 20:00:32',NULL,'2026-02-12 20:00:32',NULL,NULL,NULL),(148,70,'Rumassala Temple (Sanjeewani Mountain)','A historic Buddhist temple in Unawatuna on Rumassala Hill (130m elevation) with panoramic Indian Ocean views. According to Ramayana legend, Hanuman dropped a piece of the Himalayan Sanjeewani mountain here while carrying it to heal Lakshmana. Features a large Buddha statue, several shrines, and a stupa. Believed to have healing powers; visited for spiritual solace and physical healing. Lush forest setting with walking trails to viewpoints and secluded beaches. Best visited during dry season (December-March).','7',1.75,'06:00:00','18:00:00',NULL,NULL,NULL,NULL,'Year-Round (Best Dec-Mar)',1,'2026-02-12 20:00:32',NULL,'2026-02-12 20:00:32',NULL,NULL,NULL),(149,70,'Ariyapala Mask Museum & Factory','A fifth-generation family enterprise preserving Sri Lanka\'s traditional mask carving heritage. Located in Ambalangoda (en route to Galle). Features Sri Lanka\'s only mask library dedicated to ancient plays and mask-making techniques. Watch master artisans carve and paint masks from poison nut tree wood. Collection includes hundreds-of-years-old masks meant to ward off evil spirits. Free entry (donation suggested). A national dying art form.','7',1.25,'08:30:00','17:30:00',NULL,NULL,NULL,NULL,'Year-Round',1,'2026-02-12 20:00:32',NULL,'2026-02-12 20:00:32',NULL,NULL,NULL),(150,70,'Moonstone Mines (Meetiyagoda)','Visit Sri Lanka\'s only natural moonstone mine in Meetiyagoda (approximately 7km inland from Hikkaduwa). Witness traditional 18th-century mining methods—narrow, hand-dug shafts 6-7m deep. Observe the fascinating process of filtering gravel to reveal shimmering moonstones with characteristic blue \"schiller\" effect. Purchase genuine stones at factory prices. Free entry, but expect sales pitch.','7',0.75,'08:30:00','17:00:00',NULL,NULL,NULL,NULL,'Year-Round',1,'2026-02-12 20:00:32',NULL,'2026-02-12 20:00:32',NULL,NULL,NULL),(151,70,'Turtle Hatchery - Hikkaduwa','A sea turtle conservation center protecting endangered species including Olive Ridley, Hawksbill, Green, Loggerhead, and Leatherback turtles. Visitors tour incubation centers, view rescued adult and disabled turtles, and may release baby turtles into the ocean (typically after 6 PM). A meaningful, family-friendly conservation experience.','3',1.25,'08:30:00','18:30:00',NULL,1500.00,NULL,NULL,'Year-Round',1,'2026-02-12 20:00:32',NULL,'2026-02-12 20:00:32',NULL,NULL,NULL),(152,70,'Madu River Boat Safari','A scenic 1.5-2 hour boat safari through the Madu Ganga wetland estuary—a Ramsar Convention-protected wetland spanning 900 hectares with 64 islands. Glide through pristine mangrove tunnels, spot crocodiles, water monitors, monkeys, and exotic birds (kingfishers, herons). Stops include Cinnamon Island for traditional peeling demonstrations, a Buddhist monastery, and kraal fishing views. One of Sri Lanka\'s most biodiverse river experiences.','3',1.75,'07:30:00','16:30:00',NULL,4500.00,NULL,NULL,'Year-Round',1,'2026-02-12 20:00:32',NULL,'2026-02-12 20:00:32',NULL,NULL,NULL),(153,70,'Water Sports in Unawatuna','Sri Lanka\'s premier beach destination for water-based adventure! Unawatuna offers calm, protected waters ideal for a full range of activities. Bundle includes: jet skiing, banana boat rides, tube boating, scuba diving, snorkeling, and deep-sea fishing. Crystal-clear waters, coral reefs, and abundant marine life. Multiple operators along the beach. Peak season (December-April) offers optimal conditions.','2',3.00,'08:30:00','17:30:00',NULL,9000.00,NULL,NULL,'Peak: Dec-Apr',1,'2026-02-12 20:00:32',NULL,'2026-02-12 20:00:32',NULL,NULL,NULL),(154,70,'Rumassala Sanjeewani Mountain Hike','Trek to the summit of Rumassala Hill (130m), believed to be a fragment of the legendary Himalayan herb-bearing mountain from the Ramayana. The trail winds through lush tropical forest with diverse wildlife—monkeys, birds, butterflies. Reward includes panoramic 360-degree views of Unawatuna Bay, Galle Fort, and the Indian Ocean. Connects to jungle beaches and walking trails. Best during dry season (December-March).','6',1.75,'06:00:00','16:00:00',NULL,NULL,NULL,NULL,'Year-Round (Best Dec-Mar)',1,'2026-02-12 20:00:32',NULL,'2026-02-12 20:00:32',NULL,NULL,NULL),(155,70,'Hambantota Birds Park (En Route)','Asia\'s largest bird park, spanning 35 acres with over 180 bird varieties and 3,200 birds, including endemic and exotic species. Features six exhibit areas: Wetlands, Wings of Asia, Flightless Birds, Macaw & Cockatoo Zone, and Parrot Paradise. Signature experience: Step inside large enclosures for close interaction—birds perch on your head, hands, and shoulders. Ideal en-route stop when traveling between Galle and Yala/Tangalle.','3',2.50,'08:30:00','17:30:00',NULL,5000.00,NULL,NULL,'Year-Round',1,'2026-02-12 20:00:32',NULL,'2026-02-12 20:00:32',NULL,NULL,NULL),(156,70,'Tangalle Beach','A stunning stretch of golden sand on Sri Lanka\'s southern coast, known for its tranquil atmosphere, turquoise waters, and swaying palm trees. Far less crowded than Bentota or Unawatuna. Popular for swimming, sunbathing, long coastal walks, and spectacular sunsets. Several luxury resorts and boutique hotels line the shore. Perfect for a relaxing finale to a southern circuit itinerary.','5',2.00,'00:00:00','23:59:00',NULL,NULL,NULL,NULL,'Peak: Dec-Apr',1,'2026-02-12 20:00:32',NULL,'2026-02-12 20:00:32',NULL,NULL,NULL),(157,71,'Whale Watching Safari','Embark on the world\'s premier blue whale watching experience. The waters off Mirissa offer a 90%+ sighting success rate between November and April for the largest animal on Earth—the magnificent blue whale (up to 30m, size of a Boeing 737). Also spot sperm whales, Bryde\'s whales, fin whales, pilot whales, and orcas. Ethical operators maintain 100m distance. Early morning departure ensures calm seas and best visibility. Includes hotel pickup, refreshments, and expert crew. Top operators report 98-99% success rates in peak season.','4',4.25,'05:30:00','12:00:00',NULL,65.00,1,NULL,'Peak: Nov–Apr (Off-season: May–Oct, tours pause)',1,'2026-02-12 20:01:21',1,'2026-02-12 20:01:21',NULL,NULL,NULL),(158,71,'Dolphin Watching','Often combined with whale watching tours. Spot playful pods of spinner dolphins, bottlenose dolphins, and striped dolphins performing acrobatic spins and jumps in their natural habitat. Best viewed during the same November-April season. Dolphins are frequently sighted alongside whales, making this a bonus experience on most whale watching safaris.','4',4.25,'05:30:00','12:00:00',NULL,0.00,1,NULL,'Peak: Nov–Apr',1,'2026-02-12 20:01:21',1,'2026-02-12 20:01:21',NULL,NULL,NULL),(159,71,'Surfing & Surf Lessons','Ride the waves at Mirissa Beach, a fantastic spot for beginner and intermediate surfers. The beach offers gentle rolling waves ideal for learning. Board rental available for 250-300 LKR per hour. Professional 1.5-hour surf lessons include board rental and practice time. For more consistent waves, Weligama Bay is just 10 minutes away.','2',1.50,'06:00:00','18:00:00',6.50,6.50,1,NULL,'Peak: Nov–Apr (Southwest coast)',1,'2026-02-12 20:01:21',1,'2026-02-12 20:01:21',NULL,NULL,NULL),(160,71,'Coconut Tree Hill','Mirissa\'s most Instagram-famous landmark—a red-earth private coconut plantation hill covered in perfectly symmetrical palm trees with the deep blue Indian Ocean as a backdrop. The contrast between orange soil, green palms, and turquoise water is breathtaking. Zero shade on the hill; red soil becomes slippery when dry or muddy when wet. Small juice stall at entrance sells fresh king coconut. **Sunrise (6:30-7:30 AM) is the only time to avoid crowds**.','5',0.75,'00:00:00','23:59:00',0.00,0.00,1,NULL,'Year-Round (Best Dec–Apr)',1,'2026-02-12 20:01:21',1,'2026-02-12 20:01:21',NULL,NULL,NULL),(161,71,'Mirissa City Night Walk','Experience Mirissa\'s laid-back yet vibrant evening atmosphere. The beachfront transforms with restaurants serving fresh seafood grills, cafes, and bars. Cocktail hour (6:00-10:00 PM) features some of Sri Lanka\'s cheapest drinks—cocktails from 300 LKR (~$1). Popular bars include Zephyr and Smirissa. Relaxed vibe, not a party scene. Perfect for sunset strolls and dinner by the sea.','5',1.50,'17:00:00','23:00:00',0.00,0.00,1,NULL,'Year-Round',1,'2026-02-12 20:01:21',1,'2026-02-12 20:01:21',NULL,NULL,NULL),(162,71,'Secret Beach','A hidden gem consisting of two secluded coves—the Lagoon (main beach) and Palm Cove—lined with palm trees and bushes. The Lagoon is calm, shallow, and protected by rocks, perfect for swimming and floating. Palm Cove is rockier with waves, ideal for strong swimmers and snorkeling (turtles, fish). Beach bar rents lounge chairs (500 LKR) and snorkeling equipment. Far less crowded than main beach, especially before 9:00 AM.','5',3.00,'06:00:00','18:00:00',1.65,0.00,1,NULL,'Year-Round (Best Dec–Apr)',1,'2026-02-12 20:01:21',1,'2026-02-12 20:01:21',NULL,NULL,NULL),(163,71,'Turtle Snorkeling','An unforgettable 1-hour guided snorkeling experience in Mirissa\'s crystal-clear waters. Swim alongside sea turtles (several species) on the seabed—many come up to the surface and swim right by you. Guides know exactly where to find turtles and are respectful of marine life. Also explore coral reefs teeming with colorful tropical fish. Underwater photos and videos (GoPro) provided free. Highly rated: 5.0/5 from 260+ reviews.','2',1.00,'07:00:00','16:00:00',NULL,25.00,1,NULL,'Year-Round (Best Dec–Apr)',1,'2026-02-12 20:01:21',1,'2026-02-12 20:01:21',NULL,NULL,NULL),(164,71,'Parrot Rock','The best 360-degree viewpoint in Mirissa. A small rocky mound connected to the shore by a natural bridge. Climb the staircase for panoramic views of Mirissa Beach, coastline, and ocean. Spectacular at sunrise and sunset. **Accessibility depends on tide**—low tide: dry walk; high tide: waist-high water crossing (caution: slippery rocks). No railings; requires care. Free attraction, easily combined with Coconut Tree Hill.','5',0.75,'00:00:00','23:59:00',0.00,0.00,1,NULL,'Year-Round (Best Dec–Apr)',1,'2026-02-12 20:01:21',1,'2026-02-12 20:01:21',NULL,NULL,NULL),(165,71,'Stilt Fishermen (Koggala)','Witness Sri Lanka\'s iconic traditional fishing method near Koggala, just a short drive from Mirissa. Fishermen perch on narrow stilts (petta) driven into the surf, casting lines without bait. Best photographed at sunrise (5:30 AM) or sunset. Mostly staged for visitors today but remains an enduring cultural symbol. Free to photograph; tip expected.','7',1.50,'05:30:00','19:30:00',0.00,0.00,1,NULL,'Year-Round (Best Sunrise/Sunset)',1,'2026-02-12 20:01:21',1,'2026-02-12 20:01:21',NULL,NULL,NULL),(171,71,'Deep Sea Fishing','Venture into the deep waters off Mirissa for an exciting fishing expedition. Target species include tuna, marlin, sailfish, barracuda, and trevally. Experienced crew provides all equipment, bait, and guidance. Catch and release or keep your haul—local restaurants will prepare your catch for dinner.','2',4.00,'05:30:00','14:00:00',NULL,75.00,2,NULL,'Peak: Dec–Apr',1,'2026-02-12 20:01:21',1,'2026-02-12 20:01:21',NULL,NULL,NULL),(172,71,'Relaxing on Mirissa Beach','Unwind on Sri Lanka\'s quintessential crescent-shaped beach. Golden sands fringed with coconut palms, calm turquoise waters. Open 24 hours, free entry. West end is quieter with charming inns and simple beachfront cafes. Perfect for sunbathing, swimming (check currents), reading, and spectacular sunsets. The original, unspoiled charm—no large chain hotels. Ideal for dazing, idling, and slow coastal living.','5',4.00,'00:00:00','23:59:00',0.00,0.00,1,NULL,'Peak: Dec–Apr',1,'2026-02-12 20:01:21',1,'2026-02-12 20:01:21',NULL,NULL,NULL),(173,71,'Water Sports Adventure Bundle','Experience the thrill of Mirissa\'s crystal-clear waters with our comprehensive water sports package. Choose from multiple exciting activities available at your own pace through local operators along Mirissa Beach:\n\n• **Jet Ski** (15-20 min): Thrilling ride along stunning coastline. Professional instructor, safety gear. Age 18+, comfortable swimming required. ($85)\n\n• **Banana Boat Ride** (15-20 min): Fun-filled inflatable ride pulled by speedboat—perfect for families and groups. Life jackets provided. ($20)\n\n• **Tube Boating** (15-20 min): Exciting inflatable tube towed behind speedboat. Bounce, spin, and splash across waves. Life jackets provided. ($20)\n\n• **Scuba Diving** (3 hours): Discover underwater worlds with certified instructors. Coral reefs, tropical fish, sea turtles. Beginner and certified dives available. All equipment included. ($55)\n\n• **Snorkeling** (1.5 hours): Explore vibrant coral reefs and marine life at your own pace. Crystal-clear waters, excellent visibility. Equipment rental available. ($20)\n\n• **Deep Sea Fishing** (4 hours): Venture into deep waters targeting tuna, marlin, sailfish. Experienced crew, all equipment provided. Local restaurants will prepare your catch. ($75)\n\nActivities priced individually—mix and match to create your perfect ocean adventure day! Best experienced during peak season (December-April) when seas are calmest.','2',4.00,'08:30:00','17:30:00',NULL,0.00,1,NULL,'Peak: Dec–Apr',1,'2026-02-13 17:55:32',1,'2026-02-13 17:55:32',NULL,NULL,NULL),(174,72,'Climb Mihintale & Visit Mihintalaya Temple','Ascend the sacred mountain where Buddhism was born in Sri Lanka in 247 BCE. Located 12km from Anuradhapura, climb 1,840 granite steps to reach ancient monasteries, white dagobas, and panoramic viewpoints. Key highlights include the Ambasthala Dagoba (white stupa marking the meeting spot of King Devanampiyatissa and monk Mahinda), the Kantaka Cetiya (2,200-year-old brick stupa with intricate elephant carvings), and the \"Aradhana Gala\" rock where Mahinda preached. The summit offers breathtaking 360° views of Anuradhapura\'s ruins and surrounding tropical forests.','11',3.00,'06:00:00','18:00:00',NULL,3.00,1,NULL,'Year-Round (Best Dec-Apr)',1,'2026-02-18 17:04:13',1,'2026-02-18 17:04:13',NULL,NULL,NULL),(175,72,'Jetavanaramaya','Explore one of the ancient world\'s tallest stupas, standing at 122 meters (400 ft) originally—the third tallest structure in the ancient world after the Egyptian pyramids. Built by King Mahasena (273-301 AD), this massive brick structure covers 5.6 hectares and required approximately 93.3 million baked bricks in its construction. The stupa enshrines a part of the Buddha\'s belt. The compound once housed 10,000 Buddhist monks. Today it stands at 71 meters after renovations. The engineering ingenuity—including bricks capable of withstanding 166kg loads and sophisticated stress distribution—represents a significant achievement in ancient Sri Lankan architecture.','11',1.25,'07:00:00','19:00:00',NULL,8.00,1,NULL,'Year-Round',1,'2026-02-18 17:04:13',1,'2026-02-18 17:04:13',NULL,NULL,NULL),(176,72,'Wilpattu National Park Safari','Embark on an authentic wildlife safari in Sri Lanka\'s largest national park (1,317 km²), established in 1938. Located approximately 30km from Anuradhapura, Wilpattu is renowned for its unique \"Willus\"—106 natural sand-rimmed lakes that attract diverse wildlife. The park offers the best opportunity in Sri Lanka to spot sloth bears and is home to approximately 40 Sri Lankan leopards (Panthera pardus kotiya), offering a 50% sighting success rate with experienced guides. Also inhabit Asian elephants, water buffalo, spotted deer, sambar, mugger crocodiles, and over 200 bird species including peacocks, painted storks, hornbills, and the endemic jungle fowl. The park remained closed for 16 years during the civil war (1983-2003), preserving its pristine wilderness.','3',5.00,'06:00:00','18:00:00',NULL,40.00,1,NULL,'Peak: Feb–Oct (Dry Season)',1,'2026-02-18 17:04:13',1,'2026-02-18 17:04:13',NULL,NULL,NULL),(177,72,'Abhayagiriya Dagaba','Visit one of the most extensive monastic ruins in the world, built during the reign of King Valagamba (1st century BC). The name means \"Hill of Protection\" or \"Fearless Hill.\" This massive stupa originally stood at 75 meters and was the centrepiece of a monastery housing 5,000 monks. The Abhayagiri Vihara was a seat of the Northern Monastery (Uttara Vihara) and a center for both Theravada and Mahayana Buddhist studies. The famous Chinese traveler Faxian (Fa Hsien) visited here in AD 412 and studied Buddhist scriptures. The site features elaborate bathing ponds, carved balustrades, moonstones, and fascinating bas-reliefs including an elephant pulling up a tree near the western stairway.','11',1.25,'07:00:00','19:00:00',NULL,8.00,1,NULL,'Year-Round',1,'2026-02-18 17:04:13',1,'2026-02-18 17:04:13',NULL,NULL,NULL),(178,72,'Ruwanwelisaya (Maha Thupa)','Marvel at one of the world\'s tallest ancient monuments, standing at 103 meters (338 ft) with a circumference of 290 meters (951 ft). Built by King Dutugamunu around 140 BC, this magnificent stupa enshrines the largest collection of the Buddha\'s relics—two quarts or one Dona—making it the most sacred stupa in Sri Lanka. The Mahavamsa contains a detailed account of its construction and grand opening ceremony. After being covered by wilderness for centuries, restoration began in the early 20th century with philanthropist Hendrick Appuhamy donating Rs 20 million (equivalent to ~$611 million today) in 1912. The final crowning ceremony took place on November 26, 2019. One of the \"Atamasthana\" (eight sacred places) and \"Solosmasthana\" (16 places of veneration).','11',1.25,'05:30:00','21:00:00',NULL,NULL,1,NULL,'Year-Round',1,'2026-02-18 17:04:13',1,'2026-02-18 17:04:13',NULL,NULL,NULL),(179,72,'Mirisawetiya Stupa','Discover the stupa built by King Dutugamunu after defeating King Elara (161-137 BC). According to legend, the king placed the Buddha\'s relics in his sceptre and went for a bath at Tissa Wewa, leaving the sceptre behind. Upon return, the sceptre could not be moved—a sign that led to building the stupa on that very spot. Another tradition holds that the king built it to atone for partaking a chili curry without offering it to the Sangha. The stupa originally stood on 50 acres. After multiple renovations and a dramatic collapse during ceremonies in 1987 (caught on camera with President Premadasa present), the present structure was rebuilt and unveiled in 1993, standing at 59 meters (192 ft) with a diameter of 43 meters (141 ft). One of the Atamasthana.','11',1.00,'07:00:00','19:00:00',NULL,8.00,1,NULL,'Year-Round',1,'2026-02-18 17:04:13',1,'2026-02-18 17:04:13',NULL,NULL,NULL),(180,72,'Thuparamaya','Visit the earliest documented Buddhist temple and the first stupa ever built in Sri Lanka, constructed by King Devanampiya Tissa (247-207 BC) at the request of Mahinda Thera following the introduction of Buddhism to the island. This sacred site enshrines the right collar-bone relic of the Buddha, presented by Emperor Ashoka. The original \"heap-of-paddy-rice\" shaped stupa was restored in 1862 to a conventional bell shape, now standing at 50.1 meters with a diameter of 18 meters. The surrounding vatadage features slender, capital-topped stone pillars—originally 176, of which 41 still stand—that once supported a conical roof. One of the Atamasthana and the most venerated pilgrimage sites in Sri Lanka.','11',1.00,'07:00:00','19:00:00',NULL,8.00,1,NULL,'Year-Round',1,'2026-02-18 17:04:13',1,'2026-02-18 17:04:13',NULL,NULL,NULL),(181,72,'Lowamahapaya (Brazen Palace)','Explore the ruins of what was once a magnificent nine-story palace, built by King Dutugamunu over 2,000 years ago. Known as the Brazen Palace (Lohaprasadaya) because its roof was covered with bronze tiles, this structure could accommodate 1,000 monks and attendants with their dining and resting quarters. Archaeological evidence suggests the original building had nine storeys. Today, 1,600 stone columns remain standing—all that is left of this architectural marvel after multiple rebuilds, the last by King Parakramabahu in the 12th century. The site lies between Ruwanwelisaya and Sri Maha Bodhi, offering a glimpse into ancient Sri Lankan architectural grandeur. One of the Atamasthana.','11',0.75,'07:00:00','19:00:00',NULL,8.00,1,NULL,'Year-Round',1,'2026-02-18 17:04:13',1,'2026-02-18 17:04:13',NULL,NULL,NULL),(182,72,'Kuttam Pokuna (Twin Ponds)','Admire the finest example of ancient Sinhalese hydrological engineering and architectural aesthetics. These well-preserved twin bathing ponds, part of the Abhayagiri Vihara complex, were built during the reign of King Aggabodhi I (575-608 AD). The larger southern pond measures 40m × 16m × 5.5m deep, while the smaller northern pond is 28m × 16m × 4.3m deep. Water was transported 3km through underground ducts from a rainwater reservoir, passing through sophisticated filter systems before entering the ponds. The ponds feature cut granite slabs, decorative punkalas (pots of abundance), Nāga sculptures, and intricate stone spouts. During 1950-55 restoration, a metal pot containing figurines of frog, tortoise, crab, fish, and a dancing woman was discovered.','11',0.75,'08:00:00','18:00:00',NULL,8.00,1,NULL,'Year-Round',1,'2026-02-18 17:04:13',1,'2026-02-18 17:04:13',NULL,NULL,NULL),(183,72,'Samadhi Pilimaya','Visit the famous Samadhi Buddha statue, one of the most iconic and serene Buddha images in Sri Lanka. This ancient statue, located within the Abhayagiri Vihara complex, depicts the Buddha in the Samadhi (meditation) posture. Carved from dolomite marble, the statue is renowned for its peaceful expression and exquisite craftsmanship, dating back to the 3rd or 4th century AD. It represents the highest achievement of ancient Sinhalese sculptural art and is a popular pilgrimage and meditation site. The original is now protected in a small shrine, with replicas found throughout Sri Lanka.','11',0.50,'07:00:00','19:00:00',NULL,8.00,1,NULL,'Year-Round',1,'2026-02-18 17:04:13',1,'2026-02-18 17:04:13',NULL,NULL,NULL),(184,72,'Sathmahal Prasada (Seven-Story Palace)','Explore the unique seven-story pyramidal structure, a distinctive architectural feature within the Abhayagiri Vihara complex. Unlike traditional Sri Lankan dagobas, this tiered monument resembles structures found in Thailand, Cambodia, and Myanmar, suggesting regional architectural influences. The purpose of Sathmahal Prasada remains a subject of scholarly debate—possibly a symbolic representation of Mount Meru, a relic house, or a meditation center. Each of the seven diminishing storeys features small chambers and decorative arches. A testament to ancient Sri Lanka\'s cultural connections with Southeast Asia.','11',0.50,'08:00:00','18:00:00',NULL,8.00,1,NULL,'Year-Round',1,'2026-02-18 17:04:13',1,'2026-02-18 17:04:13',NULL,NULL,NULL),(185,72,'Guard Stones (Muragala)','Discover the intricately carved guard stones (muragala) that stand sentinel at the entrances of ancient stupas, monasteries, and palaces throughout Anuradhapura. The finest examples are found at the Ratnaprasada (Jewel Palace) in the Abhayagiri complex, featuring a cobra king (Nagaraja) with a multi-hooded cobra canopy, holding a flower vase (punkalasa). Other guard stones depict dwarfs (gana) or pot-bellied figures symbolizing wealth and prosperity. These masterpieces of ancient Sinhalese stone carving served both protective and decorative functions, with distinct styles evolving over centuries.','11',0.50,'08:00:00','18:00:00',NULL,8.00,1,NULL,'Year-Round',1,'2026-02-18 17:04:13',1,'2026-02-18 17:04:13',NULL,NULL,NULL),(186,72,'Isurumuniya Temple','Visit the beautiful rock temple situated beside the Tissa Wewa reservoir, renowned for its exquisite rock carvings. Built by King Devanampiya Tissa (247-207 BC), Isurumuniya later became the residence of 500 high-caste children who were ordained as monks. The temple\'s most famous treasure is the \"Isurumuniya Lovers\" carving—a masterpiece of ancient Sinhalese art depicting a couple in loving embrace, believed to represent Prince Saliya and his low-caste love Asokamala. Other notable carvings include the royal family group and elephant pond with playful elephant sculptures. The temple also features natural rock caves with Brahmi inscriptions.','11',1.25,'08:00:00','18:00:00',NULL,5.00,1,NULL,'Year-Round',1,'2026-02-18 17:04:13',1,'2026-02-18 17:04:13',NULL,NULL,NULL),(187,73,'Polonnaruwa City Tour (Cycling Adventure)','Pedal through Sri Lanka\'s magnificent second capital, which flourished from the 11th–13th Century. Unlike Anuradhapura\'s predominantly religious sites, Polonnaruwa reveals the remains of multi-storey palaces, royal pavilions, and bathing ponds with changing rooms—all testament to the luxurious lifestyle of ancient royalty. Weave between Buddhist and Hindu temples, marvelling at flawless craftsmanship and artistry. Stop at roadside stalls for refreshing king coconut or hot pol roti snacks fresh off the hearth. This half-day cycling experience brings the splendours of the ancient city closer, transporting you to another time.','1',3.50,'07:00:00','17:00:00',NULL,30.00,1,NULL,'Year-Round (Best Dec-Apr)',1,'2026-02-18 17:05:48',1,'2026-02-18 17:05:48',NULL,NULL,NULL),(188,73,'King Parakramabahu Royal Palace (Vijayotpaya)','Explore the once-grand residence of King Parakramabahu the Great (1153-1186), which originally stood seven storeys tall—comparable in height to a 19th-century New York skyscraper. Named Vijayotpaya or \"Palace of God Sakra,\" reflecting the king\'s divine status. The Mahavamsa records 1,000 rooms (likely exaggerated), with evidence of rooms for rituals, entertainment, storage, and lodgings. Today, three levels of bricks remain, with equidistant holes that once held wooden beams delineating floors. South of the main palace, discover the king\'s audience hall and bathing pools. The palace may have been destroyed by fire.','11',1.25,'07:30:00','18:00:00',NULL,25.00,1,NULL,'Year-Round',1,'2026-02-18 17:05:48',1,'2026-02-18 17:05:48',NULL,NULL,NULL),(189,73,'Gal Viharaya (Rock Temple Complex)','Witness the finest examples of ancient Sinhalese rock carving and sculpting arts at this magnificent rock temple, originally named Uttararama (\"Northern Monastery\"). Fashioned in the 12th century by King Parakramabahu I, four Buddha statues are carved into a single 15-foot-deep excavated granite rock face—the only example in Sri Lanka of such extensive rock excavation for this purpose. The statues include: a 4.6m seated image in dhyana mudra on a lotus throne decorated with lion carvings; a 1.4m small seated figure inside the Vidyhadhara Guha (artificial cavern); a controversial 6.9m standing image (possibly depicting Ananda lamenting Buddha\'s demise or Buddha in para dukkha dukkhita mudra); and a magnificent 14.1m reclining image depicting parinirvana—one of Southeast Asia\'s largest sculptures. The rock face bears an inscription recording a code of conduct for monks drawn up by Parakramabahu I after purifying the Buddhist priesthood.','11',1.25,'07:30:00','18:00:00',NULL,25.00,1,NULL,'Year-Round',1,'2026-02-18 17:05:48',1,'2026-02-18 17:05:48',NULL,NULL,NULL),(190,73,'Lotus Pond (Ancient Nelum Pokuna)','Marvel at this exquisitely carved granite bathing pond, shaped like a blooming lotus flower—one of eight such ponds commissioned by King Parakramabahu for ritual purification before religious ceremonies. The larger flower diameter measures approximately 7.5 meters, with a smaller inner layer of 1.6 meters, descending in five concentric tiers like five eight-petalled lotus blossoms interlinked. So exquisite is this ancient design that Sri Lanka\'s National Performing Arts Centre used it as inspiration for the Colombo Lotus Tower Theatre.','11',0.50,'09:00:00','17:00:00',NULL,25.00,1,NULL,'Year-Round',1,'2026-02-18 17:05:48',1,'2026-02-18 17:05:48',NULL,NULL,NULL),(191,73,'Polonnaruwa Museum','Begin your journey through the ancient city at this essential archaeological museum, housing artefacts and exhibits that bring Polonnaruwa\'s golden age to life. Features a detailed scale model of the Polonnaruwa Council Chamber, displays of exquisite sculptures, ancient inscriptions, pottery, jewellery, and everyday objects from the 11th-13th centuries. Purchase your archaeological site tickets here and gain invaluable context before exploring the ruins.','11',1.25,'09:00:00','17:00:00',NULL,7.00,1,NULL,'Year-Round',1,'2026-02-18 17:05:48',1,'2026-02-18 17:05:48',NULL,NULL,NULL),(192,73,'Thivanka Image House','Enter one of the best-preserved image houses in Polonnaruwa, constructed by King Parakramabahu I (1153-1186) as part of the Jethavanarama Complex. Named \"Thivanka\" (\"three curves\") for its unique Buddha statue curved in three places—a rare artistic representation. The massive brick structure measures 67.6 feet wide and 133 feet long, with walls 7-12 feet thick (making interior space surprisingly small). Inside, discover remarkably well-preserved 12th-century frescoes depicting Jataka Stories (Buddha\'s previous births) and Devaaradhana—some of the few surviving Polonnaruwa-era paintings. The 6.6-meter Buddha statue originally stood 8 meters tall. Exterior walls feature Vamana (dwarf) sculptures and Vimana (heavenly) motifs. Note: shoes and hats off, no photography inside.','11',0.75,'07:30:00','18:00:00',NULL,25.00,1,NULL,'Year-Round',1,'2026-02-18 17:05:48',1,'2026-02-18 17:05:48',NULL,NULL,NULL),(193,73,'Rankoth Vehera','Admire the largest stupa in ancient Polonnaruwa and the fourth largest in Sri Lanka, standing 33 meters (108 feet) tall with a base circumference of 170 meters (550 feet). Built by King Nissanka Malla (1187-1196) following the Anuradhapura Maha Viharaya tradition, it closely resembles the Ruwanwelisaya—so much so that a nearby inscription originally named it \"Ruwanweli.\" The name Rankoth Vehera translates to \"Gold Pinnacled Stupa.\" Four large brick Vahalkadas (offering structures) support the stupa at cardinal points. The structure sits on a large square terrace surrounded by a brick wall, with four entrances oriented to the cardinal points accessed by sand paths. An inscription near one entrance records King Nissanka Malla personally observing and supervising construction.','11',0.75,'07:30:00','18:00:00',NULL,25.00,1,NULL,'Year-Round',1,'2026-02-18 17:05:48',1,'2026-02-18 17:05:48',NULL,NULL,NULL),(194,73,'Kiri Vehera (Kiri Dagoba)','Visit this pristine white stupa, one of the most revered in Polonnaruwa alongside Rankoth Vehera. The name \"Kiri\" means \"milk,\" referring to its gleaming white appearance. The stupa features an inscribed stone slab on its terrace, dating from King Nissanka Malla\'s reign (1191-1196 AD). The inscription, surrounded by an ornamental border of swans (hamsas) and foliage with a conventional crab and fish pattern framing the inner text, records the pavilion (kūḍama) from which the king worshipped the Buddhist relics enshrined within. Remains of stone pillars around the slab indicate it originally stood inside a pavilion structure similar to the one at Rankoth Vehera.','11',0.50,'07:30:00','18:00:00',NULL,25.00,1,NULL,'Year-Round',1,'2026-02-18 17:05:48',1,'2026-02-18 17:05:48',NULL,NULL,NULL),(195,73,'Nissanka Latha Mandapaya','Discover one of Polonnaruwa\'s most unique structures—an elevated stone platform with eight granite columns unlike any others found in Sri Lanka. Built by King Nissanka Malla (1187-1196) near the western entrance of the Dalada Maluva (the city\'s most sacred precinct), a nearby stone inscription identifies this as where the king listened to pirith (chanting of Buddhist scriptures). The eight columns (approximately 2.54 meters tall) are arranged in two rows of four and are elaborately carved to resemble lotus stems, curved in three places—a feature nowhere else seen in ancient Sri Lankan architecture. Crowns are carved as blossoming lotus buds. At the centre, flanked by columns, stands a small stone stupa (top portion destroyed) with a carved base. The platform is surrounded by a low stone wall with a single undecorated stone doorway.','11',0.50,'07:30:00','18:00:00',NULL,25.00,1,NULL,'Year-Round',1,'2026-02-18 17:05:48',1,'2026-02-18 17:05:48',NULL,NULL,NULL),(196,73,'Pothgul Viharaya (Library Shrine)','Explore the mysterious \"Pot-Gul Vehera\" (literally \"library shrine\"), a central shrine within a group of ruined buildings on raised sites inside a quadrangular mound once held by a brick rampart decorated with elephant head motifs. Located approximately one mile south of ancient Polonnaruwa, near the southern end of the Topa Wewa reservoir. The modern name may be a misnomer—no clear evidence confirms it was a monastic library. An inscription on a door-jamb records the vihara\'s original construction by King Parakramabahu I (1153-86), its rebuilding after his death by his chief queen Lilavati (who reigned as sovereign 1197-1200, 1209-10, 1211-12), and the addition of the mandapa by his sub-queen Candavati (possibly Rupavati in other sources). Excavated in 1906 by H.C.P. Bell.','11',1.00,'07:30:00','18:00:00',NULL,25.00,1,NULL,'Year-Round',1,'2026-02-18 17:05:48',1,'2026-02-18 17:05:48',NULL,NULL,NULL),(197,73,'Parakrama Samudraya (Sea of Parakrama)','Gaze upon the magnificent \"Sea of Parakrama\"—a vast ancient reservoir constructed by King Parakramabahu I that still serves its original purpose today. This colossal irrigation tank comprises three connected reservoirs: Topa Wewa, Dumbutulu Wewa, and Eramudu Wewa, with a combined capacity of 134 million cubic meters and a 14-kilometer bund. The king\'s famous declaration, \"Let not a drop of rain water go to the sea without benefiting man,\" reflects the advanced hydraulic civilization of ancient Sri Lanka. Today, the lake provides a stunning backdrop to the archaeological sites, with local farmers using its waters, birds flocking along its shores, and spectacular sunsets reflecting off its peaceful surface.','5',1.00,'00:00:00','23:59:00',NULL,NULL,1,NULL,'Year-Round',1,'2026-02-18 17:05:48',1,'2026-02-18 17:05:48',NULL,NULL,NULL),(198,74,'Jaffna City Cycling Tour','Explore the vibrant heart of Jaffna and its surrounds on two wheels with this guided cycling adventure. Pedal through the historic Jaffna Fort, a 17th-century Portuguese-built structure later expanded by the Dutch, offering stunning views of the Jaffna Lagoon from its ramparts. Visit the iconic Jaffna Public Library, once Asia\'s largest, which was burnt down in 1981 and has been rebuilt to its former glory. Cycle through coastal villages to observe local fishing life, stop for refreshing king coconut, and visit beautiful urban parks like Supramaniyam Park and Old Park. The tour typically includes a knowledgeable English-speaking local guide, bicycle rental (helmets available), bottled water, and a king coconut drink. A memorable way to experience Jaffna\'s unique Tamil culture, history, and everyday life.','1',3.75,'08:00:00','17:00:00',NULL,90.00,1,NULL,'Best: Jan–Sep (Dry season)',1,'2026-02-18 17:05:51',1,'2026-02-18 17:05:51',NULL,NULL,NULL),(199,74,'Nallur Kandaswamy Kovil','Visit one of the most significant Hindu temples in Sri Lanka, a vibrant and gold-embellished sanctuary dedicated to Lord Murugan (Kartikeya). The original temple was founded in 948 AD, with the current structure rebuilt in 1734 during the Dutch colonial era. Today, it stands as the largest Hindu temple complex in Sri Lanka, featuring ornately carved Dravidian architecture with four magnificent Gopurams (towering gateways), including the nine-storey \'Shanmuha Raja Gopuram\' unveiled in 2011. The temple pulses with devotional energy, especially during the annual 25-day Nallur Festival (usually in August), when the streets come alive with music, dance, and elaborate chariot processions. Visitors must dress modestly (legs covered, men bare-chested, women modest tops) and remove footwear before entering.','7',1.50,'06:00:00','19:00:00',NULL,NULL,1,NULL,'Year-Round (Festival: Aug)',1,'2026-02-18 17:05:51',1,'2026-02-18 17:05:51',NULL,NULL,NULL),(200,74,'Nagadeepa Purana Viharaya','Journey to the serene island of Nainativu to visit this ancient and sacred Buddhist temple, one of Sri Lanka\'s sixteen holiest shrines (Solosmasthana). According to the Mahavamsa chronicles, the Gautama Buddha himself visited this site after five years of attaining Enlightenment to settle a dispute between two warring Naga kings. The temple features a large stupa and is a major pilgrimage destination for Buddhists from across the country. The island is accessible by ferry, and the temple has a rich, complex history intertwined with the region\'s cultural and ethnic fabric. In a unique tradition, the Sri Lankan Navy facilitates the annual Katina Pinkama ceremony here. The peaceful atmosphere and profound spiritual significance make it a must-visit.','7',2.50,'06:00:00','18:00:00',NULL,NULL,1,NULL,'Year-Round',1,'2026-02-18 17:05:51',1,'2026-02-18 17:05:51',NULL,NULL,NULL),(201,74,'Keerimalai Hot Water Springs & Naguleswaram Temple','Experience a unique natural wonder at the Keerimalai Springs, located right next to the sea in the village of Keerimalai. Despite being mere meters from the ocean, this is a freshwater spring with water that is not hot, but cool and soothing. A large bathing tank has been constructed around the spring, separated from the sea by a wall. The water is believed by Hindus to have curative properties, flowing through carbonated rocks and acquiring therapeutic minerals. Adjacent to the springs is the ancient Naguleswaram Kovil, one of the Pancha Ishwarams (five abodes of Shiva) and a significant Hindu shrine with legends linking it to the Ramayana, where Lord Rama is said to have bathed here to absolve sins after the war with Ravana. A sacred and refreshing spot with a holiday atmosphere.','7',1.50,'06:00:00','18:00:00',NULL,NULL,1,NULL,'Year-Round',1,'2026-02-18 17:05:51',1,'2026-02-18 17:05:51',NULL,NULL,NULL),(202,74,'Kadurugoda Viharaya (Chunnakam Stupas)','Discover one of the most unique and ancient Buddhist archaeological sites in the Jaffna Peninsula, located in Kandarodai, Chunnakam. The site is remarkable for its collection of around 20 miniature gray coral stone stupas (originally around 60), ranging from one to three meters in height, scattered across a small area. This architecture is unlike any other in Sri Lanka, lacking the traditional square-shaped parts above the dome and having umbrella-shaped fixed pinnacles. Excavations in 1917 unearthed artifacts dating back over two thousand years, and it\'s believed the site could be from the Anuradhapura period, possibly containing the relics of 60 Arhat Bhikkhus. A fascinating and peaceful site of immense historical importance, now maintained by the Sri Lankan army.','11',1.25,'08:00:00','17:00:00',NULL,NULL,1,NULL,'Year-Round',1,'2026-02-18 17:05:51',1,'2026-02-18 17:05:51',NULL,NULL,NULL),(217,75,'Water World Kelaniya','Sri Lanka\'s first and largest public aquarium and bird park, located on the banks of the Kelani River. Features over 500 species of marine and freshwater fish, including a 25-meter underwater tunnel where visitors can walk through and see sharks, rays, and exotic fish swimming around them. Other highlights include the Shark Dome, Live Diving Shows (11:00 AM, 2:00 PM, 4:00 PM), Boat Yard with maritime replicas, and a Touch Pool for hands-on interaction with starfish, sea cucumbers, and crabs. The adjacent Bird Park houses over 2,000 birds of more than 200 species, with interactive feeding opportunities for lories, macaws, conures, and cockatoos. On-site dining offers local and international cuisine. Located 17km from Colombo.','3',3.50,'09:00:00','18:00:00',2.50,10.00,1,NULL,'Best: Mar-May',1,'2026-02-18 17:08:11',1,'2026-02-18 17:08:11',NULL,NULL,NULL),(218,75,'Royal Colombo Golf Club','The oldest golf club in Sri Lanka, established on 13 March 1879, and one of the oldest in Asia. This 18-hole course (Par 71 men, Par 72 ladies) spans 6,560 yards with Tifeagle Greens and Cow Grass fairways. Originally played at Galle Face Green, it moved to its current location at Model Farm Road in 1896 on land donated by philanthropist Sir Charles Henry de Soysa. King George V bestowed a royal charter in 1928, allowing the use of the \"Royal\" prefix. The clubhouse served as HMS Anderson during WWII, housing Royal Navy codebreakers. Home to the Sri Lanka Golf Union and maintains links with The Royal and Ancient Golf Club of St Andrews. Course record: Men 63, Ladies 67.','1',4.50,'06:00:00','18:00:00',NULL,NULL,1,NULL,'Year-Round',1,'2026-02-18 17:08:11',1,'2026-02-18 17:08:11',NULL,NULL,NULL),(219,75,'Lotus Tower (Colombo Lotus Tower)','The tallest self-supported structure in South Asia, standing at 350 meters (1,155 feet) and the 11th tallest tower in Asia. Inspired by the lotus flower, Sri Lanka\'s national symbol, the tower serves as a communication, observation, and leisure hub. Features include an observation deck with panoramic views of Colombo, Beira Lake, and the Indian Ocean; a revolving restaurant (opening March 2026); a 9D cinema; a digital museum; and e-sports centers. The tower functions as a broadcasting antenna for 50 TV services, 35 FM radio stations, and 20 telecommunication providers. Visible from all over Colombo, with four entrances and a planned water park at its base.','5',2.50,'14:00:00','22:00:00',6.50,6.50,1,NULL,'Year-Round',1,'2026-02-18 17:08:11',1,'2026-02-18 17:08:11',NULL,NULL,NULL),(220,75,'One Galle Face Mall','Sri Lanka\'s largest and most luxurious shopping mall, set against the panoramic backdrop of the Indian Ocean. Features a wide variety of shops catering to both high-end and budget shoppers, numerous restaurants, a food court in the basement, a 9-screen cinema, a kids\' play area, and specialty shops. Directly connected to the Shangri-La Hotel and adjacent to Galle Face Green. Popular weekend hangout with pop-up shops and vibrant atmosphere. Clean facilities, large parking area (reasonable fees), and home to Spa Ceylon stores and a supermarket in the basement for souvenirs.','5',2.50,'10:00:00','22:00:00',NULL,NULL,1,NULL,'Year-Round',1,'2026-02-18 17:08:11',1,'2026-02-18 17:08:11',NULL,NULL,NULL),(221,75,'Colombo National Museum','Sri Lanka\'s largest museum, established in 1877 by British colonial Governor Sir William Henry Gregory, with a new wing added in 1980. This double-storied white colonial building houses the country\'s most extensive collection of historical artifacts. The crown jewel is the \"Zheng He Stele\" (Galle Trilingual Inscription), a 1.45m tall stone tablet from 1409 inscribed in Chinese, Tamil, and Persian, recording offerings made by the famous Chinese admiral. Other highlights include the throne and crown of the Kandyan kings, ancient Buddhist sculptures, royal regalia, traditional masks, jewelry, weapons, and a remarkable collection of Chinese Ming dynasty porcelain. Features 16 themed galleries, a natural history section, and a research library with over 500,000 volumes.','11',2.50,'09:00:00','17:00:00',NULL,10.00,1,NULL,'Year-Round',1,'2026-02-18 17:08:11',1,'2026-02-18 17:08:11',NULL,NULL,NULL),(222,75,'Gangaramaya Buddhist Temple','One of Colombo\'s most important and eclectic Buddhist temples, established in the late 19th century by the renowned scholar monk Hikkaduwe Sri Sumanagala Nayaka Thera. The complex includes the main shrine hall, the Simamalaka Shrine (designed by renowned architect Geoffrey Bawa), a vocational training center, a residential hall, a stupa, a library, and a museum. The main hall houses a large seated Buddha surrounded by disciples, with colorful murals depicting the Life of the Buddha. The Simamalaka Shrine is a masterpiece of modern architecture—a square pyramidal blue roof resting on an open tapered timber structure, situated on three island plinths over Beira Lake, connected by a timber walkway featuring a Buddha footprint from Myanmar. The temple museum contains an eclectic collection of antiques, gems, and artifacts from around the world.','7',1.50,'06:00:00','20:00:00',NULL,NULL,1,NULL,'Year-Round',1,'2026-02-18 17:08:11',1,'2026-02-18 17:08:11',NULL,NULL,NULL),(223,75,'Viharamahadevi Park & Green Path','Colombo\'s oldest and largest public park, originally named Victoria Park during British rule, later renamed after Queen Viharamahadevi, mother of the legendary King Dutugamunu (161-137 BCE). The land was gifted in the 19th century by philanthropist Sir Charles Henry de Soysa. Features include a gigantic golden Buddha statue (Buddharupa), a Cenotaph War Memorial honoring those lost in both World Wars, a BAC Jet Provost aircraft (former RAF trainer), fountains, a mini-zoo, a children\'s playground, and the Colombo Public Library. During WWII, the park was occupied by the Australian 17th Brigade. Reopened to the public in 1951. Green Path is the vibrant pedestrian pathway bordering the park, lined with street vendors selling handicrafts, souvenirs, fresh fruit, and local snacks.','5',1.50,'06:00:00','18:00:00',NULL,NULL,1,NULL,'Year-Round',1,'2026-02-18 17:08:11',1,'2026-02-18 17:08:11',NULL,NULL,NULL),(224,75,'Colombo Fort Bazaar (Pettah Market)','Experience the vibrant chaos of Colombo\'s historic commercial heart. The Fort neighborhood is a living museum of colonial architecture, once the site of a Portuguese/Dutch fort. Today, amidst modern buildings, stand preserved structures like the Old Colombo Dutch Hospital (now a dining/shopping complex), the distinguished Cargills and Millers building on York Street, and the old Clocktower (formerly a lighthouse in the mid-1800s). Adjacent Pettah is a bustling bazaar district where controlled chaos reigns. The famous Pettah Market offers everything imaginable—jewelry, gold, textiles, Ayurvedic herbs, fresh produce, electronics, toys, and handicrafts. Bargaining is expected. The area is also home to the iconic Jami Ul-Alfar Mosque and the historic Wolvendaal Church.','7',2.50,'08:00:00','19:00:00',NULL,NULL,1,NULL,'Year-Round',1,'2026-02-18 17:08:11',1,'2026-02-18 17:08:11',NULL,NULL,NULL),(225,75,'Red Mosque (Jami Ul-Alfar Mosque) & Dutch Museum','Red Mosque: One of Colombo\'s most iconic landmarks, this historic mosque was built in 1909 by the local Indian Muslim community. Its distinctive red-and-white candy-striped facade, designed by unlettered architect Habibu Lebbe Saibu Lebbe based on Indo-Saracenic styles, made it a landmark for sailors approaching Colombo port. The two-storey building features a clock tower and can accommodate 10,000 worshippers after expansions in 1975. Located on Second Cross Street in Pettah, it remains one of Sri Lanka\'s oldest mosques. Dutch Museum: Housed in a magnificent 17th-century Dutch urban house, built between 1692-1697 as the official residence of Dutch Governor Thomas Van Rhee. During British rule, it served as an army hospital armory, police training center, and Pettah Post Office. Restored in 1977 with Dutch government assistance, it now displays over 3,000 artifacts from the Dutch colonial period (1658-1796), including furniture, ceramics, weapons, coins, and documents.','11',1.75,'09:00:00','17:00:00',NULL,NULL,1,NULL,'Year-Round',1,'2026-02-18 17:08:11',1,'2026-02-18 17:08:11',NULL,NULL,NULL),(226,75,'Arcade Independence Square','A stylish lifestyle and shopping complex housed in beautifully restored colonial-era buildings that once served as the Royal College (formerly Colombo Academy). The architecture retains its British colonial charm with white-washed walls, verandas, and courtyards, now transformed into upscale boutiques, restaurants, cafes, and offices. The complex is built around Independence Square, site of the Independence Memorial Hall, where Sri Lanka\'s declaration of independence from Britain was read on February 4, 1948. The memorial hall, surrounded by lion statues, is modeled on the Magul Maduwa (Royal Audience Hall) of Kandy. The arcade is a popular spot for dining, shopping, photography, and evening strolls, beautifully illuminated at night.','7',1.50,'10:00:00','22:00:00',NULL,NULL,1,NULL,'Year-Round',1,'2026-02-18 17:08:11',1,'2026-02-18 17:08:11',NULL,NULL,NULL),(227,75,'Galle Face Green','Colombo\'s most famous oceanside promenade, a long stretch of lawn facing the Indian Ocean. Originally laid out in 1859 by Governor Sir Henry George Ward for horse racing and golf (the Royal Colombo Golf Club originated here). Today, it\'s a beloved public space where families gather, couples stroll, and friends fly kites, play cricket, or enjoy impromptu picnics. Street vendors sell isso wade (prawn fritters), kottu roti, corn on the cob, and fresh king coconut. The promenade comes alive at sunset and on weekends. Adjacent is the historic Galle Face Hotel (built 1864), one of Asia\'s grand colonial hotels, whose past guests include Arthur C. Clarke, Carrie Fisher, Yuri Gagarin, Indira Gandhi, and Richard Nixon.','5',1.50,'00:00:00','23:59:00',NULL,NULL,1,NULL,'Year-Round',1,'2026-02-18 17:08:11',1,'2026-02-18 17:08:11',NULL,NULL,NULL),(228,75,'Colombo Shopping Experience','Discover Colombo\'s diverse shopping landscape, from luxury malls to vibrant street markets. One Galle Face Mall offers international brands and high-end dining. Liberty Plaza and Majestic City provide mid-range retail options. Odel (Alexandra Place) is Sri Lanka\'s most famous local lifestyle store, offering clothing, accessories, souvenirs, and homeware. House of Fashion and Laksala (government-handicraft emporium) offer traditional crafts and souvenirs at fixed prices. Pettah Market provides chaotic, colorful bargain hunting. Barefoot (Galle Road) showcases local art, handloom textiles, and books. Paradise Road offers designer homeware and gourmet food. Spa Ceylon outlets (multiple locations) sell Ayurvedic wellness products and cosmetics.','7',3.00,'10:00:00','20:00:00',NULL,NULL,1,NULL,'Year-Round',1,'2026-02-18 17:08:11',1,'2026-02-18 17:08:11',NULL,NULL,NULL),(229,75,'Pubs & Clubs in Colombo','Experience Colombo\'s vibrant nightlife scene. Popular venues include: The Colony (Rooftop bar, Royal Colombo Golf Club), Sky Lounge (Cinnamon Grand), Manchester Pub (Cinnamon Grand, classic British pub), Rileys Pub (Hilton Colombo, live sports), The Pub (Kollupitiya), Thistle (Passivono Lounge), Rhythm & Blues (Crescat Boulevard, live music), La Voile Noire (French restaurant by night, lounge vibe), Clique (Kollupitiya, trendy bar), Gypsy (Dutch Hospital, craft beer), The Bavarian German Restaurant & Bar (Dutch Hospital), and The Library (Kollupitiya, speakeasy-style cocktail bar). Many hotels feature sophisticated lounges and nightclubs like Cloud Red (Kingsbury).','10',3.00,'18:00:00','23:59:00',NULL,NULL,1,NULL,'Year-Round',1,'2026-02-18 17:08:11',1,'2026-02-18 17:08:11',NULL,NULL,NULL),(230,75,'Kelaniya Raja Maha Viharaya','One of the most venerated Buddhist temples in Sri Lanka, located approximately 11km from Colombo on the banks of the Kelani River. According to Buddhist chronicles, the Buddha visited the site during his third visit to Sri Lanka, 2,500 years ago, at the invitation of King Maniakkika. The temple has been a royal patronage site for centuries, with King Devanampiya Tissa (3rd c. BC) building the original stupa. The current buildings date largely from the 18th-19th centuries. The temple is renowned for its exquisite 18th-century Kandyan-era paintings on the walls and ceilings of the image house, depicting Jataka tales (stories of Buddha\'s previous births) and scenes from Buddhist history. The reclining Buddha image and the sacred Bo tree are major pilgrimage attractions. The annual Duruthu Maha Perahera (January) is a spectacular procession with elephants, dancers, and drummers.','7',1.25,'06:00:00','20:00:00',NULL,NULL,1,NULL,'Year-Round',1,'2026-02-18 17:08:11',1,'2026-02-18 17:08:11',NULL,NULL,NULL),(231,76,'Climb the Sacred Peak (Night Ascent)','Embark on a physically challenging yet deeply rewarding night climb of Adam\'s Peak (Sri Pada), a 2,243-meter (7,359 ft) conical mountain sacred to Buddhists, Hindus, Muslims, and Christians. The traditional ascent begins around 2:00 AM to reach the summit by sunrise. The well-maintained path features approximately 5,200-5,500 uneven stone steps winding through tea plantations and lush forests illuminated by a necklace of lights during peak season. Numerous stalls along the way sell water, snacks, and even cold-weather gear. The lower section passes the Maha Saman Dewalaya shrine, dedicated to the guardian deity of the mountain. The climb requires moderate to good physical fitness, sturdy footwear, a flashlight/headlamp, and warm clothing for the cool summit temperatures.','6',4.50,'01:30:00','06:00:00',NULL,NULL,1,NULL,'Peak Pilgrimage: Dec–Apr (Best weather)',1,'2026-02-18 17:08:15',1,'2026-02-18 17:08:15',NULL,NULL,NULL),(232,76,'Religious Ceremony at Sri Pada','Witness or participate in the sacred rituals at the summit temple, where the revered Sri Pada (sacred footprint)—a 1.8m rock formation—is enshrined. Devotees from multiple faiths gather to pay homage: Buddhists revere it as the footprint of Lord Buddha, Hindus as that of Shiva, Muslims as Adam\'s first step after exile from Eden, and Christians associate it with St. Thomas. The Pooja ceremony, lasting approximately 30 minutes after sunrise, involves offerings of fruit and money, prayers, and the ringing of bells—pilgrims traditionally ring the bell once for each successful climb. The atmosphere is deeply spiritual and multicultural, with devotees chanting hymns, some making the ascent barefoot or with traditional offerings. Visitors should dress modestly, remove shoes before entering the shrine area, and observe respectfully.','7',1.25,'06:00:00','07:30:00',NULL,NULL,1,NULL,'Peak Pilgrimage: Dec–Apr (Full moon days especially sacred)',1,'2026-02-18 17:08:15',1,'2026-02-18 17:08:15',NULL,NULL,NULL),(233,76,'Sunrise from the Summit & Shadow of the Peak','Experience the magical moment when dawn breaks from the summit at approximately 2,243 meters, offering breathtaking panoramic views of the surrounding valleys, hills, and—on clear days—the distant ocean. The highlight is the rare and ethereal \"Shadow of the Peak\" phenomenon: as the sun rises, the mountain casts a perfectly triangular shadow onto the clouds and mist below, appearing to move downward as the sun ascends. This fleeting, awe-inspiring sight lasts only a few minutes and is best observed from the eastern side of the summit immediately after sunrise. The summit platform becomes crowded with pilgrims and trekkers sharing in the collective wonder—a truly transcendent experience that makes the challenging night ascent worthwhile.','5',1.00,'06:00:00','07:00:00',NULL,NULL,1,NULL,'Peak: Dec–Apr (Clear skies essential)',1,'2026-02-18 17:08:15',1,'2026-02-18 17:08:15',NULL,NULL,NULL),(234,77,'Trekking in Horton Plains National Park','Explore one of Sri Lanka\'s most breathtaking highland wilderness areas through a network of well-maintained trekking trails. The classic World\'s End Circuit (9.5 km loop) takes you through misty cloud forests and montane grasslands to the dramatic World\'s End escarpment—an 880-meter (2,887 ft) sheer cliff offering panoramic views stretching to the southern coast on clear mornings. Continue to Baker\'s Falls, a 20-meter waterfall surrounded by lush vegetation and giant ferns. For more adventurous trekkers, challenging routes include Kirigalpoththa (Sri Lanka\'s second-highest peak at 2,388m) and Thotupola Kanda (third-highest at 2,357m). The park is home to 24 mammal species (including sambar deer and elusive leopards), 87 bird species (21 endemic), and over 750 plant species. Trails are well-marked and suitable for moderate fitness levels, though weather changes rapidly. Strict \"no plastics\" policy—plastic wrappers must be removed before entry (free lockers available).','6',4.50,'06:00:00','17:00:00',NULL,35.00,1,NULL,'Peak: Nov–Mar (clear mornings)',1,'2026-02-18 17:08:18',1,'2026-02-18 17:08:18',NULL,NULL,NULL),(235,77,'Camping in Horton Plains','Experience an unforgettable overnight adventure at Sri Lanka\'s highest-altitude camping destination, nestled within a UNESCO World Heritage Site at over 2,100 meters elevation. Three designated campsites are maintained by the Department of Wildlife Conservation, each offering a unique wilderness experience. Campsite 01 (Most Private & Scenic): Located on a small islet surrounded by flowing mountain streams, offering complete seclusion from main trails. Features access to Belihul Oya\'s clean, cold water and stunning mountain views. Considered the most beautiful and isolated option. Campsite 02 (Popular Choice): Situated near Chimney Falls along the main trekking route to World\'s End. Beautiful location with clear water access, but less privacy as hikers pass nearby. Campsite 03 (Tucked Away): Positioned between Campsites 01 and 02 but secluded from both. Offers similar privacy to Campsite 01 with beautiful surroundings. All sites feature basic amenities—water access (streams), primitive toilets (no running water), and space for tents. No campfires allowed—use portable stoves. Nights are cold (5-10°C), requiring proper sleeping bags and warm clothing. Wildlife includes sambar deer, purple-faced langurs, and occasional leopard sightings. Perfect for stargazing, birdwatching at dawn, and experiencing the park\'s magical atmosphere after day-trippers depart. Minimum group size: 4 persons (safety requirement).','1',18.00,'06:00:00','10:00:00',20.00,NULL,4,10,'Peak: Dec–Apr (dry season)',1,'2026-02-18 17:08:18',1,'2026-02-18 17:08:18',NULL,NULL,NULL),(236,78,'Bambarakanda Waterfall','Sri Lanka\'s tallest waterfall, cascading from a height of 240-263 meters (depending on the source). The falls drop as a thin cord from a rocky outcrop, formed by the Uduweriya Haputale mountain and Kuda Oya, a branch of the Walawe River. Located off the A4 Highway between Belihul Oya and Haputale, the turn-off is at Kalupahana Junction, followed by a 6km rough track to the falls. March and April are the best months for viewing, though any visit after heavy rainfall is worthwhile. During the dry season, the water may be reduced to a trickle. The surrounding evergreen forest and serene atmosphere make it a paradise for photography enthusiasts.','5',1.50,'08:00:00','17:00:00',NULL,NULL,1,NULL,'Best: Mar–Apr (Post-rainy season)',1,'2026-02-18 17:08:21',1,'2026-02-18 17:08:21',NULL,NULL,NULL),(237,78,'Lipton\'s Seat','Famous viewpoint standing at 1,970 meters above sea level, offering breathtaking panoramic views of the Uva, Sabaragamuwa, Central, and Eastern provinces. This precise spot in the Haputale Mountains overlooking the Dambatenna Tea Estate is where Sir Thomas Lipton used to sit and contemplate his plantation. On a clear day, visitors can spot Handapanagala Lake, Chandrika Lake, Udawalawe Lake, the Wedihiti Kanda mountain range, and occasionally even the Hambantota port on the southern coast. Located approximately 18km from Haputale (7km from the Dambatenne Tea Factory). Go early—clouds often roll in by 10:00 AM.','5',2.50,'06:00:00','17:00:00',2.50,2.50,1,NULL,'Best: Dec–Apr (Clear mornings)',1,'2026-02-18 17:08:21',1,'2026-02-18 17:08:21',NULL,NULL,NULL),(238,78,'Prabhawa Mountain Day View Point','The highest viewpoint in Haputale, offering nearly 360-degree panoramic views of the entire Haputale region. Located approximately 2km from Haputale town, accessible via a 1.5-2 hour hike through tea plantations and forest. The trail starts from the Dambetenna/Lipton\'s Seat road near a Hindu temple (kovil), with sign boards marking the way. Along the route, hikers may spot wildlife including squirrels, lizards, jungle fowl, and various bird species. At the summit, visitors will find Surangamuni Kovil and the proposed site for a Buddhist stupa. The area has been recognized for its biodiversity and is considered a national park due to its unique flora and fauna. Best visited at sunrise or sunset when the golden light transforms the mountains.','6',2.50,'06:00:00','18:00:00',NULL,NULL,1,NULL,'Year-Round (Best Dec–Apr)',1,'2026-02-18 17:08:21',1,'2026-02-18 17:08:21',NULL,NULL,NULL),(239,78,'Dhowa Rock Temple','An ancient rock temple dating back over 2,000 years, located approximately 6km from Bandarawela town on the way to Badulla. The temple features a remarkable unfinished Buddha image carved directly into a vertical rock face, said to have been constructed by King Walagamba himself during his exile in the 1st century BC. The Buddha image displays Mahayana stylistic influences. Behind the temple, visitors can explore a cave formation with a tunnel that King Walagamba used to hide from Indian invaders (closed in 1971 due to security concerns). The main temple building features 18th-century paintings and stonework integrated with the natural cave formation. A calm, spiritual atmosphere with fewer crowds than more famous sites.','7',1.25,'08:00:00','18:00:00',NULL,NULL,1,NULL,'Year-Round',1,'2026-02-18 17:08:21',1,'2026-02-18 17:08:21',NULL,NULL,NULL),(240,78,'Thangamale Bird Sanctuary','A tranquil bird sanctuary near Haputale, stretching across lush montane forests as part of the larger Horton Plains–Haputale biodiversity corridor. Renowned for its rich birdlife, the sanctuary provides habitat for many endemic and migratory species including the Yellow-eared Bulbul, Sri Lanka White-eye, and Black-headed Oriole. Rare and nationally threatened birds also find refuge here. The forest trails wind through misty landscapes offering breathtaking views of the Haputale valley and surrounding tea plantations. Beyond birds, the sanctuary shelters colorful butterflies, reptiles, and small mammals. Open daily during daylight hours. Best visited during migratory season (December-March) for optimal birdwatching.','3',2.00,'08:00:00','17:00:00',NULL,NULL,1,NULL,'Peak: Dec–Mar (Migratory season)',1,'2026-02-18 17:08:21',1,'2026-02-18 17:08:21',NULL,NULL,NULL),(241,78,'Dambatenne Tea Factory','Historic tea factory built in 1890 by Sir Thomas Lipton, one of the most famous figures in tea history. Located approximately 9km from Haputale along the road to Lipton\'s Seat. The factory still maintains most of the original machinery from a century ago, offering visitors a fascinating glimpse into traditional tea production techniques. Guided tours take visitors through the entire tea manufacturing process, from withering and rolling to fermentation, drying, and grading. The factory\'s elevated position offers stunning views over the surrounding Dambatenne Tea Estate. After the tour, visitors can sample and purchase a variety of Ceylon teas directly from the source. A must-visit for tea enthusiasts and those interested in Sri Lanka\'s colonial heritage.','7',1.25,'08:00:00','16:30:00',0.60,0.60,1,NULL,'Year-Round',1,'2026-02-18 17:08:21',1,'2026-02-18 17:08:21',NULL,NULL,NULL),(242,78,'Adisham Bungalow (St. Benedict\'s Monastery)','A magnificent Tudor and Jacobean-style country house built in 1931 by English aristocrat and planter Sir Thomas Villiers, a grandson of Lord John Russell and descendant of the Dukes of Bedford. Located at approximately 5,000 feet above sea level near Haputale, the house was designed by R. Booth and F. Webster to recreate an English lifestyle in the Ceylon highlands. Sir Thomas was awarded 2.8 hectares from the Thangamale Strict Nature Reserve by an act of the British Parliament to construct the estate. After serving as a private residence, the property was purchased by Don Charles Wijewardene in 1950, then sold to an Italian Benedictine monk in 1961, and finally donated to the Ampitiya Benedictine Monastery in 1963. Today, it houses St. Benedict\'s Monastery and contains a relic (a bone fragment) of St. Sylvester in the chapel. The house is remarkably well-preserved with original period fittings and furniture, surrounded by beautiful gardens and orchards.','11',1.25,'09:00:00','16:30:00',1.50,1.50,1,NULL,'Year-Round',1,'2026-02-18 17:08:21',1,'2026-02-18 17:08:21',NULL,NULL,NULL),(243,78,'Diyaluma Falls','Sri Lanka\'s third-highest waterfall, cascading 171 meters down an escarpment of the Koslanda Plateau. Unlike many waterfalls, Diyaluma features one clear drop plunging into a pool below. Located 13km west of Wellawaya on the A4 Highway; any bus heading to Haputale passes by the turn-off. A path to the upper part of the falls leaves from close to KM 207.5 on the A4, requiring a steep 45-minute hike to the top. The upper pools offer natural infinity pools with breathtaking views over the surrounding landscape—a hidden gem for adventurous travelers. The falls are most impressive during and immediately after the rainy season (May-September) when water flow is at its peak. The area remains relatively undeveloped, offering a more authentic experience than some of Sri Lanka\'s more commercial waterfalls.','5',2.50,'08:00:00','17:00:00',NULL,NULL,1,NULL,'Best: May–Sep (Rainy season)',1,'2026-02-18 17:08:21',1,'2026-02-18 17:08:21',NULL,NULL,NULL),(244,78,'Scenic Train Ride (Haputale Section)','Experience one of the world\'s most scenic railway journeys through Sri Lanka\'s breathtaking highlands. The upcountry railway line, originally built to transport tea from estates to Colombo auctions, winds through tea estates, vegetable fields, villages, waterfalls, tunnels, and along mountain tops. The Haputale section offers particularly spectacular views as the train traverses the edge of the mountain range. Daily train services operate between Kandy and Ella, with multiple departures in both directions. From Haputale to Ella, trains depart at 2:17 PM, 4:32 PM, and 5:27 PM. From Ella to Haputale, trains depart at 7:42 AM, 10:24 AM, and 11:58 AM. The full journey from Kandy to Ella takes approximately 3 hours, with the Haputale-Ella section offering some of the most dramatic scenery. Reserved seating available through tour operators.','5',2.00,'07:42:00','17:27:00',2.00,30.00,1,NULL,'Year-Round (Best Dec–Apr)',1,'2026-02-18 17:08:21',1,'2026-02-18 17:08:21',NULL,NULL,NULL),(245,79,'Water Sports Adventure Bundle','Experience the thrill of Arugam Bay\'s world-class waves and crystal-clear waters. Surfing is the main attraction—\"Main Point\" offers long, powerful right-hand waves perfect for advanced surfers, while \"Baby Point\" provides smaller, manageable waves for beginners. Surf schools along the beach offer lessons from experienced instructors, and rental shops provide all necessary equipment. Snorkeling tours allow you to explore vibrant marine life, including colorful tropical fish and sea turtles, with clear waters providing excellent visibility. Lagoon safaris at Kottukal and Urani Lagoons offer serene boat rides through mangrove forests, spotting crocodiles, water buffalo, elephants, and numerous bird species. Fishing expeditions with traditional fishermen provide an authentic glimpse into local life—participants can learn age-old techniques, help cast nets, and experience the camaraderie of the fishing community.','2',3.00,'06:00:00','18:00:00',4.00,25.00,1,NULL,'Peak: Apr–Oct (Surfing)',1,'2026-02-18 17:08:25',1,'2026-02-18 17:08:25',NULL,NULL,NULL),(246,79,'Pitipana Church (St. Mary\'s Church)','A historic Catholic church located in the Pitipana area near Arugam Bay, serving the local Tamil and Sinhalese Catholic communities. The church represents the diverse religious heritage of Sri Lanka\'s eastern coast, where multiple faiths coexist peacefully. Visitors are welcome to attend services or simply appreciate the architecture and tranquil setting. The church plays an important role in the local community, particularly during Christmas and Easter celebrations when special services and processions take place.','7',0.75,'06:00:00','18:00:00',NULL,NULL,1,NULL,'Year-Round',1,'2026-02-18 17:08:25',1,'2026-02-18 17:08:25',NULL,NULL,NULL),(247,79,'Magul Maha Viharaya','One of the most fascinating ancient monastic complexes in southeastern Sri Lanka, dating primarily from the late Anuradhapura period (7th-8th century AD). The name \"Magul\" means \"wedding\" in Sinhala—the site is believed to be where the marriage of King Kavan Tissa (ruler of the southern kingdom of Rohana) and Princess Viharamahadevi took place in the 2nd century BC. The complex follows the \"Pabbata Vihara\" pattern, with a rectangular parapet wall enclosing approximately 10,000 acres. Key features include the Magul Maduwa (wedding platform), an image house with ancient paintings, an ancient stupa, and the largest ancient moonstone in southern Sri Lanka—unique for its carvings of elephants with mahouts (riders), a feature found nowhere else in the world. The moonstone displays intricate carvings including tender ironwood leaves, lotus petal motifs, and lotus flowers. A stone inscription dates to the 14th century.','11',1.25,'08:00:00','17:00:00',NULL,NULL,1,NULL,'Year-Round (Best Dec-Apr)',1,'2026-02-18 17:08:25',1,'2026-02-18 17:08:25',NULL,NULL,NULL),(248,79,'Lahugala National Park Safari','One of Sri Lanka\'s smallest national parks but ecologically significant as an important habitat for Sri Lankan elephants and endemic birds. Designated as a wildlife sanctuary in 1966 and upgraded to a national park in 1980. The park features three reservoirs—Lahugala, Kitulana, and Sengamuwa—which empty into the Heda Oya River. These water bodies attract elephants, especially during the dry season when they gather to graze on the grassy margins. The park is home to a variety of wildlife including water buffalo, deer, and numerous bird species. Located approximately 14 km (23 minutes) from Arugam Bay. Top tip: Combine your visit with the nearby Magul Maha Viharaya, located just 2km from the park office.','3',3.50,'06:00:00','18:00:00',NULL,NULL,1,NULL,'Peak: Feb–Sep (Dry Season)',1,'2026-02-18 17:08:25',1,'2026-02-18 17:08:25',NULL,NULL,NULL),(249,79,'Hulannuge Cave (Hulannuge Taru Len Gala Temple)','An ancient cave temple complex on Hulannuge Mountain, featuring one of the longest drip-ledged caves in Asia. Drip-ledges (kataram) were carved along cave mouths to divert rainwater, allowing monks to inhabit them during the rainy season—a practice dating to the 3rd century BC. The caves contain primitive paintings and evidence of ancient habitation. Visitors can explore multiple caves and have the opportunity to speak with resident monks who maintain the site today. The site offers insights into the lifestyle of ancient forest-dwelling monks and the early spread of Buddhism in the region. Part of the \"Temple Run\" archaeological tour from Arugam Bay.','11',1.25,'08:00:00','17:00:00',NULL,NULL,1,NULL,'Year-Round',1,'2026-02-18 17:08:25',1,'2026-02-18 17:08:25',NULL,NULL,NULL),(250,79,'Relax on Arugam Bay Beach','Unwind on one of Sri Lanka\'s most beautiful and laid-back beaches, fringed with palm trees and offering golden sands meeting turquoise waters. The beach is divided into sections—the main bay area offers stunning views, gentle waves for swimming (during calm conditions), and a relaxed atmosphere. Elephant Point Beach, a quieter stretch nearby, provides pristine sands and clear blue waters perfect for swimming due to calm conditions. The west end is quieter with charming guesthouses and simple beachfront cafes. Perfect for sunbathing, swimming, reading, long coastal walks, and spectacular sunsets. Numerous beachside cafes serve fresh seafood and refreshing king coconut.','5',4.00,'00:00:00','23:59:00',NULL,NULL,1,NULL,'Peak: Apr–Oct',1,'2026-02-18 17:08:25',1,'2026-02-18 17:08:25',NULL,NULL,NULL),(251,79,'Kumana National Park Safari','A wildlife expedition through one of Sri Lanka\'s most untouched national parks, located approximately 30 km southeast of Arugam Bay. Formerly known as \"Yala East,\" Kumana is renowned for its lush mangroves, lagoons, and diverse ecosystems. The park is a bird lover\'s paradise—over 200 bird species, especially migratory birds, including painted storks, herons, egrets, ibis, pelicans, and flamingos. Wildlife includes elusive leopards, elephants, sloth bears, deer, wild boars, water buffalo, crocodiles, and monitor lizards. Open year-round, 6:00 AM – 4:00 PM. Jeep safaris include experienced guides who ensure safe, informative, and enjoyable wildlife viewing. The park offers a more secluded experience compared to Yala, with fewer crowds and pristine wilderness.','3',5.00,'06:00:00','16:00:00',NULL,40.00,1,NULL,'Peak: Apr–Sep',1,'2026-02-18 17:08:25',1,'2026-02-18 17:08:25',NULL,NULL,NULL),(252,79,'Gal Oya Boat Safari (Senanayaka Samudraya)','Experience one of Sri Lanka\'s most unique wildlife adventures—a boat safari on the Senanayake Samudraya, the island\'s largest man-made reservoir. Established in 1954, Gal Oya National Park spans forest, grassland, and shimmering water. The highlight is watching elephants swimming between islands—a phenomenon rarely seen elsewhere. The boat safari takes you through the reservoir\'s calm waters, offering opportunities to spot elephants, crocodiles, deer, and over 150 bird species including peacocks, eagles, and rare migratory birds. Visit \"Bird Island\" to see nesting water birds up close. Ancient ruins are hidden on some reservoir islands. The park entrance is at Inginiyagala, approximately 18km from Arugam Bay. Morning safaris (6:00 AM start) offer best wildlife viewing. Hire a licensed park ranger for boat safaris—essential for safety and insightful interpretation.','3',3.50,'06:00:00','17:00:00',NULL,25.00,1,NULL,'Peak: Feb–Sep (Dry Season)',1,'2026-02-18 17:08:25',1,'2026-02-18 17:08:25',NULL,NULL,NULL),(253,80,'Batticaloa Lagoon Boat Safari & Ecopark','Explore the largest lagoon in Sri Lanka\'s Eastern Province, a stunning 56 km estuarine lagoon framed by mangroves and islands. Begin at the Batticaloa Lagoon Environmental Learning Centre in Palameenmadu, featuring wall paintings, exhibits on the lagoon ecosystem, a library, auditorium, and souvenir shop. Take a boat ride across to the Ecopark, where you can climb a bird viewing tower, explore a children\'s park, see animal statues, picnic in shelters, play volleyball, and access the beach. The lagoon is famous for the mystical \"Singing Fish\" phenomenon—on full moon nights (April–September), a faint musical sound resembling a plucked guitar can be heard emanating from the waters near Kallady Bridge. Boat rides organized by the Palameenmadu Sports Club. Best experienced early morning or late afternoon for birdwatching and wildlife spotting.','3',2.50,'08:00:00','17:00:00',NULL,NULL,1,NULL,'Peak: Apr–Sep (Singing Fish)',1,'2026-02-18 17:08:27',1,'2026-02-18 17:08:27',NULL,NULL,NULL),(254,80,'Batticaloa Lighthouse','Climb one of Sri Lanka\'s colonial-era lighthouses, built in 1913 on a small sandbar surrounded by mangroves and lagoons. Standing at 28 meters (92 feet) tall, it\'s one of the smaller structures but offers panoramic views of the Batticaloa Lagoon and coastline from the top. Visitors can ascend via a series of ladders to reach the summit. The lighthouse sits at the end of a sandbar, with sheltered coastline popular for swimming. Located on Bar Road, approximately 5 km from Batticaloa city, opposite the Batticaloa Lagoon Environmental Learning Centre. The surrounding area is excellent for cycling or walking. Recommended sightseeing time: 5 hours (includes exploration of surrounding area).','5',1.50,'08:00:00','17:00:00',NULL,NULL,1,NULL,'Year-Round',1,'2026-02-18 17:08:27',1,'2026-02-18 17:08:27',NULL,NULL,NULL),(255,80,'Thiruchendur Murugan Alayam Temple','Visit this distinctive Hindu temple built in 1984 as a stopping point on the Pada Yatra pilgrimage to Kataragama. According to local legend, the temple\'s Murugan image is said to have opened its own eyes before the painter could complete the work. The structure was severely damaged by the 2004 tsunami, leaving its small gopuram (gateway tower) leaning at a dramatic angle—today, what remains is the colorful leaning tower partially sunken in the sand near the beach between Third and Fourth Cross Streets in Kallady. This unique sight has become an iconic landmark, representing both spiritual devotion and nature\'s power. Best visited in the early morning or late afternoon for photography.','7',1.00,'06:00:00','18:00:00',NULL,NULL,1,NULL,'Year-Round',1,'2026-02-18 17:08:27',1,'2026-02-18 17:08:27',NULL,NULL,NULL),(256,80,'Anipandi Sithivigniswara Alayar Hindu Temple','Discover the visually finest Hindu temple in Batticaloa, an expanding shrine renowned for its magnificent gopuram (gateway tower) decorated with a riotous festival of intertwined god figures. This ancient shrine is revered for its ornate architecture and deep spiritual heritage dating back centuries. The temple features intricate carvings depicting various Hindu deities, making it a must-visit for architecture enthusiasts and spiritual seekers alike. One of several significant Hindu temples in the region, alongside Mamangam Pillaiyar. Visitors should dress modestly (shoulders and knees covered) and remove shoes before entering. Best visited in the morning or late afternoon when the light enhances the intricate carvings.','7',1.00,'06:00:00','20:00:00',NULL,NULL,1,NULL,'Year-Round',1,'2026-02-18 17:08:27',1,'2026-02-18 17:08:27',NULL,NULL,NULL),(257,81,'Hikkaduwa Marine National Park','Sri Lanka\'s premier marine national park, established as a wildlife sanctuary in 1979 and upgraded to a national park in 2002. The park extends along 4 kilometers of coastline with a fringing coral reef reaching depths of 5 meters beneath the surface. The protected waters contain 60 coral species and 170 reef fish varieties, including the Sri Lankan endemic coral Porites desilveri. The reef serves as a habitat for sea turtles, dugongs, and various invertebrates such as prawns, crabs, shrimps, oysters, and sea worms. Activities include snorkeling, diving, and glass-bottom boat rides for non-swimmers to admire the underwater world without getting wet.','4',2.50,'07:00:00','18:30:00',NULL,2.00,1,NULL,'Best: Apr–Oct (calm seas)',1,'2026-02-18 17:08:30',1,'2026-02-18 17:08:30',NULL,NULL,NULL),(258,81,'Hikkaduwa Coral Sanctuary','A protected coral reef area within the marine national park, renowned for its vibrant coral formations and diverse marine life. Features coral species including Staghorn, Elkhorn, Cabbage, Brain, Table, and Star Collar corals belonging to Montipora, Faviidae, and Poritidae families. The shallow reefs (up to 5m depth) make it ideal for snorkeling and underwater photography. Visitors can explore the coral gardens through guided snorkeling tours, glass-bottom boat rides, or scuba diving excursions. Best visited during calm seas (April-October) when visibility is optimal.','4',2.00,'07:00:00','18:30:00',NULL,2.00,1,NULL,'Best: Apr–Oct (calm seas)',1,'2026-02-18 17:08:30',1,'2026-02-18 17:08:30',NULL,NULL,NULL),(259,81,'Hikkaduwa Turtle Hatchery','A sea turtle conservation center dedicated to protecting endangered turtle species including Olive Ridley, Hawksbill, Green, Loggerhead, and Leatherback turtles. Open daily from 7:00 AM to 6:00 PM. Visitors tour incubation tanks holding eggs collected from local beaches, view rescued adult and disabled turtles, and learn about conservation efforts from knowledgeable staff. Baby turtle releases sometimes occur at closing time (just before dark) depending on hatching seasons. Entry fee: LKR 2,000 for adults, LKR 1,000 for children. Telephone: 0772 938 338 for inquiries.','3',1.50,'07:00:00','18:00:00',6.50,6.50,1,NULL,'Year-Round (hatching varies)',1,'2026-02-18 17:08:30',1,'2026-02-18 17:08:30',NULL,NULL,NULL),(260,81,'Turtle Snorkeling Tour','A guided 2-hour snorkeling adventure in Hikkaduwa\'s crystal-clear waters to swim alongside sea turtles in their natural habitat. Explore the Hikkaduwa Marine Sanctuary\'s vibrant coral gardens and encounter tropical fish species including parrotfish, angelfish, and butterflyfish, with opportunities to see graceful sea turtles gliding through the reef. All snorkeling equipment (mask, snorkel, fins) provided, with professional training and guidance for beginners. Includes complimentary refreshments (king coconut or water), freshwater showers, and changing room facilities. Free hotel pickup within 5km of Hikkaduwa.','4',2.00,'08:00:00','16:00:00',NULL,NULL,1,NULL,'Best: Apr–Oct (calm seas)',1,'2026-02-18 17:08:30',1,'2026-02-18 17:08:30',NULL,NULL,NULL),(261,81,'Water Sports Adventure Bundle','Experience the thrill of Hikkaduwa\'s vibrant water sports scene on the famous beach along Sri Lanka\'s southwestern coast. With turquoise waters and lively atmosphere, the beach offers a wide range of aquatic adventures. Activities include: Jet Skiing: Exhilarating rides across the waves; Banana Boat Rides: Fun-filled inflatable rides pulled by speedboats; Tube Boating: Bounce and spin across the waves; Scuba Diving: Explore coral reefs and marine life with certified instructors; Snorkeling: Discover vibrant underwater ecosystems; Deep Sea Fishing: Venture into deeper waters for game fish; Surfing: Consistent waves at \"The Rock\" and \"Main Reef\" breaks (Nov-Mar). Equipment rentals and professional instruction available from multiple beach operators.','2',3.00,'08:30:00','17:30:00',NULL,NULL,1,NULL,'Peak: Dec–Apr (water sports)',1,'2026-02-18 17:08:30',1,'2026-02-18 17:08:30',NULL,NULL,NULL),(262,81,'Madu River Boat Safari','A scenic boat safari through the Madu Ganga wetland estuary—a Ramsar Convention-protected wetland spanning 915 hectares with numerous islands. Glide through serene mangrove tunnels, spot wildlife including crocodiles, water monitors, monkeys, and exotic birds (pond herons, blue kingfishers). Stops include Cinnamon Island for traditional peeling demonstrations and a Temple Island to experience local culture. Combined tours often include visits to Kosgoda Turtle Hatchery. Available as a half-day excursion from Hikkaduwa (approx. 30-45 minutes drive to Balapitiya).','3',1.75,'08:00:00','16:00:00',NULL,NULL,1,NULL,'Year-Round',1,'2026-02-18 17:08:30',1,'2026-02-18 17:08:30',NULL,NULL,NULL),(263,81,'Galle City Tour','Explore the UNESCO World Heritage-listed Galle Dutch Fort, the best-preserved European fortification in Asia. This half-day excursion from Hikkaduwa (approx. 30-40 minutes drive) takes you through cobblestone streets past the Dutch Reformed Church (1755), Galle Lighthouse (Sri Lanka\'s oldest), National Maritime Museum (housed in a 1671 VOC warehouse), and colonial-era buildings now housing chic cafes and boutiques. Combined tours often include river safari, turtle hatchery, and tea factory visits. Private transportation with English-speaking driver-guide available from Hikkaduwa pickup points.','11',4.50,'08:00:00','17:00:00',NULL,NULL,1,NULL,'Year-Round',1,'2026-02-18 17:08:30',1,'2026-02-18 17:08:30',NULL,NULL,NULL),(264,81,'Stilt Fishermen (Koggala)','Witness Sri Lanka\'s iconic traditional fishing method near Koggala, approximately 15-20 minutes from Hikkaduwa. Fishermen perch on narrow stilts (petta) driven into the surf, using traditional rod and line techniques without bait to catch small fish like spotted herring. Best photographed at sunrise (5:00-7:00 AM) or sunset (4:00-6:00 PM) to avoid harsh midday light and capture the golden hour glow. Mostly staged for visitors today but remains an enduring cultural symbol. Visitors should pay a small fee (LKR 200-500) for photography.','9',1.00,'05:00:00','18:00:00',1.00,1.00,1,NULL,'Best: Sunrise/Sunset',1,'2026-02-18 17:08:30',1,'2026-02-18 17:08:30',NULL,NULL,NULL),(265,81,'Relax on Hikkaduwa Beach','Unwind on one of Sri Lanka\'s most famous beaches, known for its golden sands, turquoise waters, and vibrant atmosphere. The beach offers plenty of space to lay a towel, with beach chairs available for rent and numerous beachfront cafes and restaurants serving fresh seafood and cocktails just steps away. The west end is quieter with charming guesthouses, while the main beach area buzzes with activity. Perfect for sunbathing, swimming (check currents), reading, long coastal walks, and spectacular sunsets. Fresh king coconut and street food vendors dot the shoreline.','5',4.00,'00:00:00','23:59:00',NULL,NULL,1,NULL,'Peak: Dec–Apr',1,'2026-02-18 17:08:30',1,'2026-02-18 17:08:30',NULL,NULL,NULL),(266,82,'Hiriketiya Town & Beach Cycling Tour','Explore the charming coastal town of Hiriketiya and its surroundings on two wheels with this guided cycling adventure. Pedal along scenic coastal roads, through lush greenery, and past traditional villages while soaking in the laid-back atmosphere of this burgeoning surf town. The route takes you to Hiriketiya Beach, a stunning crescent-shaped bay renowned for its consistent waves and bohemian vibe, surrounded by palm-fringed headlands. Continue to Batu Balang (Rock Beach), a less crowded spot with unique rock formations and tide pools. Visit a local cinnamon plantation to learn about Sri Lanka\'s spice heritage and see how cinnamon is harvested and processed. Stop for refreshments at a beachfront cafe, enjoying the relaxed vibe Hiriketiya is famous for. The tour includes a knowledgeable guide, quality bicycle, helmet, water, and refreshments. Perfect for all fitness levels with flexible pacing.','1',3.50,'08:00:00','17:00:00',NULL,40.00,1,NULL,'Best: Dec–Apr (Dry season)',1,'2026-02-18 17:08:34',1,'2026-02-18 17:08:34',NULL,NULL,NULL),(267,83,'Hambantota Birds Park & Research Centre','Home to endemic and exotic birds with over 180 varieties and around 3,200 birds. The park, located in the Southern part of the island, expands on a landscape of 35 acres and is dedicated to creating awareness and interest in wildlife and the importance of conservation of fauna and flora. The Centre breeds endangered bird species with the assistance of foreign bird breeding centres and replaces rare species with other zoological gardens globally. It also facilitates university students and research scholars to conduct studies and research, thus creating academic and professional ties with reputed educational and research institutions. A highlight is the walk-through aviary, where birds fly freely around visitors—a surreal and peaceful experience. Buggy cart rides are available for comfortable exploration, and visitors can enjoy interactive bird feeding sessions for memorable photo opportunities with birds perching on hands and heads. The park also promotes conservation efforts with rescue and rehabilitation programs. It contributes to both social and economic structures in the area, providing direct employment generation for around 50 families and training local youth as bird watching guides.','3',2.50,'08:30:00','17:30:00',3.30,15.00,1,NULL,'December to March',1,'2026-02-18 17:08:36',1,'2026-02-18 17:08:36',NULL,NULL,NULL),(268,83,'Hummanaya Blowhole','The only known blowhole in Sri Lanka and considered to be the second largest blowhole in the world. Located 1.1 km from the small fishing village of Kudawella, 28 km from Matara, 5 km from Dikwella, and 12 km from Tangalle in the Southern Province. The name \"Hummanaya\" (Sinhala: හුම්මානය) refers to the distinctive noise, \"hoo,\" that can be heard a distance away when the blowhole is active. This natural geological phenomenon occurs when sea water rushes through a submerged cavern and is pushed upward under pressure. The water fountain created shoots up every couple of minutes, depending on the nature of the sea, with the spray often reaching as high as 25 m (82 ft) to 30 m (98 ft). The rumbling sound is described as like a giant ogre\'s hungry stomach—spooky enough to startle without warning but delightful to watch. A guide warns of caution: \"In 1995, there were 15 people who were sucked into the blowhole as it released a big jet of water.\" The site has now been developed as a tourist attraction with a small visitors\' information centre on marine life and a viewing platform. The Czech government provided funds to install a safety fence around the blowhole. Local vendors sell fresh fried fish, local fruits, drinks, and souvenir shops with handicrafts and ornaments made from sea shells. Best visited during rough weather (May-September) when the pressure is higher and the effect is more spectacular.','5',1.50,'08:00:00','18:00:00',3.00,3.00,1,NULL,'Peak: May–Sep (Rough seas)',1,'2026-02-18 17:08:36',1,'2026-02-18 17:08:36',NULL,NULL,NULL),(269,84,'Rathugala Vedda Tribe Experience (Rathu Gala Vedda Walk)','Walk alongside Sri Lanka\'s indigenous Vedda people, the island\'s original inhabitants, in their natural habitat near Rathugala village. Led by the Vedda chief himself (Gunabandila Attho), this immersive experience takes you into the dense jungles where the tribe once lived in caves before being relocated in the 1950s due to the Senanayake Samudraya reservoir construction. Along the way, your guide will demonstrate traditional hunting techniques, share generations of knowledge about medicinal plants (and which poisonous ones to avoid), show how Veddas use plant juices to catch fish in forest streams, and explain ancient honey collection methods (\"Karadha Thaniga\") using smoke to ward off bees. The journey culminates at the ice-cold Pihille Kandura stream, where you can refresh in waters where fish gently nibble your feet. Before entering the jungle, the chief performs a traditional prayer to ancestral forest spirits for protection—a ritual that reflects the Vedda belief that ancestor spirits roam the forest. Many Vedda community members now work at eco-retreats like Wild Glamping Gal Oya, where you can also experience traditional dances, farm-to-table meals, and learn about their fight to preserve their culture against modernization pressures. This is a rare opportunity to connect with a rapidly disappearing culture—only about 100 traditional Veddas remain today.','7',3.00,'07:00:00','16:00:00',NULL,NULL,1,NULL,'Year-Round (Best Feb–Sep)',1,'2026-02-18 17:08:39',1,'2026-02-18 17:08:39',NULL,NULL,NULL),(270,84,'Senanayaka Samudraya Boat Safari','Experience Sri Lanka\'s only national park where wildlife viewing by boat is possible—a truly unique adventure on the country\'s largest man-made reservoir, Senanayake Samudraya. The highlight is watching elephants swimming between islands, a rare and magical spectacle you won\'t see elsewhere in Sri Lanka. Glide across calm waters past forested hills and rocky islets, spotting crocodiles basking on banks, water buffalo cooling off, and an incredible array of birdlife. The reservoir is a birdwatcher\'s paradise with over 150 bird species including painted storks, ospreys, cormorants, herons, egrets, white-bellied sea eagles, and the rare red-faced malkoha. Visit \"Bird Island\" to see nesting colonies up close—old dead trees jutting from the water serve as perfect hunting perches for photographic opportunities. Ancient ruins are hidden on some islands, adding historical intrigue. Boat safaris depart from the Gal Oya Dam in Inginiyagala, typically lasting 2-4 hours. Essential tip: Hire a licensed park ranger for safety and insightful interpretation—they know exactly where to find swimming elephants and the best bird colonies.','3',3.00,'06:00:00','17:00:00',NULL,20.00,1,NULL,'Peak: Feb–Sep (Dry Season)',1,'2026-02-18 17:08:39',1,'2026-02-18 17:08:39',NULL,NULL,NULL),(271,85,'Scenic Train Ride: Kandy to Watagoda','Experience one of the world\'s most scenic railway journeys through Sri Lanka\'s breathtaking hill country. The Main Line from Kandy to Watagoda winds through tea estates, mountains, and valleys, offering spectacular views of cascading waterfalls and lush greenery. Multiple daily departures from Kandy with journey times ranging from 3 to 4.5 hours. The route passes through historic stations and offers unforgettable vistas of the surrounding landscape. Four daily trains operate from Kandy to Watagoda, with the fastest express train taking approximately 3 hours.','5',3.75,'04:00:00','20:42:00',0.65,0.65,1,NULL,'Year-Round (Best Dec–Apr)',1,'2026-02-18 17:08:41',1,'2026-02-18 17:08:41',NULL,NULL,NULL),(272,85,'Cycling from Hatton to Norton Bridge','An epic 10-hour private cycling adventure through the stunning Castlereagh Tea Trails, starting from Hatton and ending at Norton Bridge. This customizable tour takes cyclists through working tea estates, past breathtaking viewpoints, and across the scenic Castlereagh Reservoir via traditional boat ride. The route offers unparalleled views of mountainous tea plantations and connects participants with nature. Includes a knowledgeable guide who ensures a safe and informative journey. Participants should be reasonably fit, though the tour is designed to be accessible to most travelers.','1',10.00,'11:00:00','21:00:00',NULL,NULL,1,NULL,'Year-Round (Best Dec–Apr)',1,'2026-02-18 17:08:41',1,'2026-02-18 17:08:41',NULL,NULL,NULL),(273,85,'Watagoda Old Railway Station','A small yet historically significant railway station located in the Nuwara Eliya District\'s central highlands on the Main Line between Colombo and Badulla. Constructed during the British colonial period, the station retains its original charm with a modest structure featuring a single platform, small ticket counter, and waiting area. Surrounded by breathtaking views of misty hills, tea plantations, and lush greenery, it offers travelers a peaceful and scenic experience characteristic of Sri Lanka\'s iconic hill country railway route. The station serves as a vital link for rural communities, facilitating transport of agricultural goods (especially tea) and providing access to employment, education, and services in nearby towns.','11',0.75,'06:00:00','18:00:00',NULL,NULL,1,NULL,'Year-Round',1,'2026-02-18 17:08:41',1,'2026-02-18 17:08:41',NULL,NULL,NULL),(274,85,'St. Clair\'s Waterfall','A stunning twin waterfall fondly referred to as the \"Little Niagara of Sri Lanka\" due to its impressive width. Located on the Hatton-Nuwara Eliya Road (A7 highway), approximately 3km from Talawakele. The falls comprise two cascades: the larger Maha Ella (80m high) on the Kotmale Oya, which runs over a rock ledge and divides into three cascades before plunging into a misty pool; and the smaller Kuda Ella (50m high) on a branch of the Kotmale Oya, best viewed from the bend near the 90km post. The 20th highest waterfall in Sri Lanka, surrounded by lush tea plantations. Visitors can view the falls from the main road or take a 500m footpath for closer views of Maha Ella. Opposite the falls, a tea shop serves refreshments with panoramic views.','5',1.00,'08:00:00','18:00:00',NULL,NULL,1,NULL,'Best: May–Sep (Rainy season)',1,'2026-02-18 17:08:41',1,'2026-02-18 17:08:41',NULL,NULL,NULL),(275,85,'Devon Waterfall','A majestic 97-meter (318 feet) waterfall plunging into a rocky gorge, surrounded by endless tea estates and rolling green hills near Talawakele, between Nuwara Eliya and Hatton. Known as the \"Veil of the Valley,\" it is one of Sri Lanka\'s most enchanting natural landmarks and easily visible from the A7 highway. Named after a British coffee planter \"Devon\" who pioneered coffee cultivation in Sri Lanka during the colonial era. The waterfall descends gracefully in three distinct cascades, becoming dramatically swollen during rainy seasons and sending clouds of mist over the valley. A dedicated viewpoint next to the A7 highway offers safe, clear views. Nearby Mlesna Tea Castle provides panoramic views with fresh tea tastings and light meals. Best photographed early morning or after 3:30 PM when shadows add depth.','5',0.75,'08:00:00','18:00:00',NULL,NULL,1,NULL,'Year-Round',1,'2026-02-18 17:08:41',1,'2026-02-18 17:08:41',NULL,NULL,NULL),(276,85,'South Indian Food Experience','Savor authentic South Indian cuisine in Hatton, a town with significant Tamil heritage and excellent vegetarian dining options. Recommended establishments include Sree Riseey Villas (Indian风味餐馆, 4.9 rating, 5 minutes from town) and SHRI SHANMUGHAAS HOTEL (素食餐馆, 3.8 rating, 6 minutes). Aiyappan Hotel offers Asian风味菜肴 (3.3 rating, 4 minutes) and VAANGO serves Indian cuisine (3.7 rating, 4 minutes). These local favorites serve authentic dosas, idlis, vadas, and traditional meals in a casual setting. Perfect for experiencing the region\'s culinary diversity after a day of exploration. Many establishments are conveniently located within walking distance of Hatton Railway Station.','10',1.25,'07:00:00','22:00:00',3.50,3.50,1,NULL,'Year-Round',1,'2026-02-18 17:08:41',1,'2026-02-18 17:08:41',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `activities` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `activities_history`
+--
+
+DROP TABLE IF EXISTS `activities_history`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `activities_history` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `activity_schedule_id` int NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text,
+  `status` int NOT NULL,
+  `number_of_participate` int DEFAULT NULL,
+  `activity_start` datetime DEFAULT NULL,
+  `activity_end` datetime DEFAULT NULL,
+  `rating` decimal(3,2) DEFAULT NULL,
+  `special_note` text,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `activity_schedule_id` (`activity_schedule_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `activities_history_ibfk_1` FOREIGN KEY (`activity_schedule_id`) REFERENCES `activities_schedule` (`id`),
+  CONSTRAINT `activities_history_ibfk_2` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `activities_history`
+--
+
+LOCK TABLES `activities_history` WRITE;
+/*!40000 ALTER TABLE `activities_history` DISABLE KEYS */;
+/*!40000 ALTER TABLE `activities_history` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `activities_history_images`
+--
+
+DROP TABLE IF EXISTS `activities_history_images`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `activities_history_images` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `activities_history_id` int NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text,
+  `image_url` varchar(500) DEFAULT NULL,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `activities_history_id` (`activities_history_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `activities_history_images_ibfk_1` FOREIGN KEY (`activities_history_id`) REFERENCES `activities_history` (`id`),
+  CONSTRAINT `activities_history_images_ibfk_2` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `activities_history_images`
+--
+
+LOCK TABLES `activities_history_images` WRITE;
+/*!40000 ALTER TABLE `activities_history_images` DISABLE KEYS */;
+/*!40000 ALTER TABLE `activities_history_images` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `activities_images`
+--
+
+DROP TABLE IF EXISTS `activities_images`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `activities_images` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `activity_id` int NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text,
+  `image_url` varchar(500) DEFAULT NULL,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `activity_id` (`activity_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `activities_images_ibfk_1` FOREIGN KEY (`activity_id`) REFERENCES `activities` (`id`),
+  CONSTRAINT `activities_images_ibfk_2` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=557 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `activities_images`
+--
+
+LOCK TABLES `activities_images` WRITE;
+/*!40000 ALTER TABLE `activities_images` DISABLE KEYS */;
+INSERT INTO `activities_images` VALUES (99,51,'Climb the sigiriya rock fortress - 1',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770744807/sbfbvoobmg8zuvjctolx.jpg',1,'2026-02-10 17:37:06',NULL,'2026-02-10 17:37:06',NULL,NULL,NULL),(100,51,'Climb the sigiriya rock fortress - 2',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770744837/oc5p3nu3xh7hgxqgrulr.webp',1,'2026-02-10 17:37:06',NULL,'2026-02-10 17:37:06',NULL,NULL,NULL),(101,51,'Climb the sigiriya rock fortress - 3',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770744855/ssixmcqwdnn3wnunid7j.jpg',1,'2026-02-10 17:37:06',NULL,'2026-02-10 17:37:06',NULL,NULL,NULL),(102,51,'Climb the sigiriya rock fortress - 4',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770744876/rfjvfkbeejlavpqnmyv7.jpg',1,'2026-02-10 17:37:06',NULL,'2026-02-10 17:37:06',NULL,NULL,NULL),(103,51,'Climb the sigiriya rock fortress - 5',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770744899/etoegei6sxxarfeixboc.jpg',1,'2026-02-10 17:37:06',NULL,'2026-02-10 17:37:06',NULL,NULL,NULL),(104,51,'Climb the sigiriya rock fortress - 6',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770744917/ic6zzhdjkicmtub1ioa5.jpg',1,'2026-02-10 17:37:06',NULL,'2026-02-10 17:37:06',NULL,NULL,NULL),(105,52,'Visit the Sigiriya Museum - 1',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770745727/pmchuabl1gpbxnutiwjr.jpg',1,'2026-02-10 17:50:19',NULL,'2026-02-10 17:50:19',NULL,NULL,NULL),(106,52,'Visit the Sigiriya Museum - 2',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770745742/b9mirhrtqxjdaiccece0.jpg',1,'2026-02-10 17:50:19',NULL,'2026-02-10 17:50:19',NULL,NULL,NULL),(107,52,'Visit the Sigiriya Museum - 3',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770745757/x7whmvgzjclofyqzj87i.jpg',1,'2026-02-10 17:50:19',NULL,'2026-02-10 17:50:19',NULL,NULL,NULL),(108,52,'Visit the Sigiriya Museum - 4',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770745771/cvnprfgj5jwa0soyzvvc.webp',1,'2026-02-10 17:50:19',NULL,'2026-02-10 17:50:19',NULL,NULL,NULL),(109,52,'Visit the Sigiriya Museum - 5',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770745789/chay3uepxy7hnqyk3ech.webp',1,'2026-02-10 17:50:19',NULL,'2026-02-10 17:50:19',NULL,NULL,NULL),(110,52,'Visit the Sigiriya Museum - 6',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770745803/bqks2ael838n8f1loojr.jpg',1,'2026-02-10 17:50:19',NULL,'2026-02-10 17:50:19',NULL,NULL,NULL),(112,53,'Traditional Bullock Cart Ride - 2',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770746166/iacvym3aoy7luunymywq.webp',1,'2026-02-10 17:56:49',NULL,'2026-02-10 17:56:49',NULL,NULL,NULL),(113,53,'Traditional Bullock Cart Ride - 3',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770746166/iacvym3aoy7luunymywq.webp',1,'2026-02-10 17:56:49',NULL,'2026-02-10 17:56:49',NULL,NULL,NULL),(114,53,'Traditional Bullock Cart Ride - 4',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770746182/gdkadq0geuwnkdzki60i.jpg',1,'2026-02-10 17:56:49',NULL,'2026-02-10 17:56:49',NULL,NULL,NULL),(115,53,'Traditional Bullock Cart Ride - 5',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770746198/jfrukcc5vac9eesonqtl.jpg',1,'2026-02-10 17:56:49',NULL,'2026-02-10 17:56:49',NULL,NULL,NULL),(116,54,'Boat Ride - 1',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770746573/thez4qa87crkjyiekmct.webp',1,'2026-02-10 18:04:04',NULL,'2026-02-10 18:04:04',NULL,NULL,NULL),(117,54,'Boat Ride - 2',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770746586/txlvi13hmgvfdanlsctk.webp',1,'2026-02-10 18:04:04',NULL,'2026-02-10 18:04:04',NULL,NULL,NULL),(118,54,'Boat Ride - 3',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770746601/a9fa3qmxv5l9ipumj8yw.webp',1,'2026-02-10 18:04:04',NULL,'2026-02-10 18:04:04',NULL,NULL,NULL),(119,54,'Boat Ride - 4',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770746615/r4gafjzrtupllblwnl27.jpg',1,'2026-02-10 18:04:04',NULL,'2026-02-10 18:04:04',NULL,NULL,NULL),(120,54,'Boat Ride - 5',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770746630/hrzmsvorio9f8s01svwz.webp',1,'2026-02-10 18:04:04',NULL,'2026-02-10 18:04:04',NULL,NULL,NULL),(121,55,'Village Life & Cooking Experience - 1',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770746931/r5c2onx3zy8pmmeloeoj.jpg',1,'2026-02-10 18:09:52',NULL,'2026-02-10 18:09:52',NULL,NULL,NULL),(122,55,'Village Life & Cooking Experience - 2',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770746944/gcmh2nucettd9brswxnd.webp',1,'2026-02-10 18:09:52',NULL,'2026-02-10 18:09:52',NULL,NULL,NULL),(123,55,'Village Life & Cooking Experience - 3',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770746957/cevljdkhgv3xsfnjwflx.jpg',1,'2026-02-10 18:09:52',NULL,'2026-02-10 18:09:52',NULL,NULL,NULL),(124,55,'Village Life & Cooking Experience - 4',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770746970/kdvsiyg3gs14xrcbp4ua.jpg',1,'2026-02-10 18:09:52',NULL,'2026-02-10 18:09:52',NULL,NULL,NULL),(125,56,'Minneriya National Park Safari - 1',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770747325/ct0kxvbnml6mmgsufcej.jpg',1,'2026-02-10 18:16:54',NULL,'2026-02-10 18:16:54',NULL,NULL,NULL),(126,56,'Minneriya National Park Safari - 2',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770747339/oggnq7xb6xgayekdw2zn.jpg',1,'2026-02-10 18:16:54',NULL,'2026-02-10 18:16:54',NULL,NULL,NULL),(127,56,'Minneriya National Park Safari - 3',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770747351/p3rstjrx2mqw9fucrwnj.jpg',1,'2026-02-10 18:16:54',NULL,'2026-02-10 18:16:54',NULL,NULL,NULL),(128,56,'Minneriya National Park Safari - 4',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770747373/exikdi2phncwk8qvtdfp.webp',1,'2026-02-10 18:16:54',NULL,'2026-02-10 18:16:54',NULL,NULL,NULL),(129,56,'Minneriya National Park Safari - 5',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770747386/wtqfovlz4qf3sdnlv1ti.jpg',1,'2026-02-10 18:16:54',NULL,'2026-02-10 18:16:54',NULL,NULL,NULL),(130,56,'Minneriya National Park Safari - 6',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770747399/qrav41dgmnqdhbkzjnu0.avif',1,'2026-02-10 18:16:54',NULL,'2026-02-10 18:16:54',NULL,NULL,NULL),(131,57,'Pidurangala Hike - 1',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770747772/bdpx7xakqn3xngrif7rv.jpg',1,'2026-02-10 18:24:10',NULL,'2026-02-10 18:24:10',NULL,NULL,NULL),(132,57,'Pidurangala Hike - 2',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770747791/ryobdtwtdmq2gjjdrnnp.jpg',1,'2026-02-10 18:24:10',NULL,'2026-02-10 18:24:10',NULL,NULL,NULL),(133,57,'Pidurangala Hike - 3',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770747804/axpg3qvluapcla0zrdrv.jpg',1,'2026-02-10 18:24:10',NULL,'2026-02-10 18:24:10',NULL,NULL,NULL),(134,57,'Pidurangala Hike - 4',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770747815/i7sjo7id2emfwtm0byvf.jpg',1,'2026-02-10 18:24:10',NULL,'2026-02-10 18:24:10',NULL,NULL,NULL),(135,57,'Pidurangala Hike - 5',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770747826/mi5vfmubnvitm9qalxiq.webp',1,'2026-02-10 18:24:10',NULL,'2026-02-10 18:24:10',NULL,NULL,NULL),(136,57,'Pidurangala Hike - 6',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770747837/djxbsv1sffrz5icae6qj.jpg',1,'2026-02-10 18:24:10',NULL,'2026-02-10 18:24:10',NULL,NULL,NULL),(137,58,'Kayaking on Kalawewa Lake - 1',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770748242/vew9neggp8zrb3keqbbm.webp',1,'2026-02-10 18:31:35',NULL,'2026-02-10 18:31:35',NULL,NULL,NULL),(138,58,'Kayaking on Kalawewa Lake - 2',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770748256/zwg3whw1kzd2mqqvm2ax.jpg',1,'2026-02-10 18:31:35',NULL,'2026-02-10 18:31:35',NULL,NULL,NULL),(139,58,'Kayaking on Kalawewa Lake - 3',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770748273/fns7nazozlqi4pw2b7tg.jpg',1,'2026-02-10 18:31:35',NULL,'2026-02-10 18:31:35',NULL,NULL,NULL),(140,58,'Kayaking on Kalawewa Lake - 4',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770748286/j9vkpybwzrnb4mxvkfyd.jpg',1,'2026-02-10 18:31:35',NULL,'2026-02-10 18:31:35',NULL,NULL,NULL),(141,59,'Explore Ritigala Forest Monastery - 1',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770748653/dgoxiwvdv7qdqsqfxm2n.webp',1,'2026-02-10 18:38:46',NULL,'2026-02-10 18:38:46',NULL,NULL,NULL),(142,59,'Explore Ritigala Forest Monastery - 2',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770748679/v9shr9wmiir5lzzq1lke.jpg',1,'2026-02-10 18:38:46',NULL,'2026-02-10 18:38:46',NULL,NULL,NULL),(143,59,'Explore Ritigala Forest Monastery - 3',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770748691/z0uapswxgmcxyyerbq5d.jpg',1,'2026-02-10 18:38:46',NULL,'2026-02-10 18:38:46',NULL,NULL,NULL),(144,59,'Explore Ritigala Forest Monastery - 4',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770748704/ktfxmnbux0aw7drnbyfz.avif',1,'2026-02-10 18:38:46',NULL,'2026-02-10 18:38:46',NULL,NULL,NULL),(145,59,'Explore Ritigala Forest Monastery - 5',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770748717/da6lq64lrbc72wx3bwrm.jpg',1,'2026-02-10 18:38:46',NULL,'2026-02-10 18:38:46',NULL,NULL,NULL),(146,60,'Trek Sanjeevani Mountain - 1',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770748927/bu2qssvxoligeywxeock.jpg',1,'2026-02-10 18:42:35',NULL,'2026-02-10 18:42:35',NULL,NULL,NULL),(147,60,'Trek Sanjeevani Mountain - 2',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770748940/kmfx8l9ywhenuv2tcvhx.jpg',1,'2026-02-10 18:42:35',NULL,'2026-02-10 18:42:35',NULL,NULL,NULL),(148,61,'Discover the Ridi Viharaya - 1',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770749214/fjbpg6a0wtaz99gb5owj.jpg',1,'2026-02-10 18:47:48',NULL,'2026-02-10 18:47:48',NULL,NULL,NULL),(149,61,'Discover the Ridi Viharaya - 2',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770749229/tmuemtmpdjyjwnz6qf5r.jpg',1,'2026-02-10 18:47:48',NULL,'2026-02-10 18:47:48',NULL,NULL,NULL),(150,61,'Discover the Ridi Viharaya - 3',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770749241/opddmq4mycocnbv2ss2c.jpg',1,'2026-02-10 18:47:48',NULL,'2026-02-10 18:47:48',NULL,NULL,NULL),(151,61,'Discover the Ridi Viharaya -4',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770749253/ennwx5w5z2haozv3ymn5.jpg',1,'2026-02-10 18:47:48',NULL,'2026-02-10 18:47:48',NULL,NULL,NULL),(152,62,'Marvel at the Aukana Buddha Statue - 1',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770749441/y5sr6irzidpjjjefhxtq.jpg',1,'2026-02-10 18:51:02',NULL,'2026-02-10 18:51:02',NULL,NULL,NULL),(153,62,'Marvel at the Aukana Buddha Statue - 2',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770749453/zazdw2qa5f6zirjln3ia.jpg',1,'2026-02-10 18:51:02',NULL,'2026-02-10 18:51:02',NULL,NULL,NULL),(154,63,'Visit Dolukanda Raja Maha Viharaya - 1',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770749702/rtuv99svrbmlc2ph6z48.jpg',1,'2026-02-10 18:55:11',NULL,'2026-02-10 18:55:11',NULL,NULL,NULL),(155,64,'Visit Pinnawala Elephant Orphanage - 1',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770749986/hhigavcjs8rxqlq0asxw.jpg',1,'2026-02-10 19:01:10',NULL,'2026-02-10 19:01:10',NULL,NULL,NULL),(156,64,'Visit Pinnawala Elephant Orphanage - 2',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770750011/tf8umtkyyifvlaqfnkcu.jpg',1,'2026-02-10 19:01:10',NULL,'2026-02-10 19:01:10',NULL,NULL,NULL),(157,64,'Visit Pinnawala Elephant Orphanage - 3',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770750027/xk9jada6ritkbgktkpyb.avif',1,'2026-02-10 19:01:10',NULL,'2026-02-10 19:01:10',NULL,NULL,NULL),(158,64,'Visit Pinnawala Elephant Orphanage - 4',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770750044/phrwcudval3heaxyc6qi.jpg',1,'2026-02-10 19:01:10',NULL,'2026-02-10 19:01:10',NULL,NULL,NULL),(159,64,'Visit Pinnawala Elephant Orphanage - 5',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770750059/trquo0nuienskyghdxnc.jpg',1,'2026-02-10 19:01:10',NULL,'2026-02-10 19:01:10',NULL,NULL,NULL),(160,65,'Hot Air Ballooning in Sigiriya - 1',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770750288/ih4krksgafglmzkzupqt.jpg',1,'2026-02-10 19:05:53',NULL,'2026-02-10 19:05:53',NULL,NULL,NULL),(161,65,'Hot Air Ballooning in Sigiriya - 2',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770750301/nio76bflucvrqfe8jqai.jpg',1,'2026-02-10 19:05:53',NULL,'2026-02-10 19:05:53',NULL,NULL,NULL),(162,65,'Hot Air Ballooning in Sigiriya - 3',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770750315/qockrp7qtsopnhqv2uvq.jpg',1,'2026-02-10 19:05:53',NULL,'2026-02-10 19:05:53',NULL,NULL,NULL),(163,65,'Hot Air Ballooning in Sigiriya - 4',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770750328/ovlvgt29jn3kbwyrvsbu.webp',1,'2026-02-10 19:05:53',NULL,'2026-02-10 19:05:53',NULL,NULL,NULL),(164,65,'Hot Air Ballooning in Sigiriya - 5',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770750342/ifly2ujhit6ykn9gtqbd.avif',1,'2026-02-10 19:05:53',NULL,'2026-02-10 19:05:53',NULL,NULL,NULL),(165,66,'Explore Dambulla Cave Temple - 1',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770750635/zddzjirhxr3qouxomv22.webp',1,'2026-02-10 19:11:39',NULL,'2026-02-10 19:11:39',NULL,NULL,NULL),(166,66,'Explore Dambulla Cave Temple - 2',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770750648/lom3atfzflcq78oguaww.webp',1,'2026-02-10 19:11:39',NULL,'2026-02-10 19:11:39',NULL,NULL,NULL),(167,66,'Explore Dambulla Cave Temple - 3',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770750660/q9nmfuz6e0lsdw15yfbb.jpg',1,'2026-02-10 19:11:39',NULL,'2026-02-10 19:11:39',NULL,NULL,NULL),(168,66,'Explore Dambulla Cave Temple - 4',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770750673/qjhj96fhsz0c1fovduxi.jpg',1,'2026-02-10 19:11:39',NULL,'2026-02-10 19:12:08',NULL,NULL,NULL),(169,66,'Explore Dambulla Cave Temple - 5',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770750687/yeos69ecrdiv8sqrcgvs.jpg',1,'2026-02-10 19:11:39',NULL,'2026-02-10 19:11:39',NULL,NULL,NULL),(170,67,'Temple of the Sacred Tooth Relic - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770754945/kh7yxu2h6englhlnjxtf.jpg',1,'2026-02-10 20:23:18',NULL,'2026-02-10 20:23:18',NULL,NULL,NULL),(171,67,'Temple of the Sacred Tooth Relic - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770754957/cioweigmvygujopvcsod.jpg',1,'2026-02-10 20:23:18',NULL,'2026-02-10 20:23:18',NULL,NULL,NULL),(172,67,'Temple of the Sacred Tooth Relic - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770754971/wgurzqkztj17u2qnlmsw.jpg',1,'2026-02-10 20:23:18',NULL,'2026-02-10 20:23:18',NULL,NULL,NULL),(173,67,'Temple of the Sacred Tooth Relic - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770754982/jtojtisoomakz1q6flgq.jpg',1,'2026-02-10 20:23:18',NULL,'2026-02-10 20:23:18',NULL,NULL,NULL),(174,68,'Kandy Lake - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770810785/bdw3xwzgwh7mtjo0rcwo.webp',1,'2026-02-11 11:54:59',NULL,'2026-02-11 11:54:59',NULL,NULL,NULL),(175,68,'Kandy Lake - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770810808/crkly6dxmk2sawwekxih.jpg',1,'2026-02-11 11:54:59',NULL,'2026-02-11 11:54:59',NULL,NULL,NULL),(176,68,'Kandy Lake - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770810856/eonv2327cdwyiuod6ktz.png',1,'2026-02-11 11:54:59',NULL,'2026-02-11 11:54:59',NULL,NULL,NULL),(177,68,'Kandy Lake - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770810870/xnnkg6ux4rsacuictk7h.jpg',1,'2026-02-11 11:54:59',NULL,'2026-02-11 11:54:59',NULL,NULL,NULL),(178,68,'Kandy Lake - 5',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770810882/zo8ad9ugvylgc2pqwzip.jpg',1,'2026-02-11 11:54:59',NULL,'2026-02-11 11:54:59',NULL,NULL,NULL),(179,69,'Traditional Kandy Cultural Show - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770811226/tsgbjcwilorogrmt0bha.jpg',1,'2026-02-11 12:01:17',NULL,'2026-02-11 12:01:17',NULL,NULL,NULL),(180,69,'Traditional Kandy Cultural Show - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770811239/iqgg7guswnhe3npknm11.gif',1,'2026-02-11 12:01:17',NULL,'2026-02-11 12:01:17',NULL,NULL,NULL),(181,69,'Traditional Kandy Cultural Show - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770811252/ff4n7ilbmlnd0rpukskp.png',1,'2026-02-11 12:01:17',NULL,'2026-02-11 12:01:17',NULL,NULL,NULL),(182,69,'Traditional Kandy Cultural Show - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770811264/ylfs4bejhvtoaytro3hu.jpg',1,'2026-02-11 12:01:17',NULL,'2026-02-11 12:01:17',NULL,NULL,NULL),(183,70,'Ceylon Gem Museum & Factory Visit - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770811485/t5cb6igtxixdcmtrbrca.jpg',1,'2026-02-11 12:05:23',NULL,'2026-02-11 12:05:23',NULL,NULL,NULL),(184,70,'Ceylon Gem Museum & Factory Visit - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770811501/p9rc73nb1ggti78llzgp.jpg',1,'2026-02-11 12:05:23',NULL,'2026-02-11 12:05:23',NULL,NULL,NULL),(185,71,'Ceylon Batik Factory Visit - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770811647/l0t9svxxiynsv6xwe4yf.jpg',1,'2026-02-11 12:08:47',NULL,'2026-02-11 12:08:47',NULL,NULL,NULL),(186,71,'Ceylon Batik Factory Visit - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770811661/jvejlyzludghsbjjslno.jpg',1,'2026-02-11 12:08:47',NULL,'2026-02-11 12:08:47',NULL,NULL,NULL),(187,71,'Ceylon Batik Factory Visit - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770811697/z3oeirwj3l6bgipzvmu8.jpg',1,'2026-02-11 12:08:47',NULL,'2026-02-11 12:08:47',NULL,NULL,NULL),(188,72,'Spice Garden Visit - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770812005/ukq3z6nh4l4xhs5urbzi.png',1,'2026-02-11 12:14:14',NULL,'2026-02-11 12:14:14',NULL,NULL,NULL),(189,72,'Spice Garden Visit - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770812017/j5pflaler8yd4bk6scry.jpg',1,'2026-02-11 12:14:14',NULL,'2026-02-11 12:14:14',NULL,NULL,NULL),(190,72,'Spice Garden Visit - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770812030/mxmkd6q6ax0z6w1wnxcq.jpg',1,'2026-02-11 12:14:14',NULL,'2026-02-11 12:14:14',NULL,NULL,NULL),(191,73,'Handicraft & Wood Carving Workshop - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770812242/nhyg0r0wbp7bjee1gpw6.webp',1,'2026-02-11 12:19:06',NULL,'2026-02-11 12:19:06',NULL,NULL,NULL),(192,73,'Handicraft & Wood Carving Workshop - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770812256/kqsvaxmjrrjkjtsr7spu.jpg',1,'2026-02-11 12:19:06',NULL,'2026-02-11 12:19:06',NULL,NULL,NULL),(193,73,'Handicraft & Wood Carving Workshop - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770812267/airfkkcvs45cztpdr7g4.png',1,'2026-02-11 12:19:06',NULL,'2026-02-11 12:19:06',NULL,NULL,NULL),(194,73,'Handicraft & Wood Carving Workshop - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770812281/ggj88mtljfi1opjgnuxr.jpg',1,'2026-02-11 12:19:06',NULL,'2026-02-11 12:19:06',NULL,NULL,NULL),(195,73,'Handicraft & Wood Carving Workshop - 5',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770812292/xo2mjmx8kxus3q8io7fm.jpg',1,'2026-02-11 12:19:06',NULL,'2026-02-11 12:19:06',NULL,NULL,NULL),(196,73,'Handicraft & Wood Carving Workshop - 6',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770812307/mzxorpiqmkbgvoe7cmpc.jpg',1,'2026-02-11 12:19:06',NULL,'2026-02-11 12:19:06',NULL,NULL,NULL),(197,74,'Kandy Central Market - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770812550/dep1knh9sf1okysqi9cd.jpg',1,'2026-02-11 12:23:10',NULL,'2026-02-11 12:23:10',NULL,NULL,NULL),(198,74,'Kandy Central Market - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770812562/cdiflys9dmcyol44okby.jpg',1,'2026-02-11 12:23:10',NULL,'2026-02-11 12:23:10',NULL,NULL,NULL),(199,75,'Embekke Devalaya - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770812780/utarbu8pe2dnd6zq76zf.jpg',1,'2026-02-11 12:27:16',NULL,'2026-02-11 12:27:16',NULL,NULL,NULL),(200,75,'Embekke Devalaya - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770812791/exlxhanptfmlxlfik2hk.jpg',1,'2026-02-11 12:27:16',NULL,'2026-02-11 12:27:16',NULL,NULL,NULL),(201,75,'Embekke Devalaya - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770812802/tmkauvgfykvvfd9gliym.jpg',1,'2026-02-11 12:27:16',NULL,'2026-02-11 12:27:16',NULL,NULL,NULL),(202,75,'Embekke Devalaya - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770812815/qrn9f04yjwkxoghu3uem.jpg',1,'2026-02-11 12:27:16',NULL,'2026-02-11 12:27:16',NULL,NULL,NULL),(203,75,'Embekke Devalaya - 5',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770812828/bshuzyaliktcx0qfpx63.jpg',1,'2026-02-11 12:27:16',NULL,'2026-02-11 12:27:16',NULL,NULL,NULL),(204,76,'Muthumariamman Kovil - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770826845/jd9vb81sd8r2itydeuy1.jpg',1,'2026-02-11 16:21:12',NULL,'2026-02-11 16:21:12',NULL,NULL,NULL),(205,76,'Muthumariamman Kovil - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770826864/dlp62crab9p91xllgcxx.jpg',1,'2026-02-11 16:21:12',NULL,'2026-02-11 16:21:12',NULL,NULL,NULL),(206,77,'Hanthana Tea Museum - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770827102/qvovkbjwqvnkt41wqcqw.jpg',1,'2026-02-11 16:26:07',NULL,'2026-02-11 16:26:07',NULL,NULL,NULL),(207,77,'Hanthana Tea Museum - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770827116/rafpjgiv4vbtc6h1g1fa.jpg',1,'2026-02-11 16:26:07',NULL,'2026-02-11 16:26:07',NULL,NULL,NULL),(208,77,'Hanthana Tea Museum - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770827126/k7891xxuuqtv2tzjhv6k.jpg',1,'2026-02-11 16:26:07',NULL,'2026-02-11 16:26:07',NULL,NULL,NULL),(209,77,'Hanthana Tea Museum - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770827138/opdh0iyf19vy3adndfbu.jpg',1,'2026-02-11 16:26:07',NULL,'2026-02-11 16:26:07',NULL,NULL,NULL),(210,77,'Hanthana Tea Museum - 5',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770827152/owpdlwq4iv1mx3hkeytm.webp',1,'2026-02-11 16:26:07',NULL,'2026-02-11 16:26:07',NULL,NULL,NULL),(211,78,'Royal Botanical Garden, Peradeniya - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770827516/vnlkpuc5zxhtgk85gcrm.jpg',1,'2026-02-11 16:34:07',NULL,'2026-02-11 16:34:07',NULL,NULL,NULL),(212,78,'Royal Botanical Garden, Peradeniya - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770827530/w6lvtqpdkdnormoftjlz.jpg',1,'2026-02-11 16:34:07',NULL,'2026-02-11 16:34:07',NULL,NULL,NULL),(213,78,'Royal Botanical Garden, Peradeniya - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770827543/n13fmilbwchhkp2uwhb0.jpg',1,'2026-02-11 16:34:07',NULL,'2026-02-11 16:34:07',NULL,NULL,NULL),(214,78,'Royal Botanical Garden, Peradeniya - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770827555/uimx5tal9m0dpfq0rf1b.webp',1,'2026-02-11 16:34:07',NULL,'2026-02-11 16:34:07',NULL,NULL,NULL),(215,78,'Royal Botanical Garden, Peradeniya - 5',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770827572/o3ufoe6geaslwjgdr8rq.webp',1,'2026-02-11 16:34:07',NULL,'2026-02-11 16:34:07',NULL,NULL,NULL),(216,78,'Royal Botanical Garden, Peradeniya - 6',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770827587/p13t7ldsqcx0awfag0bt.jpg',1,'2026-02-11 16:34:07',NULL,'2026-02-11 16:34:07',NULL,NULL,NULL),(217,78,'Royal Botanical Garden, Peradeniya - 7',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770827598/kfmsjq7rxkq1ucq1a3zx.jpg',1,'2026-02-11 16:34:07',NULL,'2026-02-11 16:34:07',NULL,NULL,NULL),(218,78,'Royal Botanical Garden, Peradeniya - 8',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770827610/lpvkq6tfyn3xl42wel3l.jpg',1,'2026-02-11 16:34:07',NULL,'2026-02-11 16:34:07',NULL,NULL,NULL),(219,79,'Gadaladeniya Temple - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770827811/vnzngutz28whmdkqoffr.jpg',1,'2026-02-11 16:37:35',NULL,'2026-02-11 16:37:35',NULL,NULL,NULL),(220,79,'Gadaladeniya Temple - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770827829/dkkoourp8al3denvo0dj.webp',1,'2026-02-11 16:37:35',NULL,'2026-02-11 16:37:35',NULL,NULL,NULL),(221,79,'Gadaladeniya Temple - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770827843/ey3xtmwxkzhlfbis60t5.jpg',1,'2026-02-11 16:37:35',NULL,'2026-02-11 16:37:35',NULL,NULL,NULL),(222,80,'Lankathilaka Temple - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770827987/cbzekpijvihijf8tryuy.webp',1,'2026-02-11 16:40:38',NULL,'2026-02-11 16:40:38',NULL,NULL,NULL),(223,80,'Lankathilaka Temple - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770828005/g8kywwahzqgyv6eqhxab.jpg',1,'2026-02-11 16:40:38',NULL,'2026-02-11 16:40:38',NULL,NULL,NULL),(224,80,'Lankathilaka Temple - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770828016/gupoaw5uatznzmbfzcby.jpg',1,'2026-02-11 16:40:38',NULL,'2026-02-11 16:40:38',NULL,NULL,NULL),(225,81,'Kandy View Point - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770828170/mmnlwjiferz1umndko5z.webp',1,'2026-02-11 16:43:51',NULL,'2026-02-11 16:43:51',NULL,NULL,NULL),(226,81,'Kandy View Point - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770828182/cvef0hg43jrxzexkeklw.jpg',1,'2026-02-11 16:43:51',NULL,'2026-02-11 16:43:51',NULL,NULL,NULL),(227,81,'Kandy View Point - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770828193/kzuuhfotaci2hg0yxugt.jpg',1,'2026-02-11 16:43:51',NULL,'2026-02-11 16:43:51',NULL,NULL,NULL),(228,81,'Kandy View Point - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770828208/tqextevychctarpksiss.jpg',1,'2026-02-11 16:43:51',NULL,'2026-02-11 16:43:51',NULL,NULL,NULL),(229,82,'Udawaththa Kale Sanctuary - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770828441/pdroomhqcheafqjh0rrz.jpg',1,'2026-02-11 16:51:30',NULL,'2026-02-11 16:51:30',NULL,NULL,NULL),(230,82,'Udawaththa Kale Sanctuary - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770828453/ccpld05rjbmmbfqktl34.webp',1,'2026-02-11 16:51:30',NULL,'2026-02-11 16:51:30',NULL,NULL,NULL),(231,82,'Udawaththa Kale Sanctuary - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770828500/uz6ahnx6s5ib40z8oygv.jpg',1,'2026-02-11 16:51:30',NULL,'2026-02-11 16:51:30',NULL,NULL,NULL),(232,82,'Udawaththa Kale Sanctuary - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770828511/xtoeznidskw1if4tbr88.webp',1,'2026-02-11 16:51:30',NULL,'2026-02-11 16:51:30',NULL,NULL,NULL),(233,82,'Udawaththa Kale Sanctuary - 5',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770828525/rupxevub67mylkbvikbm.jpg',1,'2026-02-11 16:51:30',NULL,'2026-02-11 16:51:30',NULL,NULL,NULL),(234,83,'Bahirawakanda Temple (Big Buddha) - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770828835/rbpdm1x8z5djb3sqnexm.jpg',1,'2026-02-11 16:54:27',NULL,'2026-02-11 16:54:27',NULL,NULL,NULL),(235,83,'Bahirawakanda Temple (Big Buddha) - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770828847/daus7zmwdxlzws00cr7b.jpg',1,'2026-02-11 16:54:27',NULL,'2026-02-11 16:54:27',NULL,NULL,NULL),(236,84,'Nalanda Gedige - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770828988/y7fak9pbwwj9vqovr4jm.jpg',1,'2026-02-11 16:57:15',NULL,'2026-02-11 16:57:15',NULL,NULL,NULL),(237,84,'Nalanda Gedige - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770829000/j4zwrojlv9v4zfj2ay4e.jpg',1,'2026-02-11 16:57:15',NULL,'2026-02-11 16:57:15',NULL,NULL,NULL),(238,84,'Nalanda Gedige - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770829011/ydsuxszcsoy0pjtnagqr.webp',1,'2026-02-11 16:57:15',NULL,'2026-02-11 16:57:15',NULL,NULL,NULL),(239,85,'Hanthana Mountain Range Hike - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770829239/qedglmhajv27bui7oyai.jpg',1,'2026-02-11 17:01:40',NULL,'2026-02-11 17:01:40',NULL,NULL,NULL),(240,85,'Hanthana Mountain Range Hike - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770829254/lu5qpagf6o4a2k0syh9f.jpg',1,'2026-02-11 17:01:40',NULL,'2026-02-11 17:01:40',NULL,NULL,NULL),(241,85,'Hanthana Mountain Range Hike - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770829266/hzfsge05igqv3x0bth52.jpg',1,'2026-02-11 17:01:40',NULL,'2026-02-11 17:01:40',NULL,NULL,NULL),(242,85,'Hanthana Mountain Range Hike - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770829277/s5sjmgmodtkhdmhsxbl7.jpg',1,'2026-02-11 17:01:40',NULL,'2026-02-11 17:01:40',NULL,NULL,NULL),(243,85,'Hanthana Mountain Range Hike - 5',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770829289/lojovloml9rbsv9ylczt.webp',1,'2026-02-11 17:01:40',NULL,'2026-02-11 17:01:40',NULL,NULL,NULL),(244,86,'Hanthana Bird Park - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770829473/xeueedzc2lau8i0qobte.webp',1,'2026-02-11 17:05:40',NULL,'2026-02-11 17:05:40',NULL,NULL,NULL),(245,86,'Hanthana Bird Park - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770829486/nu8lux1dttnpleosevif.jpg',1,'2026-02-11 17:05:40',NULL,'2026-02-11 17:05:40',NULL,NULL,NULL),(246,86,'Hanthana Bird Park - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770829501/lhdhz01sunm9mxczwkvy.jpg',1,'2026-02-11 17:05:40',NULL,'2026-02-11 17:05:40',NULL,NULL,NULL),(247,86,'Hanthana Bird Park - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770829513/lutm8mlpeywidn5wmcnk.jpg',1,'2026-02-11 17:05:40',NULL,'2026-02-11 17:05:40',NULL,NULL,NULL),(248,87,'Katusu Konda Hike - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770829990/aqlbqrsilxc5nnedpgoh.jpg',1,'2026-02-11 17:14:06',NULL,'2026-02-11 17:14:06',NULL,NULL,NULL),(249,87,'Katusu Konda Hike - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770830005/c5k4m0gyebmhiqkgbpcv.webp',1,'2026-02-11 17:14:07',NULL,'2026-02-11 17:14:07',NULL,NULL,NULL),(250,87,'Katusu Konda Hike - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770830019/h94mcqb9iv879fzwppu4.webp',1,'2026-02-11 17:14:07',NULL,'2026-02-11 17:14:07',NULL,NULL,NULL),(251,88,'Kandy Victoria Golf Club - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770830171/w5kjupmv60vkbhq9mn35.jpg',1,'2026-02-11 17:17:06',NULL,'2026-02-11 17:17:06',NULL,NULL,NULL),(252,88,'Kandy Victoria Golf Club - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770830184/yalw4jvvc9h8qhe31yry.jpg',1,'2026-02-11 17:17:06',NULL,'2026-02-11 17:17:06',NULL,NULL,NULL),(253,88,'Kandy Victoria Golf Club - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770830195/di0xgvfqujagkygwyleq.jpg',1,'2026-02-11 17:17:06',NULL,'2026-02-11 17:17:06',NULL,NULL,NULL),(254,88,'Kandy Victoria Golf Club - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770830205/d549bxbh6pyh7vjsvf1j.jpg',1,'2026-02-11 17:17:06',NULL,'2026-02-11 17:17:06',NULL,NULL,NULL),(255,88,'Kandy Victoria Golf Club - 5',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770830215/fc6g3cpbrqyhqbjiol17.jpg',1,'2026-02-11 17:17:06',NULL,'2026-02-11 17:17:06',NULL,NULL,NULL),(256,89,'Ambuluwawa Tower Climb - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770830348/nmi4crffwuufqlkwxgnt.jpg',1,'2026-02-11 17:20:03',NULL,'2026-02-11 17:20:03',NULL,NULL,NULL),(257,89,'Ambuluwawa Tower Climb - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770830358/ypzjbjuacrnolyjgq7az.webp',1,'2026-02-11 17:20:03',NULL,'2026-02-11 17:20:03',NULL,NULL,NULL),(258,89,'Ambuluwawa Tower Climb - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770830368/qhu12iq8vsgcjvaucsbd.jpg',1,'2026-02-11 17:20:03',NULL,'2026-02-11 17:20:03',NULL,NULL,NULL),(259,89,'Ambuluwawa Tower Climb - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770830378/vpjf2r9lb1kitymhdjj5.jpg',1,'2026-02-11 17:20:03',NULL,'2026-02-11 17:20:03',NULL,NULL,NULL),(260,90,'Dambulla Cave Temple - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770830522/ujrfoxyd985b4otgtqak.jpg',1,'2026-02-11 17:22:29',NULL,'2026-02-11 17:22:29',NULL,NULL,NULL),(261,90,'Dambulla Cave Temple - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770830533/xcwfbdfm8nob4trmblfx.jpg',1,'2026-02-11 17:22:29',NULL,'2026-02-11 17:22:29',NULL,NULL,NULL),(262,90,'Dambulla Cave Temple - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770830542/aocdxozusmvs8tte3di4.jpg',1,'2026-02-11 17:22:29',NULL,'2026-02-11 17:22:29',NULL,NULL,NULL),(263,91,'Pinnawala Elephant Orphanage - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770830705/ojmu71h4ptu8qqfpk8wq.jpg',1,'2026-02-11 17:26:08',NULL,'2026-02-11 17:26:08',NULL,NULL,NULL),(264,91,'Pinnawala Elephant Orphanage - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770830716/iekepmgl8ac7whkvjtja.jpg',1,'2026-02-11 17:26:08',NULL,'2026-02-11 17:26:08',NULL,NULL,NULL),(265,91,'Pinnawala Elephant Orphanage - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770830729/cue5ngl7ujyrsos89ayl.jpg',1,'2026-02-11 17:26:08',NULL,'2026-02-11 17:26:08',NULL,NULL,NULL),(266,91,'Pinnawala Elephant Orphanage - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770830745/i4xoiiqstrzeylikfflp.jpg',1,'2026-02-11 17:26:08',NULL,'2026-02-11 17:26:08',NULL,NULL,NULL),(267,91,'Pinnawala Elephant Orphanage - 5',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770830758/qzxpe5y9d0xeuf9jiphn.jpg',1,'2026-02-11 17:26:08',NULL,'2026-02-11 17:26:08',NULL,NULL,NULL),(268,96,'Gregory Park with Pony Ride - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770964481/hs3vdn8aendrso1a1n7c.jpg',1,'2026-02-13 06:45:01',NULL,'2026-02-13 06:45:01',NULL,NULL,NULL),(269,96,'Gregory Park with Pony Ride - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770964497/gubznpqgvj9arfmr5mve.jpg',1,'2026-02-13 06:45:01',NULL,'2026-02-13 06:45:01',NULL,NULL,NULL),(270,96,'Gregory Park with Pony Ride - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770964509/kurxiq3rjl3ndamhm96f.jpg',1,'2026-02-13 06:45:01',NULL,'2026-02-13 06:45:01',NULL,NULL,NULL),(271,96,'Gregory Park with Pony Ride - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770964521/btoxbqkgjeptizgzrblk.webp',1,'2026-02-13 06:45:01',NULL,'2026-02-13 06:45:01',NULL,NULL,NULL),(272,96,'Gregory Park with Pony Ride - 5',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770964533/voyva3awq11sdqedkpwa.webp',1,'2026-02-13 06:45:01',NULL,'2026-02-13 06:45:01',NULL,NULL,NULL),(273,97,'Sri Bhaktha Hanuman Hindu Temple - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770964690/mulclorviqbpitpzkiwi.jpg',1,'2026-02-13 06:45:01',NULL,'2026-02-13 06:45:01',NULL,NULL,NULL),(274,97,'Sri Bhaktha Hanuman Hindu Temple - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770964700/to7tybdosoxfkaug5tmo.jpg',1,'2026-02-13 06:45:01',NULL,'2026-02-13 06:45:01',NULL,NULL,NULL),(275,97,'Sri Bhaktha Hanuman Hindu Temple - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770964716/k7rzikuidc6iwge0sy9v.jpg',1,'2026-02-13 06:45:01',NULL,'2026-02-13 06:45:01',NULL,NULL,NULL),(276,98,'Ramboda Waterfall - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770964937/cboqzu0hpfdmbkmvjyle.png',1,'2026-02-13 06:45:01',NULL,'2026-02-13 06:45:01',NULL,NULL,NULL),(277,98,'Ramboda Waterfall - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770964947/ajfskb4vfxgcepr8wabt.jpg',1,'2026-02-13 06:45:01',NULL,'2026-02-13 06:45:01',NULL,NULL,NULL),(278,98,'Ramboda Waterfall - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770964957/j1vixni58czveamdenaf.jpg',1,'2026-02-13 06:45:01',NULL,'2026-02-13 06:45:01',NULL,NULL,NULL),(279,99,'Labookellie Tea Garden & Factory - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770965320/wvownhgpzuuba9m6wej8.jpg',1,'2026-02-13 06:52:48',NULL,'2026-02-13 06:52:48',NULL,NULL,NULL),(280,99,'Labookellie Tea Garden & Factory - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770965334/dgewvc6fckqqhp41bx0s.jpg',1,'2026-02-13 06:52:48',NULL,'2026-02-13 06:52:48',NULL,NULL,NULL),(281,99,'Labookellie Tea Garden & Factory - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770965345/nc9hsza8vcdmru6a2vz4.jpg',1,'2026-02-13 06:52:48',NULL,'2026-02-13 06:52:48',NULL,NULL,NULL),(282,99,'Labookellie Tea Garden & Factory - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770965355/tgcxypq5zkhjdpmdupww.jpg',1,'2026-02-13 06:52:48',NULL,'2026-02-13 06:52:48',NULL,NULL,NULL),(283,99,'Labookellie Tea Garden & Factory - 5',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770965366/rjpnngqbnh7yy5q9rgbm.jpg',1,'2026-02-13 06:52:48',NULL,'2026-02-13 06:52:48',NULL,NULL,NULL),(284,100,'Indian Food Dining - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770965513/zsppr4x8pfsfx6fmis4a.jpg',1,'2026-02-13 06:52:48',NULL,'2026-02-13 06:52:48',NULL,NULL,NULL),(285,100,'Indian Food Dining - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770965523/p7mhyhuz5x5h5cazcm79.jpg',1,'2026-02-13 06:52:48',NULL,'2026-02-13 06:52:48',NULL,NULL,NULL),(286,100,'Indian Food Dining - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770965533/aowvvgigudq13qijdu5b.jpg',1,'2026-02-13 06:52:48',NULL,'2026-02-13 06:52:48',NULL,NULL,NULL),(287,100,'Indian Food Dining - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770965542/w3mh7haqrdguq71yelil.jpg',1,'2026-02-13 06:52:48',NULL,'2026-02-13 06:52:48',NULL,NULL,NULL),(288,100,'Indian Food Dining - 5',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770965555/pot67xlbccoyveb3uhqq.webp',1,'2026-02-13 06:52:48',NULL,'2026-02-13 06:52:48',NULL,NULL,NULL),(289,101,'Ambewela Milk & Cheese Farm - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770965833/ketlmuj91gntis5czyni.jpg',1,'2026-02-13 07:01:22',NULL,'2026-02-13 07:01:22',NULL,NULL,NULL),(290,101,'Ambewela Milk & Cheese Farm - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770966034/w79qhznjnrwnny8ilo5f.jpg',1,'2026-02-13 07:01:22',NULL,'2026-02-13 07:01:22',NULL,NULL,NULL),(291,101,'Ambewela Milk & Cheese Farm - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770966046/qakbswyn0h9koqqhk4kj.jpg',1,'2026-02-13 07:01:22',NULL,'2026-02-13 07:01:22',NULL,NULL,NULL),(292,101,'Ambewela Milk & Cheese Farm - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770966060/nzt6yqgwkheixcoalhhm.jpg',1,'2026-02-13 07:01:22',NULL,'2026-02-13 07:01:22',NULL,NULL,NULL),(293,101,'Ambewela Milk & Cheese Farm - 5',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770966072/z4ehsgzlkeg3xbzjbrmf.jpg',1,'2026-02-13 07:01:22',NULL,'2026-02-13 07:01:22',NULL,NULL,NULL),(294,102,'Sitha Amman Kovil - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770966367/npcvm7nz1hecvjqns66m.jpg',1,'2026-02-13 07:06:53',NULL,'2026-02-13 07:06:53',NULL,NULL,NULL),(295,102,'Sitha Amman Kovil - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770966381/qe5a4opnsdxyap5hfknu.jpg',1,'2026-02-13 07:06:53',NULL,'2026-02-13 07:06:53',NULL,NULL,NULL),(296,102,'Sitha Amman Kovil - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770966391/enj4rkytxr5q4ntrb5dn.webp',1,'2026-02-13 07:06:53',NULL,'2026-02-13 07:06:53',NULL,NULL,NULL),(297,102,'Sitha Amman Kovil - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770966401/dia2repqx35evezepdzk.webp',1,'2026-02-13 07:06:53',NULL,'2026-02-13 07:06:53',NULL,NULL,NULL),(298,103,'Hakgala Botanical Garden - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770985485/woeujar7hyj7c3isvfjk.webp',1,'2026-02-13 12:26:28',NULL,'2026-02-13 12:26:28',NULL,NULL,NULL),(299,103,'Hakgala Botanical Garden - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770985532/ju9pusmpytrouqxkkig8.webp',1,'2026-02-13 12:26:29',NULL,'2026-02-13 12:26:29',NULL,NULL,NULL),(300,103,'Hakgala Botanical Garden - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770985542/oxw0reshcqvxjlutquuk.jpg',1,'2026-02-13 12:26:29',NULL,'2026-02-13 12:26:29',NULL,NULL,NULL),(301,103,'Hakgala Botanical Garden - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770985553/wid25vnzkuz0eguaiqp7.jpg',1,'2026-02-13 12:26:29',NULL,'2026-02-13 12:26:29',NULL,NULL,NULL),(302,103,'Hakgala Botanical Garden - 5',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770985565/kj2cpkh5duphve53ne4u.webp',1,'2026-02-13 12:26:29',NULL,'2026-02-13 12:26:29',NULL,NULL,NULL),(303,103,'Hakgala Botanical Garden - 6',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770985576/isaord9qiziovhofxmha.jpg',1,'2026-02-13 12:26:29',NULL,'2026-02-13 12:26:29',NULL,NULL,NULL),(304,104,'Strawberry Farm Visit - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770985761/ptsncwjtmcxotehkfcn3.jpg',1,'2026-02-13 12:30:31',NULL,'2026-02-13 12:30:31',NULL,NULL,NULL),(305,104,'Strawberry Farm Visit - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770985774/ljodmq8s9x2sdxt14ecc.jpg',1,'2026-02-13 12:30:31',NULL,'2026-02-13 12:30:31',NULL,NULL,NULL),(306,104,'Strawberry Farm Visit - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770985786/suhlfvkqgurpmmmaq19r.jpg',1,'2026-02-13 12:30:31',NULL,'2026-02-13 12:30:31',NULL,NULL,NULL),(307,104,'Strawberry Farm Visit - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770985797/ieuipjgoufrggbrld3pm.jpg',1,'2026-02-13 12:30:31',NULL,'2026-02-13 12:30:31',NULL,NULL,NULL),(308,104,'Strawberry Farm Visit - 5',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770985813/pdjq0slaniwjntmm25c9.jpg',1,'2026-02-13 12:30:31',NULL,'2026-02-13 12:30:31',NULL,NULL,NULL),(309,105,'Horton Plains National Park - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770986105/fovaufoezr1f1d2goljf.jpg',1,'2026-02-13 12:37:51',NULL,'2026-02-13 12:37:51',NULL,NULL,NULL),(310,105,'Horton Plains National Park - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770986118/nzpub2v27cr5lz7vrzau.jpg',1,'2026-02-13 12:37:51',NULL,'2026-02-13 12:37:51',NULL,NULL,NULL),(311,105,'Horton Plains National Park - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770986174/dlvxho9kkv8nvzea68fn.jpg',1,'2026-02-13 12:37:51',NULL,'2026-02-13 12:37:51',NULL,NULL,NULL),(312,105,'Horton Plains National Park - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770986188/rgsgecpnykepza3gfrsk.jpg',1,'2026-02-13 12:37:51',NULL,'2026-02-13 12:37:51',NULL,NULL,NULL),(313,105,'Horton Plains National Park - 5',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770986199/ti0fu6xmqvzrz2doojws.jpg',1,'2026-02-13 12:37:51',NULL,'2026-02-13 12:37:51',NULL,NULL,NULL),(314,105,'Horton Plains National Park - 6',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770986211/j0cbz3789qenaz6hkk0z.jpg',1,'2026-02-13 12:37:51',NULL,'2026-02-13 12:37:51',NULL,NULL,NULL),(315,105,'Horton Plains National Park - 7',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770986222/qijcvin2rmjmavc6rqve.jpg',1,'2026-02-13 12:37:51',NULL,'2026-02-13 12:37:51',NULL,NULL,NULL),(316,105,'Horton Plains National Park - 8',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770986232/qmipldm4kzlvjckqn4k1.jpg',1,'2026-02-13 12:37:51',NULL,'2026-02-13 12:37:51',NULL,NULL,NULL),(317,105,'Horton Plains National Park - 9',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770986243/bljdqt9bh4gpx1punxws.jpg',1,'2026-02-13 12:37:51',NULL,'2026-02-13 12:37:51',NULL,NULL,NULL),(318,105,'Horton Plains National Park - 10',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770986253/hgzx7wwxpvbvaabuqyv4.webp',1,'2026-02-13 12:37:51',NULL,'2026-02-13 12:37:51',NULL,NULL,NULL),(319,106,'Gayathri Amman Temple - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770986437/pslhfebwcwg4jo1jtqgh.jpg',1,'2026-02-13 12:40:46',NULL,'2026-02-13 12:40:46',NULL,NULL,NULL),(320,107,'Divurumpola Temple - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770986617/k1smxafpleztcjfxawqm.jpg',1,'2026-02-13 12:46:12',NULL,'2026-02-13 12:46:12',NULL,NULL,NULL),(321,107,'Divurumpola Temple - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770986751/tjtzx5knccs0fdpevuv6.jpg',1,'2026-02-13 12:46:12',NULL,'2026-02-13 12:46:12',NULL,NULL,NULL),(322,107,'Divurumpola Temple - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770986760/lqqir3hsp3zacifnnp0t.jpg',1,'2026-02-13 12:46:12',NULL,'2026-02-13 12:46:12',NULL,NULL,NULL),(323,108,'Train Ride - Kandy to Nuwara Eliya - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770986962/al5svzkb9dqgt95t14lq.jpg',1,'2026-02-13 12:50:41',NULL,'2026-02-13 12:50:41',NULL,NULL,NULL),(324,108,'Train Ride - Kandy to Nuwara Eliya - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770986981/ngymfieaycvly9lhdfvw.jpg',1,'2026-02-13 12:50:41',NULL,'2026-02-13 12:50:41',NULL,NULL,NULL),(325,108,'Train Ride - Kandy to Nuwara Eliya - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770987008/ngn1ijkgh7bmxeqsgtap.png',1,'2026-02-13 12:50:41',NULL,'2026-02-13 12:50:41',NULL,NULL,NULL),(326,108,'Train Ride - Kandy to Nuwara Eliya - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770987018/hp2r3ibp95ww5wfbtz95.jpg',1,'2026-02-13 12:50:41',NULL,'2026-02-13 12:50:41',NULL,NULL,NULL),(327,108,'Train Ride - Kandy to Nuwara Eliya - 5',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770987032/ptv7albupvnaekqybuo1.jpg',1,'2026-02-13 12:50:41',NULL,'2026-02-13 12:50:41',NULL,NULL,NULL),(328,109,'Scenic Train Ride - Nanu Oya to Ella - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770987385/vhxbn7kdlenn155s1qfe.jpg',1,'2026-02-13 12:57:27',NULL,'2026-02-13 12:57:27',NULL,NULL,NULL),(329,109,'Scenic Train Ride - Nanu Oya to Ella - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770987402/ejdk0u4e2dx1c20qgiw3.webp',1,'2026-02-13 12:57:27',NULL,'2026-02-13 12:57:27',NULL,NULL,NULL),(330,109,'Scenic Train Ride - Nanu Oya to Ella - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770987414/umt3j7uz8ab2zwo56jul.jpg',1,'2026-02-13 12:57:27',NULL,'2026-02-13 12:57:27',NULL,NULL,NULL),(331,109,'Scenic Train Ride - Nanu Oya to Ella - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770987425/fr9f6ajwaly3iawhqdf9.jpg',1,'2026-02-13 12:57:27',NULL,'2026-02-13 12:57:27',NULL,NULL,NULL),(332,109,'Scenic Train Ride - Nanu Oya to Ella - 5',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770987436/tr4rpofxzswccysfqehk.jpg',1,'2026-02-13 12:57:27',NULL,'2026-02-13 12:57:27',NULL,NULL,NULL),(333,110,'Nine Arches Bridge - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770987696/b1hwcqvxctzk7anp4tma.jpg',1,'2026-02-13 13:02:44',NULL,'2026-02-13 13:02:44',NULL,NULL,NULL),(334,110,'Nine Arches Bridge - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770987709/alnfqskt6hfc2uogicmp.jpg',1,'2026-02-13 13:02:44',NULL,'2026-02-13 13:02:44',NULL,NULL,NULL),(335,110,'Nine Arches Bridge - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770987722/offsqq72uhxmr7gkf6jr.webp',1,'2026-02-13 13:02:44',NULL,'2026-02-13 13:02:44',NULL,NULL,NULL),(336,110,'Nine Arches Bridge - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770987736/r2l5qlihsbnidiggfsce.webp',1,'2026-02-13 13:02:44',NULL,'2026-02-13 13:02:44',NULL,NULL,NULL),(337,110,'Nine Arches Bridge - 5',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770987751/xymwhjn7y53iwgmcybyy.jpg',1,'2026-02-13 13:02:44',NULL,'2026-02-13 13:02:44',NULL,NULL,NULL),(338,111,'Ravana Falls - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770987941/ineyqu9grsinpdntygtj.jpg',1,'2026-02-13 13:06:40',NULL,'2026-02-13 13:06:40',NULL,NULL,NULL),(339,111,'Ravana Falls - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770987953/gntfj32p9yppxnfpvffw.jpg',1,'2026-02-13 13:06:40',NULL,'2026-02-13 13:06:40',NULL,NULL,NULL),(340,111,'Ravana Falls - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770987964/uwplnlnhvuodsww4vine.jpg',1,'2026-02-13 13:06:40',NULL,'2026-02-13 13:06:40',NULL,NULL,NULL),(341,111,'Ravana Falls - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770987977/lftxoxbop2iefvudv073.webp',1,'2026-02-13 13:06:40',NULL,'2026-02-13 13:06:40',NULL,NULL,NULL),(342,111,'Ravana Falls - 5',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770987987/yhuvvgnughfgr9uykcyp.webp',1,'2026-02-13 13:06:40',NULL,'2026-02-13 13:06:40',NULL,NULL,NULL),(343,112,'Ravana Cave - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770988167/zzem5rrh7lvsgepstfgt.webp',1,'2026-02-13 13:10:15',NULL,'2026-02-13 13:10:15',NULL,NULL,NULL),(344,112,'Ravana Cave - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770988178/fobusvoguh6qywyyagck.jpg',1,'2026-02-13 13:10:15',NULL,'2026-02-13 13:10:15',NULL,NULL,NULL),(345,112,'Ravana Cave - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770988192/u6yw1kr4g7asczji7vj7.jpg',1,'2026-02-13 13:10:15',NULL,'2026-02-13 13:10:15',NULL,NULL,NULL),(346,112,'Ravana Cave - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770988204/kafirkmdtiem8bznxtud.webp',1,'2026-02-13 13:10:15',NULL,'2026-02-13 13:10:15',NULL,NULL,NULL),(347,113,'Tea Plantation Visit - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770988357/cmjfnm090jbtgthmic2m.jpg',1,'2026-02-13 13:13:39',NULL,'2026-02-13 13:13:39',NULL,NULL,NULL),(348,113,'Tea Plantation Visit - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770988371/u5ld80gnohamj1akn6na.webp',1,'2026-02-13 13:13:39',NULL,'2026-02-13 13:13:39',NULL,NULL,NULL),(349,113,'Tea Plantation Visit - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770988383/q3dsdhhisqoso54suswk.jpg',1,'2026-02-13 13:13:39',NULL,'2026-02-13 13:13:39',NULL,NULL,NULL),(350,113,'Tea Plantation Visit - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770988394/dtpexzksn8r44yisuiln.jpg',1,'2026-02-13 13:13:39',NULL,'2026-02-13 13:13:39',NULL,NULL,NULL),(351,113,'Tea Plantation Visit - 5',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770988407/abc964sujskianhfteln.jpg',1,'2026-02-13 13:13:39',NULL,'2026-02-13 13:13:39',NULL,NULL,NULL),(352,114,'Ella Swing Experience - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770988580/t7ltmodefhk38wibh2j7.jpg',1,'2026-02-13 13:17:16',NULL,'2026-02-13 13:17:16',NULL,NULL,NULL),(353,114,'Ella Swing Experience - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770988590/l58omcd8ldghqvegsx56.jpg',1,'2026-02-13 13:17:16',NULL,'2026-02-13 13:17:16',NULL,NULL,NULL),(354,114,'Ella Swing Experience - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770988601/kn05qecr71tjdbxt17bk.jpg',1,'2026-02-13 13:17:16',NULL,'2026-02-13 13:17:16',NULL,NULL,NULL),(355,114,'Ella Swing Experience - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770988614/fmfdld0a5rrvarwybhgk.jpg',1,'2026-02-13 13:17:16',NULL,'2026-02-13 13:17:16',NULL,NULL,NULL),(356,114,'Ella Swing Experience - 5',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770988625/gldvctvwsxrplgnzrsb7.jpg',1,'2026-02-13 13:17:16',NULL,'2026-02-13 13:17:16',NULL,NULL,NULL),(357,115,'Ravana Pool Club with Sundown Cocktails - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770988790/nqhqzay0ipkpur7aibzt.jpg',1,'2026-02-13 13:20:48',NULL,'2026-02-13 13:20:48',NULL,NULL,NULL),(358,115,'Ravana Pool Club with Sundown Cocktails - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770988803/zyubamkrfjozqviuhv40.jpg',1,'2026-02-13 13:20:48',NULL,'2026-02-13 13:20:48',NULL,NULL,NULL),(359,115,'Ravana Pool Club with Sundown Cocktails - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770988816/xhskisxcndzvjwulab4u.jpg',1,'2026-02-13 13:20:48',NULL,'2026-02-13 13:20:48',NULL,NULL,NULL),(360,115,'Ravana Pool Club with Sundown Cocktails - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770988834/shnfyhkspomnwhc20749.jpg',1,'2026-02-13 13:20:48',NULL,'2026-02-13 13:20:48',NULL,NULL,NULL),(361,116,'Bibilegama Village Experience - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770988995/alq7hc8v49m2z6hvvd6r.jpg',1,'2026-02-13 13:23:46',NULL,'2026-02-13 13:23:46',NULL,NULL,NULL),(362,116,'Bibilegama Village Experience - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770989007/o6w1cagf3i0euzknc8gd.jpg',1,'2026-02-13 13:23:46',NULL,'2026-02-13 13:23:46',NULL,NULL,NULL),(363,117,'Little Adam\'s Peak Hike - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770991022/kx5rc1r0pwiai6d8ittl.jpg',1,'2026-02-13 13:57:47',NULL,'2026-02-13 13:57:47',NULL,NULL,NULL),(364,117,'Little Adam\'s Peak Hike - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770991033/mztujvgpipp0cdvyo9eo.jpg',1,'2026-02-13 13:57:47',NULL,'2026-02-13 13:57:47',NULL,NULL,NULL),(365,117,'Little Adam\'s Peak Hike - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770991045/jj9rdq34g3ubacaaro04.webp',1,'2026-02-13 13:57:47',NULL,'2026-02-13 13:57:47',NULL,NULL,NULL),(366,117,'Little Adam\'s Peak Hike - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770991055/hjfs4anlnovs7jo6d3wl.jpg',1,'2026-02-13 13:57:47',NULL,'2026-02-13 13:57:47',NULL,NULL,NULL),(367,118,'Ella Rock Hike - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770991201/t3genp4vkdkmwbrjwuuj.webp',1,'2026-02-13 14:01:27',NULL,'2026-02-13 14:01:27',NULL,NULL,NULL),(368,118,'Ella Rock Hike - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770991215/rtpzrqwtuqulksymdgxb.jpg',1,'2026-02-13 14:01:27',NULL,'2026-02-13 14:01:27',NULL,NULL,NULL),(369,118,'Ella Rock Hike - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770991226/g5lisgbm7z0qvr4olvth.jpg',1,'2026-02-13 14:01:27',NULL,'2026-02-13 14:01:27',NULL,NULL,NULL),(370,118,'Ella Rock Hike - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770991244/yvyranmmlcsheljgv6zr.jpg',1,'2026-02-13 14:01:27',NULL,'2026-02-13 14:01:27',NULL,NULL,NULL),(371,118,'Ella Rock Hike - 5',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770991257/g8rpzzxw7ygltxvupxxo.jpg',1,'2026-02-13 14:01:27',NULL,'2026-02-13 14:01:27',NULL,NULL,NULL),(372,119,'Ella Gap - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770994354/ldacqzujxls90lgnlxu1.jpg',1,'2026-02-13 14:53:18',NULL,'2026-02-13 14:53:18',NULL,NULL,NULL),(373,119,'Ella Gap - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770994375/s26tqdwyiexsrehnmllb.jpg',1,'2026-02-13 14:53:18',NULL,'2026-02-13 14:53:18',NULL,NULL,NULL),(374,120,'Udawalawe National Park Safari with Elephant Transit Home - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770994564/uxhj32m1d8rswhuzdtnn.jpg',1,'2026-02-13 14:56:55',NULL,'2026-02-13 14:56:55',NULL,NULL,NULL),(375,120,'Udawalawe National Park Safari with Elephant Transit Home - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770994581/o6lvha1gxchgqzghmacg.jpg',1,'2026-02-13 14:56:55',NULL,'2026-02-13 14:56:55',NULL,NULL,NULL),(376,120,'Udawalawe National Park Safari with Elephant Transit Home - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770994598/ihvqjpn8gbxrboqtg7yg.jpg',1,'2026-02-13 14:56:55',NULL,'2026-02-13 14:56:55',NULL,NULL,NULL),(377,121,'Train Ride - Ella to Nanu Oya - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770994791/ushxusy8wl9xr2ccps99.jpg',1,'2026-02-13 15:01:03',NULL,'2026-02-13 15:01:03',NULL,NULL,NULL),(378,121,'Train Ride - Ella to Nanu Oya - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770994822/xefmwitgqsg1clm3hsuy.webp',1,'2026-02-13 15:01:03',NULL,'2026-02-13 15:01:03',NULL,NULL,NULL),(379,121,'Train Ride - Ella to Nanu Oya - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770994835/jpo8vatknuvvqimgamxt.jpg',1,'2026-02-13 15:01:03',NULL,'2026-02-13 15:01:03',NULL,NULL,NULL),(380,121,'Train Ride - Ella to Nanu Oya - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770994849/fzzs0ebbrhrey8bh2fkt.jpg',1,'2026-02-13 15:01:03',NULL,'2026-02-13 15:01:03',NULL,NULL,NULL),(381,122,'Train Ride - Kandy to Ella - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770995017/ialpb0snqdsikcaxtn96.jpg',1,'2026-02-13 15:04:28',NULL,'2026-02-13 15:04:28',NULL,NULL,NULL),(382,122,'Train Ride - Kandy to Ella - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770995031/f8bvm4156sfcqayw7lxp.jpg',1,'2026-02-13 15:04:28',NULL,'2026-02-13 15:04:28',NULL,NULL,NULL),(383,122,'Train Ride - Kandy to Ella - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770995043/kncrwpktxhh0tc7pbprh.jpg',1,'2026-02-13 15:04:28',NULL,'2026-02-13 15:04:28',NULL,NULL,NULL),(384,122,'Train Ride - Kandy to Ella - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770995055/ptljgjkgsa1dbitpdvhy.jpg',1,'2026-02-13 15:04:28',NULL,'2026-02-13 15:04:28',NULL,NULL,NULL),(385,123,'Buduruwagala Ancient Rock Temple - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770995239/di84wctrfzkz5cp4rhpk.webp',1,'2026-02-13 15:07:58',NULL,'2026-02-13 15:07:58',NULL,NULL,NULL),(386,123,'Buduruwagala Ancient Rock Temple - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770995254/bgfotwjyqsojmdxtctat.jpg',1,'2026-02-13 15:07:58',NULL,'2026-02-13 15:07:58',NULL,NULL,NULL),(387,123,'Buduruwagala Ancient Rock Temple - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770995266/ry795olfjtn1mahjlpgg.jpg',1,'2026-02-13 15:07:58',NULL,'2026-02-13 15:07:58',NULL,NULL,NULL),(388,124,'Yala National Park Safari - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770995685/rrvznx44i3oddzvcmsm7.jpg',1,'2026-02-13 15:18:43',NULL,'2026-02-13 15:18:43',NULL,NULL,NULL),(389,124,'Yala National Park Safari - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770995699/wxjsminxo9j4jvkmkfay.webp',1,'2026-02-13 15:18:43',NULL,'2026-02-13 15:18:43',NULL,NULL,NULL),(390,124,'Yala National Park Safari - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770995710/ln6qyzr9wxwfa3ye5ajk.jpg',1,'2026-02-13 15:18:43',NULL,'2026-02-13 15:18:43',NULL,NULL,NULL),(391,124,'Yala National Park Safari - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770995735/h4t2t00fv0bonwgb6add.jpg',1,'2026-02-13 15:18:43',NULL,'2026-02-13 15:18:43',NULL,NULL,NULL),(392,124,'Yala National Park Safari - 5',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770995753/xktc1wsmu3rbvag2wfpb.jpg',1,'2026-02-13 15:18:43',NULL,'2026-02-13 15:18:43',NULL,NULL,NULL),(393,124,'Yala National Park Safari - 6',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770995766/eebkwb4oh8y3e6xetp5z.jpg',1,'2026-02-13 15:18:43',NULL,'2026-02-13 15:18:43',NULL,NULL,NULL),(394,124,'Yala National Park Safari - 7',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770995777/y3hsmtcu6mmfp78fjdrj.jpg',1,'2026-02-13 15:18:43',NULL,'2026-02-13 15:18:43',NULL,NULL,NULL),(395,124,'Yala National Park Safari - 8',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770995789/bis1xpmxgw4ik1c5szt4.jpg',1,'2026-02-13 15:18:43',NULL,'2026-02-13 15:18:43',NULL,NULL,NULL),(396,124,'Yala National Park Safari - 9',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770995804/zhydwhmpaduxhahvg5i2.jpg',1,'2026-02-13 15:18:43',NULL,'2026-02-13 15:18:43',NULL,NULL,NULL),(397,124,'Yala National Park Safari - 10',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770995816/ivwi3u4vkwtbrvtxfgyt.jpg',1,'2026-02-13 15:18:43',NULL,'2026-02-13 15:18:43',NULL,NULL,NULL),(398,124,'Yala National Park Safari - 11',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770995833/h014gjqdzvjln7qtet1l.jpg',1,'2026-02-13 15:18:43',NULL,'2026-02-13 15:18:43',NULL,NULL,NULL),(399,124,'Yala National Park Safari - 12',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770995846/r55k7ak6x48zgwbo1vhc.jpg',1,'2026-02-13 15:18:43',NULL,'2026-02-13 15:18:43',NULL,NULL,NULL),(400,124,'Yala National Park Safari - 13',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770995872/sgqccpvrnijqwsnvqwcj.jpg',1,'2026-02-13 15:18:43',NULL,'2026-02-13 15:18:43',NULL,NULL,NULL),(401,124,'Yala National Park Safari - 14',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770995858/e6b33zclzpbrz9pwrupq.avif',1,'2026-02-13 15:18:43',NULL,'2026-02-13 15:18:43',NULL,NULL,NULL),(402,124,'Yala National Park Safari - 15',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770995886/ux2joytza6elazxpjfdn.webp',1,'2026-02-13 15:18:43',NULL,'2026-02-13 15:18:43',NULL,NULL,NULL),(403,125,'Hambantota Birds Park & Research Centre - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770996063/hgdgzqwnkq56k6swut4t.jpg',1,'2026-02-13 15:21:45',NULL,'2026-02-13 15:21:45',NULL,NULL,NULL),(404,125,'Hambantota Birds Park & Research Centre - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770996079/stysb9ijidobnbxakv2d.jpg',1,'2026-02-13 15:21:45',NULL,'2026-02-13 15:21:45',NULL,NULL,NULL),(405,125,'Hambantota Birds Park & Research Centre - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770996094/ft6gmzepwisby1engcgm.jpg',1,'2026-02-13 15:21:45',NULL,'2026-02-13 15:21:45',NULL,NULL,NULL),(406,126,'Kataragama Dewalaya - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770996554/yfpi0uycgm99v8diqj0g.jpg',1,'2026-02-13 15:30:02',NULL,'2026-02-13 15:30:02',NULL,NULL,NULL),(407,126,'Kataragama Dewalaya - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770996567/ezxpcvet7cwbut0dklmf.jpg',1,'2026-02-13 15:30:02',NULL,'2026-02-13 15:30:02',NULL,NULL,NULL),(408,126,'Kataragama Dewalaya - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770996582/rvxokom5fekppnpbedtg.jpg',1,'2026-02-13 15:30:02',NULL,'2026-02-13 15:30:02',NULL,NULL,NULL),(409,127,'Udawalawe National Park Safari with Elephant Transit Home - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770996789/g1nnn1dfbav9y9a90tzg.jpg',1,'2026-02-13 15:33:43',NULL,'2026-02-13 15:33:43',NULL,NULL,NULL),(410,127,'Udawalawe National Park Safari with Elephant Transit Home - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770996801/o1ewbvfvylm0ql93xq3y.jpg',1,'2026-02-13 15:33:43',NULL,'2026-02-13 15:33:43',NULL,NULL,NULL),(411,127,'Udawalawe National Park Safari with Elephant Transit Home - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770996812/nnngsn3ulqmwiyvope6w.jpg',1,'2026-02-13 15:33:43',NULL,'2026-02-13 15:33:43',NULL,NULL,NULL),(412,128,'Pearl Bay Theme Park - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770996995/mubimj3jo2ess8d5d7py.webp',1,'2026-02-13 15:37:23',NULL,'2026-02-13 15:37:23',NULL,NULL,NULL),(413,128,'Pearl Bay Theme Park - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770997006/iogxta8zhdc2jzpqk95d.jpg',1,'2026-02-13 15:37:23',NULL,'2026-02-13 15:37:23',NULL,NULL,NULL),(414,128,'Pearl Bay Theme Park - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770997018/fzao54yiotr6sjijo76c.jpg',1,'2026-02-13 15:37:23',NULL,'2026-02-13 15:37:23',NULL,NULL,NULL),(415,128,'Pearl Bay Theme Park - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770997031/m4lgh0c42lydtapfvfh2.webp',1,'2026-02-13 15:37:23',NULL,'2026-02-13 15:37:23',NULL,NULL,NULL),(416,129,'Kande Viharaya Temple - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770997169/hefckfmfbh5hqtj5qwi5.jpg',1,'2026-02-13 15:40:06',NULL,'2026-02-13 15:40:06',NULL,NULL,NULL),(417,129,'Kande Viharaya Temple - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770997181/z7ptmoz1adqavphxx303.jpg',1,'2026-02-13 15:40:06',NULL,'2026-02-13 15:40:06',NULL,NULL,NULL),(418,129,'Kande Viharaya Temple - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770997194/mrevwthit4vqngbufmdn.jpg',1,'2026-02-13 15:40:06',NULL,'2026-02-13 15:40:06',NULL,NULL,NULL),(419,130,'Lunuganga Estate - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770997570/doryokwicsbhvk6gr4hu.jpg',1,'2026-02-13 15:46:26',NULL,'2026-02-13 15:46:26',NULL,NULL,NULL),(420,130,'Lunuganga Estate - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770997491/huew0vos1juqj6mbpqjb.jpg',1,'2026-02-13 15:46:26',NULL,'2026-02-13 15:46:26',NULL,NULL,NULL),(421,130,'Lunuganga Estate - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770997516/vhwt7zhnggsutsnfl6s3.jpg',1,'2026-02-13 15:46:26',NULL,'2026-02-13 15:46:26',NULL,NULL,NULL),(422,131,'Sri Lankan Stilt Fishermen - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770997751/i8fgpsdztcyhbm2xcffw.jpg',1,'2026-02-13 15:50:14',NULL,'2026-02-13 15:50:14',NULL,NULL,NULL),(423,131,'Sri Lankan Stilt Fishermen - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770997762/kltbviyunidyc721qojt.jpg',1,'2026-02-13 15:50:14',NULL,'2026-02-13 15:50:14',NULL,NULL,NULL),(424,131,'Sri Lankan Stilt Fishermen - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770997776/wtanmvoqnxwo1g6zcetg.jpg',1,'2026-02-13 15:50:14',NULL,'2026-02-13 15:50:14',NULL,NULL,NULL),(425,131,'Sri Lankan Stilt Fishermen - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770997802/sxgjgxikba5nb0liy8lm.jpg',1,'2026-02-13 15:50:14',NULL,'2026-02-13 15:50:14',NULL,NULL,NULL),(426,132,'Water Sports Adventure - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770998032/ggj3vvtlfu5lb98bn54l.jpg',1,'2026-02-13 15:55:04',NULL,'2026-02-13 15:55:04',NULL,NULL,NULL),(427,132,'Water Sports Adventure - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770998045/lovcd22xa6vn46ejn0wy.jpg',1,'2026-02-13 15:55:04',NULL,'2026-02-13 15:55:04',NULL,NULL,NULL),(428,132,'Water Sports Adventure - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770998061/jld4jn3gbl20selg3qak.jpg',1,'2026-02-13 15:55:04',NULL,'2026-02-13 15:55:04',NULL,NULL,NULL),(429,132,'Water Sports Adventure - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770998080/fsncvdosffamlmlufwgb.jpg',1,'2026-02-13 15:55:04',NULL,'2026-02-13 15:55:04',NULL,NULL,NULL),(430,132,'Water Sports Adventure - 5',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770998091/ssgbdozrl1omx3tkndd6.webp',1,'2026-02-13 15:55:04',NULL,'2026-02-13 15:55:04',NULL,NULL,NULL),(431,133,'Kosgoda Turtle Hatchery - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770998339/aur1az5c11ttz7cm4jpw.jpg',1,'2026-02-13 16:00:07',NULL,'2026-02-13 16:00:07',NULL,NULL,NULL),(432,133,'Kosgoda Turtle Hatchery - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770998353/sbrhhlrepsi5ujramg36.png',1,'2026-02-13 16:00:07',NULL,'2026-02-13 16:00:07',NULL,NULL,NULL),(433,133,'Kosgoda Turtle Hatchery - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770998365/z0184lxltno0ekaku8hi.jpg',1,'2026-02-13 16:00:07',NULL,'2026-02-13 16:00:07',NULL,NULL,NULL),(434,133,'Kosgoda Turtle Hatchery - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770998379/bum4qledermmw1p8mexj.jpg',1,'2026-02-13 16:00:07',NULL,'2026-02-13 16:00:07',NULL,NULL,NULL),(435,133,'Kosgoda Turtle Hatchery - 5',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770998393/mt3sx4ad20bdxgrmowze.webp',1,'2026-02-13 16:00:07',NULL,'2026-02-13 16:00:07',NULL,NULL,NULL),(436,134,'Madu River Boat Safari - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770998547/hw71onofqsior4ofug3n.jpg',1,'2026-02-13 16:03:33',NULL,'2026-02-13 16:03:33',NULL,NULL,NULL),(437,134,'Madu River Boat Safari - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770998560/bhuovvvlxesreghu8ccg.jpg',1,'2026-02-13 16:03:33',NULL,'2026-02-13 16:03:33',NULL,NULL,NULL),(438,134,'Madu River Boat Safari - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770998572/adhmtbb10rwtibqbqajn.jpg',1,'2026-02-13 16:03:33',NULL,'2026-02-13 16:03:33',NULL,NULL,NULL),(439,134,'Madu River Boat Safari - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770998584/l8wardzmsvw4dnxx4b1x.jpg',1,'2026-02-13 16:03:33',NULL,'2026-02-13 16:03:33',NULL,NULL,NULL),(440,134,'Madu River Boat Safari - 5',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770998596/bzdezokuncmg9tc7ex2o.jpg',1,'2026-02-13 16:03:33',NULL,'2026-02-13 16:03:33',NULL,NULL,NULL),(441,135,'Madu River Fish Farm & Fish Therapy - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770998769/suqmbnj94bqrntvrj6ym.jpg',1,'2026-02-13 16:06:35',NULL,'2026-02-13 16:06:35',NULL,NULL,NULL),(442,135,'Madu River Fish Farm & Fish Therapy - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770998785/f7z4kzvst3rrrpuzoivj.jpg',1,'2026-02-13 16:06:35',NULL,'2026-02-13 16:06:35',NULL,NULL,NULL),(443,136,'Galle City Tour - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770999010/bbr6fo4eyc64zx60tjqr.webp',1,'2026-02-13 16:11:19',NULL,'2026-02-13 16:11:19',NULL,NULL,NULL),(444,136,'Galle City Tour - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770999026/w8pwjchet7sodldavmhh.webp',1,'2026-02-13 16:11:19',NULL,'2026-02-13 16:11:19',NULL,NULL,NULL),(445,136,'Galle City Tour - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770999038/pqbhuxdag6aehvgb5srz.webp',1,'2026-02-13 16:11:19',NULL,'2026-02-13 16:11:19',NULL,NULL,NULL),(446,136,'Galle City Tour - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770999051/vihd3wo0ulupyjod9tz7.jpg',1,'2026-02-13 16:11:19',NULL,'2026-02-13 16:11:19',NULL,NULL,NULL),(447,136,'Galle City Tour - 5',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770999064/n8wwmpqrl9bttyd2udf4.jpg',1,'2026-02-13 16:11:19',NULL,'2026-02-13 16:11:19',NULL,NULL,NULL),(448,137,'Moonstone Mine Bentota - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770999230/r7czwlsnus5umrk4zt70.jpg',1,'2026-02-13 16:14:49',NULL,'2026-02-13 16:14:49',NULL,NULL,NULL),(449,137,'Moonstone Mine Bentota - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770999265/aywpifynkrxk74qudzz3.jpg',1,'2026-02-13 16:14:49',NULL,'2026-02-13 16:14:49',NULL,NULL,NULL),(450,137,'Moonstone Mine Bentota - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770999277/czinwumsrq0sspe9c7eh.jpg',1,'2026-02-13 16:14:49',NULL,'2026-02-13 16:14:49',NULL,NULL,NULL),(451,138,'Relaxing on Bentota Beach - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770999458/tjxqufzawpngmn2rrgav.jpg',1,'2026-02-13 16:18:28',NULL,'2026-02-13 16:18:28',NULL,NULL,NULL),(452,138,'Relaxing on Bentota Beach - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770999475/j1uui4i2l5d5srgr77gl.jpg',1,'2026-02-13 16:18:28',NULL,'2026-02-13 16:18:28',NULL,NULL,NULL),(453,138,'Relaxing on Bentota Beach - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770999495/fhqpvaz6acbinkze63ri.jpg',1,'2026-02-13 16:18:28',NULL,'2026-02-13 16:18:28',NULL,NULL,NULL),(454,139,'Brief Garden - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770999670/tno8ynkb2htgboyzhdzp.jpg',1,'2026-02-13 16:22:33',NULL,'2026-02-13 16:22:33',NULL,NULL,NULL),(455,139,'Brief Garden - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770999684/ndvqzma2rtemmubz9iiz.jpg',1,'2026-02-13 16:22:33',NULL,'2026-02-13 16:22:33',NULL,NULL,NULL),(456,139,'Brief Garden - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770999703/djh9uftu92flkd7kk5ch.jpg',1,'2026-02-13 16:22:33',NULL,'2026-02-13 16:22:33',NULL,NULL,NULL),(457,139,'Brief Garden - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770999724/clr3jbtqq06bow0vkgc9.jpg',1,'2026-02-13 16:22:33',NULL,'2026-02-13 16:22:33',NULL,NULL,NULL),(458,139,'Brief Garden - 5',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770999739/emeibdoavzci61msczvv.jpg',1,'2026-02-13 16:22:33',NULL,'2026-02-13 16:22:33',NULL,NULL,NULL),(459,140,'Sri Lankan Stilt Fishermen - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771000194/eaqfyj1qllie3pp6wsqw.jpg',1,'2026-02-13 16:30:49',NULL,'2026-02-13 16:30:49',NULL,NULL,NULL),(460,140,'Sri Lankan Stilt Fishermen - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771000209/kqhrjnc4ruswcq1djyrq.jpg',1,'2026-02-13 16:30:49',NULL,'2026-02-13 16:30:49',NULL,NULL,NULL),(461,140,'Sri Lankan Stilt Fishermen - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771000222/sutpucnkscqwnqdwq1ym.jpg',1,'2026-02-13 16:30:49',NULL,'2026-02-13 16:30:49',NULL,NULL,NULL),(462,140,'Sri Lankan Stilt Fishermen - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771000237/svoackqf0gpwutol7pob.jpg',1,'2026-02-13 16:30:49',NULL,'2026-02-13 16:30:49',NULL,NULL,NULL),(463,141,'Galle Dutch Fort City Walk - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771000402/o949o47pner5etzeemqv.jpg',1,'2026-02-13 16:34:40',NULL,'2026-02-13 16:34:40',NULL,NULL,NULL),(464,141,'Galle Dutch Fort City Walk - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771000419/sy9025cvc7hpq2x2piqk.jpg',1,'2026-02-13 16:34:40',NULL,'2026-02-13 16:48:29',NULL,NULL,NULL),(465,141,'Galle Dutch Fort City Walk - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771000438/nuhnllb1laxkv2ovqjtt.jpg',1,'2026-02-13 16:34:40',NULL,'2026-02-13 16:48:29',NULL,NULL,NULL),(466,141,'Galle Dutch Fort City Walk - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771000454/bxgixtalvvmcgyy6mmwt.jpg',1,'2026-02-13 16:34:40',NULL,'2026-02-13 16:48:29',NULL,NULL,NULL),(467,141,'Galle Dutch Fort City Walk - 5',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771000469/x1jfbmskpkdawqf2qgkv.jpg',1,'2026-02-13 16:34:40',NULL,'2026-02-13 16:48:29',NULL,NULL,NULL),(468,142,'Galle National Museum - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771000588/cn5dfnl6v0bvdgvob4sa.jpg',1,'2026-02-13 16:36:36',NULL,'2026-02-13 16:48:29',NULL,NULL,NULL),(469,143,'Galle Fort Post Office - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771000696/bzq9laf2se9jtcjvb4a9.jpg',1,'2026-02-13 16:38:46',NULL,'2026-02-13 16:48:29',NULL,NULL,NULL),(470,143,'Galle Fort Post Office - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771000706/yfxxhtrxzlsmrc6aihsi.jpg',1,'2026-02-13 16:38:46',NULL,'2026-02-13 16:48:29',NULL,NULL,NULL),(471,143,'Galle Fort Post Office - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771000716/bwnvc1un4mtvdy0aiaqa.jpg',1,'2026-02-13 16:38:46',NULL,'2026-02-13 16:48:29',NULL,NULL,NULL),(472,144,'Galle Library - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771000839/fxqhwuttpcvsn7dbqspp.jpg',1,'2026-02-13 16:41:00',NULL,'2026-02-13 16:48:29',NULL,NULL,NULL),(473,144,'Galle Library - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771000851/ejgprogpdtjsqrgznn6p.webp',1,'2026-02-13 16:41:00',NULL,'2026-02-13 16:48:29',NULL,NULL,NULL),(474,145,'Dutch Reformed Church (Groote Kerk) - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771000973/abjjxpgsxriiq1c53mh3.jpg',1,'2026-02-13 16:43:11',NULL,'2026-02-13 16:48:29',NULL,NULL,NULL),(475,145,'Dutch Reformed Church (Groote Kerk) - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771000983/uqzrg8fadswfwidyugzb.jpg',1,'2026-02-13 16:43:11',NULL,'2026-02-13 16:48:29',NULL,NULL,NULL),(476,146,'Galle Lighthouse - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771001091/dwia9hqspjrmesp5twnu.jpg',1,'2026-02-13 16:45:11',NULL,'2026-02-13 16:48:29',NULL,NULL,NULL),(477,146,'Galle Lighthouse - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771001102/jfokbk8grjskcdvdqvbg.jpg',1,'2026-02-13 16:45:11',NULL,'2026-02-13 16:48:29',NULL,NULL,NULL),(478,147,'National Maritime Museum - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771001286/j4obwhxxlozfjbpfpyzc.jpg',1,'2026-02-13 16:48:29',NULL,'2026-02-13 16:48:29',NULL,NULL,NULL),(479,147,'National Maritime Museum - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771001300/lmjwa4nrlfcg56fnzqtv.jpg',1,'2026-02-13 16:48:29',NULL,'2026-02-13 16:48:29',NULL,NULL,NULL),(480,148,'Rumassala Temple (Sanjeewani Mountain) - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771001409/sonw3hlttsihj9ntbco1.webp',1,'2026-02-13 16:50:19',NULL,'2026-02-13 16:50:19',NULL,NULL,NULL),(481,149,'Ariyapala Mask Museum & Factory - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771001888/if5gg1zyw2hscfou7qal.jpg',1,'2026-02-13 16:58:37',NULL,'2026-02-13 16:58:37',NULL,NULL,NULL),(482,149,'Ariyapala Mask Museum & Factory - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771001897/wft4i7vzayln4fyuxa0x.jpg',1,'2026-02-13 16:58:37',NULL,'2026-02-13 16:58:37',NULL,NULL,NULL),(483,149,'Ariyapala Mask Museum & Factory - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771001907/iuco54mas5uo3r7vpm63.avif',1,'2026-02-13 16:58:37',NULL,'2026-02-13 16:58:37',NULL,NULL,NULL),(484,150,'Moonstone Mines (Meetiyagoda) - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771002053/trat5gwcdr1d65twngf4.jpg',1,'2026-02-13 17:04:47',NULL,'2026-02-13 17:04:47',NULL,NULL,NULL),(485,150,'Moonstone Mines (Meetiyagoda) - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771002064/k5xqopu4zm3j5ehpdz9d.jpg',1,'2026-02-13 17:04:47',NULL,'2026-02-13 17:04:47',NULL,NULL,NULL),(486,151,'Turtle Hatchery - Hikkaduwa - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771002200/br17bqy17inu8utkbabq.jpg',1,'2026-02-13 17:04:47',NULL,'2026-02-13 17:04:47',NULL,NULL,NULL),(487,151,'Turtle Hatchery - Hikkaduwa - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771002215/jtfdho3snynh1gvlt5xp.webp',1,'2026-02-13 17:04:47',NULL,'2026-02-13 17:08:12',NULL,NULL,NULL),(488,151,'Turtle Hatchery - Hikkaduwa - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771002262/wulnrmhgcb8wiznlxwlr.jpg',1,'2026-02-13 17:04:47',NULL,'2026-02-13 17:08:12',NULL,NULL,NULL),(489,151,'Turtle Hatchery - Hikkaduwa - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771002273/kmdskhwdrqu3zcw8nhra.webp',1,'2026-02-13 17:04:47',NULL,'2026-02-13 17:08:12',NULL,NULL,NULL),(490,152,'Madu River Boat Safari - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771002448/bnnxqbrhjm4pldzx4vlj.jpg',1,'2026-02-13 17:08:12',NULL,'2026-02-13 17:08:12',NULL,NULL,NULL),(491,152,'Madu River Boat Safari - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771002459/mxipdid2cl09jlbwoqz8.jpg',1,'2026-02-13 17:08:12',NULL,'2026-02-13 17:08:12',NULL,NULL,NULL),(492,152,'Madu River Boat Safari - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771002470/hzymvl4aevglnf0k4db7.jpg',1,'2026-02-13 17:08:12',NULL,'2026-02-13 17:08:12',NULL,NULL,NULL),(493,152,'Madu River Boat Safari - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771002481/enth3xhmiyrrshaaanp3.jpg',1,'2026-02-13 17:08:12',NULL,'2026-02-13 17:08:12',NULL,NULL,NULL),(494,153,'Water Sports in Unawatuna - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771002637/gjqjgeblr3ffxsqghq82.webp',1,'2026-02-13 17:11:33',NULL,'2026-02-13 17:11:33',NULL,NULL,NULL),(495,153,'Water Sports in Unawatuna - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771002646/emza2kvlhgynppqdkjxv.jpg',1,'2026-02-13 17:11:33',NULL,'2026-02-13 17:11:33',NULL,NULL,NULL),(496,153,'Water Sports in Unawatuna - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771002655/zeynku0mqahsmnspvis5.jpg',1,'2026-02-13 17:11:33',NULL,'2026-02-13 17:11:33',NULL,NULL,NULL),(497,153,'Water Sports in Unawatuna - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771002671/umpj5wtbul1cktyuy1dd.jpg',1,'2026-02-13 17:11:33',NULL,'2026-02-13 17:11:33',NULL,NULL,NULL),(498,153,'Water Sports in Unawatuna - 5',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771002682/ovaacsagjqcbsqx1vbe8.jpg',1,'2026-02-13 17:11:33',NULL,'2026-02-13 17:11:33',NULL,NULL,NULL),(499,154,'Rumassala Sanjeewani Mountain Hike - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771002821/zsc9ctocragfd8ar3r4l.jpg',1,'2026-02-13 17:13:49',NULL,'2026-02-13 17:13:49',NULL,NULL,NULL),(500,155,'Hambantota Birds Park (En Route) - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771003016/jb6kx1ndidkbyfwxwwcf.jpg',1,'2026-02-13 17:17:04',NULL,'2026-02-13 17:17:04',NULL,NULL,NULL),(501,155,'Hambantota Birds Park (En Route) - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771002984/rc4nx0vrj0je9htrhglt.jpg',1,'2026-02-13 17:17:04',NULL,'2026-02-13 17:17:04',NULL,NULL,NULL),(502,155,'Hambantota Birds Park (En Route) - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771002995/tik3txyyxpftmnsk1fwv.jpg',1,'2026-02-13 17:17:04',NULL,'2026-02-13 17:17:04',NULL,NULL,NULL),(503,156,'Tangalle Beach - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771003143/v3htj6pkxlscqookebpr.jpg',1,'2026-02-13 17:20:04',NULL,'2026-02-13 17:20:04',NULL,NULL,NULL),(504,156,'Tangalle Beach - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771003154/ho1fthcpt3ua3cau8wvl.jpg',1,'2026-02-13 17:20:04',NULL,'2026-02-13 17:20:04',NULL,NULL,NULL),(505,156,'Tangalle Beach - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771003166/trgjw97kpg3tylifi8xs.jpg',1,'2026-02-13 17:20:04',NULL,'2026-02-13 17:20:04',NULL,NULL,NULL),(506,156,'Tangalle Beach - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771003177/j9m7x9abvldfxvtuv50y.jpg',1,'2026-02-13 17:20:04',NULL,'2026-02-13 17:20:04',NULL,NULL,NULL),(507,156,'Tangalle Beach - 5',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771003191/zjinvnunrajow4n523bj.jpg',1,'2026-02-13 17:20:04',NULL,'2026-02-13 17:20:04',NULL,NULL,NULL),(508,157,'Whale Watching Safari - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771003547/awa9ul54kwubg2vjb43z.webp',1,'2026-02-13 17:25:57',NULL,'2026-02-13 17:25:57',NULL,NULL,NULL),(509,157,'Whale Watching Safari - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771003529/qsgpuznzusecx9theyqg.jpg',1,'2026-02-13 17:25:57',NULL,'2026-02-13 17:25:57',NULL,NULL,NULL),(510,157,'Whale Watching Safari - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771003516/sqeoxvr6898xeswcisu4.webp',1,'2026-02-13 17:25:57',NULL,'2026-02-13 17:25:57',NULL,NULL,NULL),(511,157,'Whale Watching Safari - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771003471/ffx4b5ximsjk2a22nlgo.jpg',1,'2026-02-13 17:25:57',NULL,'2026-02-13 17:25:57',NULL,NULL,NULL),(512,157,'Whale Watching Safari - 5',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771003502/rshin0v5qja17sfpo7pd.jpg',1,'2026-02-13 17:25:57',NULL,'2026-02-13 17:25:57',NULL,NULL,NULL),(513,158,'Dolphin Watching - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771003835/oqfw5spjcex4wnsiqcdh.jpg',1,'2026-02-13 17:31:27',NULL,'2026-02-13 17:31:27',NULL,NULL,NULL),(514,158,'Dolphin Watching - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771003848/myiriedwlhi60rbt6exu.png',1,'2026-02-13 17:31:27',NULL,'2026-02-13 17:31:27',NULL,NULL,NULL),(515,158,'Dolphin Watching - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771003858/s4ma8msgkihuvzzpjjex.jpg',1,'2026-02-13 17:31:27',NULL,'2026-02-13 17:31:27',NULL,NULL,NULL),(516,158,'Dolphin Watching - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771003867/av6wf1eydrtlhdv9jupc.jpg',1,'2026-02-13 17:31:27',NULL,'2026-02-13 17:31:27',NULL,NULL,NULL),(517,158,'Dolphin Watching - 5',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771003877/b8ftbeb6zougw7sqdltb.jpg',1,'2026-02-13 17:31:27',NULL,'2026-02-13 17:31:27',NULL,NULL,NULL),(518,159,'Surfing & Surf Lessons - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771004023/iwqcaqefkjat9dbqggic.jpg',1,'2026-02-13 17:34:15',NULL,'2026-02-13 17:34:15',NULL,NULL,NULL),(519,159,'Surfing & Surf Lessons - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771004033/r89f3hekmkanzuhkss6t.jpg',1,'2026-02-13 17:34:15',NULL,'2026-02-13 17:34:15',NULL,NULL,NULL),(520,159,'Surfing & Surf Lessons - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771004044/g3vchtwaiizlj9i8chpl.jpg',1,'2026-02-13 17:34:15',NULL,'2026-02-13 17:34:15',NULL,NULL,NULL),(521,160,'Coconut Tree Hill - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771004186/tjowcpshffbnu3kvr3m1.jpg',1,'2026-02-13 17:37:22',NULL,'2026-02-13 17:37:22',NULL,NULL,NULL),(522,160,'Coconut Tree Hill - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771004198/qnto5xkqc915x2leey5p.jpg',1,'2026-02-13 17:37:22',NULL,'2026-02-13 17:37:22',NULL,NULL,NULL),(523,160,'Coconut Tree Hill - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771004209/iqilybvphqpzs9vazclu.jpg',1,'2026-02-13 17:37:22',NULL,'2026-02-13 17:37:22',NULL,NULL,NULL),(524,160,'Coconut Tree Hill - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771004218/wa3sqwtg2bpjjqf3jsbx.jpg',1,'2026-02-13 17:37:22',NULL,'2026-02-13 17:37:22',NULL,NULL,NULL),(525,160,'Coconut Tree Hill - 5',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771004229/jlqfj8ol3msmbihsylin.webp',1,'2026-02-13 17:37:22',NULL,'2026-02-13 17:37:22',NULL,NULL,NULL),(526,161,'Mirissa City Night Walk - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771004365/zxsfwmcn7kjmdgim0m4y.webp',1,'2026-02-13 17:39:53',NULL,'2026-02-13 17:39:53',NULL,NULL,NULL),(527,161,'Mirissa City Night Walk - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771004378/osnjefb6wm1mativat6q.webp',1,'2026-02-13 17:39:53',NULL,'2026-02-13 17:39:53',NULL,NULL,NULL),(528,162,'Secret Beach - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771004524/ratvnhpdkbofkvqzhm63.jpg',1,'2026-02-13 17:42:45',NULL,'2026-02-13 17:42:45',NULL,NULL,NULL),(529,162,'Secret Beach - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771004534/zgi6reerjcfdciihij0m.jpg',1,'2026-02-13 17:42:45',NULL,'2026-02-13 17:42:45',NULL,NULL,NULL),(530,162,'Secret Beach - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771004545/qnyel2gpiawvkwketcq7.jpg',1,'2026-02-13 17:42:45',NULL,'2026-02-13 17:42:45',NULL,NULL,NULL),(531,162,'Secret Beach - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771004554/bshefejiz8p6lybwcej4.jpg',1,'2026-02-13 17:42:45',NULL,'2026-02-13 17:42:45',NULL,NULL,NULL),(532,163,'Turtle Snorkeling - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771004684/kxshxwhjrap1rznvr6rz.jpg',1,'2026-02-13 17:45:36',NULL,'2026-02-13 17:45:36',NULL,NULL,NULL),(533,163,'Turtle Snorkeling - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771004695/l6852zt1bru5selladbd.jpg',1,'2026-02-13 17:45:36',NULL,'2026-02-13 17:45:36',NULL,NULL,NULL),(534,163,'Turtle Snorkeling - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771004705/qzqpso9d4xxm2rqh9nwp.jpg',1,'2026-02-13 17:45:36',NULL,'2026-02-13 17:45:36',NULL,NULL,NULL),(535,163,'Turtle Snorkeling - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771004717/c4a8xwneuuemucwltvlb.webp',1,'2026-02-13 17:45:36',NULL,'2026-02-13 17:45:36',NULL,NULL,NULL),(536,163,'Turtle Snorkeling - 5',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771004726/fnalcmylst7t6qja0uzj.webp',1,'2026-02-13 17:45:36',NULL,'2026-02-13 17:45:36',NULL,NULL,NULL),(537,164,'Parrot Rock - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771004860/s2ge3tpe8jl4oilyfbp4.jpg',1,'2026-02-13 17:48:20',NULL,'2026-02-13 17:48:20',NULL,NULL,NULL),(538,164,'Parrot Rock - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771004871/g7feliw0ilv2ltcwn1js.jpg',1,'2026-02-13 17:48:20',NULL,'2026-02-13 17:48:20',NULL,NULL,NULL),(539,164,'Parrot Rock - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771004882/ckqjyanawz79arjwl2dl.jpg',1,'2026-02-13 17:48:20',NULL,'2026-02-13 17:48:20',NULL,NULL,NULL),(540,164,'Parrot Rock - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771004891/xw3qgszclwupiugx7s2m.jpg',1,'2026-02-13 17:48:20',NULL,'2026-02-13 17:48:20',NULL,NULL,NULL),(541,165,'Stilt Fishermen (Koggala) - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771005072/qq2kq0yes57teicgsted.jpg',1,'2026-02-13 17:51:46',NULL,'2026-02-13 17:51:46',NULL,NULL,NULL),(542,165,'Stilt Fishermen (Koggala) - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771005082/trzvty4xfzrs92ejeaeb.avif',1,'2026-02-13 17:51:46',NULL,'2026-02-13 17:51:46',NULL,NULL,NULL),(543,165,'Stilt Fishermen (Koggala) - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771005093/sbsmxzls9xgd2iwml5br.jpg',1,'2026-02-13 17:51:46',NULL,'2026-02-13 17:51:46',NULL,NULL,NULL),(544,171,'Deep Sea Fishing - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771005523/qqpuzrspkoengup25opu.jpg',1,'2026-02-13 17:59:24',NULL,'2026-02-13 17:59:24',NULL,NULL,NULL),(545,171,'Deep Sea Fishing - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771005535/oag1yjq1rryzh4aemacs.jpg',1,'2026-02-13 17:59:24',NULL,'2026-02-13 17:59:24',NULL,NULL,NULL),(546,171,'Deep Sea Fishing - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771005544/qz2rb0j1cdmu5cbjdfz3.jpg',1,'2026-02-13 17:59:24',NULL,'2026-02-13 17:59:24',NULL,NULL,NULL),(547,171,'Deep Sea Fishing - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771005554/pizkuauqi6movf0l4quq.jpg',1,'2026-02-13 17:59:24',NULL,'2026-02-13 17:59:24',NULL,NULL,NULL),(548,172,'Relaxing on Mirissa Beach - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771005706/gk0swcnxoey2kxythi3n.jpg',1,'2026-02-13 18:02:23',NULL,'2026-02-13 18:02:23',NULL,NULL,NULL),(549,172,'Relaxing on Mirissa Beach - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771005715/fd31ou2mvxoku4qkei3e.png',1,'2026-02-13 18:02:23',NULL,'2026-02-13 18:02:23',NULL,NULL,NULL),(550,172,'Relaxing on Mirissa Beach - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771005725/ij8cxrewyevplvczipll.jpg',1,'2026-02-13 18:02:23',NULL,'2026-02-13 18:02:23',NULL,NULL,NULL),(551,172,'Relaxing on Mirissa Beach - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771005734/fktlgqas7wvjzcc7718b.webp',1,'2026-02-13 18:02:23',NULL,'2026-02-13 18:02:23',NULL,NULL,NULL),(552,173,'Water Sports Adventure - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771005990/tsvljtkhjybqisy4xhve.avif',1,'2026-02-13 18:07:37',NULL,'2026-02-13 18:07:37',NULL,NULL,NULL),(553,173,'Water Sports Adventure - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771006041/aa3rqu4e6qrdcopopc6n.webp',1,'2026-02-13 18:07:37',NULL,'2026-02-13 18:07:37',NULL,NULL,NULL),(554,173,'Water Sports Adventure - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771006010/xohhazeqdfdcqgjhuaqr.jpg',1,'2026-02-13 18:07:37',NULL,'2026-02-13 18:07:37',NULL,NULL,NULL),(555,173,'Water Sports Adventure - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771006019/hz7n2f7dnlwsqo1ntylg.jpg',1,'2026-02-13 18:07:37',NULL,'2026-02-13 18:07:37',NULL,NULL,NULL),(556,173,'Water Sports Adventure - 5',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771006028/qqjftvormkfinaj4uuva.webp',1,'2026-02-13 18:07:37',NULL,'2026-02-13 18:07:37',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `activities_images` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `activities_requirement`
+--
+
+DROP TABLE IF EXISTS `activities_requirement`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `activities_requirement` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `activity_id` int NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `value` varchar(255) DEFAULT NULL,
+  `description` text,
+  `status` int NOT NULL,
+  `color` varchar(50) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `activity_id` (`activity_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `activities_requirement_ibfk_1` FOREIGN KEY (`activity_id`) REFERENCES `activities` (`id`),
+  CONSTRAINT `activities_requirement_ibfk_2` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `activities_requirement`
+--
+
+LOCK TABLES `activities_requirement` WRITE;
+/*!40000 ALTER TABLE `activities_requirement` DISABLE KEYS */;
+/*!40000 ALTER TABLE `activities_requirement` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `activities_review`
+--
+
+DROP TABLE IF EXISTS `activities_review`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `activities_review` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `activity_schedule_id` int NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `review` text,
+  `rating` decimal(3,2) DEFAULT NULL,
+  `description` text,
+  `status` int NOT NULL,
+  `number_of_participate` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `activity_schedule_id` (`activity_schedule_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `activities_review_ibfk_1` FOREIGN KEY (`activity_schedule_id`) REFERENCES `activities_schedule` (`id`),
+  CONSTRAINT `activities_review_ibfk_2` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `activities_review`
+--
+
+LOCK TABLES `activities_review` WRITE;
+/*!40000 ALTER TABLE `activities_review` DISABLE KEYS */;
+/*!40000 ALTER TABLE `activities_review` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `activities_review_images`
+--
+
+DROP TABLE IF EXISTS `activities_review_images`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `activities_review_images` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `activities_review_id` int NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text,
+  `image_url` varchar(500) DEFAULT NULL,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `activities_review_id` (`activities_review_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `activities_review_images_ibfk_1` FOREIGN KEY (`activities_review_id`) REFERENCES `activities_review` (`id`),
+  CONSTRAINT `activities_review_images_ibfk_2` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `activities_review_images`
+--
+
+LOCK TABLES `activities_review_images` WRITE;
+/*!40000 ALTER TABLE `activities_review_images` DISABLE KEYS */;
+/*!40000 ALTER TABLE `activities_review_images` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `activities_schedule`
+--
+
+DROP TABLE IF EXISTS `activities_schedule`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `activities_schedule` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `activity_id` int NOT NULL,
+  `assume_start_date` date DEFAULT NULL,
+  `assume_end_date` date DEFAULT NULL,
+  `duration_hours_start` decimal(5,2) DEFAULT NULL,
+  `duration_hours_end` decimal(5,2) DEFAULT NULL,
+  `special_note` text,
+  `description` text,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `activity_id` (`activity_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `activities_schedule_ibfk_1` FOREIGN KEY (`activity_id`) REFERENCES `activities` (`id`),
+  CONSTRAINT `activities_schedule_ibfk_2` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `activities_schedule`
+--
+
+LOCK TABLES `activities_schedule` WRITE;
+/*!40000 ALTER TABLE `activities_schedule` DISABLE KEYS */;
+/*!40000 ALTER TABLE `activities_schedule` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `activity_category`
+--
+
+DROP TABLE IF EXISTS `activity_category`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `activity_category` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `description` text,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `status` (`status`),
+  CONSTRAINT `activity_category_ibfk_1` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `activity_category`
+--
+
+LOCK TABLES `activity_category` WRITE;
+/*!40000 ALTER TABLE `activity_category` DISABLE KEYS */;
+INSERT INTO `activity_category` VALUES (1,'Adventure','Thrilling outdoor activities like climbing, hiking, and trekking',1,'2025-10-04 16:04:35',1,'2025-10-04 16:04:35',NULL,NULL,NULL),(2,'Water Sports','Ocean and water-based activities including surfing, diving, and snorkeling',1,'2025-10-04 16:04:35',1,'2025-10-04 16:04:35',NULL,NULL,NULL),(3,'Wildlife','Animal watching and safari experiences',1,'2025-10-04 16:04:35',1,'2025-10-04 16:04:35',NULL,NULL,NULL),(4,'Marine Life','Ocean wildlife experiences like whale watching and dolphin tours',1,'2025-10-04 16:04:35',1,'2025-10-04 16:04:35',NULL,NULL,NULL),(5,'Sightseeing','Visiting landmarks, viewpoints, and scenic locations',1,'2025-10-04 16:04:35',1,'2025-10-04 16:04:35',NULL,NULL,NULL),(6,'Hiking','Mountain and nature trail walking activities',1,'2025-10-04 16:04:35',1,'2025-10-04 16:04:35',NULL,NULL,NULL),(7,'Cultural','Temple visits, cultural shows, and heritage experiences',1,'2025-10-04 16:04:35',1,'2025-10-04 16:04:35',NULL,NULL,NULL),(8,'Wellness','Yoga, meditation, spa, and relaxation activities',1,'2025-10-04 16:04:35',1,'2025-10-04 16:04:35',NULL,NULL,NULL),(9,'Photography','Specialized photo tours and sessions',1,'2025-10-04 16:04:35',1,'2025-10-04 16:04:35',NULL,NULL,NULL),(10,'Food & Dining','Culinary experiences, cooking classes, and food tours',1,'2025-10-04 16:04:35',1,'2025-10-04 16:04:35',NULL,NULL,NULL),(11,'Historical','Historical',1,'2025-10-04 16:04:35',1,'2025-10-04 16:04:35',NULL,NULL,NULL),(12,'Tea Trails','Visit working tea plantations, learn about tea processing, and enjoy tastings of world-famous Ceylon tea',1,'2026-02-19 19:15:56',1,'2026-02-19 19:15:56',NULL,NULL,NULL),(13,'Ayurveda','Traditional Sri Lankan healing treatments, herbal massages, and holistic wellness experiences',1,'2026-02-19 19:15:56',1,'2026-02-19 19:15:56',NULL,NULL,NULL),(14,'Bird Watching','Spot exotic bird species in national parks and wetlands - Sri Lanka is a birders paradise',1,'2026-02-19 19:15:56',1,'2026-02-19 19:15:56',NULL,NULL,NULL),(15,'Beach Activities','Relax on pristine beaches, sunbathe, beach volleyball, and coastal walks',1,'2026-02-19 19:15:56',1,'2026-02-19 19:15:56',NULL,NULL,NULL),(16,'Village Experiences','Authentic rural life experiences, village tours, and interactions with local communities',1,'2026-02-19 19:15:56',1,'2026-02-19 19:15:56',NULL,NULL,NULL),(17,'Caving','Explore ancient caves and cave temples with fascinating history and stunning formations',1,'2026-02-19 19:15:56',1,'2026-02-19 19:15:56',NULL,NULL,NULL),(18,'Cycling Tours','Guided bicycle tours through countryside, tea estates, and coastal paths',1,'2026-02-19 19:15:56',1,'2026-02-19 19:15:56',NULL,NULL,NULL),(19,'Fishing','Traditional stilt fishing experiences, deep-sea fishing, and village fishing tours',1,'2026-02-19 19:15:56',1,'2026-02-19 19:15:56',NULL,NULL,NULL),(20,'Railway Journeys','Scenic train rides through hill country, including the famous Kandy to Ella route',1,'2026-02-19 19:15:56',1,'2026-02-19 19:15:56',NULL,NULL,NULL),(21,'Festivals & Events','Experience vibrant cultural festivals, Esala Perahera, and local celebrations',1,'2026-02-19 19:15:56',1,'2026-02-19 19:15:56',NULL,NULL,NULL),(22,'Spice Gardens','Visit aromatic spice gardens, learn about traditional spices and their uses',1,'2026-02-19 19:15:56',1,'2026-02-19 19:15:56',NULL,NULL,NULL),(23,'Waterfalls','Explore stunning waterfalls in hill country, swimming and photography tours',1,'2026-02-19 19:15:56',1,'2026-02-19 19:15:56',NULL,NULL,NULL),(24,'Sunset Cruises','Boat trips on rivers, lakes, and coastal waters with spectacular sunset views',1,'2026-02-19 19:15:56',1,'2026-02-19 19:15:56',NULL,NULL,NULL),(25,'Turtle Watching','Visit turtle hatcheries and watch nesting sites along the southern coast',1,'2026-02-19 19:15:56',1,'2026-02-19 19:15:56',NULL,NULL,NULL),(26,'Rock Climbing','Climb ancient rock fortresses like Sigiriya and other natural rock formations',1,'2026-02-19 19:15:56',1,'2026-02-19 19:15:56',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `activity_category` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `activity_category_images`
+--
+
+DROP TABLE IF EXISTS `activity_category_images`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `activity_category_images` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `activity_category_id` int NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text,
+  `image_url` varchar(500) DEFAULT NULL,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `activity_category_id` (`activity_category_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `activity_category_images_ibfk_1` FOREIGN KEY (`activity_category_id`) REFERENCES `activity_category` (`id`),
+  CONSTRAINT `activity_category_images_ibfk_2` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=121 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `activity_category_images`
+--
+
+LOCK TABLES `activity_category_images` WRITE;
+/*!40000 ALTER TABLE `activity_category_images` DISABLE KEYS */;
+INSERT INTO `activity_category_images` VALUES (41,1,'Rock Climbing at Sigiriya','Scale the ancient rock fortress of Sigiriya with breathtaking views of the surrounding jungle','https://images.unsplash.com/photo-1544191696-102dbdaeeaa0',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(42,1,'Zip Lining in Kitulgala','Soar through the treetops above the rainforest canopy','https://images.unsplash.com/photo-1522163182402-834f871fd851',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(43,1,'Canyoning Adventures','Rappel down waterfalls and navigate through jungle canyons','https://images.unsplash.com/photo-1628741878577-0f3062cd86c2',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(44,2,'Surfing at Arugam Bay','World-class surf breaks perfect for beginners and pros alike','https://images.unsplash.com/photo-1502680390469-be75c86b636f',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(45,2,'Scuba Diving in Hikkaduwa','Explore vibrant coral reefs and colorful marine life','https://images.unsplash.com/photo-1544551763-46a013bb70d5',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(46,2,'Jet Skiing in Bentota','Feel the thrill of speeding across crystal clear waters','https://images.unsplash.com/photo-1507024921866-3ad0eacc3090',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(47,2,'Snorkeling in Pigeon Island','Swim with tropical fish in protected marine sanctuaries','https://images.unsplash.com/photo-1582966928344-2829ab5a8b66',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(48,3,'Leopard Safari in Yala','Spot elusive leopards in their natural habitat','https://images.unsplash.com/photo-1549366021-9f761d450615',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(49,3,'Elephant Gathering in Minneriya','Witness hundreds of wild elephants at the famous gathering','https://images.unsplash.com/photo-1523802005156-6e0f988b3d3a',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(50,3,'Sloth Bear Watching','Encounter rare sloth bears in the dry zone forests','https://images.unsplash.com/photo-1534180477871-5d6cc81f3920',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(51,4,'Blue Whale Watching in Mirissa','Spot the largest animal on earth off the southern coast','https://images.unsplash.com/photo-1568430731210-1f9ae78183c1',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(52,4,'Dolphin Tours in Kalpitiya','Watch playful dolphins dance in the waves','https://images.unsplash.com/photo-1607153862303-ce8ebc3a5e12',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(53,4,'Turtle Snorkeling','Swim gracefully with sea turtles in clear waters','https://images.unsplash.com/photo-1573556184942-6d3a3e2b8b5e',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(54,5,'Nine Arches Bridge Ella','Iconic colonial-era bridge surrounded by misty hills','https://images.unsplash.com/photo-1625811180091-73c7bb8c7c5f',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(55,5,'Sigiriya Rock Fortress','Ancient palace ruins atop a massive rock column','https://images.unsplash.com/photo-1590212869245-5b2c09f1b70b',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(56,5,'Little Adam\'s Peak View','Panoramic views of Ella Gap and tea plantations','https://images.unsplash.com/photo-1579232088694-9a1cdc74b27f',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(57,6,'Adam\'s Peak Pilgrimage','Sacred mountain climb to see the sunrise','https://images.unsplash.com/photo-1586696986435-23af6d3c5b08',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(58,6,'Horton Plains Trek','Walk to the breathtaking World\'s End cliff','https://images.unsplash.com/photo-1551632811-56196c1c2f24',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(59,6,'Knuckles Mountain Range','Trek through misty peaks and cloud forests','https://images.unsplash.com/photo-1464822759023-fed622ff2c3b',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(60,7,'Temple of the Tooth Kandy','Sacred Buddhist temple housing Buddha\'s tooth relic','https://images.unsplash.com/photo-1590212154058-ccddd1f0003e',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(61,7,'Traditional Kandyan Dance','Watch vibrant cultural performances','https://images.unsplash.com/photo-1547153760-18fc86324498',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(62,7,'Dambulla Cave Temple','Ancient cave complex with stunning Buddha statues','https://images.unsplash.com/photo-1590212869245-5b2c09f1b70b',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(63,8,'Sunrise Yoga in Beach','Morning yoga sessions with ocean views','https://images.unsplash.com/photo-1545205597-3d9d02c29597',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(64,8,'Ayurvedic Spa Treatment','Traditional Sri Lankan healing massages','https://images.unsplash.com/photo-1544161515-4ab6ce6db874',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(65,8,'Meditation Retreat','Find inner peace in tranquil settings','https://images.unsplash.com/photo-1528319721701-598ab5a6d9a6',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(66,9,'Sunset at Galle Fort','Capture golden hour at historic Dutch fort','https://images.unsplash.com/photo-1589394815804-964ed0be2eb5',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(67,9,'Tea Estate Photography','Rolling green hills of Nuwara Eliya','https://images.unsplash.com/photo-1579232088694-9a1cdc74b27f',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(68,9,'Bird Photography Safari','Capture exotic birds in their habitat','https://images.unsplash.com/photo-1607355731390-5e18b7740a3a',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(69,10,'Sri Lankan Rice & Curry','Authentic local meal with aromatic spices','https://images.unsplash.com/photo-1604329760661-e71dc83f8f26',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(70,10,'Cooking Class Experience','Learn to prepare traditional dishes','https://images.unsplash.com/photo-1507048331197-7d4ac70811cf',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(71,10,'Fresh Seafood Beach Dinner','Dine on fresh catch with ocean views','https://images.unsplash.com/photo-1565299585323-38d6b0865b47',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(72,10,'Kottu Roti Making','Try the famous Sri Lankan street food','https://images.unsplash.com/photo-1606491956689-2ea866880c84',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(73,11,'Anuradhapura Ancient City','Sacred ruins of ancient Sri Lankan civilization','https://images.unsplash.com/photo-1590212154058-ccd1ddb7d5b6',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(74,11,'Polonnaruwa Ruins','Medieval capital with impressive stone carvings','https://images.unsplash.com/photo-1590212869245-5b2c09f1b70b',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(75,11,'Galle Fort','Colonial-era fort with Dutch architecture','https://images.unsplash.com/photo-1589394815804-964ed0be2eb5',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(76,12,'Tea Plucking Experience','Learn to pick tea leaves with workers','https://images.unsplash.com/photo-1579232088694-9a1cdc74b27f',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(77,12,'Tea Factory Tour','See how Ceylon tea is processed','https://images.unsplash.com/photo-1565796884245-9e3b1d4b4b9b',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(78,12,'Tea Tasting Session','Sample different tea varieties','https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(79,13,'Herbal Oil Massage','Traditional therapeutic massage','https://images.unsplash.com/photo-1544161515-4ab6ce6db874',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(80,13,'Ayurvedic Consultation','Personalized wellness assessment','https://images.unsplash.com/photo-1506126613408-eca07ce68773',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(81,13,'Herbal Steam Bath','Detoxifying traditional treatment','https://images.unsplash.com/photo-1581091226033-d5c48150dbaa',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(82,14,'Endemic Birds of Sri Lanka','Spot unique bird species','https://images.unsplash.com/photo-1607355731390-5e18b7740a3a',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(83,14,'Bundala National Park','Migratory bird sanctuary','https://images.unsplash.com/photo-1603038401906-9e9ad5f0e0c4',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(84,14,'Kumana Bird Sanctuary','Rare bird watching paradise','https://images.unsplash.com/photo-1555169062-013468b47731',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(85,15,'Palm-Fringed Beaches','Relax under swaying palm trees','https://images.unsplash.com/photo-1589394815804-964ed0be2eb5',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(86,15,'Sunset Beach Walk','Evening strolls on golden sand','https://images.unsplash.com/photo-1507525428034-b723cf961d3e',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(87,15,'Beach Volleyball','Fun games on the shore','https://images.unsplash.com/photo-1520943248699-6f8c6c6c0b8b',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(88,16,'Village Bull Cart Ride','Traditional transport experience','https://images.unsplash.com/photo-1587486913049-53fe6b26295b',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(89,16,'Paddy Field Visit','See traditional farming methods','https://images.unsplash.com/photo-1590212154058-ccd1ddb7d5b6',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(90,16,'Village Cooking Demo','Learn home-style Sri Lankan cooking','https://images.unsplash.com/photo-1507048331197-7d4ac70811cf',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(91,17,'Bell Lena Cave','Ancient prehistoric cave site','https://images.unsplash.com/photo-1590212869245-5b2c09f1b70b',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(92,17,'Wavulpone Cave','Bat cave with stunning formations','https://images.unsplash.com/photo-1590212154058-ccd1ddb7d5b6',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(93,17,'Hidden Cave Temple','Secret meditation caves','https://images.unsplash.com/photo-1590212869245-5b2c09f1b70b',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(94,18,'Countryside Cycling','Pedal through rural villages','https://images.unsplash.com/photo-1507035895480-2b3156c31fc8',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(95,18,'Coastal Bike Trail','Ride along palm-fringed shores','https://images.unsplash.com/photo-1517649763962-0c623066013b',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(96,18,'Tea Estate Cycling','Mountain biking in hill country','https://images.unsplash.com/photo-1571068316344-75bc76f77890',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(97,19,'Stilt Fishing Experience','Try traditional fishing methods','https://images.unsplash.com/photo-1589394815804-964ed0be2eb5',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(98,19,'Deep Sea Fishing','Catch big game fish','https://images.unsplash.com/photo-1568430731210-1f9ae78183c1',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(99,19,'Village Lake Fishing','Peaceful freshwater fishing','https://images.unsplash.com/photo-1587486913049-53fe6b26295b',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(100,20,'Kandy to Ella Train','World\'s most scenic train ride','https://images.unsplash.com/photo-1625811180091-73c7bb8c7c5f',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(101,20,'Colombo to Galle','Coastal railway adventure','https://images.unsplash.com/photo-1589394815804-964ed0be2eb5',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(102,20,'Badulla Train Ride','Misty mountain journey','https://images.unsplash.com/photo-1579232088694-9a1cdc74b27f',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(103,21,'Esala Perahera Kandy','Grand cultural procession','https://images.unsplash.com/photo-1590212154058-ccd1ddb7d5b6',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(104,21,'Sinhala New Year','Traditional celebrations','https://images.unsplash.com/photo-1604329760661-e71dc83f8f26',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(105,21,'Vesak Festival','Lanterns and illuminations','https://images.unsplash.com/photo-1590212869245-5b2c09f1b70b',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(106,22,'Cinnamon Plantation','See Sri Lanka\'s famous spice','https://images.unsplash.com/photo-1604329760661-e71dc83f8f26',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(107,22,'Spice Garden Tour','Learn about medicinal spices','https://images.unsplash.com/photo-1590212154058-ccd1ddb7d5b6',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(108,22,'Pepper Plantation','Black pepper cultivation','https://images.unsplash.com/photo-1587486913049-53fe6b26295b',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(109,23,'Ramboda Falls','Spectacular multi-tiered waterfall','https://images.unsplash.com/photo-1579232088694-9a1cdc74b27f',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(110,23,'Diyaluma Falls','Swim in natural pools','https://images.unsplash.com/photo-1586696986435-23af6d3c5b08',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(111,23,'Bopath Ella','Heart-shaped waterfall','https://images.unsplash.com/photo-1551632811-56196c1c2f24',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(112,24,'Madu River Safari','Mangrove forest boat ride','https://images.unsplash.com/photo-1589394815804-964ed0be2eb5',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(113,24,'Bentota River Cruise','Sunset on calm waters','https://images.unsplash.com/photo-1507525428034-b723cf961d3e',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(114,24,'Negombo Lagoon Tour','Bird watching boat trip','https://images.unsplash.com/photo-1587486913049-53fe6b26295b',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(115,25,'Turtle Hatchery Visit','See baby turtles','https://images.unsplash.com/photo-1573556184942-6d3a3e2b8b5e',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(116,25,'Turtle Nesting Site','Witness turtles laying eggs','https://images.unsplash.com/photo-1582966928344-2829ab5a8b66',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(117,25,'Turtle Release','Release hatchlings to sea','https://images.unsplash.com/photo-1573556184942-6d3a3e2b8b5e',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(118,26,'Sigiriya Rock Climb','Ancient fortress ascent','https://images.unsplash.com/photo-1590212869245-5b2c09f1b70b',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(119,26,'Pidurangala Climb','Sunrise rock climbing','https://images.unsplash.com/photo-1544191696-102dbdaeeaa0',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL),(120,26,'Ritigala Monastery','Ancient mountain monastery','https://images.unsplash.com/photo-1590212154058-ccd1ddb7d5b6',1,'2026-02-19 19:18:38',1,'2026-02-19 19:18:38',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `activity_category_images` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `activity_hero_section`
+--
+
+DROP TABLE IF EXISTS `activity_hero_section`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `activity_hero_section` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `image_url` varchar(255) NOT NULL,
+  `title` varchar(100) DEFAULT NULL,
+  `subtitle` varchar(150) DEFAULT NULL,
+  `description` text,
+  `primary_button_text` varchar(50) DEFAULT NULL,
+  `primary_button_link` varchar(255) DEFAULT NULL,
+  `secondary_button_text` varchar(50) DEFAULT NULL,
+  `secondary_button_link` varchar(255) DEFAULT NULL,
+  `status` int NOT NULL,
+  `order` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `status` (`status`),
+  CONSTRAINT `activity_hero_section_ibfk_1` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `activity_hero_section`
+--
+
+LOCK TABLES `activity_hero_section` WRITE;
+/*!40000 ALTER TABLE `activity_hero_section` DISABLE KEYS */;
+INSERT INTO `activity_hero_section` VALUES (1,'Main Activities','https://images.unsplash.com/photo-1586696986435-23af6d3c5b08','Adventure Awaits in Paradise','Discover Thrilling Experiences Across Sri Lanka','From surfing legendary waves to trekking misty mountains, encounter wildlife up close and immerse in ancient culture. Your ultimate adventure begins here.','Explore All Activities','/activities','View Tours','/sri-lankan-tours',1,1,'2026-02-19 19:24:41',1,'2026-02-19 19:24:53',NULL,NULL,NULL),(2,'Wildlife & Safari','https://images.unsplash.com/photo-1549366021-9f761d450615','Into the Wild','Spot Leopards, Elephants & More','Yala National Park, Udawalawe, and Minneriya. Home to some of Asia\'s most incredible wildlife encounters.','Safari Tours','/sri-lankan-tours','Wildlife Guide','/faq',1,2,'2026-02-19 19:24:41',1,'2026-02-19 19:24:53',NULL,NULL,NULL),(3,'Water Sports','https://images.unsplash.com/photo-1502680390469-be75c86b636f','Ride the Waves','Surf, Dive & Snorkel','World-class surfing at Arugam Bay, vibrant coral reefs in Hikkaduwa, and whale watching in Mirissa.','Water Activities','/activities','Beach Destinations','/destinations',1,3,'2026-02-19 19:24:41',1,'2026-02-19 19:24:53',NULL,NULL,NULL),(4,'Cultural Experiences','https://images.unsplash.com/photo-1590212154058-ccddd1f0003e','Ancient Traditions','Temples, Festivals & Heritage','Visit sacred temples, witness traditional dances, and explore ancient kingdoms. 2500 years of living culture.','Cultural Tours','/sri-lankan-tours','Heritage Sites','/destinations',1,4,'2026-02-19 19:24:41',1,'2026-02-19 19:24:53',NULL,NULL,NULL),(5,'Hill Country','https://images.unsplash.com/photo-1579232088694-9a1cdc74b27f','Misty Mountains','Tea, Trains & Trekking','Ride the scenic train to Ella, trek Adam\'s Peak, and explore emerald tea plantations in cool mountain air.','Hill Country Tours','/sri-lankan-tours','Travel Tips','/faq',1,5,'2026-02-19 19:24:41',1,'2026-02-19 19:24:53',NULL,NULL,NULL),(6,'Adventure Sports','https://images.unsplash.com/photo-1544191696-102dbdaeeaa0','Thrill Seekers','Raft, Climb & Zip-line','White water rafting in Kitulgala, rock climbing at Sigiriya, and canyoning through hidden waterfalls.','Adventure Activities','/activities','Book Now','/contact-us',1,6,'2026-02-19 19:24:41',1,'2026-02-19 19:24:53',NULL,NULL,NULL),(7,'Food & Wellness','https://images.unsplash.com/photo-1604329760661-e71dc83f8f26','Flavors & Healing','Cuisine, Spas & Ayurveda','Learn Sri Lankan cooking, experience authentic Ayurvedic treatments, and practice yoga by the beach.','Wellness Packages','/packages','Food Tours','/activities',1,7,'2026-02-19 19:24:41',1,'2026-02-19 19:24:53',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `activity_hero_section` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `activity_review_comment`
+--
+
+DROP TABLE IF EXISTS `activity_review_comment`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `activity_review_comment` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `activity_review_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `parent_comment_id` int DEFAULT NULL,
+  `comment` text NOT NULL,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `activity_review_id` (`activity_review_id`),
+  KEY `user_id` (`user_id`),
+  KEY `parent_comment_id` (`parent_comment_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `activity_review_comment_ibfk_1` FOREIGN KEY (`activity_review_id`) REFERENCES `activities_review` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `activity_review_comment_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `activity_review_comment_ibfk_3` FOREIGN KEY (`parent_comment_id`) REFERENCES `activity_review_comment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `activity_review_comment_ibfk_4` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `activity_review_comment`
+--
+
+LOCK TABLES `activity_review_comment` WRITE;
+/*!40000 ALTER TABLE `activity_review_comment` DISABLE KEYS */;
+/*!40000 ALTER TABLE `activity_review_comment` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `activity_review_comment_reaction`
+--
+
+DROP TABLE IF EXISTS `activity_review_comment_reaction`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `activity_review_comment_reaction` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `comment_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `reaction_type_id` int NOT NULL,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_comment_user_reaction` (`comment_id`,`user_id`),
+  KEY `user_id` (`user_id`),
+  KEY `reaction_type_id` (`reaction_type_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `activity_review_comment_reaction_ibfk_1` FOREIGN KEY (`comment_id`) REFERENCES `activity_review_comment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `activity_review_comment_reaction_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `activity_review_comment_reaction_ibfk_3` FOREIGN KEY (`reaction_type_id`) REFERENCES `reaction_type` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `activity_review_comment_reaction_ibfk_4` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `activity_review_comment_reaction`
+--
+
+LOCK TABLES `activity_review_comment_reaction` WRITE;
+/*!40000 ALTER TABLE `activity_review_comment_reaction` DISABLE KEYS */;
+/*!40000 ALTER TABLE `activity_review_comment_reaction` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `activity_review_reaction`
+--
+
+DROP TABLE IF EXISTS `activity_review_reaction`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `activity_review_reaction` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `activity_review_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `reaction_type_id` int NOT NULL,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_review_user_reaction` (`activity_review_id`,`user_id`),
+  KEY `user_id` (`user_id`),
+  KEY `reaction_type_id` (`reaction_type_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `activity_review_reaction_ibfk_1` FOREIGN KEY (`activity_review_id`) REFERENCES `activities_review` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `activity_review_reaction_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `activity_review_reaction_ibfk_3` FOREIGN KEY (`reaction_type_id`) REFERENCES `reaction_type` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `activity_review_reaction_ibfk_4` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `activity_review_reaction`
+--
+
+LOCK TABLES `activity_review_reaction` WRITE;
+/*!40000 ALTER TABLE `activity_review_reaction` DISABLE KEYS */;
+/*!40000 ALTER TABLE `activity_review_reaction` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `activity_wishlist`
+--
+
+DROP TABLE IF EXISTS `activity_wishlist`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `activity_wishlist` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `activity_id` int NOT NULL,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `activity_id` (`activity_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `activity_wishlist_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `activity_wishlist_ibfk_2` FOREIGN KEY (`activity_id`) REFERENCES `activities` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `activity_wishlist_ibfk_3` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `activity_wishlist`
+--
+
+LOCK TABLES `activity_wishlist` WRITE;
+/*!40000 ALTER TABLE `activity_wishlist` DISABLE KEYS */;
+/*!40000 ALTER TABLE `activity_wishlist` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `activity_wishlist_history`
+--
+
+DROP TABLE IF EXISTS `activity_wishlist_history`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `activity_wishlist_history` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `activity_id` int NOT NULL,
+  `wishlist_id` int NOT NULL,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `activity_id` (`activity_id`),
+  KEY `wishlist_id` (`wishlist_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `activity_wishlist_history_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `activity_wishlist_history_ibfk_2` FOREIGN KEY (`activity_id`) REFERENCES `activities` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `activity_wishlist_history_ibfk_3` FOREIGN KEY (`wishlist_id`) REFERENCES `activity_wishlist` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `activity_wishlist_history_ibfk_4` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `activity_wishlist_history`
+--
+
+LOCK TABLES `activity_wishlist_history` WRITE;
+/*!40000 ALTER TABLE `activity_wishlist_history` DISABLE KEYS */;
+/*!40000 ALTER TABLE `activity_wishlist_history` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `address`
+--
+
+DROP TABLE IF EXISTS `address`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `address` (
+  `address_id` int NOT NULL AUTO_INCREMENT,
+  `number` varchar(50) DEFAULT NULL,
+  `address_line1` varchar(255) DEFAULT NULL,
+  `address_line2` varchar(255) DEFAULT NULL,
+  `city` varchar(100) DEFAULT NULL,
+  `district` varchar(100) DEFAULT NULL,
+  `province` varchar(100) DEFAULT NULL,
+  `country_id` int DEFAULT NULL,
+  `postal_code` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`address_id`),
+  KEY `country_id` (`country_id`),
+  CONSTRAINT `address_ibfk_1` FOREIGN KEY (`country_id`) REFERENCES `country` (`country_id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `address`
+--
+
+LOCK TABLES `address` WRITE;
+/*!40000 ALTER TABLE `address` DISABLE KEYS */;
+INSERT INTO `address` VALUES (1,'123','Main Street','Apartment 4B','Colombo','Colombo','Western',1,'00100'),(2,'10','MG Road','Koramangala','Bangalore','Bangalore','Karnataka',2,'560095');
+/*!40000 ALTER TABLE `address` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `air_conditioning_types`
+--
+
+DROP TABLE IF EXISTS `air_conditioning_types`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `air_conditioning_types` (
+  `ac_type_id` int NOT NULL AUTO_INCREMENT,
+  `ac_type_name` varchar(50) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `is_active` tinyint(1) DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`ac_type_id`),
+  UNIQUE KEY `ac_type_name` (`ac_type_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `air_conditioning_types`
+--
+
+LOCK TABLES `air_conditioning_types` WRITE;
+/*!40000 ALTER TABLE `air_conditioning_types` DISABLE KEYS */;
+INSERT INTO `air_conditioning_types` VALUES (1,'Manual','Manual air conditioning',1,'2025-11-02 06:13:48',NULL,'2025-11-02 06:13:48',NULL,NULL,NULL),(2,'Automatic Climate','Single-zone automatic climate control',1,'2025-11-02 06:13:48',NULL,'2025-11-02 06:13:48',NULL,NULL,NULL),(3,'Dual-Zone','Dual-zone automatic climate control',1,'2025-11-02 06:13:48',NULL,'2025-11-02 06:13:48',NULL,NULL,NULL),(4,'Tri-Zone','Tri-zone automatic climate control',1,'2025-11-02 06:13:48',NULL,'2025-11-02 06:13:48',NULL,NULL,NULL),(5,'Four-Zone','Four-zone automatic climate control',1,'2025-11-02 06:13:48',NULL,'2025-11-02 06:13:48',NULL,NULL,NULL),(6,'None','No air conditioning',1,'2025-11-02 06:13:48',NULL,'2025-11-02 06:13:48',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `air_conditioning_types` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `amenity_type`
+--
+
+DROP TABLE IF EXISTS `amenity_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `amenity_type` (
+  `amenity_type_id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `description` text,
+  `category` varchar(50) DEFAULT NULL,
+  `icon_class` varchar(100) DEFAULT NULL,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`amenity_type_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `amenity_type_ibfk_1` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `amenity_type`
+--
+
+LOCK TABLES `amenity_type` WRITE;
+/*!40000 ALTER TABLE `amenity_type` DISABLE KEYS */;
+/*!40000 ALTER TABLE `amenity_type` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `benefit_type`
+--
+
+DROP TABLE IF EXISTS `benefit_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `benefit_type` (
+  `benefit_type_id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`benefit_type_id`),
+  KEY `fk_benefit_type_status` (`status_id`),
+  CONSTRAINT `fk_benefit_type_status` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `benefit_type`
+--
+
+LOCK TABLES `benefit_type` WRITE;
+/*!40000 ALTER TABLE `benefit_type` DISABLE KEYS */;
+INSERT INTO `benefit_type` VALUES (10,'Discount on Bookings','Get percentage-based discounts on tours, packages, and activities',1,'2026-02-19 19:31:10',1,'2026-02-19 19:31:10',NULL,NULL,NULL),(11,'Free Upgrades','Complimentary room upgrades, vehicle upgrades, or tour package upgrades',1,'2026-02-19 19:31:10',1,'2026-02-19 19:31:10',NULL,NULL,NULL),(12,'Cashback Rewards','Earn cashback on bookings that can be used for future travel',1,'2026-02-19 19:31:10',1,'2026-02-19 19:31:10',NULL,NULL,NULL),(13,'Exclusive Access','Access to member-only tours, VIP experiences, and special events',1,'2026-02-19 19:31:10',1,'2026-02-19 19:31:10',NULL,NULL,NULL),(14,'Airport Transfers','Complimentary airport pickup or drop-off services',1,'2026-02-19 19:31:10',1,'2026-02-19 19:31:10',NULL,NULL,NULL),(15,'Free Meals','Complimentary breakfast, dinner, or traditional Sri Lankan dining experiences',1,'2026-02-19 19:31:10',1,'2026-02-19 19:31:10',NULL,NULL,NULL),(16,'Activity Vouchers','Free or discounted access to specific activities like safaris, water sports, or cultural shows',1,'2026-02-19 19:31:10',1,'2026-02-19 19:31:10',NULL,NULL,NULL),(17,'Merchandise','Branded merchandise, local handicrafts, or Sri Lankan tea packages',1,'2026-02-19 19:31:10',1,'2026-02-19 19:31:10',NULL,NULL,NULL),(18,'Loyalty Points Multiplier','Earn points faster with multiplier benefits on future bookings',1,'2026-02-19 19:31:10',1,'2026-02-19 19:31:10',NULL,NULL,NULL),(19,'Priority Support','24/7 dedicated customer service and priority assistance',1,'2026-02-19 19:31:10',1,'2026-02-19 19:31:10',NULL,NULL,NULL),(20,'Early Check-in / Late Check-out','Flexible hotel check-in and check-out times subject to availability',1,'2026-02-19 19:31:10',1,'2026-02-19 19:31:10',NULL,NULL,NULL),(21,'Welcome Amenities','Complimentary welcome drinks, fruit baskets, or traditional Sri Lankan treats upon arrival',1,'2026-02-19 19:31:10',1,'2026-02-19 19:31:10',NULL,NULL,NULL),(22,'Spa & Wellness Credits','Complimentary or discounted Ayurvedic treatments, massages, and spa sessions',1,'2026-02-19 19:31:10',1,'2026-02-19 19:31:10',NULL,NULL,NULL),(23,'Photography Package','Free professional photo shoots or discounted photography tours',1,'2026-02-19 19:31:10',1,'2026-02-19 19:31:10',NULL,NULL,NULL),(24,'Travel Insurance','Complimentary or discounted travel insurance coverage',1,'2026-02-19 19:31:10',1,'2026-02-19 19:31:10',NULL,NULL,NULL),(25,'Birthday Specials','Exclusive offers and discounts during birthday month',1,'2026-02-19 19:31:10',1,'2026-02-19 19:31:10',NULL,NULL,NULL),(26,'Referral Bonus','Earn benefits when referring friends and family who book tours',1,'2026-02-19 19:31:10',1,'2026-02-19 19:31:10',NULL,NULL,NULL),(27,'Seasonal Promotions','Special benefits during peak seasons, festivals, and holidays',1,'2026-02-19 19:31:10',1,'2026-02-19 19:31:10',NULL,NULL,NULL),(28,'No Booking Fees','Waived service fees and booking charges for members',1,'2026-02-19 19:31:10',1,'2026-02-19 19:31:10',NULL,NULL,NULL),(29,'Flexible Cancellation','Extended cancellation windows and reduced cancellation fees',1,'2026-02-19 19:31:10',1,'2026-02-19 19:31:10',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `benefit_type` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `blog_bookmarks`
+--
+
+DROP TABLE IF EXISTS `blog_bookmarks`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `blog_bookmarks` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `blog_id` int NOT NULL,
+  `status` int DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `blog_id` (`blog_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `blog_bookmarks_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`),
+  CONSTRAINT `blog_bookmarks_ibfk_2` FOREIGN KEY (`blog_id`) REFERENCES `blogs` (`id`),
+  CONSTRAINT `blog_bookmarks_ibfk_3` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `blog_bookmarks`
+--
+
+LOCK TABLES `blog_bookmarks` WRITE;
+/*!40000 ALTER TABLE `blog_bookmarks` DISABLE KEYS */;
+/*!40000 ALTER TABLE `blog_bookmarks` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `blog_category`
+--
+
+DROP TABLE IF EXISTS `blog_category`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `blog_category` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `status` int DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`),
+  KEY `status` (`status`),
+  CONSTRAINT `blog_category_ibfk_1` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `blog_category`
+--
+
+LOCK TABLES `blog_category` WRITE;
+/*!40000 ALTER TABLE `blog_category` DISABLE KEYS */;
+INSERT INTO `blog_category` VALUES (7,'Travel Tips','Essential advice for foreign travelers visiting Sri Lanka - visas, packing, transportation, money, and safety tips',1,'2026-02-19 19:35:00',1,'2026-02-19 19:35:00',NULL,NULL,NULL),(8,'Destinations','In-depth guides to Sri Lanka\'s most beautiful locations - beaches, mountains, cities, and hidden gems',1,'2026-02-19 19:35:00',1,'2026-02-19 19:35:00',NULL,NULL,NULL),(9,'Cultural Heritage','Explore Sri Lanka\'s rich history, ancient cities, temples, festivals, and traditional customs',1,'2026-02-19 19:35:00',1,'2026-02-19 19:35:00',NULL,NULL,NULL),(10,'Wildlife & Nature','Discover Sri Lanka\'s incredible wildlife - leopards, elephants, whales, birds, and national parks',1,'2026-02-19 19:35:00',1,'2026-02-19 19:35:00',NULL,NULL,NULL),(11,'Food & Cuisine','Sri Lankan culinary adventures - traditional dishes, street food, spice gardens, and cooking classes',1,'2026-02-19 19:35:00',1,'2026-02-19 19:35:00',NULL,NULL,NULL),(12,'Adventure Activities','Thrilling experiences - surfing, hiking, diving, rafting, and other adventure sports',1,'2026-02-19 19:35:00',1,'2026-02-19 19:35:00',NULL,NULL,NULL),(13,'Beach Guides','Complete guides to Sri Lanka\'s pristine beaches - best spots, activities, and beachfront accommodations',1,'2026-02-19 19:35:00',1,'2026-02-19 19:35:00',NULL,NULL,NULL),(14,'Hill Country','Tea plantations, scenic train rides, cool climate escapes, and mountain trekking',1,'2026-02-19 19:35:00',1,'2026-02-19 19:35:00',NULL,NULL,NULL),(15,'Travel Inspiration','Stories, photo essays, and personal experiences to inspire your Sri Lankan journey',1,'2026-02-19 19:35:00',1,'2026-02-19 19:35:00',NULL,NULL,NULL),(16,'Sustainable Travel','Eco-tourism, responsible travel tips, community projects, and conservation efforts',1,'2026-02-19 19:35:00',1,'2026-02-19 19:35:00',NULL,NULL,NULL),(17,'Festivals & Events','Cultural celebrations, religious festivals, and special events throughout the year',1,'2026-02-19 19:35:00',1,'2026-02-19 19:35:00',NULL,NULL,NULL),(18,'Accommodation Guide','Reviews and guides to hotels, villas, eco-lodges, and boutique stays across Sri Lanka',1,'2026-02-19 19:35:00',1,'2026-02-19 19:35:00',NULL,NULL,NULL),(19,'Itinerary Ideas','Sample travel plans for different durations - 5 days, 1 week, 2 weeks, and custom routes',1,'2026-02-19 19:35:00',1,'2026-02-19 19:35:00',NULL,NULL,NULL),(20,'Seasonal Travel','Best times to visit, weather guides, monsoon seasons, and seasonal activities',1,'2026-02-19 19:35:00',1,'2026-02-19 19:35:00',NULL,NULL,NULL),(21,'Travel Stories','Personal travel experiences, guest posts, and traveler testimonials',1,'2026-02-19 19:35:00',1,'2026-02-19 19:35:00',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `blog_category` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `blog_comment_reactions`
+--
+
+DROP TABLE IF EXISTS `blog_comment_reactions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `blog_comment_reactions` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `comment_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `reaction_type_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  `status` int NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`),
+  KEY `fk_comment_reactions_user` (`user_id`),
+  KEY `fk_comment_reactions_type` (`reaction_type_id`),
+  KEY `idx_comment_id` (`comment_id`),
+  CONSTRAINT `fk_comment_reactions_comment` FOREIGN KEY (`comment_id`) REFERENCES `blog_comments` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_comment_reactions_type` FOREIGN KEY (`reaction_type_id`) REFERENCES `blog_reactions_types` (`id`),
+  CONSTRAINT `fk_comment_reactions_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `blog_comment_reactions`
+--
+
+LOCK TABLES `blog_comment_reactions` WRITE;
+/*!40000 ALTER TABLE `blog_comment_reactions` DISABLE KEYS */;
+/*!40000 ALTER TABLE `blog_comment_reactions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `blog_comments`
+--
+
+DROP TABLE IF EXISTS `blog_comments`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `blog_comments` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `blog_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `parent_comment_id` int DEFAULT NULL,
+  `comment` text NOT NULL,
+  `comment_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `status` int DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `blog_id` (`blog_id`),
+  KEY `parent_comment_id` (`parent_comment_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `blog_comments_ibfk_1` FOREIGN KEY (`blog_id`) REFERENCES `blogs` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `blog_comments_ibfk_2` FOREIGN KEY (`parent_comment_id`) REFERENCES `blog_comments` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `blog_comments_ibfk_3` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `blog_comments`
+--
+
+LOCK TABLES `blog_comments` WRITE;
+/*!40000 ALTER TABLE `blog_comments` DISABLE KEYS */;
+/*!40000 ALTER TABLE `blog_comments` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `blog_hero_section`
+--
+
+DROP TABLE IF EXISTS `blog_hero_section`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `blog_hero_section` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `image_url` varchar(255) NOT NULL,
+  `title` varchar(100) DEFAULT NULL,
+  `subtitle` varchar(150) DEFAULT NULL,
+  `description` text,
+  `primary_button_text` varchar(50) DEFAULT NULL,
+  `primary_button_link` varchar(255) DEFAULT NULL,
+  `secondary_button_text` varchar(50) DEFAULT NULL,
+  `secondary_button_link` varchar(255) DEFAULT NULL,
+  `status` int NOT NULL,
+  `order` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `status` (`status`),
+  CONSTRAINT `blog_hero_section_ibfk_1` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `blog_hero_section`
+--
+
+LOCK TABLES `blog_hero_section` WRITE;
+/*!40000 ALTER TABLE `blog_hero_section` DISABLE KEYS */;
+INSERT INTO `blog_hero_section` VALUES (6,'Main Blog Hero','https://images.unsplash.com/photo-1589394815804-964ed0be2eb5','Sri Lanka Travel Blog','Stories, Tips & Inspiration','Discover insider guides, travel tips, and stories from the pearl of the Indian Ocean. Your ultimate resource for planning the perfect Sri Lankan adventure.','Read All Posts','/blog','Subscribe','/contact-us',1,1,'2026-02-19 19:37:00',1,'2026-02-19 19:37:00',NULL,NULL,NULL),(7,'Travel Tips','https://images.unsplash.com/photo-1508672019048-805c876b67e2','Plan Like a Pro','Essential Travel Tips','Visa information, best times to visit, packing lists, and money-saving tips. Everything you need to know before you go.','Travel Guide','/faq','Explore Destinations','/destinations',1,2,'2026-02-19 19:37:00',1,'2026-02-19 19:37:00',NULL,NULL,NULL),(8,'Hidden Gems','https://images.unsplash.com/photo-1586696986435-23af6d3c5b08','Off the Beaten Path','Secret Spots & Local Favorites','Discover lesser-known beaches, quiet villages, and hidden waterfalls. Experience the Sri Lanka most tourists never see.','Hidden Gems','/blog?category=hidden-gems','Contact Us','/contact-us',1,3,'2026-02-19 19:37:00',1,'2026-02-19 19:37:00',NULL,NULL,NULL),(9,'Cultural Insights','https://images.unsplash.com/photo-1590212154058-ccddd1f0003e','Culture & Traditions','Festivals, Customs & Heritage','Deep dive into Sri Lankan culture. Learn about festivals, traditions, and the rich history that shapes this beautiful island.','Cultural Stories','/blog?category=culture','Heritage Tours','/sri-lankan-tours',1,4,'2026-02-19 19:37:00',1,'2026-02-19 19:37:00',NULL,NULL,NULL),(10,'Food Stories','https://images.unsplash.com/photo-1604329760661-e71dc83f8f26','Flavors of Ceylon','A Culinary Journey','Explore Sri Lanka through its food. From street food to fine dining, recipes to restaurant reviews.','Food Blog','/blog?category=food','Cooking Classes','/activities',1,5,'2026-02-19 19:37:00',1,'2026-02-19 19:37:00',NULL,NULL,NULL),(11,'Adventure Diaries','https://images.unsplash.com/photo-1544191696-102dbdaeeaa0','Adventure Stories','Trails, Waves & Wild Encounters','First-hand accounts of surfing Arugam Bay, trekking Adam\'s Peak, and safari adventures in Yala.','Adventure Posts','/blog?category=adventure','Book Activities','/activities',1,6,'2026-02-19 19:37:00',1,'2026-02-19 19:37:00',NULL,NULL,NULL),(12,'Traveler Interviews','https://images.unsplash.com/photo-1507525428034-b723cf961d3e','Traveler Stories','Real Experiences from Real People','Read inspiring stories from fellow travelers who\'ve explored Sri Lanka. Their tips, experiences, and favorite memories.','Read Stories','/blog?category=stories','Share Your Story','/contact-us',1,7,'2026-02-19 19:37:00',1,'2026-02-19 19:37:00',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `blog_hero_section` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `blog_images`
+--
+
+DROP TABLE IF EXISTS `blog_images`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `blog_images` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `blog_id` int NOT NULL,
+  `image_url` varchar(500) DEFAULT NULL,
+  `status` int DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `blog_id` (`blog_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `blog_images_ibfk_1` FOREIGN KEY (`blog_id`) REFERENCES `blogs` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `blog_images_ibfk_2` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `blog_images`
+--
+
+LOCK TABLES `blog_images` WRITE;
+/*!40000 ALTER TABLE `blog_images` DISABLE KEYS */;
+/*!40000 ALTER TABLE `blog_images` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `blog_likes`
+--
+
+DROP TABLE IF EXISTS `blog_likes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `blog_likes` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `blog_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `reaction_type_id` int NOT NULL DEFAULT '1',
+  `status` int DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `blog_id` (`blog_id`),
+  KEY `status` (`status`),
+  KEY `fk_blog_likes_reaction_type` (`reaction_type_id`),
+  CONSTRAINT `blog_likes_ibfk_1` FOREIGN KEY (`blog_id`) REFERENCES `blogs` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `blog_likes_ibfk_2` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`),
+  CONSTRAINT `fk_blog_likes_reaction_type` FOREIGN KEY (`reaction_type_id`) REFERENCES `blog_reactions_types` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `blog_likes`
+--
+
+LOCK TABLES `blog_likes` WRITE;
+/*!40000 ALTER TABLE `blog_likes` DISABLE KEYS */;
+/*!40000 ALTER TABLE `blog_likes` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `blog_reactions_types`
+--
+
+DROP TABLE IF EXISTS `blog_reactions_types`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `blog_reactions_types` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `emoji` varchar(10) NOT NULL,
+  `common_status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_blog_react_types_status` (`common_status_id`),
+  CONSTRAINT `fk_blog_react_types_status` FOREIGN KEY (`common_status_id`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `blog_reactions_types`
+--
+
+LOCK TABLES `blog_reactions_types` WRITE;
+/*!40000 ALTER TABLE `blog_reactions_types` DISABLE KEYS */;
+/*!40000 ALTER TABLE `blog_reactions_types` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `blog_tags`
+--
+
+DROP TABLE IF EXISTS `blog_tags`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `blog_tags` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `blog_id` int NOT NULL,
+  `tag_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `blog_id` (`blog_id`,`tag_id`),
+  KEY `tag_id` (`tag_id`),
+  CONSTRAINT `blog_tags_ibfk_1` FOREIGN KEY (`blog_id`) REFERENCES `blogs` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `blog_tags_ibfk_2` FOREIGN KEY (`tag_id`) REFERENCES `tags` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `blog_tags`
+--
+
+LOCK TABLES `blog_tags` WRITE;
+/*!40000 ALTER TABLE `blog_tags` DISABLE KEYS */;
+/*!40000 ALTER TABLE `blog_tags` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `blogs`
+--
+
+DROP TABLE IF EXISTS `blogs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `blogs` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `subtitle` varchar(255) DEFAULT NULL,
+  `description` text,
+  `writer_id` int DEFAULT NULL,
+  `status` int DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  `category_id` int DEFAULT NULL,
+  `views` int DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `status` (`status`),
+  KEY `fk_blog_category` (`category_id`),
+  CONSTRAINT `blogs_ibfk_1` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`),
+  CONSTRAINT `fk_blog_category` FOREIGN KEY (`category_id`) REFERENCES `blog_category` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `blogs`
+--
+
+LOCK TABLES `blogs` WRITE;
+/*!40000 ALTER TABLE `blogs` DISABLE KEYS */;
+/*!40000 ALTER TABLE `blogs` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `booking_accommodation`
+--
+
+DROP TABLE IF EXISTS `booking_accommodation`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `booking_accommodation` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `booking_id` int NOT NULL,
+  `check_in_date` date NOT NULL,
+  `check_out_date` date NOT NULL,
+  `hotel_name` varchar(255) NOT NULL,
+  `room_type` varchar(100) DEFAULT NULL,
+  `room_number` varchar(50) DEFAULT NULL,
+  `confirmation_number` varchar(100) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `booking_id` (`booking_id`),
+  CONSTRAINT `booking_accommodation_ibfk_1` FOREIGN KEY (`booking_id`) REFERENCES `bookings` (`booking_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `booking_accommodation`
+--
+
+LOCK TABLES `booking_accommodation` WRITE;
+/*!40000 ALTER TABLE `booking_accommodation` DISABLE KEYS */;
+/*!40000 ALTER TABLE `booking_accommodation` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `booking_activities`
+--
+
+DROP TABLE IF EXISTS `booking_activities`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `booking_activities` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `booking_id` int NOT NULL,
+  `activity_id` int NOT NULL,
+  `activity_schedule_id` int DEFAULT NULL,
+  `activity_date` date DEFAULT NULL,
+  `start_time` time DEFAULT NULL,
+  `end_time` time DEFAULT NULL,
+  `number_of_participants` int NOT NULL,
+  `price_per_person` decimal(10,2) NOT NULL,
+  `total_price` decimal(10,2) NOT NULL,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `activity_id` (`activity_id`),
+  KEY `activity_schedule_id` (`activity_schedule_id`),
+  KEY `status` (`status`),
+  KEY `idx_booking_activities_booking` (`booking_id`),
+  CONSTRAINT `booking_activities_ibfk_1` FOREIGN KEY (`booking_id`) REFERENCES `bookings` (`booking_id`),
+  CONSTRAINT `booking_activities_ibfk_2` FOREIGN KEY (`activity_id`) REFERENCES `activities` (`id`),
+  CONSTRAINT `booking_activities_ibfk_3` FOREIGN KEY (`activity_schedule_id`) REFERENCES `activities_schedule` (`id`),
+  CONSTRAINT `booking_activities_ibfk_4` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=187 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `booking_activities`
+--
+
+LOCK TABLES `booking_activities` WRITE;
+/*!40000 ALTER TABLE `booking_activities` DISABLE KEYS */;
+/*!40000 ALTER TABLE `booking_activities` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `booking_documents`
+--
+
+DROP TABLE IF EXISTS `booking_documents`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `booking_documents` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `booking_id` int NOT NULL,
+  `document_type` varchar(100) NOT NULL,
+  `document_name` varchar(255) NOT NULL,
+  `document_url` varchar(500) NOT NULL,
+  `file_size` int DEFAULT NULL,
+  `mime_type` varchar(100) DEFAULT NULL,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `status` (`status`),
+  KEY `idx_documents_booking_id` (`booking_id`),
+  CONSTRAINT `booking_documents_ibfk_1` FOREIGN KEY (`booking_id`) REFERENCES `bookings` (`booking_id`),
+  CONSTRAINT `booking_documents_ibfk_2` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `booking_documents`
+--
+
+LOCK TABLES `booking_documents` WRITE;
+/*!40000 ALTER TABLE `booking_documents` DISABLE KEYS */;
+/*!40000 ALTER TABLE `booking_documents` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `booking_insurance`
+--
+
+DROP TABLE IF EXISTS `booking_insurance`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `booking_insurance` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `booking_id` int NOT NULL,
+  `insurance_provider` varchar(255) DEFAULT NULL,
+  `policy_number` varchar(100) DEFAULT NULL,
+  `coverage_type` varchar(100) DEFAULT NULL,
+  `premium_amount` decimal(10,2) DEFAULT NULL,
+  `coverage_details` text,
+  `policy_start_date` date DEFAULT NULL,
+  `policy_end_date` date DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `booking_id` (`booking_id`),
+  CONSTRAINT `booking_insurance_ibfk_1` FOREIGN KEY (`booking_id`) REFERENCES `bookings` (`booking_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `booking_insurance`
+--
+
+LOCK TABLES `booking_insurance` WRITE;
+/*!40000 ALTER TABLE `booking_insurance` DISABLE KEYS */;
+/*!40000 ALTER TABLE `booking_insurance` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `booking_invoices`
+--
+
+DROP TABLE IF EXISTS `booking_invoices`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `booking_invoices` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `booking_id` int NOT NULL,
+  `invoice_number` varchar(100) NOT NULL,
+  `invoice_date` date NOT NULL,
+  `due_date` date NOT NULL,
+  `subtotal` decimal(15,2) NOT NULL,
+  `tax_amount` decimal(15,2) DEFAULT '0.00',
+  `discount_amount` decimal(15,2) DEFAULT '0.00',
+  `total_amount` decimal(15,2) NOT NULL,
+  `amount_paid` decimal(15,2) DEFAULT '0.00',
+  `balance_due` decimal(15,2) NOT NULL,
+  `billing_full_name` varchar(255) NOT NULL,
+  `billing_address` text NOT NULL,
+  `billing_email` varchar(150) NOT NULL,
+  `billing_phone` varchar(20) DEFAULT NULL,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `insurance_amount` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `invoice_number` (`invoice_number`),
+  KEY `status` (`status`),
+  KEY `idx_invoices_booking_id` (`booking_id`),
+  KEY `idx_invoices_number` (`invoice_number`),
+  CONSTRAINT `booking_invoices_ibfk_1` FOREIGN KEY (`booking_id`) REFERENCES `bookings` (`booking_id`),
+  CONSTRAINT `booking_invoices_ibfk_2` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `booking_invoices`
+--
+
+LOCK TABLES `booking_invoices` WRITE;
+/*!40000 ALTER TABLE `booking_invoices` DISABLE KEYS */;
+/*!40000 ALTER TABLE `booking_invoices` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `booking_itinerary`
+--
+
+DROP TABLE IF EXISTS `booking_itinerary`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `booking_itinerary` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `booking_id` int NOT NULL,
+  `day_number` int NOT NULL,
+  `itinerary_date` date NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `description` text,
+  `start_time` time DEFAULT NULL,
+  `end_time` time DEFAULT NULL,
+  `location` varchar(255) DEFAULT NULL,
+  `included_meals` varchar(100) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_itinerary_booking_id` (`booking_id`),
+  CONSTRAINT `booking_itinerary_ibfk_1` FOREIGN KEY (`booking_id`) REFERENCES `bookings` (`booking_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `booking_itinerary`
+--
+
+LOCK TABLES `booking_itinerary` WRITE;
+/*!40000 ALTER TABLE `booking_itinerary` DISABLE KEYS */;
+/*!40000 ALTER TABLE `booking_itinerary` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `booking_notes`
+--
+
+DROP TABLE IF EXISTS `booking_notes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `booking_notes` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `booking_id` int NOT NULL,
+  `note_type` varchar(50) NOT NULL,
+  `note_text` text NOT NULL,
+  `is_important` tinyint(1) DEFAULT '0',
+  `follow_up_date` date DEFAULT NULL,
+  `follow_up_completed` tinyint(1) DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_notes_booking_id` (`booking_id`),
+  CONSTRAINT `booking_notes_ibfk_1` FOREIGN KEY (`booking_id`) REFERENCES `bookings` (`booking_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `booking_notes`
+--
+
+LOCK TABLES `booking_notes` WRITE;
+/*!40000 ALTER TABLE `booking_notes` DISABLE KEYS */;
+/*!40000 ALTER TABLE `booking_notes` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `booking_participants`
+--
+
+DROP TABLE IF EXISTS `booking_participants`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `booking_participants` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `booking_id` int NOT NULL,
+  `first_name` varchar(100) NOT NULL,
+  `last_name` varchar(100) NOT NULL,
+  `date_of_birth` date DEFAULT NULL,
+  `gender_id` int DEFAULT NULL,
+  `passport_number` varchar(50) DEFAULT NULL,
+  `nationality_country_id` int DEFAULT NULL,
+  `email` varchar(150) DEFAULT NULL,
+  `mobile_number` varchar(20) DEFAULT NULL,
+  `emergency_contact_name` varchar(200) DEFAULT NULL,
+  `emergency_contact_phone` varchar(20) DEFAULT NULL,
+  `emergency_contact_relationship` varchar(100) DEFAULT NULL,
+  `medical_conditions` text,
+  `allergies` text,
+  `special_assistance_required` tinyint(1) DEFAULT '0',
+  `assistance_details` text,
+  `room_sharing_with` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `gender_id` (`gender_id`),
+  KEY `nationality_country_id` (`nationality_country_id`),
+  KEY `room_sharing_with` (`room_sharing_with`),
+  KEY `idx_booking_participants_booking` (`booking_id`),
+  CONSTRAINT `booking_participants_ibfk_1` FOREIGN KEY (`booking_id`) REFERENCES `bookings` (`booking_id`),
+  CONSTRAINT `booking_participants_ibfk_2` FOREIGN KEY (`gender_id`) REFERENCES `gender` (`gender_id`),
+  CONSTRAINT `booking_participants_ibfk_3` FOREIGN KEY (`nationality_country_id`) REFERENCES `country` (`country_id`),
+  CONSTRAINT `booking_participants_ibfk_4` FOREIGN KEY (`room_sharing_with`) REFERENCES `booking_participants` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `booking_participants`
+--
+
+LOCK TABLES `booking_participants` WRITE;
+/*!40000 ALTER TABLE `booking_participants` DISABLE KEYS */;
+/*!40000 ALTER TABLE `booking_participants` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `booking_price_breakdown`
+--
+
+DROP TABLE IF EXISTS `booking_price_breakdown`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `booking_price_breakdown` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `booking_id` int NOT NULL,
+  `item_type` varchar(50) NOT NULL,
+  `item_name` varchar(255) NOT NULL,
+  `item_description` text,
+  `quantity` int DEFAULT '1',
+  `unit_price` decimal(10,2) NOT NULL,
+  `total_price` decimal(10,2) NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `booking_id` (`booking_id`),
+  CONSTRAINT `booking_price_breakdown_ibfk_1` FOREIGN KEY (`booking_id`) REFERENCES `bookings` (`booking_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=219 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `booking_price_breakdown`
+--
+
+LOCK TABLES `booking_price_breakdown` WRITE;
+/*!40000 ALTER TABLE `booking_price_breakdown` DISABLE KEYS */;
+/*!40000 ALTER TABLE `booking_price_breakdown` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `booking_status`
+--
+
+DROP TABLE IF EXISTS `booking_status`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `booking_status` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `description` text,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `status` (`status`),
+  CONSTRAINT `booking_status_ibfk_1` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `booking_status`
+--
+
+LOCK TABLES `booking_status` WRITE;
+/*!40000 ALTER TABLE `booking_status` DISABLE KEYS */;
+INSERT INTO `booking_status` VALUES (1,'PENDING','Booking is pending confirmation',1,'2025-11-30 04:38:04',1,'2025-11-30 04:38:04',NULL),(2,'CONFIRMED','Booking has been confirmed',1,'2025-11-30 04:38:04',1,'2025-11-30 04:38:04',NULL),(3,'PAID','Booking has been fully paid',1,'2025-11-30 04:38:04',1,'2025-11-30 04:38:04',NULL),(4,'IN_PROGRESS','Tour is currently ongoing',1,'2025-11-30 04:38:04',1,'2025-11-30 04:38:04',NULL),(5,'BOOKING_COMPLETED','Booking has been completed',1,'2025-11-30 04:38:04',1,'2025-11-30 16:42:17',NULL),(6,'CANCELLED','Booking has been cancelled',1,'2025-11-30 04:38:04',1,'2025-11-30 04:38:04',NULL),(7,'TOUR_COMPLETED','Tour experience finished',1,'2025-11-30 04:38:04',1,'2025-11-30 04:38:04',NULL),(8,'PENDING_INQUIRY','User requested a tour inquiry',1,'2025-11-30 04:38:04',1,'2026-02-19 19:44:49',NULL);
+/*!40000 ALTER TABLE `booking_status` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `booking_transportation`
+--
+
+DROP TABLE IF EXISTS `booking_transportation`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `booking_transportation` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `booking_id` int NOT NULL,
+  `transport_type` varchar(100) NOT NULL,
+  `departure_date` date NOT NULL,
+  `departure_time` time DEFAULT NULL,
+  `arrival_date` date DEFAULT NULL,
+  `arrival_time` time DEFAULT NULL,
+  `departure_location` varchar(255) DEFAULT NULL,
+  `arrival_location` varchar(255) DEFAULT NULL,
+  `carrier_name` varchar(255) DEFAULT NULL,
+  `reference_number` varchar(100) DEFAULT NULL,
+  `seat_numbers` varchar(100) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `booking_id` (`booking_id`),
+  CONSTRAINT `booking_transportation_ibfk_1` FOREIGN KEY (`booking_id`) REFERENCES `bookings` (`booking_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=86 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `booking_transportation`
+--
+
+LOCK TABLES `booking_transportation` WRITE;
+/*!40000 ALTER TABLE `booking_transportation` DISABLE KEYS */;
+/*!40000 ALTER TABLE `booking_transportation` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `bookings`
+--
+
+DROP TABLE IF EXISTS `bookings`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `bookings` (
+  `booking_id` int NOT NULL AUTO_INCREMENT,
+  `booking_reference` varchar(50) NOT NULL,
+  `user_id` int DEFAULT NULL,
+  `package_schedule_id` int DEFAULT NULL,
+  `total_persons` int DEFAULT NULL,
+  `total_amount` decimal(15,2) DEFAULT NULL,
+  `discount_amount` decimal(15,2) DEFAULT '0.00',
+  `tax_amount` decimal(15,2) DEFAULT '0.00',
+  `insurance_amount` decimal(15,2) DEFAULT '0.00',
+  `final_amount` decimal(15,2) DEFAULT NULL,
+  `booking_date` date DEFAULT NULL,
+  `travel_start_date` date DEFAULT NULL,
+  `travel_end_date` date DEFAULT NULL,
+  `booking_status_id` int DEFAULT NULL,
+  `cancellation_reason_id` int DEFAULT NULL,
+  `cancellation_date` timestamp NULL DEFAULT NULL,
+  `cancellation_notes` text,
+  `refund_amount` decimal(15,2) DEFAULT '0.00',
+  `refund_status_id` int DEFAULT NULL,
+  `special_requirements` text,
+  `dietary_restrictions` text,
+  `insurance_required` tinyint(1) DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  `tour_id` int DEFAULT NULL,
+  `package_id` int DEFAULT NULL,
+  PRIMARY KEY (`booking_id`),
+  UNIQUE KEY `booking_reference` (`booking_reference`),
+  KEY `cancellation_reason_id` (`cancellation_reason_id`),
+  KEY `refund_status_id` (`refund_status_id`),
+  KEY `idx_bookings_user_id` (`user_id`),
+  KEY `idx_bookings_package_schedule_id` (`package_schedule_id`),
+  KEY `idx_bookings_status` (`booking_status_id`),
+  KEY `idx_bookings_dates` (`travel_start_date`,`travel_end_date`),
+  KEY `idx_bookings_reference` (`booking_reference`),
+  CONSTRAINT `bookings_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`),
+  CONSTRAINT `bookings_ibfk_2` FOREIGN KEY (`package_schedule_id`) REFERENCES `package_schedule` (`id`),
+  CONSTRAINT `bookings_ibfk_3` FOREIGN KEY (`booking_status_id`) REFERENCES `booking_status` (`id`),
+  CONSTRAINT `bookings_ibfk_4` FOREIGN KEY (`cancellation_reason_id`) REFERENCES `cancellation_reasons` (`id`),
+  CONSTRAINT `bookings_ibfk_5` FOREIGN KEY (`refund_status_id`) REFERENCES `refund_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `bookings`
+--
+
+LOCK TABLES `bookings` WRITE;
+/*!40000 ALTER TABLE `bookings` DISABLE KEYS */;
+/*!40000 ALTER TABLE `bookings` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `browser_history`
+--
+
+DROP TABLE IF EXISTS `browser_history`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `browser_history` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `type` varchar(100) NOT NULL,
+  `data_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `status_id` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `browser_history_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `browser_history_ibfk_2` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `browser_history`
+--
+
+LOCK TABLES `browser_history` WRITE;
+/*!40000 ALTER TABLE `browser_history` DISABLE KEYS */;
+INSERT INTO `browser_history` VALUES (63,'TOUR',25,1,'2026-02-20 05:22:56',1);
+/*!40000 ALTER TABLE `browser_history` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `cancellation_reasons`
+--
+
+DROP TABLE IF EXISTS `cancellation_reasons`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `cancellation_reasons` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `description` text,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `status` (`status`),
+  CONSTRAINT `cancellation_reasons_ibfk_1` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `cancellation_reasons`
+--
+
+LOCK TABLES `cancellation_reasons` WRITE;
+/*!40000 ALTER TABLE `cancellation_reasons` DISABLE KEYS */;
+INSERT INTO `cancellation_reasons` VALUES (6,'Change of Plans','Customer\'s travel dates or destination changed',1,'2026-02-19 19:46:55',1,'2026-02-19 19:46:55',NULL),(7,'Personal Emergency','Family emergency, medical issues, or unforeseen personal circumstances',1,'2026-02-19 19:46:55',1,'2026-02-19 19:46:55',NULL),(8,'Work Commitment','Unable to travel due to work obligations or schedule changes',1,'2026-02-19 19:46:55',1,'2026-02-19 19:46:55',NULL),(9,'Financial Reasons','Budget constraints or unexpected expenses',1,'2026-02-19 19:46:55',1,'2026-02-19 19:46:55',NULL),(10,'Visa Rejection','Visa application was denied by Sri Lankan authorities',1,'2026-02-19 19:46:55',1,'2026-02-19 19:46:55',NULL),(11,'Flight Issues','Flight cancellations, schedule changes, or unable to get flights',1,'2026-02-19 19:46:55',1,'2026-02-19 19:46:55',NULL),(12,'Travel Advisory','Government travel advisory or warning issued',1,'2026-02-19 19:46:55',1,'2026-02-19 19:46:55',NULL),(13,'Weather Concerns','Concerned about monsoon season or weather conditions',1,'2026-02-19 19:46:55',1,'2026-02-19 19:46:55',NULL),(14,'Illness','Customer or family member fell ill before travel',1,'2026-02-19 19:46:55',1,'2026-02-19 19:46:55',NULL),(15,'COVID-19','Tested positive for COVID-19 or exposed to virus',1,'2026-02-19 19:46:55',1,'2026-02-19 19:46:55',NULL),(16,'Travel Insurance Claim','Processing cancellation through travel insurance',1,'2026-02-19 19:46:55',1,'2026-02-19 19:46:55',NULL),(17,'Found Better Deal','Found a more competitive price elsewhere',1,'2026-02-19 19:46:55',1,'2026-02-19 19:46:55',NULL),(18,'Booking Error','Incorrect booking details or dates selected',1,'2026-02-19 19:46:55',1,'2026-02-19 19:46:55',NULL),(19,'Duplicate Booking','Accidentally booked the same tour twice',1,'2026-02-19 19:46:55',1,'2026-02-19 19:46:55',NULL),(20,'Accommodation Issues','Preferred accommodation not available or changed',1,'2026-02-19 19:46:55',1,'2026-02-19 19:46:55',NULL),(21,'Group Size Change','Number of travelers decreased or increased',1,'2026-02-19 19:46:55',1,'2026-02-19 19:46:55',NULL),(22,'Travel Companion Dropout','Friend or family member can no longer travel',1,'2026-02-19 19:46:55',1,'2026-02-19 19:46:55',NULL),(23,'Sri Lanka Security Concerns','Concerns about safety or political situation',1,'2026-02-19 19:46:55',1,'2026-02-19 19:46:55',NULL),(24,'Alternative Destination','Decided to visit another country instead',1,'2026-02-19 19:46:55',1,'2026-02-19 19:46:55',NULL),(25,'Tour Unavailable','Requested tour or package no longer available',1,'2026-02-19 19:46:55',1,'2026-02-19 19:46:55',NULL),(26,'Schedule Conflict','Tour dates don\'t match customer\'s availability',1,'2026-02-19 19:46:55',1,'2026-02-19 19:46:55',NULL),(27,'Payment Issues','Unable to complete payment or payment failed',1,'2026-02-19 19:46:55',1,'2026-02-19 19:46:55',NULL),(28,'No Reason Provided','Customer cancelled without providing specific reason',1,'2026-02-19 19:46:55',1,'2026-02-19 19:46:55',NULL),(29,'Other','Other reasons not covered in the list',1,'2026-02-19 19:46:55',1,'2026-02-19 19:46:55',NULL);
+/*!40000 ALTER TABLE `cancellation_reasons` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `common_status`
+--
+
+DROP TABLE IF EXISTS `common_status`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `common_status` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `common_status`
+--
+
+LOCK TABLES `common_status` WRITE;
+/*!40000 ALTER TABLE `common_status` DISABLE KEYS */;
+INSERT INTO `common_status` VALUES (1,'ACTIVE','Currently active','2025-09-15 16:08:46',1,'2025-09-15 16:08:46',NULL,NULL,NULL),(2,'INACTIVE','Not active','2025-09-15 16:08:46',1,'2025-09-15 16:08:46',NULL,NULL,NULL),(3,'TERMINATED','Terminated or deleted','2025-09-15 16:08:46',1,'2025-09-15 16:08:46',NULL,NULL,NULL),(4,'PENDING','Awaiting action or confirmation','2026-02-19 19:48:59',1,'2026-02-19 19:48:59',NULL,NULL,NULL),(5,'CONFIRMED','Booking or action has been confirmed','2026-02-19 19:48:59',1,'2026-02-19 19:48:59',NULL,NULL,NULL),(6,'COMPLETED','Successfully finished or concluded','2026-02-19 19:48:59',1,'2026-02-19 19:48:59',NULL,NULL,NULL),(7,'CANCELLED','Cancelled by customer or admin','2026-02-19 19:48:59',1,'2026-02-19 19:48:59',NULL,NULL,NULL),(8,'REFUNDED','Payment has been refunded','2026-02-19 19:48:59',1,'2026-02-19 19:48:59',NULL,NULL,NULL),(9,'FAILED','Transaction or action failed','2026-02-19 19:48:59',1,'2026-02-19 19:48:59',NULL,NULL,NULL),(10,'AVAILABLE','Currently available for booking','2026-02-19 19:48:59',1,'2026-02-19 19:48:59',NULL,NULL,NULL),(11,'UNAVAILABLE','Currently not available','2026-02-19 19:48:59',1,'2026-02-19 19:48:59',NULL,NULL,NULL),(12,'LIMITED','Limited availability remaining','2026-02-19 19:48:59',1,'2026-02-19 19:48:59',NULL,NULL,NULL),(13,'SOLD_OUT','Fully booked or sold out','2026-02-19 19:48:59',1,'2026-02-19 19:48:59',NULL,NULL,NULL),(14,'FEATURED','Highlighted or promoted content','2026-02-19 19:48:59',1,'2026-02-19 19:48:59',NULL,NULL,NULL),(15,'POPULAR','Trending or high demand','2026-02-19 19:48:59',1,'2026-02-19 19:48:59',NULL,NULL,NULL),(16,'NEW','Recently added','2026-02-19 19:48:59',1,'2026-02-19 19:48:59',NULL,NULL,NULL),(17,'SPECIAL_OFFER','Special discount or promotion','2026-02-19 19:48:59',1,'2026-02-19 19:48:59',NULL,NULL,NULL),(18,'PENDING_VERIFICATION','Awaiting email or document verification','2026-02-19 19:48:59',1,'2026-02-19 19:48:59',NULL,NULL,NULL),(19,'VERIFIED','Account or email has been verified','2026-02-19 19:48:59',1,'2026-02-19 19:48:59',NULL,NULL,NULL),(20,'SUSPENDED','Temporarily suspended','2026-02-19 19:48:59',1,'2026-02-19 19:48:59',NULL,NULL,NULL),(21,'BANNED','Permanently banned','2026-02-19 19:48:59',1,'2026-02-19 19:48:59',NULL,NULL,NULL),(22,'DRAFT','Saved but not published','2026-02-19 19:48:59',1,'2026-02-19 19:48:59',NULL,NULL,NULL),(23,'PUBLISHED','Published and visible','2026-02-19 19:48:59',1,'2026-02-19 19:48:59',NULL,NULL,NULL),(24,'ARCHIVED','Archived for historical records','2026-02-19 19:48:59',1,'2026-02-19 19:48:59',NULL,NULL,NULL),(25,'PENDING_REVIEW','Awaiting moderation or review','2026-02-19 19:48:59',1,'2026-02-19 19:48:59',NULL,NULL,NULL),(26,'REJECTED','Rejected after review','2026-02-19 19:48:59',1,'2026-02-19 19:48:59',NULL,NULL,NULL),(27,'UPCOMING','Tour scheduled for future dates','2026-02-19 19:48:59',1,'2026-02-19 19:48:59',NULL,NULL,NULL),(28,'ONGOING','Tour currently in progress','2026-02-19 19:48:59',1,'2026-02-19 19:48:59',NULL,NULL,NULL),(29,'PAST','Tour already completed','2026-02-19 19:48:59',1,'2026-02-19 19:48:59',NULL,NULL,NULL),(30,'SEASONAL','Available only during specific seasons','2026-02-19 19:48:59',1,'2026-02-19 19:48:59',NULL,NULL,NULL),(31,'PAID','Payment successfully received','2026-02-19 19:48:59',1,'2026-02-19 19:48:59',NULL,NULL,NULL),(32,'PARTIALLY_PAID','Partial payment received','2026-02-19 19:48:59',1,'2026-02-19 19:48:59',NULL,NULL,NULL),(33,'PENDING_PAYMENT','Awaiting payment','2026-02-19 19:48:59',1,'2026-02-19 19:48:59',NULL,NULL,NULL),(34,'OVERDUE','Payment past due date','2026-02-19 19:48:59',1,'2026-02-19 19:48:59',NULL,NULL,NULL),(35,'APPROVED','Approved for display','2026-02-19 19:48:59',1,'2026-02-19 19:48:59',NULL,NULL,NULL),(36,'PENDING_APPROVAL','Awaiting approval','2026-02-19 19:48:59',1,'2026-02-19 19:48:59',NULL,NULL,NULL),(37,'FLAGGED','Reported for review','2026-02-19 19:48:59',1,'2026-02-19 19:48:59',NULL,NULL,NULL),(38,'NEW_INQUIRY','New customer inquiry received','2026-02-19 19:48:59',1,'2026-02-19 19:48:59',NULL,NULL,NULL),(39,'IN_PROGRESS','Currently being processed','2026-02-19 19:48:59',1,'2026-02-19 19:48:59',NULL,NULL,NULL),(40,'RESOLVED','Issue or inquiry resolved','2026-02-19 19:48:59',1,'2026-02-19 19:48:59',NULL,NULL,NULL),(41,'CLOSED','Ticket or case closed','2026-02-19 19:48:59',1,'2026-02-19 19:48:59',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `common_status` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `component`
+--
+
+DROP TABLE IF EXISTS `component`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `component` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `component`
+--
+
+LOCK TABLES `component` WRITE;
+/*!40000 ALTER TABLE `component` DISABLE KEYS */;
+/*!40000 ALTER TABLE `component` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `component_theme`
+--
+
+DROP TABLE IF EXISTS `component_theme`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `component_theme` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `component_id` int NOT NULL,
+  `theme_name` varchar(100) DEFAULT NULL,
+  `theme_description` varchar(255) DEFAULT NULL,
+  `primary_color` varchar(200) DEFAULT NULL,
+  `secondary_color` varchar(200) DEFAULT NULL,
+  `background_color` varchar(200) DEFAULT NULL,
+  `gradient_enabled` tinyint(1) DEFAULT '0',
+  `gradient_type` varchar(200) DEFAULT NULL,
+  `gradient_direction` varchar(500) DEFAULT NULL,
+  `gradient_start` varchar(200) DEFAULT NULL,
+  `gradient_end` varchar(200) DEFAULT NULL,
+  `text_primary` varchar(500) DEFAULT NULL,
+  `text_secondary` varchar(500) DEFAULT NULL,
+  `banner_image` varchar(255) DEFAULT NULL,
+  `custom_css` text,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `component_id` (`component_id`),
+  CONSTRAINT `component_theme_ibfk_1` FOREIGN KEY (`component_id`) REFERENCES `component` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `component_theme`
+--
+
+LOCK TABLES `component_theme` WRITE;
+/*!40000 ALTER TABLE `component_theme` DISABLE KEYS */;
+/*!40000 ALTER TABLE `component_theme` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `contact_methods`
+--
+
+DROP TABLE IF EXISTS `contact_methods`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `contact_methods` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `title` varchar(100) NOT NULL,
+  `value` varchar(255) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `link` varchar(255) DEFAULT NULL,
+  `action` varchar(50) NOT NULL,
+  `icon` varchar(100) DEFAULT NULL,
+  `status` int DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `status` (`status`),
+  CONSTRAINT `contact_methods_ibfk_1` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `contact_methods`
+--
+
+LOCK TABLES `contact_methods` WRITE;
+/*!40000 ALTER TABLE `contact_methods` DISABLE KEYS */;
+INSERT INTO `contact_methods` VALUES (1,'Call Us','+94 70 707 6052','Main Office Line - 24/7 Available','tel:+94707076052','call','phone',1,'2025-12-13 18:16:36',1,'2026-02-19 19:52:40',NULL,NULL,NULL),(2,'Working Hours','24/7 - Always Open','We are available 24 hours a day, 7 days a week',NULL,'hours','clock',1,'2025-12-13 18:16:36',1,'2026-02-19 19:52:40',NULL,NULL,NULL),(3,'Office Location','351/10 Rajasinghe Mawatha, Hewagama','351/10 Rajasinghe Mawatha, Hewagama, Kaduwela','https://www.google.com/maps?q=6.934799876537762,79.97888470151777','location','location',1,'2025-12-13 18:16:36',1,'2026-02-19 19:55:22',NULL,NULL,NULL),(4,'Email Us','felicitatrips@gmail.com','For general inquiries and bookings','mailto:felicitatrips@gmail.com','email','email',1,'2025-12-13 18:16:36',1,'2026-02-19 19:52:40',NULL,NULL,NULL),(5,'WhatsApp','+94 70 707 6052','Instant chat support on WhatsApp','https://wa.me/94707076052','whatsapp','whatsapp',1,'2025-12-13 18:16:36',1,'2026-02-19 19:52:40',NULL,NULL,NULL),(6,'Emergency','+94 70 707 6052','24/7 Emergency Assistance','tel:+94707076052','emergency','emergency',1,'2025-12-13 18:16:36',1,'2026-02-19 19:52:40',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `contact_methods` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `contact_us_hero_section`
+--
+
+DROP TABLE IF EXISTS `contact_us_hero_section`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `contact_us_hero_section` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `image_url` varchar(255) NOT NULL,
+  `title` varchar(100) DEFAULT NULL,
+  `subtitle` varchar(100) DEFAULT NULL,
+  `description` text,
+  `primary_button_text` varchar(50) DEFAULT NULL,
+  `primary_button_link` varchar(255) DEFAULT NULL,
+  `secondary_button_text` varchar(50) DEFAULT NULL,
+  `secondary_button_link` varchar(255) DEFAULT NULL,
+  `status` int NOT NULL,
+  `order` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `status` (`status`),
+  CONSTRAINT `contact_us_hero_section_ibfk_1` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `contact_us_hero_section`
+--
+
+LOCK TABLES `contact_us_hero_section` WRITE;
+/*!40000 ALTER TABLE `contact_us_hero_section` DISABLE KEYS */;
+INSERT INTO `contact_us_hero_section` VALUES (1,'Contact Hero 1','https://images.unsplash.com/photo-1521791136064-7986c2920216','Contact Us','We’re Here to Help','Get in touch with our travel experts to plan your perfect journey in Sri Lanka. We’re just a message away.','Get In Touch','/about-us','View Packages','/packages',1,1,'2025-12-09 17:27:42',1,'2025-12-13 18:12:21',1,NULL,NULL),(2,'Contact Hero 2','https://images.unsplash.com/photo-1556761175-5973dc0f32e7','Speak With Experts','Professional Travel Assistance','Our Colombo-based team is ready to assist you with personalized travel solutions and expert guidance.','Call Us','/about-us','View Tours','/sri-lankan-tours',1,2,'2025-12-09 17:27:42',1,'2025-12-13 18:12:21',1,NULL,NULL),(3,'Contact Hero 3','https://images.unsplash.com/photo-1517248135467-4c7edcad34c4','Visit Our Office','Meet Us in Colombo','Visit our office to discuss your travel plans face-to-face with certified travel professionals.','Get Directions','/about-us','View Destinations','/destinations',1,3,'2025-12-09 17:27:42',1,'2025-12-13 18:12:21',1,NULL,NULL),(4,'Main Contact Hero','https://images.unsplash.com/photo-1589394815804-964ed0be2eb5','Get in Touch','We\'d Love to Hear From You','Whether you have questions about tours, need help planning your itinerary, or just want to say hello – our team is here to help.','Contact Us','#contact-form','FAQs','/faq',1,1,'2026-02-19 19:58:08',1,'2026-02-19 19:58:08',NULL,NULL,NULL),(5,'Customer Support','https://images.unsplash.com/photo-1507525428034-b723cf961d3e','Customer Support','We\'re Here to Help 24/7','Our dedicated support team is available around the clock to assist with bookings, changes, or any questions during your journey.','Get Support','#support','Emergency Contact','#emergency',1,2,'2026-02-19 19:58:08',1,'2026-02-19 19:58:08',NULL,NULL,NULL),(6,'Business Inquiries','https://images.unsplash.com/photo-1549366021-9f761d450615','Partner With Us','Travel Agents & Collaborations','Interested in partnering with us? We\'re always looking to connect with hotels, guides, and travel professionals.','Business Partnerships','#business','Learn More','/about-us',1,3,'2026-02-19 19:58:08',1,'2026-02-19 19:58:08',NULL,NULL,NULL),(7,'Visit Our Office','https://images.unsplash.com/photo-1590212869245-5b2c09f1b70b','Visit Us in Sri Lanka','Our Colombo Headquarters','Stop by our office for a face-to-face chat. We\'d love to meet you and help plan your perfect Sri Lankan adventure.','Find Us','#map','Get Directions','#map',1,4,'2026-02-19 19:58:08',1,'2026-02-19 19:58:08',NULL,NULL,NULL),(8,'Travel Consultation','https://images.unsplash.com/photo-1579232088694-9a1cdc74b27f','Free Travel Consultation','Plan Your Dream Trip','Book a free consultation with our travel experts. Get personalized advice on destinations, itineraries, and activities.','Book Consultation','#consultation','Browse Tours','/sri-lankan-tours',1,5,'2026-02-19 19:58:08',1,'2026-02-19 19:58:08',NULL,NULL,NULL),(9,'Group Bookings','https://images.unsplash.com/photo-1544191696-102dbdaeeaa0','Group & Corporate Travel','Special Rates for Groups','Planning a group trip or corporate retreat? Contact us for customized packages and exclusive group discounts.','Inquire Now','#group-booking','View Packages','/packages',1,6,'2026-02-19 19:58:08',1,'2026-02-19 19:58:08',NULL,NULL,NULL),(10,'Feedback','https://images.unsplash.com/photo-1604329760661-e71dc83f8f26','Share Your Feedback','Help Us Improve','Traveled with us before? We value your feedback and would love to hear about your experience.','Leave a Review','#feedback','Share Your Story','/blog?category=stories',1,7,'2026-02-19 19:58:08',1,'2026-02-19 19:58:08',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `contact_us_hero_section` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `country`
+--
+
+DROP TABLE IF EXISTS `country`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `country` (
+  `country_id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `country_short_code` varchar(10) DEFAULT NULL,
+  `mobile_code` varchar(10) DEFAULT NULL,
+  `status_id` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`country_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `country_ibfk_1` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=196 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `country`
+--
+
+LOCK TABLES `country` WRITE;
+/*!40000 ALTER TABLE `country` DISABLE KEYS */;
+INSERT INTO `country` VALUES (1,'Sri Lanka','Island country in South Asia','LK','+94',1,'2025-09-21 14:06:10',1,'2026-02-19 20:20:04',NULL,NULL,NULL),(2,'India','Neighboring country','IN','+91',1,'2025-09-21 14:06:10',1,'2026-02-19 20:20:04',NULL,NULL,NULL),(3,'Afghanistan','Country in Asia','AF','+93',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(4,'Albania','Country in Europe','AL','+355',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(5,'Algeria','Country in Africa','DZ','+213',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(6,'Andorra','Country in Europe','AD','+376',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(7,'Angola','Country in Africa','AO','+244',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(8,'Antigua and Barbuda','Country in North America','AG','+1-268',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(9,'Argentina','Country in South America','AR','+54',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(10,'Armenia','Country in Asia','AM','+374',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(11,'Australia','Country in Oceania','AU','+61',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(12,'Austria','Country in Europe','AT','+43',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(13,'Azerbaijan','Country in Asia','AZ','+994',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(14,'Bahamas','Country in North America','BS','+1-242',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(15,'Bahrain','Country in Asia','BH','+973',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(16,'Bangladesh','Country in Asia','BD','+880',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(17,'Barbados','Country in North America','BB','+1-246',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(18,'Belarus','Country in Europe','BY','+375',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(19,'Belgium','Country in Europe','BE','+32',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(20,'Belize','Country in North America','BZ','+501',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(21,'Benin','Country in Africa','BJ','+229',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(22,'Bhutan','Country in Asia','BT','+975',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(23,'Bolivia','Country in South America','BO','+591',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(24,'Bosnia and Herzegovina','Country in Europe','BA','+387',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(25,'Botswana','Country in Africa','BW','+267',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(26,'Brazil','Country in South America','BR','+55',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(27,'Brunei','Country in Asia','BN','+673',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(28,'Bulgaria','Country in Europe','BG','+359',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(29,'Burkina Faso','Country in Africa','BF','+226',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(30,'Burundi','Country in Africa','BI','+257',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(31,'Cambodia','Country in Asia','KH','+855',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(32,'Cameroon','Country in Africa','CM','+237',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(33,'Canada','Country in North America','CA','+1',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(34,'Cape Verde','Country in Africa','CV','+238',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(35,'Central African Republic','Country in Africa','CF','+236',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(36,'Chad','Country in Africa','TD','+235',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(37,'Chile','Country in South America','CL','+56',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(38,'China','Country in Asia','CN','+86',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(39,'Colombia','Country in South America','CO','+57',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(40,'Comoros','Country in Africa','KM','+269',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(41,'Congo','Country in Africa','CG','+242',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(42,'Costa Rica','Country in North America','CR','+506',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(43,'Croatia','Country in Europe','HR','+385',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(44,'Cuba','Country in North America','CU','+53',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(45,'Cyprus','Country in Europe','CY','+357',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(46,'Czech Republic','Country in Europe','CZ','+420',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(47,'Denmark','Country in Europe','DK','+45',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(48,'Djibouti','Country in Africa','DJ','+253',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(49,'Dominica','Country in North America','DM','+1-767',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(50,'Dominican Republic','Country in North America','DO','+1-809',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(51,'Ecuador','Country in South America','EC','+593',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(52,'Egypt','Country in Africa','EG','+20',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(53,'El Salvador','Country in North America','SV','+503',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(54,'Equatorial Guinea','Country in Africa','GQ','+240',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(55,'Eritrea','Country in Africa','ER','+291',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(56,'Estonia','Country in Europe','EE','+372',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(57,'Eswatini','Country in Africa','SZ','+268',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(58,'Ethiopia','Country in Africa','ET','+251',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(59,'Fiji','Country in Oceania','FJ','+679',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(60,'Finland','Country in Europe','FI','+358',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(61,'France','Country in Europe','FR','+33',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(62,'Gabon','Country in Africa','GA','+241',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(63,'Gambia','Country in Africa','GM','+220',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(64,'Georgia','Country in Asia','GE','+995',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(65,'Germany','Country in Europe','DE','+49',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(66,'Ghana','Country in Africa','GH','+233',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(67,'Greece','Country in Europe','GR','+30',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(68,'Grenada','Country in North America','GD','+1-473',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(69,'Guatemala','Country in North America','GT','+502',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(70,'Guinea','Country in Africa','GN','+224',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(71,'Guinea-Bissau','Country in Africa','GW','+245',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(72,'Guyana','Country in South America','GY','+592',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(73,'Haiti','Country in North America','HT','+509',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(74,'Honduras','Country in North America','HN','+504',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(75,'Hungary','Country in Europe','HU','+36',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(76,'Iceland','Country in Europe','IS','+354',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(78,'Indonesia','Country in Asia','ID','+62',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(79,'Iran','Country in Asia','IR','+98',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(80,'Iraq','Country in Asia','IQ','+964',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(81,'Ireland','Country in Europe','IE','+353',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(82,'Israel','Country in Asia','IL','+972',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(83,'Italy','Country in Europe','IT','+39',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(84,'Jamaica','Country in North America','JM','+1-876',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(85,'Japan','Country in Asia','JP','+81',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(86,'Jordan','Country in Asia','JO','+962',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(87,'Kazakhstan','Country in Asia','KZ','+7',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(88,'Kenya','Country in Africa','KE','+254',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(89,'Kiribati','Country in Oceania','KI','+686',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(90,'Kuwait','Country in Asia','KW','+965',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(91,'Kyrgyzstan','Country in Asia','KG','+996',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(92,'Laos','Country in Asia','LA','+856',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(93,'Latvia','Country in Europe','LV','+371',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(94,'Lebanon','Country in Asia','LB','+961',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(95,'Lesotho','Country in Africa','LS','+266',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(96,'Liberia','Country in Africa','LR','+231',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(97,'Libya','Country in Africa','LY','+218',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(98,'Liechtenstein','Country in Europe','LI','+423',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(99,'Lithuania','Country in Europe','LT','+370',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(100,'Luxembourg','Country in Europe','LU','+352',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(101,'Madagascar','Country in Africa','MG','+261',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(102,'Malawi','Country in Africa','MW','+265',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(103,'Malaysia','Country in Asia','MY','+60',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(104,'Maldives','Country in Asia','MV','+960',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(105,'Mali','Country in Africa','ML','+223',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(106,'Malta','Country in Europe','MT','+356',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(107,'Marshall Islands','Country in Oceania','MH','+692',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(108,'Mauritania','Country in Africa','MR','+222',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(109,'Mauritius','Country in Africa','MU','+230',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(110,'Mexico','Country in North America','MX','+52',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(111,'Micronesia','Country in Oceania','FM','+691',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(112,'Moldova','Country in Europe','MD','+373',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(113,'Monaco','Country in Europe','MC','+377',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(114,'Mongolia','Country in Asia','MN','+976',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(115,'Montenegro','Country in Europe','ME','+382',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(116,'Morocco','Country in Africa','MA','+212',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(117,'Mozambique','Country in Africa','MZ','+258',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(118,'Myanmar','Country in Asia','MM','+95',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(119,'Namibia','Country in Africa','NA','+264',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(120,'Nauru','Country in Oceania','NR','+674',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(121,'Nepal','Country in Asia','NP','+977',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(122,'Netherlands','Country in Europe','NL','+31',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(123,'New Zealand','Country in Oceania','NZ','+64',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(124,'Nicaragua','Country in North America','NI','+505',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(125,'Niger','Country in Africa','NE','+227',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(126,'Nigeria','Country in Africa','NG','+234',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(127,'North Korea','Country in Asia','KP','+850',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(128,'North Macedonia','Country in Europe','MK','+389',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(129,'Norway','Country in Europe','NO','+47',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(130,'Oman','Country in Asia','OM','+968',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(131,'Pakistan','Country in Asia','PK','+92',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(132,'Palau','Country in Oceania','PW','+680',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(133,'Panama','Country in North America','PA','+507',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(134,'Papua New Guinea','Country in Oceania','PG','+675',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(135,'Paraguay','Country in South America','PY','+595',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(136,'Peru','Country in South America','PE','+51',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(137,'Philippines','Country in Asia','PH','+63',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(138,'Poland','Country in Europe','PL','+48',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(139,'Portugal','Country in Europe','PT','+351',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(140,'Qatar','Country in Asia','QA','+974',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(141,'Romania','Country in Europe','RO','+40',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(142,'Russia','Country in Europe/Asia','RU','+7',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(143,'Rwanda','Country in Africa','RW','+250',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(144,'Saint Kitts and Nevis','Country in North America','KN','+1-869',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(145,'Saint Lucia','Country in North America','LC','+1-758',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(146,'Saint Vincent and the Grenadines','Country in North America','VC','+1-784',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(147,'Samoa','Country in Oceania','WS','+685',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(148,'San Marino','Country in Europe','SM','+378',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(149,'Sao Tome and Principe','Country in Africa','ST','+239',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(150,'Saudi Arabia','Country in Asia','SA','+966',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(151,'Senegal','Country in Africa','SN','+221',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(152,'Serbia','Country in Europe','RS','+381',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(153,'Seychelles','Country in Africa','SC','+248',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(154,'Sierra Leone','Country in Africa','SL','+232',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(155,'Singapore','Country in Asia','SG','+65',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(156,'Slovakia','Country in Europe','SK','+421',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(157,'Slovenia','Country in Europe','SI','+386',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(158,'Solomon Islands','Country in Oceania','SB','+677',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(159,'Somalia','Country in Africa','SO','+252',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(160,'South Africa','Country in Africa','ZA','+27',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(161,'South Korea','Country in Asia','KR','+82',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(162,'South Sudan','Country in Africa','SS','+211',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(163,'Spain','Country in Europe','ES','+34',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(165,'Sudan','Country in Africa','SD','+249',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(166,'Suriname','Country in South America','SR','+597',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(167,'Sweden','Country in Europe','SE','+46',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(168,'Switzerland','Country in Europe','CH','+41',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(169,'Syria','Country in Asia','SY','+963',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(170,'Taiwan','Country in Asia','TW','+886',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(171,'Tajikistan','Country in Asia','TJ','+992',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(172,'Tanzania','Country in Africa','TZ','+255',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(173,'Thailand','Country in Asia','TH','+66',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(174,'Timor-Leste','Country in Asia','TL','+670',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(175,'Togo','Country in Africa','TG','+228',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(176,'Tonga','Country in Oceania','TO','+676',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(177,'Trinidad and Tobago','Country in North America','TT','+1-868',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(178,'Tunisia','Country in Africa','TN','+216',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(179,'Turkey','Country in Europe/Asia','TR','+90',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(180,'Turkmenistan','Country in Asia','TM','+993',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(181,'Tuvalu','Country in Oceania','TV','+688',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(182,'Uganda','Country in Africa','UG','+256',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(183,'Ukraine','Country in Europe','UA','+380',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(184,'United Arab Emirates','Country in Asia','AE','+971',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(185,'United Kingdom','Country in Europe','GB','+44',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(186,'United States','Country in North America','US','+1',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(187,'Uruguay','Country in South America','UY','+598',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(188,'Uzbekistan','Country in Asia','UZ','+998',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(189,'Vanuatu','Country in Oceania','VU','+678',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(190,'Vatican City','Country in Europe','VA','+379',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(191,'Venezuela','Country in South America','VE','+58',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(192,'Vietnam','Country in Asia','VN','+84',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(193,'Yemen','Country in Asia','YE','+967',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(194,'Zambia','Country in Africa','ZM','+260',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL),(195,'Zimbabwe','Country in Africa','ZW','+263',1,'2026-02-15 05:17:47',NULL,'2026-02-19 20:20:04',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `country` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `coupon`
+--
+
+DROP TABLE IF EXISTS `coupon`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `coupon` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `coupon_code` varchar(50) NOT NULL,
+  `name` varchar(150) NOT NULL,
+  `description` text,
+  `coupon_type_id` int NOT NULL,
+  `status_id` int NOT NULL,
+  `discount_type` enum('percentage','fixed') NOT NULL,
+  `discount_value` decimal(10,2) NOT NULL,
+  `minimum_cart_value` decimal(10,2) DEFAULT '0.00',
+  `maximum_discount` decimal(10,2) DEFAULT NULL,
+  `applicable_id` int NOT NULL,
+  `valid_from` datetime NOT NULL,
+  `valid_until` datetime NOT NULL,
+  `usage_limit_per_coupon` int DEFAULT NULL,
+  `usage_limit_per_user` int DEFAULT '1',
+  `total_usage_count` int DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `coupon_code` (`coupon_code`),
+  KEY `status_id` (`status_id`),
+  KEY `applicable_id` (`applicable_id`),
+  KEY `coupon_type_id` (`coupon_type_id`),
+  CONSTRAINT `coupon_ibfk_1` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`),
+  CONSTRAINT `coupon_ibfk_2` FOREIGN KEY (`applicable_id`) REFERENCES `coupon_applicable` (`id`),
+  CONSTRAINT `coupon_ibfk_3` FOREIGN KEY (`coupon_type_id`) REFERENCES `coupon_type` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `coupon`
+--
+
+LOCK TABLES `coupon` WRITE;
+/*!40000 ALTER TABLE `coupon` DISABLE KEYS */;
+/*!40000 ALTER TABLE `coupon` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `coupon_applicable`
+--
+
+DROP TABLE IF EXISTS `coupon_applicable`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `coupon_applicable` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `description` text,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `coupon_applicable_ibfk_1` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `coupon_applicable`
+--
+
+LOCK TABLES `coupon_applicable` WRITE;
+/*!40000 ALTER TABLE `coupon_applicable` DISABLE KEYS */;
+/*!40000 ALTER TABLE `coupon_applicable` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `coupon_applicable_package`
+--
+
+DROP TABLE IF EXISTS `coupon_applicable_package`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `coupon_applicable_package` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `coupon_id` int NOT NULL,
+  `package_id` int NOT NULL,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_coupon_package` (`coupon_id`,`package_id`),
+  KEY `package_id` (`package_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `coupon_applicable_package_ibfk_1` FOREIGN KEY (`coupon_id`) REFERENCES `coupon` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `coupon_applicable_package_ibfk_2` FOREIGN KEY (`package_id`) REFERENCES `packages` (`package_id`),
+  CONSTRAINT `coupon_applicable_package_ibfk_3` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `coupon_applicable_package`
+--
+
+LOCK TABLES `coupon_applicable_package` WRITE;
+/*!40000 ALTER TABLE `coupon_applicable_package` DISABLE KEYS */;
+/*!40000 ALTER TABLE `coupon_applicable_package` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `coupon_applicable_user_type`
+--
+
+DROP TABLE IF EXISTS `coupon_applicable_user_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `coupon_applicable_user_type` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `coupon_id` int NOT NULL,
+  `user_type_id` int NOT NULL,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_coupon_user_type` (`coupon_id`,`user_type_id`),
+  KEY `user_type_id` (`user_type_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `coupon_applicable_user_type_ibfk_1` FOREIGN KEY (`coupon_id`) REFERENCES `coupon` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `coupon_applicable_user_type_ibfk_2` FOREIGN KEY (`user_type_id`) REFERENCES `user_type` (`user_type_id`),
+  CONSTRAINT `coupon_applicable_user_type_ibfk_3` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `coupon_applicable_user_type`
+--
+
+LOCK TABLES `coupon_applicable_user_type` WRITE;
+/*!40000 ALTER TABLE `coupon_applicable_user_type` DISABLE KEYS */;
+/*!40000 ALTER TABLE `coupon_applicable_user_type` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `coupon_failure_log`
+--
+
+DROP TABLE IF EXISTS `coupon_failure_log`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `coupon_failure_log` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `coupon_code` varchar(50) NOT NULL,
+  `user_id` int DEFAULT NULL,
+  `ip_address` varchar(45) DEFAULT NULL,
+  `user_agent` text,
+  `coupon_failure_reason_id` int NOT NULL,
+  `cart_value` decimal(10,2) DEFAULT NULL,
+  `attempted_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `package_id` int DEFAULT NULL,
+  `additional_info` text,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `package_id` (`package_id`),
+  KEY `coupon_failure_reason_id` (`coupon_failure_reason_id`),
+  CONSTRAINT `coupon_failure_log_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`),
+  CONSTRAINT `coupon_failure_log_ibfk_2` FOREIGN KEY (`package_id`) REFERENCES `packages` (`package_id`),
+  CONSTRAINT `coupon_failure_log_ibfk_3` FOREIGN KEY (`coupon_failure_reason_id`) REFERENCES `coupon_failure_reason` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `coupon_failure_log`
+--
+
+LOCK TABLES `coupon_failure_log` WRITE;
+/*!40000 ALTER TABLE `coupon_failure_log` DISABLE KEYS */;
+/*!40000 ALTER TABLE `coupon_failure_log` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `coupon_failure_reason`
+--
+
+DROP TABLE IF EXISTS `coupon_failure_reason`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `coupon_failure_reason` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `description` text,
+  `category` enum('validation','eligibility','system','usage_limit') NOT NULL,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `coupon_failure_reason_ibfk_1` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `coupon_failure_reason`
+--
+
+LOCK TABLES `coupon_failure_reason` WRITE;
+/*!40000 ALTER TABLE `coupon_failure_reason` DISABLE KEYS */;
+/*!40000 ALTER TABLE `coupon_failure_reason` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `coupon_rule`
+--
+
+DROP TABLE IF EXISTS `coupon_rule`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `coupon_rule` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `coupon_id` int NOT NULL,
+  `coupon_rule_type_id` int NOT NULL,
+  `rule_value` varchar(255) DEFAULT NULL,
+  `operator` enum('equals','greater_than','less_than','between','in_list') DEFAULT NULL,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `coupon_id` (`coupon_id`),
+  KEY `status_id` (`status_id`),
+  KEY `coupon_rule_type_id` (`coupon_rule_type_id`),
+  CONSTRAINT `coupon_rule_ibfk_1` FOREIGN KEY (`coupon_id`) REFERENCES `coupon` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `coupon_rule_ibfk_2` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`),
+  CONSTRAINT `coupon_rule_ibfk_3` FOREIGN KEY (`coupon_rule_type_id`) REFERENCES `coupon_rule_type` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `coupon_rule`
+--
+
+LOCK TABLES `coupon_rule` WRITE;
+/*!40000 ALTER TABLE `coupon_rule` DISABLE KEYS */;
+/*!40000 ALTER TABLE `coupon_rule` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `coupon_rule_type`
+--
+
+DROP TABLE IF EXISTS `coupon_rule_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `coupon_rule_type` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `description` text,
+  `data_type` enum('number','date','string','boolean','list') NOT NULL,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `coupon_rule_type_ibfk_1` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `coupon_rule_type`
+--
+
+LOCK TABLES `coupon_rule_type` WRITE;
+/*!40000 ALTER TABLE `coupon_rule_type` DISABLE KEYS */;
+/*!40000 ALTER TABLE `coupon_rule_type` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `coupon_status`
+--
+
+DROP TABLE IF EXISTS `coupon_status`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `coupon_status` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `description` text,
+  `status_category` enum('allocated','used','expired','cancelled','pending') NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `coupon_status`
+--
+
+LOCK TABLES `coupon_status` WRITE;
+/*!40000 ALTER TABLE `coupon_status` DISABLE KEYS */;
+/*!40000 ALTER TABLE `coupon_status` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `coupon_type`
+--
+
+DROP TABLE IF EXISTS `coupon_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `coupon_type` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `description` text,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `coupon_type_ibfk_1` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `coupon_type`
+--
+
+LOCK TABLES `coupon_type` WRITE;
+/*!40000 ALTER TABLE `coupon_type` DISABLE KEYS */;
+/*!40000 ALTER TABLE `coupon_type` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `coupon_usage_history`
+--
+
+DROP TABLE IF EXISTS `coupon_usage_history`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `coupon_usage_history` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `coupon_user_allocation_id` int NOT NULL,
+  `order_id` int DEFAULT NULL,
+  `package_id` int DEFAULT NULL,
+  `original_amount` decimal(10,2) NOT NULL,
+  `discount_amount` decimal(10,2) NOT NULL,
+  `final_amount` decimal(10,2) NOT NULL,
+  `used_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `coupon_user_allocation_id` (`coupon_user_allocation_id`),
+  KEY `package_id` (`package_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `coupon_usage_history_ibfk_1` FOREIGN KEY (`coupon_user_allocation_id`) REFERENCES `coupon_user_allocation` (`id`),
+  CONSTRAINT `coupon_usage_history_ibfk_2` FOREIGN KEY (`package_id`) REFERENCES `packages` (`package_id`),
+  CONSTRAINT `coupon_usage_history_ibfk_3` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `coupon_usage_history`
+--
+
+LOCK TABLES `coupon_usage_history` WRITE;
+/*!40000 ALTER TABLE `coupon_usage_history` DISABLE KEYS */;
+/*!40000 ALTER TABLE `coupon_usage_history` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `coupon_user_allocation`
+--
+
+DROP TABLE IF EXISTS `coupon_user_allocation`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `coupon_user_allocation` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `coupon_id` int NOT NULL,
+  `coupon_status_id` int NOT NULL,
+  `allocated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `expires_at` datetime NOT NULL,
+  `used_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_coupon_user_allocation` (`user_id`,`coupon_id`),
+  KEY `coupon_id` (`coupon_id`),
+  KEY `coupon_status_id` (`coupon_status_id`),
+  CONSTRAINT `coupon_user_allocation_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`),
+  CONSTRAINT `coupon_user_allocation_ibfk_2` FOREIGN KEY (`coupon_id`) REFERENCES `coupon` (`id`),
+  CONSTRAINT `coupon_user_allocation_ibfk_3` FOREIGN KEY (`coupon_status_id`) REFERENCES `coupon_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `coupon_user_allocation`
+--
+
+LOCK TABLES `coupon_user_allocation` WRITE;
+/*!40000 ALTER TABLE `coupon_user_allocation` DISABLE KEYS */;
+/*!40000 ALTER TABLE `coupon_user_allocation` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `coupon_user_restriction`
+--
+
+DROP TABLE IF EXISTS `coupon_user_restriction`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `coupon_user_restriction` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `coupon_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `restriction_type` enum('whitelist','blacklist') DEFAULT NULL,
+  `reason` text,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_coupon_user_restriction` (`coupon_id`,`user_id`),
+  KEY `user_id` (`user_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `coupon_user_restriction_ibfk_1` FOREIGN KEY (`coupon_id`) REFERENCES `coupon` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `coupon_user_restriction_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`),
+  CONSTRAINT `coupon_user_restriction_ibfk_3` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `coupon_user_restriction`
+--
+
+LOCK TABLES `coupon_user_restriction` WRITE;
+/*!40000 ALTER TABLE `coupon_user_restriction` DISABLE KEYS */;
+/*!40000 ALTER TABLE `coupon_user_restriction` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `currency`
+--
+
+DROP TABLE IF EXISTS `currency`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `currency` (
+  `currency_id` int NOT NULL AUTO_INCREMENT,
+  `currency_code` varchar(3) NOT NULL,
+  `currency_name` varchar(100) NOT NULL,
+  `symbol` varchar(10) DEFAULT NULL,
+  `exchange_rate` decimal(10,4) DEFAULT '1.0000',
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`currency_id`),
+  UNIQUE KEY `currency_code` (`currency_code`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `currency_ibfk_1` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `currency`
+--
+
+LOCK TABLES `currency` WRITE;
+/*!40000 ALTER TABLE `currency` DISABLE KEYS */;
+INSERT INTO `currency` VALUES (6,'USD','US Dollar','$',1.0000,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(7,'EUR','Euro','€',0.9200,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(8,'GBP','British Pound','£',0.7900,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(9,'JPY','Japanese Yen','¥',150.5000,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(10,'CNY','Chinese Yuan','¥',7.1900,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(11,'AUD','Australian Dollar','A$',1.5200,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(12,'CAD','Canadian Dollar','C$',1.3500,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(13,'CHF','Swiss Franc','Fr',0.8800,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(14,'SEK','Swedish Krona','kr',10.4500,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(15,'NOK','Norwegian Krone','kr',10.6200,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(16,'DKK','Danish Krone','kr',6.8600,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(17,'PLN','Polish Złoty','zł',3.9800,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(18,'CZK','Czech Koruna','Kč',23.1500,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(19,'HUF','Hungarian Forint','Ft',360.5000,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(20,'RON','Romanian Leu','lei',4.5700,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(21,'BGN','Bulgarian Lev','лв',1.8000,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(22,'ISK','Icelandic Króna','kr',137.5000,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(23,'INR','Indian Rupee','₹',83.5000,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(24,'SGD','Singapore Dollar','S$',1.3400,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(25,'MYR','Malaysian Ringgit','RM',4.7200,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(26,'THB','Thai Baht','฿',35.8000,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(27,'KRW','South Korean Won','₩',1330.0000,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(28,'HKD','Hong Kong Dollar','HK$',7.8200,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(29,'TWD','New Taiwan Dollar','NT$',31.9000,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(30,'IDR','Indonesian Rupiah','Rp',15600.0000,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(31,'PHP','Philippine Peso','₱',56.2000,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(32,'VND','Vietnamese Đồng','₫',24500.0000,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(33,'PKR','Pakistani Rupee','₨',278.5000,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(34,'BDT','Bangladeshi Taka','৳',109.5000,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(35,'NPR','Nepalese Rupee','₨',133.5000,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(36,'MVR','Maldivian Rufiyaa','Rf',15.4200,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(37,'AED','UAE Dirham','د.إ',3.6700,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(38,'SAR','Saudi Riyal','﷼',3.7500,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(39,'QAR','Qatari Riyal','﷼',3.6400,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(40,'KWD','Kuwaiti Dinar','د.ك',0.3100,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(41,'BHD','Bahraini Dinar','.د.ب',0.3760,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(42,'OMR','Omani Rial','﷼',0.3850,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(43,'JOD','Jordanian Dinar','د.ا',0.7100,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(44,'ILS','Israeli Shekel','₪',3.6500,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(45,'TRY','Turkish Lira','₺',32.4000,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(46,'ZAR','South African Rand','R',18.7500,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(47,'EGP','Egyptian Pound','£',48.5000,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(48,'MUR','Mauritian Rupee','₨',46.2000,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(49,'KES','Kenyan Shilling','KSh',129.5000,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(50,'SCR','Seychellois Rupee','₨',13.8000,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(51,'MAD','Moroccan Dirham','د.م.',9.9500,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(52,'TND','Tunisian Dinar','د.ت',3.1000,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(53,'NZD','New Zealand Dollar','NZ$',1.6300,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(54,'FJD','Fijian Dollar','FJ$',2.2300,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(55,'MXN','Mexican Peso','$',17.0500,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(56,'BRL','Brazilian Real','R$',4.9500,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(57,'ARS','Argentine Peso','$',845.0000,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(58,'CLP','Chilean Peso','$',960.0000,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(59,'COP','Colombian Peso','$',3910.0000,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(60,'PEN','Peruvian Sol','S/',3.7200,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(61,'BTC','Bitcoin','₿',0.0000,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL),(62,'ETH','Ethereum','Ξ',0.0003,1,'2026-02-19 20:27:27',1,'2026-02-19 20:27:27',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `currency` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `destination`
+--
+
+DROP TABLE IF EXISTS `destination`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `destination` (
+  `destination_id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `description` text,
+  `status` int NOT NULL,
+  `destination_category` int DEFAULT NULL,
+  `location` varchar(255) DEFAULT NULL,
+  `latitude` decimal(10,8) DEFAULT NULL,
+  `longitude` decimal(11,8) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  `extra_price` int DEFAULT '0',
+  `extra_price_note` varchar(1000) DEFAULT NULL,
+  PRIMARY KEY (`destination_id`),
+  KEY `destination_category` (`destination_category`),
+  KEY `status` (`status`),
+  CONSTRAINT `destination_ibfk_1` FOREIGN KEY (`destination_category`) REFERENCES `destination_categories` (`id`),
+  CONSTRAINT `destination_ibfk_2` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=86 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `destination`
+--
+
+LOCK TABLES `destination` WRITE;
+/*!40000 ALTER TABLE `destination` DISABLE KEYS */;
+INSERT INTO `destination` VALUES (64,'Sigiriya','The iconic Lion Rock, a UNESCO-listed 5th-century CE fortress and palace complex rising 200m from the central plains. Famous for its ancient frescoes, water gardens, and panoramic views from the summit.',1,3,'Matale, Sri Lanka',7.95700000,80.76030000,'2026-02-10 14:13:08',1,'2026-02-10 14:13:08',NULL,NULL,NULL,35,'Sigriya lion rock and museum'),(65,'Kandy','Nestled in the lush central highlands, Kandy is the soul of Sri Lankan culture. This sacred city, a UNESCO World Heritage site, is home to the revered Temple of the Sacred Tooth Relic, one of Buddhism\'s holiest shrines',1,3,'Kandy, Sri Lanka',7.29362700,80.64135000,'2026-02-10 15:49:06',NULL,'2026-02-10 15:49:06',NULL,NULL,NULL,0,NULL),(66,'Nuwara Eliya','Sri Lanka\'s premier hill country retreat, known as \"Little England\" for its colonial-era bungalows and Tudor-style buildings. Nestled at 1,889 meters elevation, this former British hill station boasts year-round spring-like temperatures (10-19°C), rolling tea plantations established by Scottish planter James Taylor in 1867, and a charming lake. Attractions include Horton Plains National Park with \"World\'s End\" cliff, Hakgala Botanical Garden, and Asia\'s oldest golf course (1889). The region produces world-famous Ceylon high-grown tea, with several working factories open to visitors',1,5,'Central Province, Sri Lanka',6.96940000,80.76970000,'2026-02-12 19:46:25',NULL,'2026-02-13 18:14:44',NULL,NULL,NULL,0,NULL),(67,'Ella','A picturesque mountain village nestled in the central highlands at approximately 1,041 meters above sea level. Famous as the terminus of the world-renowned scenic train journey from Kandy, Ella captivates visitors with its dramatic landscapes—misty mountains carpeted in emerald tea plantations, lush forests, and cascading waterfalls. Key attractions include the iconic Nine Arch Bridge (a 91-meter colonial-era architectural marvel built without steel), the relatively easy trek to Little Adam\'s Peak for panoramic valley views, the more challenging Ella Rock hike (1,348m), and the powerful 25-meter Ravana Falls. The surrounding area is dotted with working tea factories offering tours ',1,5,'Badulla District, Uva Province, Sri Lanka',6.86740000,81.04230000,'2026-02-12 19:52:53',NULL,'2026-02-13 18:14:44',NULL,NULL,NULL,0,NULL),(68,'Yala','Sri Lanka\'s most visited and second-largest national park (spanning 97,880 hectares), renowned for possessing the world\'s highest density of leopards. Nestled in the island\'s southeast corner, the park encompasses a spectacular variety of ecosystems—from monsoon forests and open plains to freshwater lakes and coastal lagoons. It shelters an abundance of wildlife including Asian elephants, sloth bears, wild buffalo, jackals, sambar deer, spotted deer, mugger crocodiles, and over 215 bird species (including several endemics). Ancient archaeological ruins, including 2nd-century BC stupas, lie hidden within the jungle. Block 1 (Ruhuna National Park), dating to 1900, is the most visited area',1,2,'Southern and Uva Provinces, Sri Lanka',6.37280000,81.51690000,'2026-02-12 19:54:57',NULL,'2026-02-13 18:14:44',NULL,NULL,NULL,0,NULL),(69,'Benthota','A dreamy palm-fringed coastal resort town on Sri Lanka\'s southwestern shore, nestled between the Bentota River (Bentara Ganga) and the Indian Ocean. Famous for its golden sandy beaches and water sports, Bentota offers a perfect blend of relaxation and adventure. Highlights include serene river safaris through mangrove forests, visits to the Kosgoda Turtle Hatchery (conserving all five Sri Lankan turtle species), the stunning Lunuganga Estate (country home of renowned architect Geoffrey Bawa), and historic Buddhist temples like Galapatha Viharaya (dating to the 2nd century BC). The town sits at the mouth of the Bentota River, with the former Portuguese/Dutch fort area now housing a rest house with colonial history ',1,4,'Galle District, Southern Province, Sri Lanka',6.42000000,79.99690000,'2026-02-12 19:57:24',NULL,'2026-02-13 18:14:44',NULL,NULL,NULL,0,NULL),(70,'Galle','A vibrant UNESCO World Heritage Site famous for the Galle Fort—the best-preserved European fortification in Asia, originally built by the Portuguese in 1587 and magnificently fortified by the Dutch from 1640 onwards. The fort is a living monument where colonial-era buildings (now housing chic cafes, boutiques, museums, and hotels) coexist harmoniously with courts, schools, and everyday commerce within massive ramparts and bastions. Visitors can stroll cobblestone streets past the Dutch Reformed Church (1755), the Galle Lighthouse (Sri Lanka\'s oldest), the National Maritime Museum (housed in a 1671 VOC warehouse), and enjoy a distinctively Mediterranean atmosphere. Beyond the fort, the region offers golden beaches, rainforest reserves (Kanneliya), and tea experiences',1,3,'Galle District, Southern Province, Sri Lanka',6.03190000,80.21750000,'2026-02-12 19:58:50',NULL,'2026-02-13 18:14:44',NULL,NULL,NULL,0,NULL),(71,'Mirissa','A relaxed seaside town on Sri Lanka\'s southern coast, sitting between Weligama and Matara. While retaining a laid-back, budget-friendly vibe with backpacker accommodation and homestays, Mirissa has gained international fame as the premier whale watching hub—offering 90%+ sighting success rates for blue whales between November and April. The town features beautiful crescent-shaped beaches, the Instagram-famous Coconut Tree Hill (best visited at sunrise), Parrot Rock viewpoint (tide-dependent access), and a \"Secret Beach\" with two secluded coves. It also boasts the largest fishing port on the south coast, ensuring excellent fresh seafood. Accommodation ranges from simple guesthouses to the upcoming Ritz Carlton (projected 2027 opening) ',1,4,'Southern Province, Sri Lanka',5.94500000,80.45200000,'2026-02-12 19:59:09',NULL,'2026-02-13 18:14:44',NULL,NULL,NULL,0,NULL),(72,'Anuradhapura','Ancient capital city with sacred temples and historical ruins',1,3,'Anuradhapura, Sri Lanka',8.31140000,80.40370000,'2026-02-18 16:48:28',NULL,'2026-02-18 16:48:28',NULL,NULL,NULL,0,NULL),(73,'Polonnaruwa','Historic city with ancient ruins and UNESCO heritage sites',1,3,'Polonnaruwa, Sri Lanka',7.94030000,81.01880000,'2026-02-18 16:48:28',NULL,'2026-02-18 16:48:28',NULL,NULL,NULL,0,NULL),(74,'Jaffna','Cultural city known for Tamil heritage, temples, and colonial history',1,3,'Jaffna, Sri Lanka',9.66150000,80.02550000,'2026-02-18 16:48:28',NULL,'2026-02-18 16:48:28',NULL,NULL,NULL,0,NULL),(75,'Colombo','Commercial capital with colonial buildings, temples, and urban attractions',1,3,'Colombo, Sri Lanka',6.92710000,79.86120000,'2026-02-18 16:48:28',NULL,'2026-02-18 16:48:28',NULL,NULL,NULL,0,NULL),(76,'Adams Peak','Famous pilgrimage mountain with scenic hiking trails',1,1,'Nallathanniya, Sri Lanka',6.80960000,80.49940000,'2026-02-18 16:48:28',NULL,'2026-02-18 16:48:28',NULL,NULL,NULL,0,NULL),(77,'Horton Plains','High altitude plateau with World’s End cliff and hiking trails',1,1,'Horton Plains, Sri Lanka',6.80670000,80.80730000,'2026-02-18 16:48:28',NULL,'2026-02-18 16:48:28',NULL,NULL,NULL,0,NULL),(78,'Haputale','Mountain town offering hiking trails and panoramic views',1,1,'Haputale, Sri Lanka',6.76500000,80.95100000,'2026-02-18 16:48:28',NULL,'2026-02-18 16:48:28',NULL,NULL,NULL,0,NULL),(79,'Arugam Bay','Popular surfing destination with beautiful beaches',1,4,'Arugam Bay, Sri Lanka',6.84040000,81.83680000,'2026-02-18 16:48:28',NULL,'2026-02-18 16:48:28',NULL,NULL,NULL,0,NULL),(80,'Batticaloa','Eastern coastal city with beaches and lagoons',1,4,'Batticaloa, Sri Lanka',7.71700000,81.70000000,'2026-02-18 16:48:28',NULL,'2026-02-18 16:48:28',NULL,NULL,NULL,0,NULL),(81,'Hikkaduwa','Famous beach with coral reefs and vibrant nightlife',1,4,'Hikkaduwa, Sri Lanka',6.14070000,80.10120000,'2026-02-18 16:48:28',NULL,'2026-02-18 16:48:28',NULL,NULL,NULL,0,NULL),(82,'Hiriketiya','Beautiful bay popular for surfing and relaxation',1,4,'Hiriketiya, Sri Lanka',5.96400000,80.70470000,'2026-02-18 16:48:28',NULL,'2026-02-18 16:48:28',NULL,NULL,NULL,0,NULL),(83,'Hambantota','Coastal city with beaches and wildlife attractions',1,4,'Hambantota, Sri Lanka',6.12410000,81.11850000,'2026-02-18 16:48:28',NULL,'2026-02-18 16:48:28',NULL,NULL,NULL,0,NULL),(84,'Gal Oya','National park famous for boat safaris and wildlife',1,2,'Gal Oya, Sri Lanka',7.22200000,81.48100000,'2026-02-18 16:48:28',NULL,'2026-02-18 16:48:28',NULL,NULL,NULL,0,NULL),(85,'Hatton','Hill country town surrounded by tea plantations and mountains',1,5,'Hatton, Sri Lanka',6.89160000,80.59550000,'2026-02-18 16:48:28',NULL,'2026-02-18 16:48:28',NULL,NULL,NULL,0,NULL);
+/*!40000 ALTER TABLE `destination` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `destination_categories`
+--
+
+DROP TABLE IF EXISTS `destination_categories`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `destination_categories` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `category` varchar(100) NOT NULL,
+  `description` text,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `status` (`status`),
+  CONSTRAINT `destination_categories_ibfk_1` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `destination_categories`
+--
+
+LOCK TABLES `destination_categories` WRITE;
+/*!40000 ALTER TABLE `destination_categories` DISABLE KEYS */;
+INSERT INTO `destination_categories` VALUES (1,'Adventure','Thrilling activities such as hiking, rafting, and outdoor challenges',1,'2025-10-04 16:03:45',1,'2025-10-04 16:03:45',NULL,NULL,NULL),(2,'Wildlife','National parks and safaris to experience animals in their natural habitat',1,'2025-10-04 16:03:45',1,'2025-10-04 16:03:45',NULL,NULL,NULL),(3,'Cultural & Heritage','Cultural festivals, temples, and heritage sites',1,'2025-10-04 16:03:45',1,'2025-10-04 16:03:45',NULL,NULL,NULL),(4,'Beach','Coastal destinations, surfing spots, and beach resorts',1,'2025-10-04 16:03:45',1,'2025-10-04 16:03:45',NULL,NULL,NULL),(5,'Hill Country','Scenic highlands with tea estates, waterfalls, and train journeys',1,'2025-10-04 16:03:45',1,'2025-10-04 16:03:45',NULL,NULL,NULL),(6,'Historical Sites','Ancient cities, ruins, and archaeological wonders from Sri Lanka\'s rich history',1,'2026-02-19 20:29:42',1,'2026-02-19 20:29:42',NULL,NULL,NULL),(7,'Religious & Sacred','Temples, stupas, churches, mosques, and other sacred places of worship',1,'2026-02-19 20:29:42',1,'2026-02-19 20:29:42',NULL,NULL,NULL),(8,'Waterfalls','Breathtaking waterfalls scattered across the island, perfect for photography and swimming',1,'2026-02-19 20:29:42',1,'2026-02-19 20:29:42',NULL,NULL,NULL),(9,'National Parks','Protected areas showcasing Sri Lanka\'s incredible biodiversity and wildlife',1,'2026-02-19 20:29:42',1,'2026-02-19 20:29:42',NULL,NULL,NULL),(10,'Wellness & Ayurveda','Destinations known for wellness retreats, Ayurvedic treatments, and relaxation',1,'2026-02-19 20:29:42',1,'2026-02-19 20:29:42',NULL,NULL,NULL),(11,'Tea Plantations','Rolling hills of emerald tea estates where you can experience Ceylon tea culture',1,'2026-02-19 20:29:42',1,'2026-02-19 20:29:42',NULL,NULL,NULL),(12,'Colonial Towns','Charming towns with Dutch and British colonial architecture and heritage',1,'2026-02-19 20:29:42',1,'2026-02-19 20:29:42',NULL,NULL,NULL),(13,'Pilgrimage Sites','Sacred destinations for religious pilgrims and spiritual seekers',1,'2026-02-19 20:29:42',1,'2026-02-19 20:29:42',NULL,NULL,NULL),(14,'Botanical Gardens','Lush gardens showcasing tropical flora, orchids, and exotic plants',1,'2026-02-19 20:29:42',1,'2026-02-19 20:29:42',NULL,NULL,NULL),(15,'Bird Sanctuaries','Specialized destinations for bird watching enthusiasts',1,'2026-02-19 20:29:42',1,'2026-02-19 20:29:42',NULL,NULL,NULL),(16,'Marine Sanctuaries','Protected coastal areas rich in marine biodiversity and coral reefs',1,'2026-02-19 20:29:42',1,'2026-02-19 20:29:42',NULL,NULL,NULL),(17,'Surf Spots','World-class surfing destinations along the coastline',1,'2026-02-19 20:29:42',1,'2026-02-19 20:29:42',NULL,NULL,NULL),(18,'Scenic Viewpoints','Breathtaking lookout points with panoramic views of landscapes',1,'2026-02-19 20:29:42',1,'2026-02-19 20:29:42',NULL,NULL,NULL),(19,'Cave Temples','Ancient cave complexes with Buddhist murals and statues',1,'2026-02-19 20:29:42',1,'2026-02-19 20:29:42',NULL,NULL,NULL),(20,'Village Tours','Authentic rural destinations offering glimpses of traditional village life',1,'2026-02-19 20:29:42',1,'2026-02-19 20:29:42',NULL,NULL,NULL),(21,'Spice Gardens','Aromatic gardens where you can learn about Sri Lanka\'s famous spices',1,'2026-02-19 20:29:42',1,'2026-02-19 20:29:42',NULL,NULL,NULL),(22,'Elephant Sanctuaries','Ethical destinations where you can observe elephants in natural settings',1,'2026-02-19 20:29:42',1,'2026-02-19 20:29:42',NULL,NULL,NULL),(23,'Turtle Conservation','Coastal sites dedicated to protec\nting sea turtles and their habitats',1,'2026-02-19 20:29:42',1,'2026-02-19 20:29:42',NULL,NULL,NULL),(24,'Botanical & Nature','Nature trails, forests, and ecological reserves',1,'2026-02-19 20:29:42',1,'2026-02-19 20:29:42',NULL,NULL,NULL),(25,'Luxury Resorts','Premium destinations with high-end accommodations and amenities',1,'2026-02-19 20:29:42',1,'2026-02-19 20:29:42',NULL,NULL,NULL),(26,'Budget Travel','Affordable destinations perfect for backpackers and budget-conscious travelers',1,'2026-02-19 20:29:42',1,'2026-02-19 20:29:42',NULL,NULL,NULL),(27,'Honeymoon Spots','Romantic destinations ideal for couples and honeymooners',1,'2026-02-19 20:29:42',1,'2026-02-19 20:29:42',NULL,NULL,NULL),(28,'Family Friendly','Destinations with activities and amenities suitable for families with children',1,'2026-02-19 20:29:42',1,'2026-02-19 20:29:42',NULL,NULL,NULL),(29,'Adventure Sports','Locations offering thrilling activities like white water rafting, zip-lining, and rock climbing',1,'2026-02-19 20:29:42',1,'2026-02-19 20:29:42',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `destination_categories` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `destination_categories_images`
+--
+
+DROP TABLE IF EXISTS `destination_categories_images`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `destination_categories_images` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `destination_categories_id` int NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text,
+  `image_url` varchar(500) DEFAULT NULL,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `destination_categories_id` (`destination_categories_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `destination_categories_images_ibfk_1` FOREIGN KEY (`destination_categories_id`) REFERENCES `destination_categories` (`id`),
+  CONSTRAINT `destination_categories_images_ibfk_2` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=107 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `destination_categories_images`
+--
+
+LOCK TABLES `destination_categories_images` WRITE;
+/*!40000 ALTER TABLE `destination_categories_images` DISABLE KEYS */;
+INSERT INTO `destination_categories_images` VALUES (26,1,'White Water Rafting Kitulgala','Thrilling rafting experience on the Kelani River surrounded by rainforest','https://images.unsplash.com/photo-1544551763-46a013bb70d5',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(27,1,'Rock Climbing Sigiriya','Scale the ancient rock fortress with breathtaking jungle views','https://images.unsplash.com/photo-1544191696-102dbdaeeaa0',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(28,1,'Zip Lining in Rainforest','Soar through the treetops above the lush canopy','https://images.unsplash.com/photo-1522163182402-834f871fd851',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(29,2,'Leopard in Yala National Park','Spot the elusive Sri Lankan leopard in its natural habitat','https://images.unsplash.com/photo-1549366021-9f761d450615',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(30,2,'Elephants in Minneriya','Witness the famous elephant gathering at Minneriya National Park','https://images.unsplash.com/photo-1523802005156-6e0f988b3d3a',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(31,2,'Sloth Bear in Nature','Rare encounter with a sloth bear in the dry zone forests','https://images.unsplash.com/photo-1534180477871-5d6cc81f3920',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(32,3,'Temple of the Tooth Kandy','Sacred Buddhist temple housing the relic of Buddha\'s tooth','https://images.unsplash.com/photo-1590212154058-ccddd1f0003e',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(33,3,'Traditional Kandyan Dancers','Vibrant cultural performance with traditional costumes','https://images.unsplash.com/photo-1547153760-18fc86324498',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(34,3,'Dambulla Cave Temple','Ancient cave complex with stunning Buddha statues and murals','https://images.unsplash.com/photo-1590212869245-5b2c09f1b70b',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(35,4,'Bentota Beach Paradise','Golden sands and palm trees along the southwest coast','https://images.unsplash.com/photo-1589394815804-964ed0be2eb5',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(36,4,'Mirissa Sunset','Beautiful sunset views at Mirissa with fishing boats','https://images.unsplash.com/photo-1507525428034-b723cf961d3e',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(37,4,'Unawatuna Bay','Crescent-shaped bay with crystal clear turquoise waters','https://images.unsplash.com/photo-1533105079780-92b9be482077',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(38,5,'Nuwara Eliya Tea Plantations','Rolling green tea estates with misty mountains','https://images.unsplash.com/photo-1579232088694-9a1cdc74b27f',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(39,5,'Ella Gap View','Breathtaking views of the Ella Gap from Little Adam\'s Peak','https://images.unsplash.com/photo-1625811180091-73c7bb8c7c5f',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(40,5,'Scenic Train Journey','Famous Kandy to Ella train ride through misty hills','https://images.unsplash.com/photo-1581091226033-d5c48150dbaa',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(41,6,'Sigiriya Rock Fortress','Ancient palace ruins atop a massive rock column','https://images.unsplash.com/photo-1590212869245-5b2c09f1b70b',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(42,6,'Anuradhapura Ruins','Ancient stupas and ruins from Sri Lanka\'s first capital','https://images.unsplash.com/photo-1590212154058-ccd1ddb7d5b6',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(43,6,'Polonnaruwa Ancient City','Medieval capital with impressive stone carvings','https://images.unsplash.com/photo-1590212869245-5b2c09f1b70b',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(44,7,'Gangaramaya Temple Colombo','Beautiful Buddhist temple with mixed architectural styles','https://images.unsplash.com/photo-1590212154058-ccddd1f0003e',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(45,7,'Jami Ul-Alfar Mosque','Iconic red and white mosque in Colombo','https://images.unsplash.com/photo-1590212869245-5b2c09f1b70b',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(46,7,'Sri Maha Bodhiya','Sacred Bo tree in Anuradhapura, grown from original Bodhi tree','https://images.unsplash.com/photo-1587486913049-53fe6b26295b',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(47,8,'Ramboda Falls','Spectacular multi-tiered waterfall in hill country','https://images.unsplash.com/photo-1579232088694-9a1cdc74b27f',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(48,8,'Diyaluma Falls','Second highest waterfall in Sri Lanka with natural pools','https://images.unsplash.com/photo-1586696986435-23af6d3c5b08',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(49,8,'Bopath Ella','Heart-shaped waterfall surrounded by lush forest','https://images.unsplash.com/photo-1551632811-56196c1c2f24',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(50,9,'Yala National Park Safari','Jeep safari through Yala\'s diverse landscapes','https://images.unsplash.com/photo-1549366021-9f761d450615',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(51,9,'Udawalawe Elephant Transit Home','Watch orphaned elephants being fed','https://images.unsplash.com/photo-1523802005156-6e0f988b3d3a',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(52,9,'Wilpattu National Park','Natural lakes and diverse wildlife in Sri Lanka\'s largest park','https://images.unsplash.com/photo-1607355731390-5e18b7740a3a',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(53,10,'Befront Yoga Session','Morning yoga practice with ocean views','https://images.unsplash.com/photo-1545205597-3d9d02c29597',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(54,10,'Ayurvedic Massage','Traditional oil massage therapy','https://images.unsplash.com/photo-1544161515-4ab6ce6db874',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(55,10,'Meditation Retreat','Peaceful meditation in natural surroundings','https://images.unsplash.com/photo-1528319721701-598ab5a6d9a6',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(56,11,'Tea Pluckers at Work','Women harvesting tea leaves in traditional style','https://images.unsplash.com/photo-1579232088694-9a1cdc74b27f',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(57,11,'Tea Factory Tour','Learn about tea processing at historic factories','https://images.unsplash.com/photo-1565796884245-9e3b1d4b4b9b',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(58,11,'Rolling Tea Estates','Endless green tea bushes covering the hills','https://images.unsplash.com/photo-1625811180091-73c7bb8c7c5f',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(59,12,'Galle Fort','Historic Dutch fort with charming streets and cafes','https://images.unsplash.com/photo-1589394815804-964ed0be2eb5',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(60,12,'Galle Lighthouse','Iconic lighthouse overlooking the Indian Ocean','https://images.unsplash.com/photo-1590212869245-5b2c09f1b70b',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(61,12,'Dutch Hospital Colombo','Colonial building turned shopping and dining precinct','https://images.unsplash.com/photo-1587486913049-53fe6b26295b',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(62,13,'Adam\'s Peak Pilgrims','Pilgrims climbing the sacred mountain for sunrise','https://images.unsplash.com/photo-1586696986435-23af6d3c5b08',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(63,13,'Kataragama Shrine','Multi-religious pilgrimage site in the jungle','https://images.unsplash.com/photo-1590212154058-ccd1ddb7d5b6',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(64,13,'Munayawarma Temple','Ancient temple with unique architecture','https://images.unsplash.com/photo-1590212869245-5b2c09f1b70b',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(65,14,'Peradeniya Royal Botanic Gardens','Famous orchid house and avenue of palms','https://images.unsplash.com/photo-1587486913049-53fe6b26295b',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(66,14,'Hakgala Botanic Gardens','Cool climate gardens in Nuwara Eliya','https://images.unsplash.com/photo-1579232088694-9a1cdc74b27f',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(67,14,'Giant Javan Fig Tree','Massive tree with sprawling roots at Peradeniya','https://images.unsplash.com/photo-1590212869245-5b2c09f1b70b',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(68,15,'Bundala National Park Birds','Flamingos and migratory birds in wetlands','https://images.unsplash.com/photo-1607355731390-5e18b7740a3a',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(69,15,'Kumana Bird Sanctuary','Rare bird species in protected wetlands','https://images.unsplash.com/photo-1555169062-013468b47731',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(70,15,'Painted Stork','Beautiful stork species found in Sri Lankan wetlands','https://images.unsplash.com/photo-1603038401906-9e9ad5f0e0c4',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(71,16,'Pigeon Island Snorkeling','Coral reefs teeming with tropical fish','https://images.unsplash.com/photo-1582966928344-2829ab5a8b66',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(72,16,'Bar Reef Kalpitiya','Rich marine biodiversity in protected waters','https://images.unsplash.com/photo-1544551763-46a013bb70d5',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(73,16,'Coral Reefs','Vibrant coral formations with colorful fish','https://images.unsplash.com/photo-1582966928344-2829ab5a8b66',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(74,17,'Arugam Bay Main Point','World-famous surf break in eastern Sri Lanka','https://images.unsplash.com/photo-1502680390469-be75c86b636f',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(75,17,'Surfer at Sunset','Riding waves during golden hour','https://images.unsplash.com/photo-1507525428034-b723cf961d3e',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(76,17,'Weligama Bay','Perfect beginner waves and surf schools','https://images.unsplash.com/photo-1533105079780-92b9be482077',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(77,18,'Little Adam\'s Peak View','Panoramic views of Ella Gap and mountains','https://images.unsplash.com/photo-1625811180091-73c7bb8c7c5f',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(78,18,'Pidurangala Rock Sunrise','Stunning sunrise views overlooking Sigiriya','https://images.unsplash.com/photo-1590212869245-5b2c09f1b70b',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(79,18,'World\'s End Horton Plains','Sheer cliff drop with breathtaking views','https://images.unsplash.com/photo-1551632811-56196c1c2f24',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(80,19,'Dambulla Cave Interior','Ancient Buddha statues inside cave temple','https://images.unsplash.com/photo-1590212869245-5b2c09f1b70b',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(81,19,'Golden Buddha Statue','Massive golden Buddha at cave entrance','https://images.unsplash.com/photo-1590212154058-ccd1ddb7d5b6',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(82,19,'Cave Murals','Ancient paintings on cave walls and ceilings','https://images.unsplash.com/photo-1587486913049-53fe6b26295b',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(83,20,'Traditional Village Life','Experience authentic rural Sri Lankan lifestyle','https://images.unsplash.com/photo-1587486913049-53fe6b26295b',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(84,20,'Bull Cart Ride','Traditional transport through paddy fields','https://images.unsplash.com/photo-1590212154058-ccd1ddb7d5b6',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(85,20,'Village Cooking Experience','Learn to cook traditional meals with locals','https://images.unsplash.com/photo-1604329760661-e71dc83f8f26',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(86,21,'Cinnamon Harvesting','Traditional method of harvesting cinnamon','https://images.unsplash.com/photo-1604329760661-e71dc83f8f26',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(87,21,'Spice Garden Tour','Learn about medicinal properties of spices','https://images.unsplash.com/photo-1590212154058-ccd1ddb7d5b6',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(88,21,'Colorful Spices Display','Fresh turmeric, pepper, and cardamom','https://images.unsplash.com/photo-1587486913049-53fe6b26295b',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(89,22,'Pinnawala Elephant Orphanage','Bathing elephants in the river','https://images.unsplash.com/photo-1523802005156-6e0f988b3d3a',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(90,22,'Elephant Feeding','Bottle feeding orphaned baby elephants','https://images.unsplash.com/photo-1549366021-9f761d450615',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(91,22,'Elephant Herd','Elephants roaming in natural sanctuary','https://images.unsplash.com/photo-1534180477871-5d6cc81f3920',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(92,23,'Baby Turtles','Newly hatched turtles at conservation center','https://images.unsplash.com/photo-1573556184942-6d3a3e2b8b5e',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(93,23,'Turtle Release','Releasing hatchlings into the ocean','https://images.unsplash.com/photo-1582966928344-2829ab5a8b66',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(94,23,'Sea Turtle Swimming','Green sea turtle in crystal clear waters','https://images.unsplash.com/photo-1573556184942-6d3a3e2b8b5e',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(95,24,'Sinharaja Rainforest','UNESCO world heritage rainforest trek','https://images.unsplash.com/photo-1587486913049-53fe6b26295b',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(96,24,'Cloud Forest','Misty forests in the Knuckles range','https://images.unsplash.com/photo-1464822759023-fed622ff2c3b',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(97,24,'Nature Trail','Walking paths through lush vegetation','https://images.unsplash.com/photo-1551632811-56196c1c2f24',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(98,25,'Scuba Diving Hikkaduwa','Explore vibrant coral reefs and marine life','https://images.unsplash.com/photo-1544551763-46a013bb70d5',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(99,25,'Jet Skiing Bentota','Thrilling water sports on the Bentota River','https://images.unsplash.com/photo-1507024921866-3ad0eacc3090',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(100,25,'Snorkeling in Trincomalee','Clear waters perfect for snorkeling','https://images.unsplash.com/photo-1582966928344-2829ab5a8b66',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(101,26,'Knuckles Mountain Trek','Challenging trek through misty peaks','https://images.unsplash.com/photo-1464822759023-fed622ff2c3b',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(102,26,'Adam\'s Peak Pilgrim Trail','Thousands of steps to sacred summit','https://images.unsplash.com/photo-1586696986435-23af6d3c5b08',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(103,26,'Ella Rock Hike','Scenic trail through tea plantations','https://images.unsplash.com/photo-1625811180091-73c7bb8c7c5f',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(104,27,'Sigiriya UNESCO Site','Ancient rock fortress world heritage site','https://images.unsplash.com/photo-1590212869245-5b2c09f1b70b',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(105,27,'Sacred City of Kandy','Temple of the Tooth UNESCO heritage','https://images.unsplash.com/photo-1590212154058-ccddd1f0003e',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL),(106,27,'Old Town of Galle','Dutch fort UNESCO world heritage site','https://images.unsplash.com/photo-1589394815804-964ed0be2eb5',1,'2026-02-19 20:32:28',1,'2026-02-19 20:32:28',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `destination_categories_images` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `destination_hero_section`
+--
+
+DROP TABLE IF EXISTS `destination_hero_section`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `destination_hero_section` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `image_url` varchar(255) NOT NULL,
+  `title` varchar(100) DEFAULT NULL,
+  `subtitle` varchar(150) DEFAULT NULL,
+  `description` text,
+  `primary_button_text` varchar(50) DEFAULT NULL,
+  `primary_button_link` varchar(255) DEFAULT NULL,
+  `secondary_button_text` varchar(50) DEFAULT NULL,
+  `secondary_button_link` varchar(255) DEFAULT NULL,
+  `status` int NOT NULL,
+  `order` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `status` (`status`),
+  CONSTRAINT `destination_hero_section_ibfk_1` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `destination_hero_section`
+--
+
+LOCK TABLES `destination_hero_section` WRITE;
+/*!40000 ALTER TABLE `destination_hero_section` DISABLE KEYS */;
+INSERT INTO `destination_hero_section` VALUES (1,'Main Destinations Hero','https://images.unsplash.com/photo-1590212869245-5b2c09f1b70b','Discover Sri Lanka','Island of Timeless Beauty','From ancient cities to pristine beaches, misty mountains to wildlife paradises. Explore the diverse landscapes and rich culture of the pearl of the Indian Ocean.','Explore All Destinations','/destinations','View Tours','/sri-lankan-tours',1,1,'2026-02-19 20:34:10',1,'2026-02-19 20:35:07',NULL,NULL,NULL),(2,'Cultural Triangle','https://images.unsplash.com/photo-1590212154058-ccddd1f0003e','Cultural Triangle','Ancient Kingdoms & Sacred Sites','Visit the ancient capitals of Anuradhapura and Polonnaruwa, climb the iconic Sigiriya Rock, and discover the sacred Temple of the Tooth in Kandy.','Explore Cultural Triangle','/destinations/cultural-triangle','Heritage Tours','/sri-lankan-tours',1,2,'2026-02-19 20:34:10',1,'2026-02-19 20:35:07',NULL,NULL,NULL),(3,'Beach Escapes','https://images.unsplash.com/photo-1589394815804-964ed0be2eb5','Coastal Paradise','Golden Beaches & Turquoise Waters','Relax on stunning beaches in Bentota, Mirissa, Unawatuna, and Arugam Bay. Swim, surf, snorkel, or simply soak up the sun.','Discover Beaches','/destinations/beaches','Water Sports','/activities',1,3,'2026-02-19 20:34:10',1,'2026-02-19 20:35:07',NULL,NULL,NULL),(4,'Hill Country','https://images.unsplash.com/photo-1579232088694-9a1cdc74b27f','Misty Highlands','Tea Plantations & Scenic Trains','Escape to cool climes in Ella, Nuwara Eliya, and Kandy. Ride the famous scenic train through rolling tea estates and misty mountains.','Explore Hill Country','/destinations/hill-country','Hiking Trails','/activities',1,4,'2026-02-19 20:34:10',1,'2026-02-19 20:35:07',NULL,NULL,NULL),(5,'Wildlife Destinations','https://images.unsplash.com/photo-1549366021-9f761d450615','Wildlife Sanctuaries','Leopards, Elephants & Exotic Birds','Embark on safaris in Yala, Udawalawe, Wilpattu, and Minneriya. Home to incredible biodiversity and unforgettable wildlife encounters.','Safari Destinations','/destinations/wildlife','Wildlife Tours','/sri-lankan-tours',1,5,'2026-02-19 20:34:10',1,'2026-02-19 20:35:07',NULL,NULL,NULL),(6,'Colombo & Cities','https://images.unsplash.com/photo-1589394815804-964ed0be2eb5','Urban Sri Lanka','Vibrant Cities & Colonial Charm','Experience the bustling capital Colombo, the historic Galle Fort, and the cultural hub of Kandy. A blend of modernity and tradition.','Explore Cities','/destinations/cities','City Tours','/sri-lankan-tours',1,6,'2026-02-19 20:34:10',1,'2026-02-19 20:35:07',NULL,NULL,NULL),(7,'Hidden Gems','https://images.unsplash.com/photo-1586696986435-23af6d3c5b08','Off the Beaten Path','Secret Spots & Local Favorites','Discover lesser-known destinations like Jaffna, Trincomalee, and the Knuckles Range. Experience authentic Sri Lanka away from the crowds.','Find Hidden Gems','/destinations/hidden-gems','Contact Us','/contact-us',1,7,'2026-02-19 20:34:10',1,'2026-02-19 20:35:07',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `destination_hero_section` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `destination_history`
+--
+
+DROP TABLE IF EXISTS `destination_history`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `destination_history` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `destination_id` int NOT NULL,
+  `package_schedule_id` int DEFAULT NULL,
+  `title` varchar(255) NOT NULL,
+  `description` text,
+  `event_date` date DEFAULT NULL,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `destination_id` (`destination_id`),
+  KEY `package_schedule_id` (`package_schedule_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `destination_history_ibfk_1` FOREIGN KEY (`destination_id`) REFERENCES `destination` (`destination_id`),
+  CONSTRAINT `destination_history_ibfk_2` FOREIGN KEY (`package_schedule_id`) REFERENCES `package_schedule` (`id`),
+  CONSTRAINT `destination_history_ibfk_3` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `destination_history`
+--
+
+LOCK TABLES `destination_history` WRITE;
+/*!40000 ALTER TABLE `destination_history` DISABLE KEYS */;
+/*!40000 ALTER TABLE `destination_history` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `destination_history_images`
+--
+
+DROP TABLE IF EXISTS `destination_history_images`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `destination_history_images` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `destination_history_id` int NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text,
+  `image_url` varchar(500) DEFAULT NULL,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `destination_history_id` (`destination_history_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `destination_history_images_ibfk_1` FOREIGN KEY (`destination_history_id`) REFERENCES `destination_history` (`id`),
+  CONSTRAINT `destination_history_images_ibfk_2` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `destination_history_images`
+--
+
+LOCK TABLES `destination_history_images` WRITE;
+/*!40000 ALTER TABLE `destination_history_images` DISABLE KEYS */;
+/*!40000 ALTER TABLE `destination_history_images` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `destination_images`
+--
+
+DROP TABLE IF EXISTS `destination_images`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `destination_images` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `destination_id` int NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text,
+  `image_url` varchar(500) DEFAULT NULL,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `destination_id` (`destination_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `destination_images_ibfk_1` FOREIGN KEY (`destination_id`) REFERENCES `destination` (`destination_id`),
+  CONSTRAINT `destination_images_ibfk_2` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=209 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `destination_images`
+--
+
+LOCK TABLES `destination_images` WRITE;
+/*!40000 ALTER TABLE `destination_images` DISABLE KEYS */;
+INSERT INTO `destination_images` VALUES (134,64,'Sigiriya - 1',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770751165/fr1x5u4i8x90pkv21n7z.jpg',1,'2026-02-10 19:21:23',NULL,'2026-02-10 19:21:23',NULL,NULL,NULL),(135,64,'Sigiriya - 2',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770751177/x4knkyg518283leqtbuv.jpg',1,'2026-02-10 19:21:23',NULL,'2026-02-10 19:21:23',NULL,NULL,NULL),(136,64,'Sigiriya - 3',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770751190/rh6pfrkglb4hswtpewpi.jpg',1,'2026-02-10 19:21:23',NULL,'2026-02-10 19:21:23',NULL,NULL,NULL),(137,64,'Sigiriya - 4',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770751210/psiyq8bbjgk3djippknh.jpg',1,'2026-02-10 19:21:23',NULL,'2026-02-10 19:21:23',NULL,NULL,NULL),(138,64,'Sigiriya - 5',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770751222/dligdgjcipowa01bgono.jpg',1,'2026-02-10 19:21:23',NULL,'2026-02-10 19:21:23',NULL,NULL,NULL),(139,64,'Sigiriya - 6',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770751236/l6jyp1re0z2rvosnrrmz.jpg',1,'2026-02-10 19:21:23',NULL,'2026-02-10 19:21:23',NULL,NULL,NULL),(140,64,'Sigiriya - 7',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770751250/wfwqgw6aa9kqimpivox3.jpg',1,'2026-02-10 19:21:23',NULL,'2026-02-10 19:21:23',NULL,NULL,NULL),(141,64,'Sigiriya - 8',NULL,'http://res.cloudinary.com/dtzrivqye/image/upload/v1770751263/rt6njwe5cgasmfctfhdg.jpg',1,'2026-02-10 19:21:23',NULL,'2026-02-10 19:21:23',NULL,NULL,NULL),(142,65,'Kandy - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770752718/bhlgqilb7ynsqudioeu3.avif',1,'2026-02-10 19:47:07',NULL,'2026-02-10 19:47:07',NULL,NULL,NULL),(143,65,'Kandy - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770752734/wikii4p6v7cf1wvwyxel.jpg',1,'2026-02-10 19:47:07',NULL,'2026-02-10 19:47:07',NULL,NULL,NULL),(144,65,'Kandy - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770752747/ykjzxmrgf9itwidmivzx.jpg',1,'2026-02-10 19:47:07',NULL,'2026-02-10 19:47:07',NULL,NULL,NULL),(145,65,'Kandy - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770752759/mrteghlwh18vzbwp80qc.jpg',1,'2026-02-10 19:47:07',NULL,'2026-02-10 19:47:07',NULL,NULL,NULL),(146,65,'Kandy - 5',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770752774/baqgwdwx5or4dndwd5zr.jpg',1,'2026-02-10 19:47:07',NULL,'2026-02-10 19:47:35',NULL,NULL,NULL),(147,65,'Kandy - 6',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770752787/cpc54mbck2itgtzid4de.jpg',1,'2026-02-10 19:47:07',NULL,'2026-02-10 19:47:07',NULL,NULL,NULL),(148,65,'Kandy - 7',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770752798/o45sbzt3mov8dkq4bwqu.webp',1,'2026-02-10 19:47:07',NULL,'2026-02-10 19:47:07',NULL,NULL,NULL),(149,65,'Kandy - 8',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1770752811/kbu6bmlhnawdt1qeal8j.png',1,'2026-02-10 19:47:07',NULL,'2026-02-10 19:47:07',NULL,NULL,NULL),(150,66,'Nuwara Eliya - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771006865/icnr6vkxxhz4im2qzacc.jpg',1,'2026-02-13 18:24:55',NULL,'2026-02-13 18:24:55',NULL,NULL,NULL),(151,66,'Nuwara Eliya - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771006877/fdk3oloppdhrrc1ro6fm.jpg',1,'2026-02-13 18:24:55',NULL,'2026-02-13 18:24:55',NULL,NULL,NULL),(152,66,'Nuwara Eliya - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771006887/hr5t6waxladhawyy2fpm.webp',1,'2026-02-13 18:24:55',NULL,'2026-02-13 18:24:55',NULL,NULL,NULL),(153,66,'Nuwara Eliya - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771007070/dahfqfabnnftjt2qlnub.jpg',1,'2026-02-13 18:24:55',NULL,'2026-02-13 18:24:55',NULL,NULL,NULL),(154,66,'Nuwara Eliya - 5',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771006912/huwxxxveda5galcc2wr4.jpg',1,'2026-02-13 18:24:55',NULL,'2026-02-13 18:24:55',NULL,NULL,NULL),(155,66,'Nuwara Eliya - 6',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771006924/lwrq05de0h84deomtbya.jpg',1,'2026-02-13 18:24:55',NULL,'2026-02-13 18:24:55',NULL,NULL,NULL),(156,66,'Nuwara Eliya - 7',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771006937/fxlzucqjfe07cbmnxq2e.jpg',1,'2026-02-13 18:24:55',NULL,'2026-02-13 18:24:55',NULL,NULL,NULL),(157,66,'Nuwara Eliya - 8',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771006946/xb1l0jatzcsfybelwcuw.jpg',1,'2026-02-13 18:24:55',NULL,'2026-02-13 18:24:55',NULL,NULL,NULL),(158,66,'Nuwara Eliya - 9',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771006957/tdqbhlndmi1xogpbdgxg.jpg',1,'2026-02-13 18:24:55',NULL,'2026-02-13 18:24:55',NULL,NULL,NULL),(159,66,'Nuwara Eliya - 10',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771006969/vac6dwwbybiqg1fprkqe.jpg',1,'2026-02-13 18:24:55',NULL,'2026-02-13 18:24:55',NULL,NULL,NULL),(160,66,'Nuwara Eliya - 11',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771006981/rxjelsmwt8xtvmvopyuz.jpg',1,'2026-02-13 18:24:55',NULL,'2026-02-13 18:24:55',NULL,NULL,NULL),(161,66,'Nuwara Eliya - 12',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771006992/awkdijidkqa2pes53mju.jpg',1,'2026-02-13 18:24:55',NULL,'2026-02-13 18:24:55',NULL,NULL,NULL),(162,66,'Nuwara Eliya - 13',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771007004/t5iytuqr1xzsyocfjhme.jpg',1,'2026-02-13 18:24:55',NULL,'2026-02-13 18:24:55',NULL,NULL,NULL),(163,66,'Nuwara Eliya - 14',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771007015/nxra85d1rziagixg0dbg.jpg',1,'2026-02-13 18:24:55',NULL,'2026-02-13 18:24:55',NULL,NULL,NULL),(164,66,'Nuwara Eliya - 15',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771007028/p71e8qbstuvptiaeocyk.jpg',1,'2026-02-13 18:24:55',NULL,'2026-02-13 18:24:55',NULL,NULL,NULL),(165,67,'Ella - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771007375/ogehb9hzootp9gxd7ion.jpg',1,'2026-02-13 18:32:16',NULL,'2026-02-13 18:32:16',NULL,NULL,NULL),(166,67,'Ella - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771007386/w0evyawn1t8jndoq31ys.jpg',1,'2026-02-13 18:32:16',NULL,'2026-02-13 18:32:16',NULL,NULL,NULL),(167,67,'Ella - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771007397/ddthurko8tcmsvy7e5lk.jpg',1,'2026-02-13 18:32:16',NULL,'2026-02-13 18:32:16',NULL,NULL,NULL),(168,67,'Ella - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771007412/wt9jmb2rvzhnq6e5vbsz.jpg',1,'2026-02-13 18:32:16',NULL,'2026-02-13 18:32:16',NULL,NULL,NULL),(169,67,'Ella - 5',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771007425/xoyz8nxibecr1wjd5gld.webp',1,'2026-02-13 18:32:16',NULL,'2026-02-13 18:32:16',NULL,NULL,NULL),(170,67,'Ella - 6',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771007434/ua5vyraa6f6xqto4fvzh.jpg',1,'2026-02-13 18:32:16',NULL,'2026-02-13 18:32:16',NULL,NULL,NULL),(171,67,'Ella - 7',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771007443/ukztkngdxdvbshmtxlpo.jpg',1,'2026-02-13 18:32:16',NULL,'2026-02-13 18:32:16',NULL,NULL,NULL),(172,67,'Ella - 8',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771007451/dbibvewmtzk5kih7wukx.jpg',1,'2026-02-13 18:32:16',NULL,'2026-02-13 18:32:16',NULL,NULL,NULL),(173,67,'Ella - 9',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771007460/qlzkhnp4jyu346ltgh4a.jpg',1,'2026-02-13 18:32:16',NULL,'2026-02-13 18:32:16',NULL,NULL,NULL),(174,67,'Ella - 10',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771007470/x1ho9mn3eme7lfqemj6i.webp',1,'2026-02-13 18:32:16',NULL,'2026-02-13 18:32:16',NULL,NULL,NULL),(175,67,'Ella - 11',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771007499/ymaowid34k5tg5j0e9jg.jpg',1,'2026-02-13 18:32:16',NULL,'2026-02-13 18:32:16',NULL,NULL,NULL),(176,68,'Yala - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771007812/ls2oboi3cy2lqn3s4hvz.webp',1,'2026-02-13 18:38:54',NULL,'2026-02-13 18:38:54',NULL,NULL,NULL),(177,68,'Yala - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771007822/usosuens8egxfmbdpkr9.jpg',1,'2026-02-13 18:38:54',NULL,'2026-02-13 18:38:54',NULL,NULL,NULL),(178,68,'Yala - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771007833/lckrzsye2rgo8bk0i08r.jpg',1,'2026-02-13 18:38:54',NULL,'2026-02-13 18:38:54',NULL,NULL,NULL),(179,68,'Yala - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771007852/ezwgc0gk86uzostuweig.jpg',1,'2026-02-13 18:38:54',NULL,'2026-02-13 18:38:54',NULL,NULL,NULL),(180,68,'Yala - 5',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771007865/tmfvufj04fmvajcxgizs.jpg',1,'2026-02-13 18:38:54',NULL,'2026-02-13 18:38:54',NULL,NULL,NULL),(181,68,'Yala - 6',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771007876/ec5otxwm0uq7u2m8mnat.jpg',1,'2026-02-13 18:38:54',NULL,'2026-02-13 18:38:54',NULL,NULL,NULL),(182,68,'Yala - 7',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771007885/iua9kawozzruj9ds02fd.jpg',1,'2026-02-13 18:38:54',NULL,'2026-02-13 18:38:54',NULL,NULL,NULL),(183,68,'Yala - 8',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771007895/xq4abx9lomcallxwkszw.webp',1,'2026-02-13 18:38:54',NULL,'2026-02-13 18:38:54',NULL,NULL,NULL),(184,68,'Yala - 9',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771007910/qglnc3nhfylp0ksslm6d.jpg',1,'2026-02-13 18:38:54',NULL,'2026-02-13 18:38:54',NULL,NULL,NULL),(185,68,'Yala - 10',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771007921/thobrugodx3syas9apwd.jpg',1,'2026-02-13 18:38:54',NULL,'2026-02-13 18:38:54',NULL,NULL,NULL),(186,69,'Bentota - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771008140/vhydervrzsh5wbbps8nv.jpg',1,'2026-02-13 18:43:22',NULL,'2026-02-13 18:43:22',NULL,NULL,NULL),(187,69,'Bentota - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771008149/qtbblvguo1bawbrkwuis.jpg',1,'2026-02-13 18:43:22',NULL,'2026-02-13 18:43:22',NULL,NULL,NULL),(188,69,'Bentota - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771008159/ezaqcutkcdkxrqpoiw5i.jpg',1,'2026-02-13 18:43:22',NULL,'2026-02-13 18:43:22',NULL,NULL,NULL),(189,69,'Bentota - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771008169/jrzzz3dduc8gxdxtsiqw.jpg',1,'2026-02-13 18:43:22',NULL,'2026-02-13 18:43:22',NULL,NULL,NULL),(190,69,'Bentota - 5',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771008182/eniqcverxn7l4qepbdah.jpg',1,'2026-02-13 18:43:22',NULL,'2026-02-13 18:43:22',NULL,NULL,NULL),(191,69,'Bentota - 6',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771008191/mda4cwujmocp5l9qormi.webp',1,'2026-02-13 18:43:22',NULL,'2026-02-13 18:43:22',NULL,NULL,NULL),(192,70,'Galle - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771008584/uqfcuwowxs1hhevijnaw.jpg',1,'2026-02-13 18:51:05',NULL,'2026-02-13 18:51:05',NULL,NULL,NULL),(193,70,'Galle - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771008595/i7jkw89aevxp57cr6e8x.jpg',1,'2026-02-13 18:51:05',NULL,'2026-02-13 18:51:05',NULL,NULL,NULL),(194,70,'Galle - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771008604/yus07ffjz61hiupecypm.jpg',1,'2026-02-13 18:51:05',NULL,'2026-02-13 18:51:05',NULL,NULL,NULL),(195,70,'Galle - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771008620/hn6am0dm4b6btwy2jdsr.jpg',1,'2026-02-13 18:51:05',NULL,'2026-02-13 18:51:05',NULL,NULL,NULL),(196,70,'Galle - 5',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771008634/jxuco8bip0flyaxm7o0v.jpg',1,'2026-02-13 18:51:05',NULL,'2026-02-13 18:51:05',NULL,NULL,NULL),(197,70,'Galle - 6',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771008643/kipbogrigxnpnskcr2bt.jpg',1,'2026-02-13 18:51:05',NULL,'2026-02-13 18:51:05',NULL,NULL,NULL),(198,70,'Galle - 7',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771008653/pql7xgm5hohkdnowuaqx.jpg',1,'2026-02-13 18:51:05',NULL,'2026-02-13 18:51:05',NULL,NULL,NULL),(199,71,'Mirissa - 1',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771008958/psibzifonehl9tjk5wnw.jpg',1,'2026-02-13 18:57:44',NULL,'2026-02-13 18:57:44',NULL,NULL,NULL),(200,71,'Mirissa - 2',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771008967/atqbdcwr2cyd3ksomdrw.jpg',1,'2026-02-13 18:57:44',NULL,'2026-02-13 18:57:44',NULL,NULL,NULL),(201,71,'Mirissa - 3',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771008977/foojrlfirn7yyt9z5tcn.webp',1,'2026-02-13 18:57:44',NULL,'2026-02-13 18:57:44',NULL,NULL,NULL),(202,71,'Mirissa - 4',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771008987/k1gagpjfvjiaombxbr1x.jpg',1,'2026-02-13 18:57:44',NULL,'2026-02-13 18:57:44',NULL,NULL,NULL),(203,71,'Mirissa - 5',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771008997/ly7hbpw3st8opkjvxez8.jpg',1,'2026-02-13 18:57:44',NULL,'2026-02-13 18:57:44',NULL,NULL,NULL),(204,71,'Mirissa - 6',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771009008/evnt4tfxcuoqgtgmnbue.jpg',1,'2026-02-13 18:57:44',NULL,'2026-02-13 18:57:44',NULL,NULL,NULL),(205,71,'Mirissa - 7',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771009018/r5vdcijqwyjrb7uwdopk.jpg',1,'2026-02-13 18:57:44',NULL,'2026-02-13 18:57:44',NULL,NULL,NULL),(206,71,'Mirissa - 8',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771009027/xuyqnmvft2ux161mlmbw.jpg',1,'2026-02-13 18:57:44',NULL,'2026-02-13 18:57:44',NULL,NULL,NULL),(207,71,'Mirissa - 9',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771009038/wasipzpojfcgbsqpuyom.jpg',1,'2026-02-13 18:57:44',NULL,'2026-02-13 18:57:44',NULL,NULL,NULL),(208,71,'Mirissa - 10',NULL,'https://res.cloudinary.com/dtzrivqye/image/upload/v1771009049/kdomppm7ujgx1fvno1ka.jpg',1,'2026-02-13 18:57:44',NULL,'2026-02-13 18:57:44',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `destination_images` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `destination_review`
+--
+
+DROP TABLE IF EXISTS `destination_review`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `destination_review` (
+  `review_id` int NOT NULL AUTO_INCREMENT,
+  `destination_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `review_text` text,
+  `rating` decimal(3,2) DEFAULT NULL,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`review_id`),
+  KEY `destination_id` (`destination_id`),
+  KEY `user_id` (`user_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `destination_review_ibfk_1` FOREIGN KEY (`destination_id`) REFERENCES `destination` (`destination_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `destination_review_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `destination_review_ibfk_3` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `destination_review`
+--
+
+LOCK TABLES `destination_review` WRITE;
+/*!40000 ALTER TABLE `destination_review` DISABLE KEYS */;
+/*!40000 ALTER TABLE `destination_review` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `destination_review_comment`
+--
+
+DROP TABLE IF EXISTS `destination_review_comment`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `destination_review_comment` (
+  `comment_id` int NOT NULL AUTO_INCREMENT,
+  `review_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `comment_text` text NOT NULL,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  `parent_comment_id` int DEFAULT NULL,
+  PRIMARY KEY (`comment_id`),
+  KEY `review_id` (`review_id`),
+  KEY `user_id` (`user_id`),
+  KEY `status` (`status`),
+  KEY `parent_comment_id` (`parent_comment_id`),
+  CONSTRAINT `destination_review_comment_ibfk_1` FOREIGN KEY (`review_id`) REFERENCES `destination_review` (`review_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `destination_review_comment_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `destination_review_comment_ibfk_3` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `destination_review_comment_ibfk_4` FOREIGN KEY (`parent_comment_id`) REFERENCES `destination_review_comment` (`comment_id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `destination_review_comment`
+--
+
+LOCK TABLES `destination_review_comment` WRITE;
+/*!40000 ALTER TABLE `destination_review_comment` DISABLE KEYS */;
+/*!40000 ALTER TABLE `destination_review_comment` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `destination_review_comment_reaction`
+--
+
+DROP TABLE IF EXISTS `destination_review_comment_reaction`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `destination_review_comment_reaction` (
+  `comment_reaction_id` int NOT NULL AUTO_INCREMENT,
+  `comment_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `reaction_type_id` int NOT NULL,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`comment_reaction_id`),
+  KEY `comment_id` (`comment_id`),
+  KEY `user_id` (`user_id`),
+  KEY `reaction_type_id` (`reaction_type_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `destination_review_comment_reaction_ibfk_1` FOREIGN KEY (`comment_id`) REFERENCES `destination_review_comment` (`comment_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `destination_review_comment_reaction_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `destination_review_comment_reaction_ibfk_3` FOREIGN KEY (`reaction_type_id`) REFERENCES `reaction_type` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `destination_review_comment_reaction_ibfk_4` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `destination_review_comment_reaction`
+--
+
+LOCK TABLES `destination_review_comment_reaction` WRITE;
+/*!40000 ALTER TABLE `destination_review_comment_reaction` DISABLE KEYS */;
+/*!40000 ALTER TABLE `destination_review_comment_reaction` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `destination_review_images`
+--
+
+DROP TABLE IF EXISTS `destination_review_images`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `destination_review_images` (
+  `image_id` int NOT NULL AUTO_INCREMENT,
+  `review_id` int NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text,
+  `image_url` varchar(255) NOT NULL,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`image_id`),
+  KEY `review_id` (`review_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `destination_review_images_ibfk_1` FOREIGN KEY (`review_id`) REFERENCES `destination_review` (`review_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `destination_review_images_ibfk_2` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `destination_review_images`
+--
+
+LOCK TABLES `destination_review_images` WRITE;
+/*!40000 ALTER TABLE `destination_review_images` DISABLE KEYS */;
+/*!40000 ALTER TABLE `destination_review_images` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `destination_review_reaction`
+--
+
+DROP TABLE IF EXISTS `destination_review_reaction`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `destination_review_reaction` (
+  `review_reaction_id` int NOT NULL AUTO_INCREMENT,
+  `review_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `reaction_type_id` int NOT NULL,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`review_reaction_id`),
+  KEY `review_id` (`review_id`),
+  KEY `user_id` (`user_id`),
+  KEY `reaction_type_id` (`reaction_type_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `destination_review_reaction_ibfk_1` FOREIGN KEY (`review_id`) REFERENCES `destination_review` (`review_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `destination_review_reaction_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `destination_review_reaction_ibfk_3` FOREIGN KEY (`reaction_type_id`) REFERENCES `reaction_type` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `destination_review_reaction_ibfk_4` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `destination_review_reaction`
+--
+
+LOCK TABLES `destination_review_reaction` WRITE;
+/*!40000 ALTER TABLE `destination_review_reaction` DISABLE KEYS */;
+/*!40000 ALTER TABLE `destination_review_reaction` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `destination_wishlist`
+--
+
+DROP TABLE IF EXISTS `destination_wishlist`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `destination_wishlist` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `destination_id` int NOT NULL,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `destination_id` (`destination_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `destination_wishlist_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `destination_wishlist_ibfk_2` FOREIGN KEY (`destination_id`) REFERENCES `destination` (`destination_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `destination_wishlist_ibfk_3` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `destination_wishlist`
+--
+
+LOCK TABLES `destination_wishlist` WRITE;
+/*!40000 ALTER TABLE `destination_wishlist` DISABLE KEYS */;
+/*!40000 ALTER TABLE `destination_wishlist` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `destination_wishlist_history`
+--
+
+DROP TABLE IF EXISTS `destination_wishlist_history`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `destination_wishlist_history` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `destination_id` int NOT NULL,
+  `wishlist_id` int NOT NULL,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `destination_id` (`destination_id`),
+  KEY `wishlist_id` (`wishlist_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `destination_wishlist_history_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `destination_wishlist_history_ibfk_2` FOREIGN KEY (`destination_id`) REFERENCES `destination` (`destination_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `destination_wishlist_history_ibfk_3` FOREIGN KEY (`wishlist_id`) REFERENCES `destination_wishlist` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `destination_wishlist_history_ibfk_4` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `destination_wishlist_history`
+--
+
+LOCK TABLES `destination_wishlist_history` WRITE;
+/*!40000 ALTER TABLE `destination_wishlist_history` DISABLE KEYS */;
+/*!40000 ALTER TABLE `destination_wishlist_history` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `email_verified`
+--
+
+DROP TABLE IF EXISTS `email_verified`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `email_verified` (
+  `email_verified_id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `send_code` varchar(50) DEFAULT NULL,
+  `typed_code` varchar(50) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `status_id` int DEFAULT NULL,
+  `which_email` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`email_verified_id`),
+  KEY `user_id` (`user_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `email_verified_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `email_verified_ibfk_2` FOREIGN KEY (`status_id`) REFERENCES `verified_status` (`verified_status_id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `email_verified`
+--
+
+LOCK TABLES `email_verified` WRITE;
+/*!40000 ALTER TABLE `email_verified` DISABLE KEYS */;
+/*!40000 ALTER TABLE `email_verified` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `employee_assets`
+--
+
+DROP TABLE IF EXISTS `employee_assets`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `employee_assets` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `employee_id` int NOT NULL,
+  `asset_type` varchar(100) NOT NULL,
+  `asset_id` varchar(100) DEFAULT NULL,
+  `asset_name` varchar(255) NOT NULL,
+  `serial_number` varchar(100) DEFAULT NULL,
+  `model` varchar(100) DEFAULT NULL,
+  `assigned_date` date NOT NULL,
+  `return_date` date DEFAULT NULL,
+  `condition_on_assignment` text,
+  `condition_on_return` text,
+  `notes` text,
+  `assigned_by` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `status_id` int DEFAULT '1',
+  PRIMARY KEY (`id`),
+  KEY `employee_id` (`employee_id`),
+  KEY `assigned_by` (`assigned_by`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `employee_assets_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`),
+  CONSTRAINT `employee_assets_ibfk_2` FOREIGN KEY (`assigned_by`) REFERENCES `employees` (`id`),
+  CONSTRAINT `employee_assets_ibfk_3` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_assets`
+--
+
+LOCK TABLES `employee_assets` WRITE;
+/*!40000 ALTER TABLE `employee_assets` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_assets` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `employee_attendance`
+--
+
+DROP TABLE IF EXISTS `employee_attendance`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `employee_attendance` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `employee_id` int NOT NULL,
+  `attendance_date` date NOT NULL,
+  `check_in_time` time DEFAULT NULL,
+  `check_out_time` time DEFAULT NULL,
+  `total_hours` decimal(5,2) GENERATED ALWAYS AS ((case when (`check_out_time` > `check_in_time`) then timestampdiff(HOUR,`check_in_time`,`check_out_time`) else (timestampdiff(HOUR,`check_out_time`,`check_in_time`) + 24) end)) STORED,
+  `attendance_status` enum('present','absent','half_day','leave','holiday','week_off') DEFAULT 'present',
+  `late_minutes` int DEFAULT '0',
+  `overtime_minutes` int DEFAULT '0',
+  `notes` text,
+  `recorded_by` int DEFAULT NULL,
+  `recorded_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_employee_date` (`employee_id`,`attendance_date`),
+  KEY `idx_employee_attendance_employee_date` (`employee_id`,`attendance_date`),
+  KEY `idx_employee_attendance_date_status` (`attendance_date`,`attendance_status`),
+  KEY `idx_employee_attendance_recorded_by` (`recorded_by`),
+  CONSTRAINT `employee_attendance_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`),
+  CONSTRAINT `employee_attendance_ibfk_2` FOREIGN KEY (`recorded_by`) REFERENCES `employees` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_attendance`
+--
+
+LOCK TABLES `employee_attendance` WRITE;
+/*!40000 ALTER TABLE `employee_attendance` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_attendance` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `employee_availability`
+--
+
+DROP TABLE IF EXISTS `employee_availability`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `employee_availability` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `employee_id` int NOT NULL,
+  `availability_date` date NOT NULL,
+  `time_slots` json DEFAULT NULL,
+  `is_available` tinyint(1) DEFAULT '1',
+  `reason_if_unavailable` text,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_employee_date` (`employee_id`,`availability_date`),
+  KEY `idx_employee_availability_date` (`availability_date`),
+  KEY `idx_employee_availability_status` (`is_available`),
+  CONSTRAINT `employee_availability_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_availability`
+--
+
+LOCK TABLES `employee_availability` WRITE;
+/*!40000 ALTER TABLE `employee_availability` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_availability` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `employee_departments`
+--
+
+DROP TABLE IF EXISTS `employee_departments`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `employee_departments` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `department_name` varchar(100) NOT NULL,
+  `parent_department_id` int DEFAULT NULL,
+  `department_head` int DEFAULT NULL,
+  `description` text,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `status_id` int DEFAULT '1',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `department_name` (`department_name`),
+  KEY `parent_department_id` (`parent_department_id`),
+  KEY `status_id` (`status_id`),
+  KEY `department_head` (`department_head`),
+  CONSTRAINT `employee_departments_ibfk_1` FOREIGN KEY (`parent_department_id`) REFERENCES `employee_departments` (`id`),
+  CONSTRAINT `employee_departments_ibfk_2` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`),
+  CONSTRAINT `employee_departments_ibfk_3` FOREIGN KEY (`department_head`) REFERENCES `employees` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_departments`
+--
+
+LOCK TABLES `employee_departments` WRITE;
+/*!40000 ALTER TABLE `employee_departments` DISABLE KEYS */;
+INSERT INTO `employee_departments` VALUES (1,'Executive Management',NULL,1,'Top level management and executives','2025-12-04 15:42:11',1),(2,'Human Resources',NULL,2,'HR and personnel management','2025-12-04 15:42:11',1),(3,'Operations',NULL,3,'Daily operations and logistics','2025-12-04 15:42:11',1),(4,'Sales & Marketing',NULL,6,'Sales and marketing department','2025-12-04 15:42:11',1),(5,'Tour Operations',NULL,4,'Tour guides and operations','2025-12-04 15:42:11',1),(6,'Transportation',NULL,5,'Drivers and vehicle management','2025-12-04 15:42:11',1),(7,'Finance',NULL,NULL,'Accounting and finance','2025-12-04 15:42:11',1),(8,'Customer Support',3,NULL,'Handles customer inquiries, complaints, and post-booking support','2026-02-19 20:41:32',1),(9,'Reservations & Bookings',3,NULL,'Manages tour bookings, hotel reservations, and ticketing','2026-02-19 20:41:32',1),(10,'Tour Guide Management',5,NULL,'Coordinates and manages freelance and full-time tour guides','2026-02-19 20:41:32',1),(11,'Driver Management',6,NULL,'Manages drivers, schedules, and vehicle assignments','2026-02-19 20:41:32',1),(12,'Content & Social Media',4,NULL,'Creates content, manages social media, and digital marketing','2026-02-19 20:41:32',1),(13,'IT & Web Development',1,NULL,'Maintains website, internal systems, and technical infrastructure','2026-02-19 20:41:32',1),(14,'Vendor Management',3,NULL,'Coordinates with hotels, restaurants, and activity providers','2026-02-19 20:41:32',1),(15,'Quality Assurance',1,NULL,'Ensures service quality and customer satisfaction standards','2026-02-19 20:41:32',1),(16,'Product Development',4,NULL,'Creates new tour packages and experiences','2026-02-19 20:41:32',1),(17,'Admin & Facilities',2,NULL,'Manages office facilities, supplies, and administrative tasks','2026-02-19 20:41:32',1),(18,'Accounts Payable',7,NULL,'Handles payments to vendors, guides, and suppliers','2026-02-19 20:41:32',1),(19,'Accounts Receivable',7,NULL,'Manages customer payments and invoicing','2026-02-19 20:41:32',1),(20,'Legal & Compliance',1,NULL,'Handles contracts, permits, and regulatory compliance','2026-02-19 20:41:32',1),(21,'Corporate Sales',4,NULL,'Handles corporate clients and group bookings','2026-02-19 20:41:32',1),(22,'International Sales',4,NULL,'Focuses on foreign markets and international partnerships','2026-02-19 20:41:32',1);
+/*!40000 ALTER TABLE `employee_departments` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `employee_designations`
+--
+
+DROP TABLE IF EXISTS `employee_designations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `employee_designations` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `designation_name` varchar(100) NOT NULL,
+  `level` int DEFAULT '1',
+  `min_salary` decimal(10,2) DEFAULT NULL,
+  `max_salary` decimal(10,2) DEFAULT NULL,
+  `department_id` int DEFAULT NULL,
+  `description` text,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `status_id` int DEFAULT '1',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `designation_name` (`designation_name`),
+  KEY `department_id` (`department_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `employee_designations_ibfk_1` FOREIGN KEY (`department_id`) REFERENCES `employee_departments` (`id`),
+  CONSTRAINT `employee_designations_ibfk_2` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_designations`
+--
+
+LOCK TABLES `employee_designations` WRITE;
+/*!40000 ALTER TABLE `employee_designations` DISABLE KEYS */;
+INSERT INTO `employee_designations` VALUES (1,'CEO',10,300000.00,500000.00,1,'Chief Executive Officer','2025-12-04 15:42:11',1),(2,'HR Manager',8,150000.00,250000.00,2,'Human Resources Manager','2025-12-04 15:42:11',1),(3,'Operations Manager',8,140000.00,220000.00,3,'Operations Department Manager','2025-12-04 15:42:11',1),(4,'Senior Tour Guide',6,80000.00,150000.00,5,'Senior Tour Guide','2025-12-04 15:42:11',1),(5,'Tour Guide',5,60000.00,100000.00,5,'Tour Guide','2025-12-04 15:42:11',1),(6,'Senior Driver',5,70000.00,120000.00,6,'Senior Driver','2025-12-04 15:42:11',1),(7,'Driver',4,50000.00,90000.00,6,'Driver','2025-12-04 15:42:11',1),(8,'Sales Executive',5,60000.00,120000.00,4,'Sales Executive','2025-12-04 15:42:11',1),(9,'Marketing Executive',5,60000.00,120000.00,4,'Marketing Executive','2025-12-04 15:42:11',1),(10,'Accountant',6,90000.00,160000.00,7,'Finance Accountant','2025-12-04 15:42:11',1),(11,'Managing Director',9,250000.00,400000.00,1,'Managing Director - oversees daily operations','2026-02-19 20:44:07',1),(12,'Chief Operating Officer',9,220000.00,380000.00,1,'COO - heads operations strategy','2026-02-19 20:44:07',1),(13,'Chief Financial Officer',9,220000.00,380000.00,1,'CFO - financial strategy and planning','2026-02-19 20:44:07',1),(14,'HR Executive',5,60000.00,100000.00,2,'Human Resources Executive','2026-02-19 20:44:07',1),(15,'HR Assistant',3,35000.00,55000.00,2,'HR Assistant','2026-02-19 20:44:07',1),(16,'Training Coordinator',4,45000.00,75000.00,2,'Coordinates employee training programs','2026-02-19 20:44:07',1),(17,'Recruitment Specialist',5,55000.00,95000.00,2,'Handles hiring and recruitment','2026-02-19 20:44:07',1),(18,'Operations Executive',5,60000.00,110000.00,3,'Operations Executive','2026-02-19 20:44:07',1),(19,'Operations Assistant',3,35000.00,55000.00,3,'Operations Assistant','2026-02-19 20:44:07',1),(20,'Tour Coordinator',4,45000.00,80000.00,3,'Coordinates daily tour schedules','2026-02-19 20:44:07',1),(21,'Guest Relations Officer',5,50000.00,90000.00,3,'Handles guest inquiries and support','2026-02-19 20:44:07',1),(22,'Customer Support Executive',4,40000.00,70000.00,3,'Customer service and support','2026-02-19 20:44:07',1),(23,'Reservations Officer',4,40000.00,70000.00,3,'Handles tour and hotel bookings','2026-02-19 20:44:07',1),(24,'Sales Manager',7,120000.00,200000.00,4,'Manages sales team','2026-02-19 20:44:07',1),(25,'Marketing Manager',7,120000.00,200000.00,4,'Manages marketing team','2026-02-19 20:44:07',1),(26,'Senior Sales Executive',6,80000.00,150000.00,4,'Senior Sales Executive','2026-02-19 20:44:07',1),(27,'Senior Marketing Executive',6,80000.00,150000.00,4,'Senior Marketing Executive','2026-02-19 20:44:07',1),(28,'Digital Marketing Specialist',5,60000.00,120000.00,4,'Digital marketing and social media','2026-02-19 20:44:07',1),(29,'Content Writer',4,40000.00,70000.00,4,'Creates blog posts and content','2026-02-19 20:44:07',1),(30,'Graphic Designer',5,50000.00,90000.00,4,'Designs marketing materials','2026-02-19 20:44:07',1),(31,'Sales Coordinator',4,40000.00,70000.00,4,'Sales support and coordination','2026-02-19 20:44:07',1),(32,'Corporate Sales Executive',6,70000.00,130000.00,4,'Handles corporate clients','2026-02-19 20:44:07',1),(33,'International Sales Executive',6,70000.00,130000.00,4,'Handles foreign markets','2026-02-19 20:44:07',1),(34,'Chief Tour Guide',7,90000.00,160000.00,5,'Head of tour guide team','2026-02-19 20:44:07',1),(35,'Lead Guide',6,70000.00,130000.00,5,'Team lead for guides','2026-02-19 20:44:07',1),(36,'Specialist Guide - Wildlife',6,65000.00,120000.00,5,'Specialized in wildlife tours','2026-02-19 20:44:07',1),(37,'Specialist Guide - Cultural',6,65000.00,120000.00,5,'Specialized in cultural tours','2026-02-19 20:44:07',1),(38,'Specialist Guide - Adventure',6,65000.00,120000.00,5,'Specialized in adventure activities','2026-02-19 20:44:07',1),(39,'Language Specialist Guide',6,70000.00,130000.00,5,'Guide fluent in foreign languages','2026-02-19 20:44:07',1),(40,'Trainee Tour Guide',2,30000.00,50000.00,5,'Guide in training','2026-02-19 20:44:07',1),(41,'Transport Manager',7,100000.00,180000.00,6,'Manages transport department','2026-02-19 20:44:07',1),(42,'Fleet Supervisor',6,70000.00,130000.00,6,'Supervises vehicle fleet','2026-02-19 20:44:07',1),(43,'Lead Driver',5,60000.00,100000.00,6,'Lead driver for tours','2026-02-19 20:44:07',1),(44,'Luxury Vehicle Driver',5,55000.00,95000.00,6,'Drives premium vehicles','2026-02-19 20:44:07',1),(45,'Van/Bus Driver',4,45000.00,80000.00,6,'Drives group vehicles','2026-02-19 20:44:07',1),(46,'Safari Jeep Driver',5,50000.00,90000.00,6,'Specialized safari driver','2026-02-19 20:44:07',1),(47,'Mechanic',4,40000.00,70000.00,6,'Vehicle maintenance','2026-02-19 20:44:07',1),(48,'Fleet Assistant',3,30000.00,50000.00,6,'Fleet support','2026-02-19 20:44:07',1),(49,'Finance Manager',7,150000.00,250000.00,7,'Manages finance department','2026-02-19 20:44:07',1),(50,'Senior Accountant',6,90000.00,160000.00,7,'Senior Accountant','2026-02-19 20:44:07',1),(51,'Accounts Executive',5,60000.00,100000.00,7,'Accounts Executive','2026-02-19 20:44:07',1),(52,'Accounts Assistant',3,35000.00,55000.00,7,'Accounts Assistant','2026-02-19 20:44:07',1),(53,'Payroll Officer',4,45000.00,75000.00,7,'Handles payroll','2026-02-19 20:44:07',1),(54,'Tax Officer',5,60000.00,100000.00,7,'Handles tax compliance','2026-02-19 20:44:07',1),(55,'Financial Analyst',6,80000.00,140000.00,7,'Financial analysis and reporting','2026-02-19 20:44:07',1),(56,'IT Manager',7,120000.00,200000.00,NULL,'Manages IT department','2026-02-19 20:44:07',1),(57,'Web Developer',5,60000.00,110000.00,NULL,'Develops and maintains website','2026-02-19 20:44:07',1),(58,'System Administrator',5,55000.00,100000.00,NULL,'Manages IT systems','2026-02-19 20:44:07',1),(59,'IT Support Executive',4,40000.00,70000.00,NULL,'Provides technical support','2026-02-19 20:44:07',1);
+/*!40000 ALTER TABLE `employee_designations` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `employee_documents`
+--
+
+DROP TABLE IF EXISTS `employee_documents`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `employee_documents` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `employee_id` int NOT NULL,
+  `document_type` varchar(100) DEFAULT NULL,
+  `document_name` varchar(255) NOT NULL,
+  `file_path` varchar(500) NOT NULL,
+  `file_size` int DEFAULT NULL,
+  `mime_type` varchar(100) DEFAULT NULL,
+  `uploaded_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `expiry_date` date DEFAULT NULL,
+  `verified` tinyint(1) DEFAULT '0',
+  `verified_by` int DEFAULT NULL,
+  `verified_date` date DEFAULT NULL,
+  `notes` text,
+  `uploaded_by` int DEFAULT NULL,
+  `status_id` int DEFAULT '1',
+  PRIMARY KEY (`id`),
+  KEY `uploaded_by` (`uploaded_by`),
+  KEY `verified_by` (`verified_by`),
+  KEY `status_id` (`status_id`),
+  KEY `idx_employee_documents_employee` (`employee_id`),
+  CONSTRAINT `employee_documents_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`),
+  CONSTRAINT `employee_documents_ibfk_2` FOREIGN KEY (`uploaded_by`) REFERENCES `employees` (`id`),
+  CONSTRAINT `employee_documents_ibfk_3` FOREIGN KEY (`verified_by`) REFERENCES `employees` (`id`),
+  CONSTRAINT `employee_documents_ibfk_4` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_documents`
+--
+
+LOCK TABLES `employee_documents` WRITE;
+/*!40000 ALTER TABLE `employee_documents` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_documents` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `employee_driver_details`
+--
+
+DROP TABLE IF EXISTS `employee_driver_details`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `employee_driver_details` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `employee_id` int NOT NULL,
+  `license_type` varchar(50) DEFAULT NULL,
+  `license_number` varchar(50) DEFAULT NULL,
+  `license_issue_date` date DEFAULT NULL,
+  `license_expiry_date` date DEFAULT NULL,
+  `vehicle_types` text,
+  `experience_years` int DEFAULT NULL,
+  `accident_free_years` int DEFAULT NULL,
+  `route_expertise` text,
+  `is_available` tinyint(1) DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `employee_id` (`employee_id`),
+  CONSTRAINT `employee_driver_details_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_driver_details`
+--
+
+LOCK TABLES `employee_driver_details` WRITE;
+/*!40000 ALTER TABLE `employee_driver_details` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_driver_details` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `employee_emergency_contacts`
+--
+
+DROP TABLE IF EXISTS `employee_emergency_contacts`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `employee_emergency_contacts` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `employee_id` int NOT NULL,
+  `contact_name` varchar(100) NOT NULL,
+  `relationship` varchar(50) DEFAULT NULL,
+  `primary_phone` varchar(20) NOT NULL,
+  `secondary_phone` varchar(20) DEFAULT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `address` text,
+  `is_primary` tinyint(1) DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `status_id` int DEFAULT '1',
+  PRIMARY KEY (`id`),
+  KEY `employee_id` (`employee_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `employee_emergency_contacts_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`),
+  CONSTRAINT `employee_emergency_contacts_ibfk_2` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_emergency_contacts`
+--
+
+LOCK TABLES `employee_emergency_contacts` WRITE;
+/*!40000 ALTER TABLE `employee_emergency_contacts` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_emergency_contacts` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `employee_exit`
+--
+
+DROP TABLE IF EXISTS `employee_exit`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `employee_exit` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `employee_id` int NOT NULL,
+  `resignation_date` date DEFAULT NULL,
+  `last_working_date` date NOT NULL,
+  `exit_type` enum('resignation','termination','retirement','contract_end') DEFAULT NULL,
+  `reason` text,
+  `exit_interview_notes` text,
+  `exit_interview_by` int DEFAULT NULL,
+  `exit_interview_date` date DEFAULT NULL,
+  `notice_period_served` tinyint(1) DEFAULT '1',
+  `final_settlement_date` date DEFAULT NULL,
+  `final_settlement_amount` decimal(10,2) DEFAULT NULL,
+  `clearance_status` enum('pending','completed') DEFAULT 'pending',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `status_id` int DEFAULT '1',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `employee_id` (`employee_id`),
+  KEY `exit_interview_by` (`exit_interview_by`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `employee_exit_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`),
+  CONSTRAINT `employee_exit_ibfk_2` FOREIGN KEY (`exit_interview_by`) REFERENCES `employees` (`id`),
+  CONSTRAINT `employee_exit_ibfk_3` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_exit`
+--
+
+LOCK TABLES `employee_exit` WRITE;
+/*!40000 ALTER TABLE `employee_exit` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_exit` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `employee_exit_clearance_items`
+--
+
+DROP TABLE IF EXISTS `employee_exit_clearance_items`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `employee_exit_clearance_items` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `employee_exit_id` int NOT NULL,
+  `clearance_item` varchar(255) NOT NULL,
+  `responsible_dept` varchar(100) DEFAULT NULL,
+  `responsible_person` int DEFAULT NULL,
+  `completed` tinyint(1) DEFAULT '0',
+  `completion_date` date DEFAULT NULL,
+  `notes` text,
+  PRIMARY KEY (`id`),
+  KEY `employee_exit_id` (`employee_exit_id`),
+  KEY `responsible_person` (`responsible_person`),
+  CONSTRAINT `employee_exit_clearance_items_ibfk_1` FOREIGN KEY (`employee_exit_id`) REFERENCES `employee_exit` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `employee_exit_clearance_items_ibfk_2` FOREIGN KEY (`responsible_person`) REFERENCES `employees` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_exit_clearance_items`
+--
+
+LOCK TABLES `employee_exit_clearance_items` WRITE;
+/*!40000 ALTER TABLE `employee_exit_clearance_items` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_exit_clearance_items` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `employee_guide_specializations`
+--
+
+DROP TABLE IF EXISTS `employee_guide_specializations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `employee_guide_specializations` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `employee_id` int NOT NULL,
+  `specialization_type` varchar(100) DEFAULT NULL,
+  `regions` text,
+  `languages` text,
+  `certifications` text,
+  `experience_years` int DEFAULT NULL,
+  `rating` decimal(3,2) DEFAULT NULL,
+  `is_available` tinyint(1) DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `employee_id` (`employee_id`),
+  CONSTRAINT `employee_guide_specializations_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_guide_specializations`
+--
+
+LOCK TABLES `employee_guide_specializations` WRITE;
+/*!40000 ALTER TABLE `employee_guide_specializations` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_guide_specializations` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `employee_holidays`
+--
+
+DROP TABLE IF EXISTS `employee_holidays`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `employee_holidays` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `holiday_name` varchar(100) NOT NULL,
+  `holiday_date` date NOT NULL,
+  `holiday_type` enum('national','regional','company','optional') DEFAULT 'national',
+  `description` text,
+  `year` year DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `status_id` int DEFAULT '1',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_holiday_date` (`holiday_date`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `employee_holidays_ibfk_1` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_holidays`
+--
+
+LOCK TABLES `employee_holidays` WRITE;
+/*!40000 ALTER TABLE `employee_holidays` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_holidays` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `employee_incentives`
+--
+
+DROP TABLE IF EXISTS `employee_incentives`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `employee_incentives` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `employee_id` int NOT NULL,
+  `incentive_date` date NOT NULL,
+  `incentive_type` varchar(100) DEFAULT NULL,
+  `amount` decimal(10,2) NOT NULL,
+  `calculation_basis` text,
+  `reference_id` varchar(100) DEFAULT NULL,
+  `payment_status` enum('pending','paid') DEFAULT 'pending',
+  `paid_date` date DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `employee_id` (`employee_id`),
+  CONSTRAINT `employee_incentives_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_incentives`
+--
+
+LOCK TABLES `employee_incentives` WRITE;
+/*!40000 ALTER TABLE `employee_incentives` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_incentives` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `employee_leave_applications`
+--
+
+DROP TABLE IF EXISTS `employee_leave_applications`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `employee_leave_applications` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `employee_id` int NOT NULL,
+  `leave_type_id` int NOT NULL,
+  `start_date` date NOT NULL,
+  `end_date` date NOT NULL,
+  `total_days` int NOT NULL,
+  `is_half_day` tinyint(1) DEFAULT '0',
+  `half_day_type` enum('first_half','second_half') DEFAULT NULL,
+  `reason` text,
+  `contact_during_leave` varchar(20) DEFAULT NULL,
+  `attachment_path` varchar(255) DEFAULT NULL,
+  `applied_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `approved_by` int DEFAULT NULL,
+  `approved_date` timestamp NULL DEFAULT NULL,
+  `rejection_reason` text,
+  `status` enum('pending','approved','rejected','cancelled') DEFAULT 'pending',
+  `status_id` int DEFAULT '1',
+  PRIMARY KEY (`id`),
+  KEY `leave_type_id` (`leave_type_id`),
+  KEY `status_id` (`status_id`),
+  KEY `idx_employee_leave_applications_employee` (`employee_id`),
+  KEY `idx_employee_leave_applications_status` (`status`),
+  KEY `idx_employee_leave_applications_date` (`start_date`,`end_date`),
+  KEY `idx_employee_leave_applications_approved_by` (`approved_by`),
+  CONSTRAINT `employee_leave_applications_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`),
+  CONSTRAINT `employee_leave_applications_ibfk_2` FOREIGN KEY (`leave_type_id`) REFERENCES `employee_leave_types` (`id`),
+  CONSTRAINT `employee_leave_applications_ibfk_3` FOREIGN KEY (`approved_by`) REFERENCES `employees` (`id`),
+  CONSTRAINT `employee_leave_applications_ibfk_4` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_leave_applications`
+--
+
+LOCK TABLES `employee_leave_applications` WRITE;
+/*!40000 ALTER TABLE `employee_leave_applications` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_leave_applications` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `employee_leave_balances`
+--
+
+DROP TABLE IF EXISTS `employee_leave_balances`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `employee_leave_balances` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `employee_id` int NOT NULL,
+  `leave_type_id` int NOT NULL,
+  `year` year NOT NULL,
+  `allocated_days` int DEFAULT '0',
+  `used_days` int DEFAULT '0',
+  `remaining_days` int GENERATED ALWAYS AS ((`allocated_days` - `used_days`)) STORED,
+  `carried_forward_days` int DEFAULT '0',
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_employee_leave_year` (`employee_id`,`leave_type_id`,`year`),
+  KEY `leave_type_id` (`leave_type_id`),
+  KEY `idx_employee_leave_balances_employee` (`employee_id`),
+  KEY `idx_employee_leave_balances_year` (`year`),
+  CONSTRAINT `employee_leave_balances_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`),
+  CONSTRAINT `employee_leave_balances_ibfk_2` FOREIGN KEY (`leave_type_id`) REFERENCES `employee_leave_types` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_leave_balances`
+--
+
+LOCK TABLES `employee_leave_balances` WRITE;
+/*!40000 ALTER TABLE `employee_leave_balances` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_leave_balances` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `employee_leave_types`
+--
+
+DROP TABLE IF EXISTS `employee_leave_types`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `employee_leave_types` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `type_name` varchar(50) NOT NULL,
+  `description` text,
+  `max_days_per_year` int DEFAULT '0',
+  `is_paid` tinyint(1) DEFAULT '1',
+  `carry_forward_allowed` tinyint(1) DEFAULT '0',
+  `max_carry_forward_days` int DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `status_id` int DEFAULT '1',
+  PRIMARY KEY (`id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `employee_leave_types_ibfk_1` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_leave_types`
+--
+
+LOCK TABLES `employee_leave_types` WRITE;
+/*!40000 ALTER TABLE `employee_leave_types` DISABLE KEYS */;
+INSERT INTO `employee_leave_types` VALUES (1,'Annual Leave','Paid annual vacation leave',21,1,1,0,'2025-12-04 15:42:11',1),(2,'Sick Leave','Paid sick leave',14,1,0,0,'2025-12-04 15:42:11',1),(3,'Casual Leave','Casual or personal leave',7,1,0,0,'2025-12-04 15:42:11',1),(4,'Maternity Leave','Maternity leave',180,1,0,0,'2025-12-04 15:42:11',1),(5,'Paternity Leave','Paternity leave',7,1,0,0,'2025-12-04 15:42:11',1),(6,'Bereavement Leave','Leave for family bereavement',5,1,0,0,'2025-12-04 15:42:11',1),(7,'Compensatory Leave','Compensatory off for overtime',0,1,1,0,'2025-12-04 15:42:11',1),(8,'Unpaid Leave','Leave without pay',0,0,0,0,'2025-12-04 15:42:11',1);
+/*!40000 ALTER TABLE `employee_leave_types` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `employee_loans`
+--
+
+DROP TABLE IF EXISTS `employee_loans`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `employee_loans` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `employee_id` int NOT NULL,
+  `loan_type` enum('personal','advance','emergency') DEFAULT NULL,
+  `loan_amount` decimal(10,2) NOT NULL,
+  `approved_amount` decimal(10,2) DEFAULT NULL,
+  `interest_rate` decimal(5,2) DEFAULT NULL,
+  `tenure_months` int DEFAULT NULL,
+  `emi_amount` decimal(10,2) DEFAULT NULL,
+  `start_date` date DEFAULT NULL,
+  `end_date` date DEFAULT NULL,
+  `remaining_balance` decimal(10,2) DEFAULT NULL,
+  `status` enum('pending','approved','disbursed','rejected','closed') DEFAULT 'pending',
+  `approved_by` int DEFAULT NULL,
+  `approved_date` date DEFAULT NULL,
+  `remarks` text,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `employee_id` (`employee_id`),
+  KEY `approved_by` (`approved_by`),
+  CONSTRAINT `employee_loans_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`),
+  CONSTRAINT `employee_loans_ibfk_2` FOREIGN KEY (`approved_by`) REFERENCES `employees` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_loans`
+--
+
+LOCK TABLES `employee_loans` WRITE;
+/*!40000 ALTER TABLE `employee_loans` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_loans` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `employee_overtime_requests`
+--
+
+DROP TABLE IF EXISTS `employee_overtime_requests`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `employee_overtime_requests` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `employee_id` int NOT NULL,
+  `overtime_date` date NOT NULL,
+  `start_time` time NOT NULL,
+  `end_time` time NOT NULL,
+  `total_hours` decimal(5,2) NOT NULL,
+  `reason` text NOT NULL,
+  `approved_by` int DEFAULT NULL,
+  `approved_date` timestamp NULL DEFAULT NULL,
+  `overtime_rate` decimal(5,2) DEFAULT '1.50',
+  `payment_status` enum('pending','paid','not_paid') DEFAULT 'pending',
+  `status` enum('pending','approved','rejected') DEFAULT 'pending',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `status_id` int DEFAULT '1',
+  PRIMARY KEY (`id`),
+  KEY `employee_id` (`employee_id`),
+  KEY `approved_by` (`approved_by`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `employee_overtime_requests_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`),
+  CONSTRAINT `employee_overtime_requests_ibfk_2` FOREIGN KEY (`approved_by`) REFERENCES `employees` (`id`),
+  CONSTRAINT `employee_overtime_requests_ibfk_3` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_overtime_requests`
+--
+
+LOCK TABLES `employee_overtime_requests` WRITE;
+/*!40000 ALTER TABLE `employee_overtime_requests` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_overtime_requests` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `employee_performance_metrics`
+--
+
+DROP TABLE IF EXISTS `employee_performance_metrics`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `employee_performance_metrics` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `employee_id` int NOT NULL,
+  `metric_date` date NOT NULL,
+  `metric_type` varchar(50) DEFAULT NULL,
+  `metric_value` decimal(10,2) DEFAULT NULL,
+  `target_value` decimal(10,2) DEFAULT NULL,
+  `achievement_percentage` decimal(5,2) DEFAULT NULL,
+  `notes` text,
+  `recorded_by` int DEFAULT NULL,
+  `recorded_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `employee_id` (`employee_id`),
+  KEY `recorded_by` (`recorded_by`),
+  CONSTRAINT `employee_performance_metrics_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`),
+  CONSTRAINT `employee_performance_metrics_ibfk_2` FOREIGN KEY (`recorded_by`) REFERENCES `employees` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_performance_metrics`
+--
+
+LOCK TABLES `employee_performance_metrics` WRITE;
+/*!40000 ALTER TABLE `employee_performance_metrics` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_performance_metrics` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `employee_performance_reviews`
+--
+
+DROP TABLE IF EXISTS `employee_performance_reviews`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `employee_performance_reviews` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `employee_id` int NOT NULL,
+  `review_period_start` date NOT NULL,
+  `review_period_end` date NOT NULL,
+  `reviewed_by` int NOT NULL,
+  `review_date` date NOT NULL,
+  `overall_rating` decimal(3,1) DEFAULT NULL,
+  `attendance_rating` int DEFAULT NULL,
+  `productivity_rating` int DEFAULT NULL,
+  `quality_rating` int DEFAULT NULL,
+  `teamwork_rating` int DEFAULT NULL,
+  `strengths` text,
+  `areas_for_improvement` text,
+  `goals` text,
+  `comments` text,
+  `status` enum('draft','submitted','approved') DEFAULT 'draft',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `status_id` int DEFAULT '1',
+  PRIMARY KEY (`id`),
+  KEY `status_id` (`status_id`),
+  KEY `idx_employee_performance_reviews_employee` (`employee_id`),
+  KEY `idx_employee_performance_reviews_reviewed_by` (`reviewed_by`),
+  CONSTRAINT `employee_performance_reviews_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`),
+  CONSTRAINT `employee_performance_reviews_ibfk_2` FOREIGN KEY (`reviewed_by`) REFERENCES `employees` (`id`),
+  CONSTRAINT `employee_performance_reviews_ibfk_3` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_performance_reviews`
+--
+
+LOCK TABLES `employee_performance_reviews` WRITE;
+/*!40000 ALTER TABLE `employee_performance_reviews` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_performance_reviews` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `employee_salary_components`
+--
+
+DROP TABLE IF EXISTS `employee_salary_components`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `employee_salary_components` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `component_name` varchar(100) NOT NULL,
+  `component_type` enum('earning','deduction') NOT NULL,
+  `is_fixed` tinyint(1) DEFAULT '1',
+  `is_taxable` tinyint(1) DEFAULT '1',
+  `calculation_type` enum('fixed','percentage','formula') DEFAULT NULL,
+  `calculation_value` decimal(10,2) DEFAULT NULL,
+  `description` text,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `status_id` int DEFAULT '1',
+  PRIMARY KEY (`id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `employee_salary_components_ibfk_1` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_salary_components`
+--
+
+LOCK TABLES `employee_salary_components` WRITE;
+/*!40000 ALTER TABLE `employee_salary_components` DISABLE KEYS */;
+INSERT INTO `employee_salary_components` VALUES (1,'Basic Salary','earning',1,1,NULL,NULL,'Basic salary component','2025-12-04 15:42:11',1),(2,'House Rent Allowance','earning',1,1,NULL,NULL,'HRA component','2025-12-04 15:42:11',1),(3,'Dearness Allowance','earning',1,1,NULL,NULL,'DA component','2025-12-04 15:42:11',1),(4,'Travel Allowance','earning',1,1,NULL,NULL,'Travel allowance for work','2025-12-04 15:42:11',1),(5,'Conveyance Allowance','earning',1,1,NULL,NULL,'Conveyance allowance','2025-12-04 15:42:11',1),(6,'Medical Allowance','earning',1,1,NULL,NULL,'Medical allowance','2025-12-04 15:42:11',1),(7,'Special Allowance','earning',1,1,NULL,NULL,'Special allowances','2025-12-04 15:42:11',1),(8,'Bonus','earning',0,1,NULL,NULL,'Performance bonus','2025-12-04 15:42:11',1),(9,'Incentive','earning',0,1,NULL,NULL,'Sales/Performance incentive','2025-12-04 15:42:11',1),(10,'Overtime Payment','earning',0,1,NULL,NULL,'Overtime payment','2025-12-04 15:42:11',1),(11,'Provident Fund','deduction',1,0,NULL,NULL,'PF deduction','2025-12-04 15:42:11',1),(12,'Professional Tax','deduction',1,1,NULL,NULL,'Professional tax','2025-12-04 15:42:11',1),(13,'Income Tax','deduction',1,1,NULL,NULL,'Income tax deduction','2025-12-04 15:42:11',1),(14,'Insurance','deduction',1,0,NULL,NULL,'Health insurance premium','2025-12-04 15:42:11',1),(15,'Loan Recovery','deduction',1,0,NULL,NULL,'Loan installment recovery','2025-12-04 15:42:11',1),(16,'Advance Recovery','deduction',1,0,NULL,NULL,'Salary advance recovery','2025-12-04 15:42:11',1);
+/*!40000 ALTER TABLE `employee_salary_components` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `employee_salary_payment_details`
+--
+
+DROP TABLE IF EXISTS `employee_salary_payment_details`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `employee_salary_payment_details` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `salary_payment_id` int NOT NULL,
+  `component_id` int NOT NULL,
+  `amount` decimal(10,2) NOT NULL,
+  `component_type` enum('earning','deduction') NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `salary_payment_id` (`salary_payment_id`),
+  KEY `component_id` (`component_id`),
+  CONSTRAINT `employee_salary_payment_details_ibfk_1` FOREIGN KEY (`salary_payment_id`) REFERENCES `employee_salary_payments` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `employee_salary_payment_details_ibfk_2` FOREIGN KEY (`component_id`) REFERENCES `employee_salary_components` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_salary_payment_details`
+--
+
+LOCK TABLES `employee_salary_payment_details` WRITE;
+/*!40000 ALTER TABLE `employee_salary_payment_details` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_salary_payment_details` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `employee_salary_payments`
+--
+
+DROP TABLE IF EXISTS `employee_salary_payments`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `employee_salary_payments` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `employee_id` int NOT NULL,
+  `payment_month` date NOT NULL,
+  `basic_salary` decimal(10,2) NOT NULL,
+  `total_earnings` decimal(10,2) NOT NULL,
+  `total_deductions` decimal(10,2) NOT NULL,
+  `gross_salary` decimal(10,2) DEFAULT NULL,
+  `net_salary` decimal(10,2) GENERATED ALWAYS AS ((`total_earnings` - `total_deductions`)) STORED,
+  `working_days` int DEFAULT NULL,
+  `paid_days` int DEFAULT NULL,
+  `leave_days` int DEFAULT NULL,
+  `overtime_hours` decimal(5,2) DEFAULT NULL,
+  `overtime_amount` decimal(10,2) DEFAULT NULL,
+  `incentive_amount` decimal(10,2) DEFAULT NULL,
+  `advance_deduction` decimal(10,2) DEFAULT NULL,
+  `loan_deduction` decimal(10,2) DEFAULT NULL,
+  `tax_deduction` decimal(10,2) DEFAULT NULL,
+  `other_deductions` decimal(10,2) DEFAULT NULL,
+  `payment_date` date DEFAULT NULL,
+  `payment_method` enum('bank_transfer','cash','cheque') DEFAULT 'bank_transfer',
+  `transaction_reference` varchar(100) DEFAULT NULL,
+  `notes` text,
+  `processed_by` int DEFAULT NULL,
+  `processed_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `status` enum('pending','paid','cancelled') DEFAULT 'pending',
+  `status_id` int DEFAULT '1',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_employee_month` (`employee_id`,`payment_month`),
+  KEY `status_id` (`status_id`),
+  KEY `idx_employee_salary_payments_employee` (`employee_id`),
+  KEY `idx_employee_salary_payments_month` (`payment_month`),
+  KEY `idx_employee_salary_payments_status` (`status`),
+  KEY `idx_employee_salary_payments_processed_by` (`processed_by`),
+  CONSTRAINT `employee_salary_payments_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`),
+  CONSTRAINT `employee_salary_payments_ibfk_2` FOREIGN KEY (`processed_by`) REFERENCES `employees` (`id`),
+  CONSTRAINT `employee_salary_payments_ibfk_3` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_salary_payments`
+--
+
+LOCK TABLES `employee_salary_payments` WRITE;
+/*!40000 ALTER TABLE `employee_salary_payments` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_salary_payments` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `employee_salary_structures`
+--
+
+DROP TABLE IF EXISTS `employee_salary_structures`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `employee_salary_structures` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `employee_id` int NOT NULL,
+  `component_id` int NOT NULL,
+  `amount` decimal(10,2) NOT NULL,
+  `effective_from` date NOT NULL,
+  `effective_to` date DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `status_id` int DEFAULT '1',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_employee_component` (`employee_id`,`component_id`,`effective_from`),
+  KEY `component_id` (`component_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `employee_salary_structures_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`),
+  CONSTRAINT `employee_salary_structures_ibfk_2` FOREIGN KEY (`component_id`) REFERENCES `employee_salary_components` (`id`),
+  CONSTRAINT `employee_salary_structures_ibfk_3` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_salary_structures`
+--
+
+LOCK TABLES `employee_salary_structures` WRITE;
+/*!40000 ALTER TABLE `employee_salary_structures` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_salary_structures` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `employee_shifts_assignment`
+--
+
+DROP TABLE IF EXISTS `employee_shifts_assignment`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `employee_shifts_assignment` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `employee_id` int NOT NULL,
+  `shift_id` int NOT NULL,
+  `effective_from` date NOT NULL,
+  `effective_to` date DEFAULT NULL,
+  `assigned_by` int DEFAULT NULL,
+  `assigned_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `status_id` int DEFAULT '1',
+  PRIMARY KEY (`id`),
+  KEY `employee_id` (`employee_id`),
+  KEY `shift_id` (`shift_id`),
+  KEY `assigned_by` (`assigned_by`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `employee_shifts_assignment_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`),
+  CONSTRAINT `employee_shifts_assignment_ibfk_2` FOREIGN KEY (`shift_id`) REFERENCES `employee_work_shifts` (`id`),
+  CONSTRAINT `employee_shifts_assignment_ibfk_3` FOREIGN KEY (`assigned_by`) REFERENCES `employees` (`id`),
+  CONSTRAINT `employee_shifts_assignment_ibfk_4` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_shifts_assignment`
+--
+
+LOCK TABLES `employee_shifts_assignment` WRITE;
+/*!40000 ALTER TABLE `employee_shifts_assignment` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_shifts_assignment` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `employee_skills`
+--
+
+DROP TABLE IF EXISTS `employee_skills`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `employee_skills` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `employee_id` int NOT NULL,
+  `skill_name` varchar(100) NOT NULL,
+  `skill_category` varchar(50) DEFAULT NULL,
+  `proficiency_level` enum('basic','intermediate','advanced','expert') DEFAULT 'basic',
+  `certification` varchar(255) DEFAULT NULL,
+  `certified_date` date DEFAULT NULL,
+  `expiry_date` date DEFAULT NULL,
+  `verified` tinyint(1) DEFAULT '0',
+  `verified_by` int DEFAULT NULL,
+  `verified_date` date DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `verified_by` (`verified_by`),
+  KEY `idx_employee_skills_employee` (`employee_id`),
+  CONSTRAINT `employee_skills_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`),
+  CONSTRAINT `employee_skills_ibfk_2` FOREIGN KEY (`verified_by`) REFERENCES `employees` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_skills`
+--
+
+LOCK TABLES `employee_skills` WRITE;
+/*!40000 ALTER TABLE `employee_skills` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_skills` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `employee_social_media`
+--
+
+DROP TABLE IF EXISTS `employee_social_media`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `employee_social_media` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `employee_id` int NOT NULL,
+  `platform_id` int NOT NULL,
+  `username` varchar(100) DEFAULT NULL,
+  `profile_url` varchar(500) NOT NULL,
+  `follower_count` int DEFAULT '0',
+  `is_primary` tinyint(1) DEFAULT '0',
+  `is_public` tinyint(1) DEFAULT '1',
+  `verified` tinyint(1) DEFAULT '0',
+  `verified_by` int DEFAULT NULL,
+  `verified_date` date DEFAULT NULL,
+  `last_updated` date DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `status_id` int DEFAULT '1',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_employee_platform` (`employee_id`,`platform_id`),
+  KEY `verified_by` (`verified_by`),
+  KEY `status_id` (`status_id`),
+  KEY `idx_employee_social_media_employee` (`employee_id`),
+  KEY `idx_employee_social_media_platform` (`platform_id`),
+  KEY `idx_employee_social_media_primary` (`is_primary`),
+  CONSTRAINT `employee_social_media_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `employee_social_media_ibfk_2` FOREIGN KEY (`platform_id`) REFERENCES `social_media_platforms` (`id`),
+  CONSTRAINT `employee_social_media_ibfk_3` FOREIGN KEY (`verified_by`) REFERENCES `employees` (`id`),
+  CONSTRAINT `employee_social_media_ibfk_4` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_social_media`
+--
+
+LOCK TABLES `employee_social_media` WRITE;
+/*!40000 ALTER TABLE `employee_social_media` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_social_media` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `employee_trainings`
+--
+
+DROP TABLE IF EXISTS `employee_trainings`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `employee_trainings` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `employee_id` int NOT NULL,
+  `training_name` varchar(255) NOT NULL,
+  `training_type` varchar(100) DEFAULT NULL,
+  `provider` varchar(255) DEFAULT NULL,
+  `start_date` date DEFAULT NULL,
+  `end_date` date DEFAULT NULL,
+  `duration_hours` int DEFAULT NULL,
+  `certificate_issued` tinyint(1) DEFAULT '0',
+  `certificate_path` varchar(500) DEFAULT NULL,
+  `skills_acquired` text,
+  `cost` decimal(10,2) DEFAULT NULL,
+  `status` enum('planned','in_progress','completed','cancelled') DEFAULT 'planned',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `status_id` int DEFAULT '1',
+  PRIMARY KEY (`id`),
+  KEY `employee_id` (`employee_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `employee_trainings_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`),
+  CONSTRAINT `employee_trainings_ibfk_2` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_trainings`
+--
+
+LOCK TABLES `employee_trainings` WRITE;
+/*!40000 ALTER TABLE `employee_trainings` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_trainings` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `employee_types`
+--
+
+DROP TABLE IF EXISTS `employee_types`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `employee_types` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `type_name` varchar(50) NOT NULL,
+  `description` text,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `status_id` int DEFAULT '1',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `type_name` (`type_name`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `employee_types_ibfk_1` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_types`
+--
+
+LOCK TABLES `employee_types` WRITE;
+/*!40000 ALTER TABLE `employee_types` DISABLE KEYS */;
+INSERT INTO `employee_types` VALUES (1,'guide','Tour guides and travel guides','2025-12-04 15:42:11',1),(2,'driver','Vehicle drivers and transportation staff','2025-12-04 15:42:11',1),(3,'executive','Management and executive staff','2025-12-04 15:42:11',1),(4,'sales','Sales and booking agents','2025-12-04 15:42:11',1),(5,'marketing','Marketing and promotion staff','2025-12-04 15:42:11',1),(6,'hr','Human resources and administration','2025-12-04 15:42:11',1),(7,'operations','Operations and logistics staff','2025-12-04 15:42:11',1),(8,'accountant','Finance and accounting staff','2025-12-04 15:42:11',1);
+/*!40000 ALTER TABLE `employee_types` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `employee_work_history`
+--
+
+DROP TABLE IF EXISTS `employee_work_history`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `employee_work_history` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `employee_id` int NOT NULL,
+  `designation_id` int DEFAULT NULL,
+  `department_id` int DEFAULT NULL,
+  `salary` decimal(10,2) DEFAULT NULL,
+  `start_date` date NOT NULL,
+  `end_date` date DEFAULT NULL,
+  `employment_type` enum('full-time','part-time','contract','intern') DEFAULT NULL,
+  `reason` varchar(255) DEFAULT NULL,
+  `notes` text,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `status_id` int DEFAULT '1',
+  PRIMARY KEY (`id`),
+  KEY `employee_id` (`employee_id`),
+  KEY `designation_id` (`designation_id`),
+  KEY `department_id` (`department_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `employee_work_history_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`),
+  CONSTRAINT `employee_work_history_ibfk_2` FOREIGN KEY (`designation_id`) REFERENCES `employee_designations` (`id`),
+  CONSTRAINT `employee_work_history_ibfk_3` FOREIGN KEY (`department_id`) REFERENCES `employee_departments` (`id`),
+  CONSTRAINT `employee_work_history_ibfk_4` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_work_history`
+--
+
+LOCK TABLES `employee_work_history` WRITE;
+/*!40000 ALTER TABLE `employee_work_history` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_work_history` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `employee_work_shifts`
+--
+
+DROP TABLE IF EXISTS `employee_work_shifts`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `employee_work_shifts` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `shift_name` varchar(50) NOT NULL,
+  `start_time` time NOT NULL,
+  `end_time` time NOT NULL,
+  `break_duration_minutes` int DEFAULT '60',
+  `description` text,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `status_id` int DEFAULT '1',
+  PRIMARY KEY (`id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `employee_work_shifts_ibfk_1` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_work_shifts`
+--
+
+LOCK TABLES `employee_work_shifts` WRITE;
+/*!40000 ALTER TABLE `employee_work_shifts` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_work_shifts` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `employees`
+--
+
+DROP TABLE IF EXISTS `employees`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `employees` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `employee_code` varchar(20) DEFAULT NULL,
+  `employee_type_id` int NOT NULL,
+  `department_id` int DEFAULT NULL,
+  `designation_id` int DEFAULT NULL,
+  `hire_date` date NOT NULL,
+  `employment_type` enum('full-time','part-time','contract','intern') DEFAULT 'full-time',
+  `supervisor_id` int DEFAULT NULL,
+  `reporting_manager_id` int DEFAULT NULL,
+  `salary` decimal(10,2) DEFAULT NULL,
+  `bank_account_number` varchar(50) DEFAULT NULL,
+  `bank_name` varchar(100) DEFAULT NULL,
+  `bank_branch` varchar(100) DEFAULT NULL,
+  `ifsc_code` varchar(20) DEFAULT NULL,
+  `uan_number` varchar(20) DEFAULT NULL,
+  `pf_number` varchar(50) DEFAULT NULL,
+  `esi_number` varchar(50) DEFAULT NULL,
+  `probation_period_months` int DEFAULT '3',
+  `probation_end_date` date DEFAULT NULL,
+  `confirmation_date` date DEFAULT NULL,
+  `exit_date` date DEFAULT NULL,
+  `work_location` varchar(100) DEFAULT NULL,
+  `cost_center` varchar(50) DEFAULT NULL,
+  `employee_grade` varchar(20) DEFAULT NULL,
+  `emergency_contact_name` varchar(100) DEFAULT NULL,
+  `emergency_contact_phone` varchar(20) DEFAULT NULL,
+  `emergency_contact_relationship` varchar(50) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `status_id` int DEFAULT '1',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_id` (`user_id`),
+  UNIQUE KEY `employee_code` (`employee_code`),
+  KEY `reporting_manager_id` (`reporting_manager_id`),
+  KEY `idx_employees_user_id` (`user_id`),
+  KEY `idx_employees_employee_type` (`employee_type_id`),
+  KEY `idx_employees_department` (`department_id`),
+  KEY `idx_employees_designation` (`designation_id`),
+  KEY `idx_employees_status` (`status_id`),
+  KEY `idx_employees_supervisor` (`supervisor_id`),
+  CONSTRAINT `employees_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`),
+  CONSTRAINT `employees_ibfk_2` FOREIGN KEY (`employee_type_id`) REFERENCES `employee_types` (`id`),
+  CONSTRAINT `employees_ibfk_3` FOREIGN KEY (`department_id`) REFERENCES `employee_departments` (`id`),
+  CONSTRAINT `employees_ibfk_4` FOREIGN KEY (`designation_id`) REFERENCES `employee_designations` (`id`),
+  CONSTRAINT `employees_ibfk_5` FOREIGN KEY (`supervisor_id`) REFERENCES `employees` (`id`),
+  CONSTRAINT `employees_ibfk_6` FOREIGN KEY (`reporting_manager_id`) REFERENCES `employees` (`id`),
+  CONSTRAINT `employees_ibfk_7` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employees`
+--
+
+LOCK TABLES `employees` WRITE;
+/*!40000 ALTER TABLE `employees` DISABLE KEYS */;
+INSERT INTO `employees` VALUES (1,1,'EMP001',3,1,1,'2020-01-15','full-time',NULL,NULL,400000.00,'123456789012','Commercial Bank','Colombo 07','COMB1234567','UAN00123456','PF1234567','ESI123456',3,'2020-04-15',NULL,NULL,'Head Office',NULL,NULL,'Jane Doe','+94111111111','Spouse','2025-12-04 15:42:11','2025-12-04 15:42:11',1),(2,2,'EMP002',6,2,2,'2021-03-10','full-time',1,1,200000.00,'234567890123','HSBC','Colombo 03','HSBC2345678','UAN00234567','PF2345678','ESI234567',3,'2021-06-10',NULL,NULL,'Head Office',NULL,NULL,'Michael Brown','+94111111112','Father','2025-12-04 15:42:11','2025-12-04 15:42:11',1),(3,3,'EMP003',3,3,3,'2021-05-20','full-time',1,2,180000.00,'345678901234','NDB Bank','Colombo 05','NDB3456789','UAN00345678','PF3456789','ESI345678',3,'2021-08-20',NULL,NULL,'Head Office',NULL,NULL,'Sarah Johnson','+94111111113','Sister','2025-12-04 15:42:11','2025-12-04 15:42:11',1),(4,4,'EMP004',1,5,4,'2022-02-15','full-time',1,2,120000.00,'456789012345','Sampath Bank','Kandy','SAMP4567890','UAN00456789','PF4567890','ESI456789',3,'2022-05-15',NULL,NULL,'Kandy Branch',NULL,NULL,'Kamal Perera','+94222222222','Brother','2025-12-04 15:42:11','2025-12-04 15:42:11',1),(5,5,'EMP005',2,6,7,'2022-06-01','full-time',1,2,75000.00,'567890123456','People\'s Bank','Galle','PEOP5678901','UAN00567890','PF5678901','ESI567890',3,'2022-09-01',NULL,NULL,'Galle Branch',NULL,NULL,'Nimal Fernando','+94333333333','Uncle','2025-12-04 15:42:11','2025-12-04 15:42:11',1),(6,6,'EMP006',4,4,8,'2022-07-10','full-time',1,2,90000.00,'678901234567','Hatton National Bank','Colombo 02','HNB6789012','UAN00678901','PF6789012','ESI678901',3,'2022-10-10',NULL,NULL,'Head Office',NULL,NULL,'Priya Silva','+94444444444','Mother','2025-12-04 15:42:11','2025-12-04 15:42:11',1),(7,8,'EMP007',5,4,9,'2022-08-20','full-time',1,2,85000.00,'789012345678','DFCC Bank','Colombo 01','DFCC7890123','UAN00789012','PF7890123','ESI789012',3,'2022-11-20',NULL,NULL,'Head Office',NULL,NULL,'Rajesh Kumar','+94555555555','Cousin','2025-12-04 15:42:11','2025-12-04 15:42:11',1),(8,9,'EMP008',1,5,5,'2023-04-10','full-time',3,3,65000.00,'890123456789','Sampath Bank','Colombo 03','SAMP8901234','UAN00890123','PF8901234','ESI890123',3,'2023-07-10',NULL,NULL,'Colombo Office',NULL,NULL,'Sanjay Sharma','+94771111111','Husband','2025-12-06 15:33:15','2025-12-06 15:33:15',1),(9,10,'EMP009',1,5,5,'2023-06-15','full-time',3,3,70000.00,'901234567890','Commercial Bank','Galle','COMB9012345','UAN00901234','PF9012345','ESI901234',3,'2023-09-15',NULL,NULL,'Galle Branch',NULL,NULL,'Mala Fernando','+94772222222','Wife','2025-12-06 15:33:15','2025-12-06 15:33:15',1),(10,11,'EMP010',1,5,5,'2023-08-22','full-time',3,3,68000.00,'012345678901','Hatton National Bank','Kandy','HNB0123456','UAN01012345','PF0123456','ESI012345',3,'2023-11-22',NULL,NULL,'Kandy Branch',NULL,NULL,'Dinesh Perera','+94773333333','Brother','2025-12-06 15:33:15','2025-12-06 15:33:15',1);
+/*!40000 ALTER TABLE `employees` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `faq`
+--
+
+DROP TABLE IF EXISTS `faq`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `faq` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `question` varchar(255) NOT NULL,
+  `answer1` text,
+  `answer2` text,
+  `answer3` text,
+  `answer4` text,
+  `answer5` text,
+  `display_answer` varchar(50) DEFAULT NULL,
+  `faq_status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `faq_status_id` (`faq_status_id`),
+  CONSTRAINT `faq_ibfk_1` FOREIGN KEY (`faq_status_id`) REFERENCES `faq_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `faq`
+--
+
+LOCK TABLES `faq` WRITE;
+/*!40000 ALTER TABLE `faq` DISABLE KEYS */;
+INSERT INTO `faq` VALUES (1,'Do I need a visa to visit Sri Lanka?','Most tourists need an Electronic Travel Authorization (ETA).','You can apply online through the official immigration website.','ETA approval usually arrives within 24 hours.','Some countries are visa-exempt for short visits.','On-arrival visa facilities are limited, so apply online first.','answer1',1,'2025-09-20 06:40:37',1,'2025-09-20 06:40:37',NULL,NULL,NULL),(2,'How long does it take to get an ETA visa?','In most cases, approval takes a few hours.','During busy periods, it may take up to 2 days.','Emergency processing is available at the airport.','We recommend applying at least 3 days before your trip.','The online system is available 24/7 worldwide.','answer1',1,'2025-09-20 06:40:37',1,'2025-09-20 06:40:37',NULL,NULL,NULL),(3,'What is the best time to visit Sri Lanka?','December to April is best for the south and west coasts.','May to September is best for the east coast.','Hill country is cooler year-round, great for hiking.','Cultural festivals like Kandy Perahera are in July/August.','Wildlife safaris are best in the dry season (June–September).','answer1',1,'2025-09-20 06:40:37',1,'2025-09-20 06:40:37',NULL,NULL,NULL),(4,'Which currency is used in Sri Lanka?','The Sri Lankan Rupee (LKR) is the official currency.','Foreign currency can be exchanged at banks and hotels.','ATMs are widely available in cities and tourist towns.','USD, EUR, and GBP are the most accepted foreign currencies.','Credit cards can be used but cash is preferred in rural areas.','answer1',1,'2025-09-20 06:40:37',1,'2025-09-20 06:40:37',NULL,NULL,NULL),(5,'Can I use credit cards in Sri Lanka?','Yes, most hotels and restaurants accept cards.','Visa and Mastercard are the most widely accepted.','American Express and Diners Club are less common.','Always carry cash for small shops and rural areas.','Some ATMs allow direct cash withdrawals from foreign cards.','answer1',1,'2025-09-20 06:40:37',1,'2025-09-20 06:40:37',NULL,NULL,NULL),(6,'Is Sri Lanka safe for foreign tourists?','Sri Lanka is generally considered very safe.','Petty theft can occur in crowded areas.','Locals are friendly and welcoming to tourists.','Avoid traveling alone late at night in isolated areas.','Tourist police are available in major destinations.','answer1',1,'2025-09-20 06:40:37',1,'2025-09-20 06:40:37',NULL,NULL,NULL),(7,'Do I need vaccinations before traveling to Sri Lanka?','No compulsory vaccines are required.','Recommended: Hepatitis A and Typhoid.','Some travelers consider Yellow Fever if coming from endemic countries.','Tetanus and Rabies shots are advisable for long stays.','Consult your doctor before travel.','answer1',1,'2025-09-20 06:40:37',1,'2025-09-20 06:40:37',NULL,NULL,NULL),(8,'What language is spoken in Sri Lanka?','Sinhala is the most widely spoken language.','Tamil is also an official language.','English is widely used in tourism and business.','Most hotels and guides speak English fluently.','Signboards in tourist areas are often bilingual.','answer1',1,'2025-09-20 06:40:37',1,'2025-09-20 06:40:37',NULL,NULL,NULL),(9,'Can I drink tap water in Sri Lanka?','It is not safe to drink tap water directly.','Always drink bottled or boiled water.','Hotels often provide filtered water.','Ice in tourist hotels is usually safe.','Avoid drinking from public taps.','answer1',1,'2025-09-20 06:40:37',1,'2025-09-20 06:40:37',NULL,NULL,NULL),(10,'What are the must-visit places in Sri Lanka?','Sigiriya Rock Fortress – UNESCO World Heritage Site.','Kandy – Temple of the Tooth.','Galle Fort – historic colonial town.','Ella – scenic train rides and tea plantations.','Yala National Park – famous for leopards.','answer1',1,'2025-09-20 06:40:37',1,'2025-09-20 06:40:37',NULL,NULL,NULL),(11,'What is the local transportation like in Sri Lanka?','Tuk-tuks are cheap and popular for short distances.','Trains offer scenic rides, especially Kandy to Ella.','Buses are affordable but crowded.','Private car rentals with drivers are convenient.','Domestic flights are available between major cities.','answer1',1,'2025-09-20 06:40:37',1,'2025-09-20 06:40:37',NULL,NULL,NULL),(12,'Do I need travel insurance for Sri Lanka?','Yes, travel insurance is strongly recommended.','It should cover medical emergencies.','Policies should include theft and lost luggage.','Adventure sports coverage is useful for safaris or surfing.','COVID-19 coverage may be required at entry.','answer1',1,'2025-09-20 06:40:37',1,'2025-09-20 06:40:37',NULL,NULL,NULL),(13,'Is there free Wi-Fi in Sri Lanka?','Most hotels and cafes offer free Wi-Fi.','Speeds may vary outside major cities.','Tourist SIM cards include mobile data.','4G coverage is available in most towns.','Some buses and trains now offer free Wi-Fi.','answer1',1,'2025-09-20 06:40:37',1,'2025-09-20 06:40:37',NULL,NULL,NULL),(14,'Which mobile SIM card is best for tourists in Sri Lanka?','Dialog is the most popular with wide coverage.','Mobitel is also widely used and reliable.','Both offer tourist SIM packages at the airport.','Etisalat and Hutch offer budget options.','SIM registration requires your passport.','answer1',1,'2025-09-20 06:40:37',1,'2025-09-20 06:40:37',NULL,NULL,NULL),(15,'What kind of food can I expect in Sri Lanka?','Traditional rice and curry with vegetables and meat.','Seafood dishes are very popular on the coasts.','Street food like kottu roti is a must-try.','Hoppers and string hoppers are common breakfast items.','Plenty of vegetarian and vegan options available.','answer1',1,'2025-09-20 06:40:37',1,'2025-09-20 06:40:37',NULL,NULL,NULL),(16,'Is tipping expected in Sri Lanka?','Tipping is not mandatory but appreciated.','A 10% tip is common in restaurants.','Some hotels include a service charge already.','Tour drivers usually receive daily tips.','Small tips for porters and tuk-tuk drivers are welcome.','answer1',1,'2025-09-20 06:40:37',1,'2025-09-20 06:40:37',NULL,NULL,NULL),(17,'What are the cultural etiquette rules in Sri Lanka?','Dress modestly when visiting temples.','Remove shoes and hats before entering temples.','Never pose with your back to a Buddha statue.','Public displays of affection are discouraged.','Use your right hand for giving and receiving items.','answer1',1,'2025-09-20 06:40:37',1,'2025-09-20 06:40:37',NULL,NULL,NULL),(18,'Can I rent a car and drive in Sri Lanka?','Yes, but you need an International Driving Permit.','Traffic can be chaotic for first-time visitors.','Most tourists prefer hiring a driver.','Cars drive on the left side of the road.','Rental cars are available in major cities.','answer1',1,'2025-09-20 06:40:37',1,'2025-09-20 06:40:37',NULL,NULL,NULL),(19,'What is the emergency contact number in Sri Lanka?','Police – 119','Ambulance/Medical emergencies – 110','Fire department – 111','Tourist Police hotline – 1912','Emergency assistance is also available via your hotel.','answer1',1,'2025-09-20 06:40:37',1,'2025-09-20 06:40:37',NULL,NULL,NULL),(20,'Are there national parks to see wildlife in Sri Lanka?','Yes, Yala is famous for leopards.','Udawalawe is known for elephants.','Minneriya has the largest elephant gathering.','Wilpattu is Sri Lanka’s oldest park.','Bundala is a paradise for birdwatchers.','answer1',1,'2025-09-20 06:40:37',1,'2025-09-20 06:40:37',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `faq` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `faq_contact_priority`
+--
+
+DROP TABLE IF EXISTS `faq_contact_priority`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `faq_contact_priority` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `color` varchar(7) DEFAULT '#6B7280',
+  `sort_order` int DEFAULT '0',
+  `response_time_hours` int DEFAULT NULL,
+  `common_status_id` int NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`),
+  KEY `common_status_id` (`common_status_id`),
+  CONSTRAINT `faq_contact_priority_ibfk_1` FOREIGN KEY (`common_status_id`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `faq_contact_priority`
+--
+
+LOCK TABLES `faq_contact_priority` WRITE;
+/*!40000 ALTER TABLE `faq_contact_priority` DISABLE KEYS */;
+INSERT INTO `faq_contact_priority` VALUES (1,'low','Low priority','#6B7280',1,72,1,'2025-10-25 06:45:21',1,'2025-10-25 06:45:21',NULL,NULL,NULL),(2,'medium','Medium priority','#10B981',2,24,1,'2025-10-25 06:45:21',1,'2025-10-25 06:45:21',NULL,NULL,NULL),(3,'high','High priority','#F59E0B',3,4,1,'2025-10-25 06:45:21',1,'2025-10-25 06:45:21',NULL,NULL,NULL),(4,'urgent','Urgent priority','#EF4444',4,1,1,'2025-10-25 06:45:21',1,'2025-10-25 06:45:21',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `faq_contact_priority` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `faq_contact_reply_type`
+--
+
+DROP TABLE IF EXISTS `faq_contact_reply_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `faq_contact_reply_type` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `icon` varchar(50) DEFAULT NULL,
+  `common_status_id` int NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`),
+  KEY `common_status_id` (`common_status_id`),
+  CONSTRAINT `faq_contact_reply_type_ibfk_1` FOREIGN KEY (`common_status_id`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `faq_contact_reply_type`
+--
+
+LOCK TABLES `faq_contact_reply_type` WRITE;
+/*!40000 ALTER TABLE `faq_contact_reply_type` DISABLE KEYS */;
+INSERT INTO `faq_contact_reply_type` VALUES (1,'customer','Reply from customer','user',1,'2025-10-25 06:45:21',1,'2025-10-25 06:45:21',NULL,NULL,NULL),(2,'support','Reply from support team','support_agent',1,'2025-10-25 06:45:21',1,'2025-10-25 06:45:21',NULL,NULL,NULL),(3,'system','System generated message','auto_message',1,'2025-10-25 06:45:21',1,'2025-10-25 06:45:21',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `faq_contact_reply_type` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `faq_contact_request_replies`
+--
+
+DROP TABLE IF EXISTS `faq_contact_request_replies`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `faq_contact_request_replies` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `faq_contact_request_id` int NOT NULL,
+  `reply_type_id` int NOT NULL,
+  `message` text NOT NULL,
+  `internal_notes` text,
+  `replied_by` int DEFAULT NULL,
+  `replied_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `common_status_id` int NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `faq_contact_request_id` (`faq_contact_request_id`),
+  KEY `reply_type_id` (`reply_type_id`),
+  KEY `common_status_id` (`common_status_id`),
+  KEY `replied_by` (`replied_by`),
+  CONSTRAINT `faq_contact_request_replies_ibfk_1` FOREIGN KEY (`faq_contact_request_id`) REFERENCES `faq_contact_requests` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `faq_contact_request_replies_ibfk_2` FOREIGN KEY (`reply_type_id`) REFERENCES `faq_contact_reply_type` (`id`),
+  CONSTRAINT `faq_contact_request_replies_ibfk_3` FOREIGN KEY (`common_status_id`) REFERENCES `common_status` (`id`),
+  CONSTRAINT `faq_contact_request_replies_ibfk_4` FOREIGN KEY (`replied_by`) REFERENCES `user` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `faq_contact_request_replies`
+--
+
+LOCK TABLES `faq_contact_request_replies` WRITE;
+/*!40000 ALTER TABLE `faq_contact_request_replies` DISABLE KEYS */;
+/*!40000 ALTER TABLE `faq_contact_request_replies` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `faq_contact_request_status`
+--
+
+DROP TABLE IF EXISTS `faq_contact_request_status`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `faq_contact_request_status` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `color` varchar(7) DEFAULT '#6B7280',
+  `sort_order` int DEFAULT '0',
+  `common_status_id` int NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`),
+  KEY `common_status_id` (`common_status_id`),
+  CONSTRAINT `faq_contact_request_status_ibfk_1` FOREIGN KEY (`common_status_id`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `faq_contact_request_status`
+--
+
+LOCK TABLES `faq_contact_request_status` WRITE;
+/*!40000 ALTER TABLE `faq_contact_request_status` DISABLE KEYS */;
+INSERT INTO `faq_contact_request_status` VALUES (1,'new','New request received','#EF4444',1,1,'2025-10-25 06:45:21',1,'2025-10-25 06:45:21',NULL,NULL,NULL),(2,'in_progress','Request is being handled','#F59E0B',2,1,'2025-10-25 06:45:21',1,'2025-10-25 06:45:21',NULL,NULL,NULL),(3,'awaiting_reply','Waiting for customer reply','#8B5CF6',3,1,'2025-10-25 06:45:21',1,'2025-10-25 06:45:21',NULL,NULL,NULL),(4,'resolved','Issue has been resolved','#10B981',4,1,'2025-10-25 06:45:21',1,'2025-10-25 06:45:21',NULL,NULL,NULL),(5,'closed','Request has been closed','#6B7280',5,1,'2025-10-25 06:45:21',1,'2025-10-25 06:45:21',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `faq_contact_request_status` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `faq_contact_requests`
+--
+
+DROP TABLE IF EXISTS `faq_contact_requests`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `faq_contact_requests` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `ticket_number` varchar(20) DEFAULT NULL,
+  `name` varchar(100) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `category` varchar(50) NOT NULL,
+  `subject` varchar(255) NOT NULL,
+  `message` text NOT NULL,
+  `request_status_id` int NOT NULL,
+  `priority_id` int NOT NULL,
+  `assigned_to` int DEFAULT NULL,
+  `first_response_at` timestamp NULL DEFAULT NULL,
+  `resolved_at` timestamp NULL DEFAULT NULL,
+  `closed_at` timestamp NULL DEFAULT NULL,
+  `auto_reply_sent` tinyint(1) DEFAULT '0',
+  `auto_reply_sent_at` timestamp NULL DEFAULT NULL,
+  `reply_count` int DEFAULT '0',
+  `last_reply_at` timestamp NULL DEFAULT NULL,
+  `ip_address` varchar(45) DEFAULT NULL,
+  `user_agent` text,
+  `referrer_url` varchar(500) DEFAULT NULL,
+  `common_status_id` int NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `request_status_id` (`request_status_id`),
+  KEY `priority_id` (`priority_id`),
+  KEY `common_status_id` (`common_status_id`),
+  KEY `assigned_to` (`assigned_to`),
+  CONSTRAINT `faq_contact_requests_ibfk_1` FOREIGN KEY (`request_status_id`) REFERENCES `faq_contact_request_status` (`id`),
+  CONSTRAINT `faq_contact_requests_ibfk_2` FOREIGN KEY (`priority_id`) REFERENCES `faq_contact_priority` (`id`),
+  CONSTRAINT `faq_contact_requests_ibfk_3` FOREIGN KEY (`common_status_id`) REFERENCES `common_status` (`id`),
+  CONSTRAINT `faq_contact_requests_ibfk_4` FOREIGN KEY (`assigned_to`) REFERENCES `user` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `faq_contact_requests`
+--
+
+LOCK TABLES `faq_contact_requests` WRITE;
+/*!40000 ALTER TABLE `faq_contact_requests` DISABLE KEYS */;
+INSERT INTO `faq_contact_requests` VALUES (1,'TKT-202412345678','Pasindu','pasindu@example.com','Technical Support','Unable to login to my account','I\'m having issues logging into my account.',1,1,NULL,NULL,NULL,NULL,0,NULL,0,NULL,'192.168.0.1',NULL,NULL,1,'2025-10-25 06:45:44',1,'2025-10-25 06:45:44',NULL,NULL,NULL),(4,'TKT-2024123456781','Pasindu1','pasindu@example.com','Technical Support','Unable to login to my account','I\'m having issues logging into my account.',1,1,NULL,NULL,NULL,NULL,0,NULL,0,NULL,'192.168.0.1',NULL,NULL,1,'2025-10-25 06:46:09',1,'2025-10-25 06:46:09',NULL,NULL,NULL),(5,'','Pasindu1','pasindu@example.com','Technical Support','Unable to login to my account','I\'m having issues logging into my account.',1,1,NULL,NULL,NULL,NULL,0,NULL,0,NULL,'192.168.0.1',NULL,NULL,1,'2025-10-25 06:46:58',1,'2025-10-25 06:46:58',NULL,NULL,NULL),(7,'','Pasindu1','pasindu@example.com','Technical Support','Unable to login to my account','I\'m having issues logging into my account.',1,1,NULL,NULL,NULL,NULL,0,NULL,0,NULL,'192.168.0.1',NULL,NULL,1,'2025-10-25 06:47:30',1,'2025-10-25 06:47:30',NULL,NULL,NULL),(8,'','Pasindu1','pasindu@example.com','Technical Support','Unable to login to my account','I\'m having issues logging into my account.',1,1,NULL,NULL,NULL,NULL,0,NULL,0,NULL,'192.168.0.1',NULL,NULL,1,'2025-10-25 06:47:31',1,'2025-10-25 06:47:31',NULL,NULL,NULL),(9,'','Pasindu1','pasindu@example.com','Technical Support','Unable to login to my account','I\'m having issues logging into my account.',1,1,NULL,NULL,NULL,NULL,0,NULL,0,NULL,'192.168.0.1',NULL,NULL,1,'2025-10-25 06:54:44',1,'2025-10-25 06:54:44',NULL,NULL,NULL),(10,'','Pasindu1','pasindu@example.com','Technical Support','Unable to login to my account','I\'m having issues logging into my account.',1,1,NULL,NULL,NULL,NULL,0,NULL,0,NULL,'192.168.0.1',NULL,NULL,1,'2025-10-25 06:54:59',1,'2025-10-25 06:54:59',NULL,NULL,NULL),(11,'','a','pasindu@example.co','','Unable to login to my account','I\'m having issues logging into my account.',1,1,NULL,NULL,NULL,NULL,0,NULL,0,NULL,'192.168.0.1',NULL,NULL,1,'2025-10-25 07:02:19',1,'2025-10-25 07:02:19',NULL,NULL,NULL),(12,'','a','pasindu@example.co','','Unable to login to my account','I\'m having issues logging into my account.',1,1,NULL,NULL,NULL,NULL,0,NULL,0,NULL,'192.168.0.1',NULL,NULL,1,'2025-10-25 07:02:57',1,'2025-10-25 07:02:57',NULL,NULL,NULL),(13,'','a','pasindu@example.co',' ','Unable to login to my account','I\'m having issues logging into my account.',1,1,NULL,NULL,NULL,NULL,0,NULL,0,NULL,'192.168.0.1',NULL,NULL,1,'2025-10-25 07:03:20',1,'2025-10-25 07:03:20',NULL,NULL,NULL),(14,'','a','pasindu@example.co','','Unable to login to my account','I\'m having issues logging into my account.',1,1,NULL,NULL,NULL,NULL,0,NULL,0,NULL,'192.168.0.1',NULL,NULL,1,'2025-10-25 07:03:24',1,'2025-10-25 07:03:24',NULL,NULL,NULL),(15,'','a','pasindu@example.co','','Unable to login to my account','I\'m having issues logging into my account.',1,1,NULL,NULL,NULL,NULL,0,NULL,0,NULL,'192.168.0.1',NULL,NULL,1,'2025-10-25 07:04:38',1,'2025-10-25 07:04:38',NULL,NULL,NULL),(16,'TKT-202412345678','Pasindu','pasindu@example.com','Technical Support','Unable to login to my account','I\'m having issues logging into my account. When I enter my credentials, I get an error message saying invalid credentials. I\'ve reset my password but still facing the same issue.',1,1,NULL,NULL,NULL,NULL,0,NULL,0,NULL,'192.168.1.100',NULL,NULL,1,'2025-10-25 07:05:56',1,'2025-10-25 07:05:56',NULL,NULL,NULL),(17,'','Pasindu1','pasindu@example.com','Technical Support','Unable to login to my account','I\'m having issues logging into my account.',1,1,NULL,NULL,NULL,NULL,0,NULL,0,NULL,'192.168.0.1',NULL,NULL,1,'2025-10-25 07:06:01',1,'2025-10-25 07:06:01',NULL,NULL,NULL),(18,'','pasindu','pd.dimbulana@gmail.com','technical','123','123',1,1,NULL,NULL,NULL,NULL,0,NULL,0,NULL,'192.168.0.1',NULL,NULL,1,'2025-10-25 07:13:28',1,'2025-10-25 07:13:28',NULL,NULL,NULL),(19,'','123','pd.dimbulana@gmail.com','technical','123','123',1,1,NULL,NULL,NULL,NULL,0,NULL,0,NULL,'192.168.0.1',NULL,NULL,1,'2025-10-25 07:18:41',1,'2025-10-25 07:18:41',NULL,NULL,NULL),(20,'','Nipunika','nipunika@gmail.com','general','payment methods ','bla bla',1,1,NULL,NULL,NULL,NULL,0,NULL,0,NULL,'192.168.0.1',NULL,NULL,1,'2025-10-31 12:24:46',1,'2025-10-31 12:24:46',NULL,NULL,NULL),(21,'','Pasindu Dilshan','pd.dimbulana@gmail.com','general','123','aaaa',1,1,NULL,NULL,NULL,NULL,0,NULL,0,NULL,'192.168.0.1',NULL,NULL,1,'2026-01-01 12:55:16',1,'2026-01-01 12:55:16',NULL,NULL,NULL),(22,'','Pasindu Dilshan','pd.dimbulana@gmail.com','billing','payment methods ','asdasdasdas',1,1,NULL,NULL,NULL,NULL,0,NULL,0,NULL,'192.168.0.1',NULL,NULL,1,'2026-02-01 14:01:52',1,'2026-02-01 14:01:52',NULL,NULL,NULL),(23,'TKT-202412345678','Pasindu','pasindu@example.com','Technical Support','Unable to login to my account','I\'m having issues logging into my account. When I enter my credentials, I get an error message saying invalid credentials. I\'ve reset my password but still facing the same issue.',1,1,NULL,NULL,NULL,NULL,0,NULL,0,NULL,'192.168.1.100',NULL,NULL,1,'2026-02-01 17:28:26',1,'2026-02-01 17:28:26',NULL,NULL,NULL),(24,'','Pasindu1','pasindu@example.com','Technical Support','Unable to login to my account','I\'m having issues logging into my account.',1,1,NULL,NULL,NULL,NULL,0,NULL,0,NULL,'192.168.0.1',NULL,NULL,1,'2026-02-01 17:34:46',1,'2026-02-01 17:34:46',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `faq_contact_requests` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `faq_hero_section`
+--
+
+DROP TABLE IF EXISTS `faq_hero_section`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `faq_hero_section` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `image_url` varchar(255) NOT NULL,
+  `title` varchar(100) DEFAULT NULL,
+  `subtitle` varchar(150) DEFAULT NULL,
+  `description` text,
+  `primary_button_text` varchar(50) DEFAULT NULL,
+  `primary_button_link` varchar(255) DEFAULT NULL,
+  `secondary_button_text` varchar(50) DEFAULT NULL,
+  `secondary_button_link` varchar(255) DEFAULT NULL,
+  `status` int NOT NULL,
+  `order` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `status` (`status`),
+  CONSTRAINT `faq_hero_section_ibfk_1` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `faq_hero_section`
+--
+
+LOCK TABLES `faq_hero_section` WRITE;
+/*!40000 ALTER TABLE `faq_hero_section` DISABLE KEYS */;
+INSERT INTO `faq_hero_section` VALUES (6,'Main FAQ Hero','https://images.unsplash.com/photo-1508672019048-805c876b67e2','Hello! How Can We Help?','Find Answers to Your Questions','Planning a trip to Sri Lanka? We\'ve answered the most common questions to help you prepare for an unforgettable journey.','Browse FAQs','#faq-list','Contact Us','/contact-us',1,1,'2026-02-20 04:09:10',1,'2026-02-20 04:09:10',NULL,NULL,NULL),(7,'Visa & Entry','https://images.unsplash.com/photo-1589394815804-964ed0be2eb5','Visa & Entry Requirements','Your Gateway to Sri Lanka','Everything you need to know about visas, passport requirements, and entry procedures for a smooth arrival.','Visa Information','#visa-faq','Apply for Visa','/contact-us',1,2,'2026-02-20 04:09:10',1,'2026-02-20 04:09:10',NULL,NULL,NULL),(8,'Booking & Payments','https://images.unsplash.com/photo-1559526324-593bc073d938','Booking & Payments','Secure & Easy Reservations','How to book tours, payment options, cancellation policies, and deposit requirements explained clearly.','Booking FAQs','#booking-faq','View Packages','/packages',1,3,'2026-02-20 04:09:10',1,'2026-02-20 04:09:10',NULL,NULL,NULL),(9,'Travel Tips','https://images.unsplash.com/photo-1507525428034-b723cf961d3e','Essential Travel Tips','Make the Most of Your Trip','Best time to visit, what to pack, local customs, transportation tips, and money-saving advice.','Travel Tips','#travel-tips','Read Blog','/blog',1,4,'2026-02-20 04:09:10',1,'2026-02-20 04:09:10',NULL,NULL,NULL),(10,'Destinations','https://images.unsplash.com/photo-1590212869245-5b2c09f1b70b','Destination Questions','Your Sri Lanka Travel Guide','Information about popular destinations, weather patterns, must-see attractions, and hidden gems.','Destination FAQs','#destination-faq','Explore Destinations','/destinations',1,5,'2026-02-20 04:09:10',1,'2026-02-20 04:09:10',NULL,NULL,NULL),(11,'Health & Safety','https://images.unsplash.com/photo-1579684286456-b1040b97f7fc','Health & Safety','Travel with Confidence','Vaccinations, travel insurance, safety tips, and what to do in case of emergencies while in Sri Lanka.','Safety Guide','#safety-faq','Emergency Contacts','/contact-us',1,6,'2026-02-20 04:09:10',1,'2026-02-20 04:09:10',NULL,NULL,NULL),(12,'Still Have Questions?','https://images.unsplash.com/photo-1544191696-102dbdaeeaa0','Didn\'t Find Your Answer?','We\'re Here to Help','If you couldn\'t find what you were looking for, our team is ready to assist you personally with any questions.','Ask Us','/contact-us','Chat on WhatsApp','/contact-us',1,7,'2026-02-20 04:09:10',1,'2026-02-20 04:09:10',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `faq_hero_section` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `faq_option_type`
+--
+
+DROP TABLE IF EXISTS `faq_option_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `faq_option_type` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `common_status_id` int NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`),
+  KEY `common_status_id` (`common_status_id`),
+  CONSTRAINT `faq_option_type_ibfk_1` FOREIGN KEY (`common_status_id`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `faq_option_type`
+--
+
+LOCK TABLES `faq_option_type` WRITE;
+/*!40000 ALTER TABLE `faq_option_type` DISABLE KEYS */;
+INSERT INTO `faq_option_type` VALUES (1,'string','Text string value',1,'2025-10-25 06:45:21',1,'2025-10-25 06:45:21',NULL,NULL,NULL),(2,'number','Numeric value',1,'2025-10-25 06:45:21',1,'2025-10-25 06:45:21',NULL,NULL,NULL),(3,'boolean','True/False value',1,'2025-10-25 06:45:21',1,'2025-10-25 06:45:21',NULL,NULL,NULL),(4,'json','JSON formatted data',1,'2025-10-25 06:45:21',1,'2025-10-25 06:45:21',NULL,NULL,NULL),(5,'array','Array of values',1,'2025-10-25 06:45:21',1,'2025-10-25 06:45:21',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `faq_option_type` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `faq_options`
+--
+
+DROP TABLE IF EXISTS `faq_options`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `faq_options` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `option_key` varchar(100) NOT NULL,
+  `option_value` text,
+  `option_type_id` int NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `common_status_id` int NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `option_key` (`option_key`),
+  KEY `option_type_id` (`option_type_id`),
+  KEY `common_status_id` (`common_status_id`),
+  CONSTRAINT `faq_options_ibfk_1` FOREIGN KEY (`option_type_id`) REFERENCES `faq_option_type` (`id`),
+  CONSTRAINT `faq_options_ibfk_2` FOREIGN KEY (`common_status_id`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `faq_options`
+--
+
+LOCK TABLES `faq_options` WRITE;
+/*!40000 ALTER TABLE `faq_options` DISABLE KEYS */;
+INSERT INTO `faq_options` VALUES (1,'display_limit_mobile','5',2,'Number of FAQs to show on mobile devices',1,'2025-10-25 06:45:21',1,'2025-10-25 06:45:21',NULL,NULL,NULL),(2,'display_limit_tablet','6',2,'Number of FAQs to show on tablet devices',1,'2025-10-25 06:45:21',1,'2025-10-25 06:45:21',NULL,NULL,NULL),(3,'display_limit_desktop','7',2,'Number of FAQs to show on desktop devices',1,'2025-10-25 06:45:21',1,'2025-10-25 06:45:21',NULL,NULL,NULL),(4,'contact_form_categories','[\"general\",\"technical\",\"billing\",\"feature\",\"bug\"]',4,'Available categories for contact form',1,'2025-10-25 06:45:21',1,'2025-10-25 06:45:21',NULL,NULL,NULL),(5,'auto_reply_enabled','true',3,'Whether to send auto-reply emails',1,'2025-10-25 06:45:21',1,'2025-10-25 06:45:21',NULL,NULL,NULL),(6,'auto_reply_subject','We have received your message',1,'Subject for auto-reply emails',1,'2025-10-25 06:45:21',1,'2025-10-25 06:45:21',NULL,NULL,NULL),(7,'auto_reply_message','Thank you for contacting us. We will get back to you within 24 hours.',1,'Message for auto-reply emails',1,'2025-10-25 06:45:21',1,'2025-10-25 06:45:21',NULL,NULL,NULL),(8,'support_email','felicitatrips@gmail.com',1,'Default support email address',1,'2025-10-25 06:45:21',1,'2026-02-01 13:58:44',NULL,NULL,NULL),(9,'response_time_hours','2',2,'Expected response time in hours',1,'2025-10-25 06:45:21',1,'2026-02-01 13:57:43',NULL,NULL,NULL),(10,'enable_view_tracking','true',3,'Enable FAQ view count tracking',1,'2025-10-25 06:45:21',1,'2025-10-25 06:45:21',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `faq_options` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `faq_status`
+--
+
+DROP TABLE IF EXISTS `faq_status`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `faq_status` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `common_status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `common_status_id` (`common_status_id`),
+  CONSTRAINT `faq_status_ibfk_1` FOREIGN KEY (`common_status_id`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `faq_status`
+--
+
+LOCK TABLES `faq_status` WRITE;
+/*!40000 ALTER TABLE `faq_status` DISABLE KEYS */;
+INSERT INTO `faq_status` VALUES (1,'VISIBLE','FAQ is visible on frontend',1,'2025-09-20 06:40:37',1,'2025-09-20 06:40:37',NULL,NULL,NULL),(2,'HIDDEN','FAQ is hidden from frontend',2,'2025-09-20 06:40:37',1,'2025-09-20 06:40:37',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `faq_status` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `faq_view_count`
+--
+
+DROP TABLE IF EXISTS `faq_view_count`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `faq_view_count` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `faq_id` int NOT NULL,
+  `count` int DEFAULT '0',
+  `last_view` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `faq_id` (`faq_id`),
+  CONSTRAINT `faq_view_count_ibfk_1` FOREIGN KEY (`faq_id`) REFERENCES `faq` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `faq_view_count`
+--
+
+LOCK TABLES `faq_view_count` WRITE;
+/*!40000 ALTER TABLE `faq_view_count` DISABLE KEYS */;
+INSERT INTO `faq_view_count` VALUES (1,1,0,'2026-02-10 12:57:58'),(2,2,0,'2026-02-10 12:58:03'),(3,3,0,'2026-02-10 12:58:05'),(4,4,0,'2026-01-06 12:09:30'),(5,5,0,'2026-01-06 12:09:27'),(6,6,0,'2026-02-01 17:50:00'),(7,7,0,'2026-02-01 17:50:07'),(8,8,0,'2026-02-01 17:50:32'),(9,9,0,'2026-02-01 17:50:10'),(10,10,0,'2025-10-24 17:42:18'),(11,11,0,'2025-10-24 17:42:18'),(12,12,0,'2026-02-04 09:56:00'),(13,13,0,'2025-10-24 17:42:18'),(14,14,0,'2025-10-24 17:55:27'),(15,15,0,'2026-01-26 16:29:11'),(16,16,0,'2025-10-24 17:42:18'),(17,17,0,'2025-10-24 17:42:18'),(18,18,1,'2026-01-26 16:29:06'),(19,19,0,'2026-02-01 13:49:57'),(20,20,0,'2026-02-12 10:47:15');
+/*!40000 ALTER TABLE `faq_view_count` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `features`
+--
+
+DROP TABLE IF EXISTS `features`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `features` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `package_id` int NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `value` varchar(255) DEFAULT NULL,
+  `description` text,
+  `status` int NOT NULL,
+  `color` varchar(50) DEFAULT NULL,
+  `special_note` text,
+  `hover_color` varchar(50) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `package_id` (`package_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `features_ibfk_1` FOREIGN KEY (`package_id`) REFERENCES `packages` (`package_id`),
+  CONSTRAINT `features_ibfk_2` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `features`
+--
+
+LOCK TABLES `features` WRITE;
+/*!40000 ALTER TABLE `features` DISABLE KEYS */;
+/*!40000 ALTER TABLE `features` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `footer`
+--
+
+DROP TABLE IF EXISTS `footer`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `footer` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `title` varchar(100) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `color` varchar(50) DEFAULT NULL,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_footer_status` (`status`),
+  CONSTRAINT `fk_footer_status` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `footer`
+--
+
+LOCK TABLES `footer` WRITE;
+/*!40000 ALTER TABLE `footer` DISABLE KEYS */;
+INSERT INTO `footer` VALUES (1,'Quick Links','Navigate through our website','#0D9488',1,'2025-09-30 05:43:06',1,'2026-02-20 04:14:28',NULL,NULL,NULL),(2,'Explore Sri Lanka','Popular travel themes','#0891B2',1,'2025-09-30 05:43:06',1,'2026-02-20 04:14:28',NULL,NULL,NULL),(3,'Contact Us','Get in touch with our team','#0F766E',1,'2025-09-30 05:43:06',1,'2026-02-20 04:14:28',NULL,NULL,NULL),(4,'Legal','Terms & Policies','#075985',2,'2026-02-20 04:14:28',1,'2026-02-20 04:15:34',NULL,NULL,NULL),(5,'Follow Us','Connect on social media','#0284C7',2,'2026-02-20 04:14:28',1,'2026-02-20 04:15:15',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `footer` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `footer_others`
+--
+
+DROP TABLE IF EXISTS `footer_others`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `footer_others` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `link_url` varchar(255) DEFAULT NULL,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_footer_others_status` (`status`),
+  CONSTRAINT `fk_footer_others_status` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `footer_others`
+--
+
+LOCK TABLES `footer_others` WRITE;
+/*!40000 ALTER TABLE `footer_others` DISABLE KEYS */;
+INSERT INTO `footer_others` VALUES (1,'copyright','© 2025 Felicita. All rights reserved.','/faq',1,'2025-09-30 05:43:06',1,'2025-09-30 05:43:06',NULL,NULL,NULL),(2,'Privacy Policy','Privacy Policy','/privacy-policy',1,'2025-09-30 05:43:06',1,'2026-02-01 11:12:28',NULL,NULL,NULL),(3,'Terms of Service','Terms and conditions','/terms-and-conditions',1,'2025-09-30 05:43:06',1,'2026-02-01 11:14:33',NULL,NULL,NULL),(4,'Sitemap','Sitemap','/careers',2,'2025-09-30 05:43:06',1,'2026-02-01 11:12:08',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `footer_others` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `footer_sub_items`
+--
+
+DROP TABLE IF EXISTS `footer_sub_items`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `footer_sub_items` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `footer_id` int NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `icon` varchar(255) DEFAULT NULL,
+  `link_url` varchar(255) DEFAULT NULL,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_footer_sub_footer` (`footer_id`),
+  KEY `fk_footer_sub_status` (`status`),
+  CONSTRAINT `fk_footer_sub_footer` FOREIGN KEY (`footer_id`) REFERENCES `footer` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_footer_sub_status` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `footer_sub_items`
+--
+
+LOCK TABLES `footer_sub_items` WRITE;
+/*!40000 ALTER TABLE `footer_sub_items` DISABLE KEYS */;
+INSERT INTO `footer_sub_items` VALUES (1,1,'Home','Back to homepage','fa-solid fa-house','/',1,'2025-09-30 05:43:06',1,'2026-02-20 04:14:28',NULL,NULL,NULL),(2,1,'Tours','View our tour packages','fa-solid fa-suitcase','/sri-lankan-tours',1,'2025-09-30 05:43:06',1,'2026-02-20 04:14:28',NULL,NULL,NULL),(3,1,'Destinations','Explore Sri Lankan destinations','fa-solid fa-location-dot','/destinations',1,'2025-09-30 05:43:06',1,'2026-02-20 04:14:28',NULL,NULL,NULL),(4,1,'Activities','Things to do in Sri Lanka','fa-solid fa-person-hiking','/activities',1,'2025-09-30 05:43:06',1,'2026-02-20 04:14:28',NULL,NULL,NULL),(5,1,'About Us','Learn about our company','fa-solid fa-circle-info','/about-us',1,'2025-09-30 05:43:06',1,'2026-02-20 04:14:28',NULL,NULL,NULL),(6,1,'Blogs','Travel stories and news','blog','/blogs',2,'2025-09-30 05:43:06',1,'2026-02-01 11:10:42',NULL,NULL,NULL),(7,1,'Contact Us','Get in touch with us','fa-solid fa-phone','/contact-us',1,'2025-09-30 05:43:06',1,'2026-02-20 04:14:28',NULL,NULL,NULL),(8,2,'Cultural Triangle','Ancient cities & heritage','fa-solid fa-landmark','/destinations#cultural-triangle',1,'2025-09-30 05:43:06',1,'2026-02-20 04:14:28',NULL,NULL,NULL),(9,2,'Beach Escapes','Coastal paradise','fa-solid fa-umbrella-beach','/destinations#beaches',1,'2025-09-30 05:43:06',1,'2026-02-20 04:14:28',NULL,NULL,NULL),(10,2,'Hill Country','Tea plantations & mountains','fa-solid fa-mountain','/destinations#hill-country',1,'2025-09-30 05:43:06',1,'2026-02-20 04:14:28',NULL,NULL,NULL),(11,3,'Colombo Office','Main headquarters','fa-solid fa-location-dot','https://maps.app.goo.gl/NqZHSDaZ7QNfHRGY6',1,'2025-09-30 05:43:06',1,'2026-02-20 04:14:28',NULL,NULL,NULL),(12,3,'Call Us','+94 70 7076 052','fa-solid fa-phone','tel:+94707076052',1,'2025-09-30 05:43:06',1,'2026-02-20 04:14:28',NULL,NULL,NULL),(13,3,'Email Us','felicitatrips@gmail.com','fa-solid fa-envelope','mailto:felicitatrips@gmail.com',1,'2025-09-30 05:43:06',1,'2026-02-20 04:14:28',NULL,NULL,NULL),(14,1,'Packages','Special tour packages','fa-solid fa-tag','/packages',1,'2026-02-20 04:14:28',1,'2026-02-20 04:14:28',NULL,NULL,NULL),(15,1,'FAQs','Frequently asked questions','fa-solid fa-circle-question','/faq',1,'2026-02-20 04:14:28',1,'2026-02-20 04:14:28',NULL,NULL,NULL),(16,2,'Wildlife Safaris','Leopards, elephants & more','fa-solid fa-paw','/destinations#wildlife',1,'2026-02-20 04:14:28',1,'2026-02-20 04:14:28',NULL,NULL,NULL),(17,2,'Water Sports','Surfing, diving & whale watching','fa-solid fa-water','/activities',1,'2026-02-20 04:14:28',1,'2026-02-20 04:14:28',NULL,NULL,NULL),(18,2,'Ayurveda & Wellness','Healing & relaxation','fa-solid fa-spa','/activities#wellness',1,'2026-02-20 04:14:28',1,'2026-02-20 04:14:28',NULL,NULL,NULL),(19,3,'WhatsApp','Quick response on WhatsApp','fa-brands fa-whatsapp','https://wa.me/94707076052',1,'2026-02-20 04:14:28',1,'2026-02-20 04:14:28',NULL,NULL,NULL),(20,3,'Working Hours','Mon-Fri: 9am-6pm','fa-solid fa-clock','#',1,'2026-02-20 04:14:28',1,'2026-02-20 04:14:28',NULL,NULL,NULL),(21,4,'Terms & Conditions','Booking terms and conditions','fa-solid fa-file-contract','/terms-and-conditions',1,'2026-02-20 04:14:28',1,'2026-02-20 04:14:28',NULL,NULL,NULL),(22,4,'Privacy Policy','How we handle your data','fa-solid fa-shield-halved','/privacy-policy',1,'2026-02-20 04:14:28',1,'2026-02-20 04:14:28',NULL,NULL,NULL),(23,4,'Cancellation Policy','Our cancellation and refund policy','fa-solid fa-calendar-xmark','/terms-and-conditions#cancellation',1,'2026-02-20 04:14:28',1,'2026-02-20 04:14:28',NULL,NULL,NULL),(24,4,'Cookie Policy','How we use cookies','fa-solid fa-cookie','/privacy-policy#cookies',1,'2026-02-20 04:14:28',1,'2026-02-20 04:14:28',NULL,NULL,NULL),(25,5,'Facebook','Follow us on Facebook','fa-brands fa-facebook','https://facebook.com/felicitatrips',1,'2026-02-20 04:14:28',1,'2026-02-20 04:14:28',NULL,NULL,NULL),(26,5,'Instagram','Follow us on Instagram','fa-brands fa-instagram','https://instagram.com/felicitatrips',1,'2026-02-20 04:14:28',1,'2026-02-20 04:14:28',NULL,NULL,NULL),(27,5,'YouTube','Watch our travel videos','fa-brands fa-youtube','https://youtube.com/felicitatrips',1,'2026-02-20 04:14:28',1,'2026-02-20 04:14:28',NULL,NULL,NULL),(28,5,'TripAdvisor','Read our reviews','fa-brands fa-tripadvisor','https://tripadvisor.com/felicitatrips',1,'2026-02-20 04:14:28',1,'2026-02-20 04:14:28',NULL,NULL,NULL),(29,5,'Twitter','Follow us on Twitter','fa-brands fa-twitter','https://twitter.com/felicitatrips',1,'2026-02-20 04:14:28',1,'2026-02-20 04:14:28',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `footer_sub_items` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `fuel_types`
+--
+
+DROP TABLE IF EXISTS `fuel_types`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `fuel_types` (
+  `fuel_type_id` int NOT NULL AUTO_INCREMENT,
+  `fuel_type_name` varchar(50) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `is_active` tinyint(1) DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`fuel_type_id`),
+  UNIQUE KEY `fuel_type_name` (`fuel_type_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `fuel_types`
+--
+
+LOCK TABLES `fuel_types` WRITE;
+/*!40000 ALTER TABLE `fuel_types` DISABLE KEYS */;
+INSERT INTO `fuel_types` VALUES (1,'Petrol','Gasoline fuel',1,'2025-11-02 06:13:48',NULL,'2025-11-02 06:13:48',NULL,NULL,NULL),(2,'Diesel','Diesel fuel',1,'2025-11-02 06:13:48',NULL,'2025-11-02 06:13:48',NULL,NULL,NULL),(3,'Hybrid','Hybrid electric-petrol/diesel',1,'2025-11-02 06:13:48',NULL,'2025-11-02 06:13:48',NULL,NULL,NULL),(4,'Electric','Fully electric vehicle',1,'2025-11-02 06:13:48',NULL,'2025-11-02 06:13:48',NULL,NULL,NULL),(5,'CNG','Compressed Natural Gas',1,'2025-11-02 06:13:48',NULL,'2025-11-02 06:13:48',NULL,NULL,NULL),(6,'LPG','Liquefied Petroleum Gas',1,'2025-11-02 06:13:48',NULL,'2025-11-02 06:13:48',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `fuel_types` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `gallery`
+--
+
+DROP TABLE IF EXISTS `gallery`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `gallery` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `description` text,
+  `status_id` int NOT NULL,
+  `location` varchar(255) DEFAULT NULL,
+  `image_link` varchar(500) DEFAULT NULL,
+  `image_owner` varchar(255) DEFAULT NULL,
+  `image_source` varchar(255) DEFAULT NULL,
+  `image_source_link` varchar(500) DEFAULT NULL,
+  `color` varchar(50) DEFAULT NULL,
+  `hover_color` varchar(50) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_gallery_status` (`status_id`),
+  CONSTRAINT `fk_gallery_status` FOREIGN KEY (`status_id`) REFERENCES `gallery_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `gallery`
+--
+
+LOCK TABLES `gallery` WRITE;
+/*!40000 ALTER TABLE `gallery` DISABLE KEYS */;
+/*!40000 ALTER TABLE `gallery` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `gallery_status`
+--
+
+DROP TABLE IF EXISTS `gallery_status`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `gallery_status` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_gallery_status_common_status` (`status_id`),
+  CONSTRAINT `fk_gallery_status_common_status` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `gallery_status`
+--
+
+LOCK TABLES `gallery_status` WRITE;
+/*!40000 ALTER TABLE `gallery_status` DISABLE KEYS */;
+INSERT INTO `gallery_status` VALUES (1,'ACTIVE','Gallery is open for visitors',1,'2025-09-24 15:26:56',1,'2026-01-25 14:41:11',NULL,NULL,NULL),(2,'Draft','Gallery in progress, hidden from public',1,'2026-02-20 04:28:01',1,'2026-02-20 04:28:19',NULL,NULL,NULL),(3,'Featured','Gallery promoted on homepage',1,'2026-02-20 04:28:01',1,'2026-02-20 04:28:19',NULL,NULL,NULL),(4,'Seasonal','Gallery for specific seasons/festivals',1,'2026-02-20 04:28:01',1,'2026-02-20 04:28:01',NULL,NULL,NULL),(5,'Private','Password protected or internal use only',1,'2026-02-20 04:28:01',1,'2026-02-20 04:28:19',NULL,NULL,NULL),(6,'Scheduled','Gallery scheduled for future publishing',1,'2026-02-20 04:28:01',1,'2026-02-20 04:28:19',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `gallery_status` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `gender`
+--
+
+DROP TABLE IF EXISTS `gender`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `gender` (
+  `gender_id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `status_id` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`gender_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `gender_ibfk_1` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `gender`
+--
+
+LOCK TABLES `gender` WRITE;
+/*!40000 ALTER TABLE `gender` DISABLE KEYS */;
+INSERT INTO `gender` VALUES (1,'Male','Identifies as male',1,'2025-09-21 14:06:10',1,'2026-02-20 04:30:04',1,NULL,NULL),(2,'Female','Identifies as female',1,'2025-09-21 14:06:10',1,'2026-02-20 04:30:04',1,NULL,NULL),(3,'Other','Identifies as other gender',1,'2026-02-20 04:30:04',1,'2026-02-20 04:30:04',NULL,NULL,NULL),(4,'Prefer not to say','User prefers not to disclose gender',1,'2026-02-20 04:30:04',1,'2026-02-20 04:30:04',NULL,NULL,NULL),(5,'Non-binary','Identifies as non-binary',1,'2026-02-20 04:30:04',1,'2026-02-20 04:30:04',NULL,NULL,NULL),(6,'Genderqueer','Identifies as genderqueer',1,'2026-02-20 04:30:04',1,'2026-02-20 04:30:04',NULL,NULL,NULL),(7,'Agender','Identifies as agender',1,'2026-02-20 04:30:04',1,'2026-02-20 04:30:04',NULL,NULL,NULL),(8,'Genderfluid','Identifies as genderfluid',1,'2026-02-20 04:30:04',1,'2026-02-20 04:30:04',NULL,NULL,NULL),(9,'Transgender Male','Identifies as transgender male',1,'2026-02-20 04:30:04',1,'2026-02-20 04:30:04',NULL,NULL,NULL),(10,'Transgender Female','Identifies as transgender female',1,'2026-02-20 04:30:04',1,'2026-02-20 04:30:04',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `gender` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `hero_section`
+--
+
+DROP TABLE IF EXISTS `hero_section`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `hero_section` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `image_url` varchar(255) NOT NULL,
+  `title` varchar(100) DEFAULT NULL,
+  `subtitle` varchar(100) DEFAULT NULL,
+  `description` text,
+  `primary_button_text` varchar(50) DEFAULT NULL,
+  `primary_button_link` varchar(255) DEFAULT NULL,
+  `secondary_button_text` varchar(50) DEFAULT NULL,
+  `secondary_button_link` varchar(255) DEFAULT NULL,
+  `hero_section_status_id` int NOT NULL,
+  `order` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `hero_section_status_id` (`hero_section_status_id`),
+  CONSTRAINT `hero_section_ibfk_1` FOREIGN KEY (`hero_section_status_id`) REFERENCES `hero_section_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `hero_section`
+--
+
+LOCK TABLES `hero_section` WRITE;
+/*!40000 ALTER TABLE `hero_section` DISABLE KEYS */;
+INSERT INTO `hero_section` VALUES (1,'buddhist-cultural-temple','https://res.cloudinary.com/dtzrivqye/image/upload/v1770907584/w8czzgjpjjue561oajf5.jpg','Discover Spiritual Heritage','See More. Feel More. Live More.','Step into a world of timeless traditions, peaceful rituals, and spiritual devotion that reflect the island’s deep cultural roots.','Contact Us','/contact-us','Let’s Go!','/sri-lankan-tours',1,1,'2025-09-19 19:34:01',1,'2026-02-12 17:29:51',NULL,NULL,NULL),(2,'ancient-rock-landmark','https://res.cloudinary.com/dtzrivqye/image/upload/v1770907603/ujvm9zkymh0u4d4briyf.webp','Explore Ancient Wonders','See More. Feel More. Live More.','Discover remarkable landmarks that tell stories of ancient civilizations, innovation, and timeless beauty.','Contact Us','/contact-us','Let’s Go!','/sri-lankan-tours',1,3,'2025-09-19 19:34:01',1,'2026-02-12 17:29:51',NULL,NULL,NULL),(3,'ceylon-tea-plantation','https://res.cloudinary.com/dtzrivqye/image/upload/v1770907622/zbfpz5sehkrbweil9v4z.png','Home of World-Famous Ceylon Tea','See More. Feel More. Live More.','Wander through rolling green hills and discover the heritage, craftsmanship, and rich flavors behind the world-famous Ceylon tea tradition.','Contact Us','/contact-us','Let’s Go!','/sri-lankan-tours',1,4,'2025-09-19 19:34:01',1,'2026-02-12 17:29:51',NULL,NULL,NULL),(4,'scenic-train-journey','https://res.cloudinary.com/dtzrivqye/image/upload/v1770907639/kcnesuq38nmn0ejx3u3v.jpg','Ride Through Paradise','See More. Feel More. Live More.','Experience unforgettable journeys through breathtaking landscapes filled with mountains, forests, and natural beauty.','Contact Us','/contact-us','Let’s Go!','/sri-lankan-tours',1,5,'2025-09-19 19:34:01',1,'2026-02-12 17:29:51',NULL,NULL,NULL),(5,'elephant-wildlife','https://res.cloudinary.com/dtzrivqye/image/upload/v1770907656/wdguq7mlwdfhwkxzrjvj.jpg','Encounter Gentle Giants','See More. Feel More. Live More.','Witness majestic wildlife roaming freely, offering unforgettable moments close to nature.','Contact Us','/contact-us','Let’s Go!','/sri-lankan-tours',1,11,'2025-09-19 19:34:01',1,'2026-02-12 17:29:51',NULL,NULL,NULL),(6,'wild-leopard','https://res.cloudinary.com/dtzrivqye/image/upload/v1770916382/bokrcjx4fbtitum9gnku.jpg','Experience Wild Biodiversity','See More. Feel More. Live More.','Explore rich ecosystems filled with rare and beautiful wildlife in their natural environment.','Contact Us','/contact-us','Let’s Go!','/sri-lankan-tours',1,12,'2025-09-19 19:34:01',1,'2026-02-12 17:29:51',NULL,NULL,NULL),(7,'tropical-coastal-beach','https://res.cloudinary.com/dtzrivqye/image/upload/v1770916420/jejnn62pwaio0kiigfzz.avif','Embrace Coastal Beauty','See More. Feel More. Live More.','Relax by golden shores, feel the gentle ocean breeze, and experience the serenity of tropical coastal life.','Contact Us','/contact-us','Let’s Go!','/sri-lankan-tours',1,7,'2026-02-12 15:17:24',NULL,'2026-02-12 17:29:51',NULL,NULL,NULL),(8,'ocean-waves','https://res.cloudinary.com/dtzrivqye/image/upload/v1770916591/qvc81thshbbiq5gtrqif.jpg','Feel the Ocean’s Energy','See More. Feel More. Live More.','Let the soothing sound of waves and endless horizons bring calm, freedom, and inspiration to your journey.','Contact Us','/contact-us','Let’s Go!','/sri-lankan-tours',1,8,'2026-02-12 15:17:24',NULL,'2026-02-12 17:29:51',NULL,NULL,NULL),(9,'sea-turtle','https://res.cloudinary.com/dtzrivqye/image/upload/v1770916604/mrrjjlphsq5gzhuvpmxw.webp','Protecting Natural Treasures','See More. Feel More. Live More.','Discover the importance of preserving gentle marine creatures and their fragile natural habitats.','Contact Us','/contact-us','Let’s Go!','/sri-lankan-tours',1,10,'2026-02-12 15:17:24',NULL,'2026-02-12 17:29:51',NULL,NULL,NULL),(10,'marine-life-whale','https://res.cloudinary.com/dtzrivqye/image/upload/v1770916617/ldwqttellhum52vevek9.webp','Discover Marine Life','See More. Feel More. Live More.','Dive into the wonders of the ocean and experience the beauty of magnificent creatures beneath the waves.','Contact Us','/contact-us','Let’s Go!','/sri-lankan-tours',1,9,'2026-02-12 15:17:24',NULL,'2026-02-12 17:29:51',NULL,NULL,NULL),(11,'nature-waterfall','https://res.cloudinary.com/dtzrivqye/image/upload/v1770916630/cs9cpllvhki4wgx83d7w.jpg','Refresh Your Soul in Nature','See More. Feel More. Live More.','Feel the power and tranquility of cascading waters surrounded by lush and peaceful landscapes.','Contact Us','/contact-us','Let’s Go!','/sri-lankan-tours',1,6,'2026-02-12 15:17:24',NULL,'2026-02-12 17:29:51',NULL,NULL,NULL),(12,'cultural-temple','https://res.cloudinary.com/dtzrivqye/image/upload/v1770916642/y2lb3iaprz5h1j3s0nww.jpg','Celebrate Cultural Harmony','See More. Feel More. Live More.','Experience vibrant traditions and architectural beauty that reflect the island’s rich multicultural heritage.','Contact Us','/contact-us','Let’s Go!','/sri-lankan-tours',1,2,'2026-02-12 15:17:24',NULL,'2026-02-12 17:29:51',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `hero_section` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `hero_section_status`
+--
+
+DROP TABLE IF EXISTS `hero_section_status`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `hero_section_status` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `common_status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `common_status_id` (`common_status_id`),
+  CONSTRAINT `hero_section_status_ibfk_1` FOREIGN KEY (`common_status_id`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `hero_section_status`
+--
+
+LOCK TABLES `hero_section_status` WRITE;
+/*!40000 ALTER TABLE `hero_section_status` DISABLE KEYS */;
+INSERT INTO `hero_section_status` VALUES (1,'Active','Hero section is active and visible on the page',1,'2025-09-19 19:34:01',1,'2026-02-20 04:32:02',1,NULL,NULL),(2,'Inactive','Hero section is hidden from public view',2,'2025-09-19 19:34:01',1,'2026-02-20 04:32:02',1,NULL,NULL),(3,'Featured','Hero section is featured on homepage or special sections',3,'2026-02-20 04:32:02',1,'2026-02-20 04:32:02',NULL,NULL,NULL),(4,'Scheduled','Hero section scheduled for future display',5,'2026-02-20 04:32:02',1,'2026-02-20 04:32:02',NULL,NULL,NULL),(5,'Expired','Hero section has passed its display period',7,'2026-02-20 04:32:02',1,'2026-02-20 04:32:02',NULL,NULL,NULL),(6,'Draft','Hero section is in draft mode, not ready for display',2,'2026-02-20 04:32:02',1,'2026-02-20 04:32:02',NULL,NULL,NULL),(7,'Seasonal','Hero section for specific seasons or events',1,'2026-02-20 04:32:02',1,'2026-02-20 04:32:02',NULL,NULL,NULL),(8,'Priority','High priority hero section shown above others',3,'2026-02-20 04:32:02',1,'2026-02-20 04:32:02',NULL,NULL,NULL),(9,'Testing','Hero section under testing, visible only to admins',2,'2026-02-20 04:32:02',1,'2026-02-20 04:32:02',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `hero_section_status` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `inquiries`
+--
+
+DROP TABLE IF EXISTS `inquiries`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `inquiries` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `customer_id` int DEFAULT NULL,
+  `customer_name` varchar(255) DEFAULT NULL,
+  `country` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `phone_number` varchar(50) DEFAULT NULL,
+  `inquiry_type` varchar(50) DEFAULT NULL,
+  `preferred_contact_method` varchar(100) DEFAULT NULL,
+  `preferred_destination` varchar(100) DEFAULT NULL,
+  `arrival_date` date DEFAULT NULL,
+  `departure_date` date DEFAULT NULL,
+  `adults_count` int DEFAULT '1',
+  `kids_count` int DEFAULT '0',
+  `budget_range` varchar(100) DEFAULT NULL,
+  `special_requirements` text,
+  `inquiry_status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `booking_id` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `customer_id` (`customer_id`),
+  KEY `inquiry_status_id` (`inquiry_status_id`),
+  KEY `booking_id` (`booking_id`),
+  KEY `created_by` (`created_by`),
+  KEY `updated_by` (`updated_by`),
+  CONSTRAINT `inquiries_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `inquiries_ibfk_2` FOREIGN KEY (`inquiry_status_id`) REFERENCES `inquiry_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `inquiries_ibfk_3` FOREIGN KEY (`booking_id`) REFERENCES `bookings` (`booking_id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `inquiries_ibfk_4` FOREIGN KEY (`created_by`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `inquiries_ibfk_5` FOREIGN KEY (`updated_by`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `inquiries`
+--
+
+LOCK TABLES `inquiries` WRITE;
+/*!40000 ALTER TABLE `inquiries` DISABLE KEYS */;
+/*!40000 ALTER TABLE `inquiries` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `inquiry_contacts`
+--
+
+DROP TABLE IF EXISTS `inquiry_contacts`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `inquiry_contacts` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `inquiry_id` int NOT NULL,
+  `contact_type` varchar(50) DEFAULT NULL,
+  `contact_method` varchar(50) DEFAULT NULL,
+  `contact_from` int DEFAULT NULL,
+  `contact_to` int DEFAULT NULL,
+  `message` text,
+  `sent_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `status` varchar(50) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `inquiry_id` (`inquiry_id`),
+  KEY `contact_from` (`contact_from`),
+  KEY `contact_to` (`contact_to`),
+  CONSTRAINT `inquiry_contacts_ibfk_1` FOREIGN KEY (`inquiry_id`) REFERENCES `inquiries` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `inquiry_contacts_ibfk_2` FOREIGN KEY (`contact_from`) REFERENCES `user` (`user_id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `inquiry_contacts_ibfk_3` FOREIGN KEY (`contact_to`) REFERENCES `user` (`user_id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `inquiry_contacts`
+--
+
+LOCK TABLES `inquiry_contacts` WRITE;
+/*!40000 ALTER TABLE `inquiry_contacts` DISABLE KEYS */;
+/*!40000 ALTER TABLE `inquiry_contacts` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `inquiry_customer_contact`
+--
+
+DROP TABLE IF EXISTS `inquiry_customer_contact`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `inquiry_customer_contact` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `inquiry_id` int NOT NULL,
+  `contact_method` varchar(50) DEFAULT NULL,
+  `contacted_by` int NOT NULL,
+  `contact_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `contact_notes` text,
+  `next_followup_date` date DEFAULT NULL,
+  `contact_result` varchar(50) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `inquiry_id` (`inquiry_id`),
+  KEY `contacted_by` (`contacted_by`),
+  CONSTRAINT `inquiry_customer_contact_ibfk_1` FOREIGN KEY (`inquiry_id`) REFERENCES `inquiries` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `inquiry_customer_contact_ibfk_2` FOREIGN KEY (`contacted_by`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `inquiry_customer_contact`
+--
+
+LOCK TABLES `inquiry_customer_contact` WRITE;
+/*!40000 ALTER TABLE `inquiry_customer_contact` DISABLE KEYS */;
+/*!40000 ALTER TABLE `inquiry_customer_contact` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `inquiry_customer_responses`
+--
+
+DROP TABLE IF EXISTS `inquiry_customer_responses`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `inquiry_customer_responses` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `inquiry_id` int NOT NULL,
+  `inquiry_packages_id` int NOT NULL,
+  `response_type` enum('accept','reject','request_modification') NOT NULL,
+  `customer_notes` text,
+  `contact_type` varchar(50) DEFAULT NULL,
+  `contact_method` varchar(50) DEFAULT NULL,
+  `contact_from` int DEFAULT NULL,
+  `contact_to` int DEFAULT NULL,
+  `message` text,
+  `responded_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `inquiry_id` (`inquiry_id`),
+  KEY `inquiry_packages_id` (`inquiry_packages_id`),
+  CONSTRAINT `inquiry_customer_responses_ibfk_1` FOREIGN KEY (`inquiry_id`) REFERENCES `inquiries` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `inquiry_customer_responses_ibfk_2` FOREIGN KEY (`inquiry_packages_id`) REFERENCES `inquiry_packages` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `inquiry_customer_responses`
+--
+
+LOCK TABLES `inquiry_customer_responses` WRITE;
+/*!40000 ALTER TABLE `inquiry_customer_responses` DISABLE KEYS */;
+/*!40000 ALTER TABLE `inquiry_customer_responses` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `inquiry_packages`
+--
+
+DROP TABLE IF EXISTS `inquiry_packages`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `inquiry_packages` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `inquiry_id` int NOT NULL,
+  `inquiry_tours_id` int NOT NULL,
+  `package_id` int NOT NULL,
+  `valid_until` date DEFAULT NULL,
+  `version` int DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int NOT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `status` enum('pending','accepted','rejected') DEFAULT 'pending',
+  PRIMARY KEY (`id`),
+  KEY `inquiry_id` (`inquiry_id`),
+  KEY `inquiry_tours_id` (`inquiry_tours_id`),
+  KEY `package_id` (`package_id`),
+  KEY `created_by` (`created_by`),
+  KEY `updated_by` (`updated_by`),
+  CONSTRAINT `inquiry_packages_ibfk_1` FOREIGN KEY (`inquiry_id`) REFERENCES `inquiries` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `inquiry_packages_ibfk_2` FOREIGN KEY (`inquiry_tours_id`) REFERENCES `inquiry_tours` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `inquiry_packages_ibfk_3` FOREIGN KEY (`package_id`) REFERENCES `packages` (`package_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `inquiry_packages_ibfk_4` FOREIGN KEY (`created_by`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `inquiry_packages_ibfk_5` FOREIGN KEY (`updated_by`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `inquiry_packages`
+--
+
+LOCK TABLES `inquiry_packages` WRITE;
+/*!40000 ALTER TABLE `inquiry_packages` DISABLE KEYS */;
+/*!40000 ALTER TABLE `inquiry_packages` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `inquiry_status`
+--
+
+DROP TABLE IF EXISTS `inquiry_status`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `inquiry_status` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`),
+  KEY `created_by` (`created_by`),
+  KEY `updated_by` (`updated_by`),
+  CONSTRAINT `inquiry_status_ibfk_1` FOREIGN KEY (`created_by`) REFERENCES `user` (`user_id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `inquiry_status_ibfk_2` FOREIGN KEY (`updated_by`) REFERENCES `user` (`user_id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `inquiry_status`
+--
+
+LOCK TABLES `inquiry_status` WRITE;
+/*!40000 ALTER TABLE `inquiry_status` DISABLE KEYS */;
+INSERT INTO `inquiry_status` VALUES (1,'REQUESTED','Initial inquiry submitted by customer','2025-12-14 14:25:11',1,'2025-12-14 14:25:11',NULL),(2,'CONTACTED','Staff has contacted customer for details','2025-12-14 14:25:11',1,'2025-12-14 14:25:11',NULL),(3,'CREATED','Tour package has been created','2025-12-14 14:25:11',1,'2025-12-14 14:25:11',NULL),(4,'NOT_CREATED','Unable to create package (no response/unclear requirements)','2025-12-14 14:25:11',1,'2025-12-14 14:25:11',NULL),(5,'SENT_CUSTOMER','Package sent to customer for review','2025-12-14 14:25:11',1,'2025-12-14 14:25:11',NULL),(6,'ACCEPTED','Customer accepted the package','2025-12-14 14:25:11',1,'2025-12-14 14:25:11',NULL),(7,'BOOKED','Customer completed booking','2025-12-14 14:25:11',1,'2025-12-14 14:25:11',NULL),(8,'COMPLETED','Tour has been completed','2025-12-14 14:25:11',1,'2025-12-14 14:25:11',NULL),(9,'CANCELLED','Customer cancelled after booking','2025-12-14 14:25:11',1,'2025-12-14 14:25:11',NULL),(10,'REJECTED','Customer rejected the package','2025-12-14 14:25:11',1,'2025-12-14 14:25:11',NULL),(11,'RE_CREATED','Package modified and recreated','2025-12-14 14:25:11',1,'2025-12-14 14:25:11',NULL);
+/*!40000 ALTER TABLE `inquiry_status` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `inquiry_status_history`
+--
+
+DROP TABLE IF EXISTS `inquiry_status_history`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `inquiry_status_history` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `inquiry_id` int NOT NULL,
+  `old_status_id` int DEFAULT NULL,
+  `new_status_id` int NOT NULL,
+  `changed_by` int NOT NULL,
+  `change_reason` text,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `inquiry_id` (`inquiry_id`),
+  KEY `old_status_id` (`old_status_id`),
+  KEY `new_status_id` (`new_status_id`),
+  KEY `changed_by` (`changed_by`),
+  CONSTRAINT `inquiry_status_history_ibfk_1` FOREIGN KEY (`inquiry_id`) REFERENCES `inquiries` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `inquiry_status_history_ibfk_2` FOREIGN KEY (`old_status_id`) REFERENCES `inquiry_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `inquiry_status_history_ibfk_3` FOREIGN KEY (`new_status_id`) REFERENCES `inquiry_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `inquiry_status_history_ibfk_4` FOREIGN KEY (`changed_by`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `inquiry_status_history`
+--
+
+LOCK TABLES `inquiry_status_history` WRITE;
+/*!40000 ALTER TABLE `inquiry_status_history` DISABLE KEYS */;
+/*!40000 ALTER TABLE `inquiry_status_history` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `inquiry_tours`
+--
+
+DROP TABLE IF EXISTS `inquiry_tours`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `inquiry_tours` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `inquiry_id` int NOT NULL,
+  `tour_id` int NOT NULL,
+  `valid_until` date DEFAULT NULL,
+  `version` int DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int NOT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `status` enum('pending','accepted','rejected') DEFAULT 'pending',
+  PRIMARY KEY (`id`),
+  KEY `inquiry_id` (`inquiry_id`),
+  KEY `tour_id` (`tour_id`),
+  KEY `created_by` (`created_by`),
+  KEY `updated_by` (`updated_by`),
+  CONSTRAINT `inquiry_tours_ibfk_1` FOREIGN KEY (`inquiry_id`) REFERENCES `inquiries` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `inquiry_tours_ibfk_2` FOREIGN KEY (`tour_id`) REFERENCES `tour` (`tour_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `inquiry_tours_ibfk_3` FOREIGN KEY (`created_by`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `inquiry_tours_ibfk_4` FOREIGN KEY (`updated_by`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `inquiry_tours`
+--
+
+LOCK TABLES `inquiry_tours` WRITE;
+/*!40000 ALTER TABLE `inquiry_tours` DISABLE KEYS */;
+/*!40000 ALTER TABLE `inquiry_tours` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `jwt_tokens`
+--
+
+DROP TABLE IF EXISTS `jwt_tokens`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `jwt_tokens` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `token` varchar(512) NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `ip_address` varchar(45) DEFAULT NULL,
+  `user_agent` varchar(255) DEFAULT NULL,
+  `expires_at` timestamp NULL DEFAULT NULL,
+  `revoked` tinyint(1) DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `jwt_tokens_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=528 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `jwt_tokens`
+--
+
+LOCK TABLES `jwt_tokens` WRITE;
+/*!40000 ALTER TABLE `jwt_tokens` DISABLE KEYS */;
+/*!40000 ALTER TABLE `jwt_tokens` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `link_bar`
+--
+
+DROP TABLE IF EXISTS `link_bar`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `link_bar` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `link_bar_type_id` int NOT NULL,
+  `icon_url` varchar(100) DEFAULT NULL,
+  `link_url` varchar(255) DEFAULT NULL,
+  `link_bar_status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `link_bar_type_id` (`link_bar_type_id`),
+  KEY `link_bar_status_id` (`link_bar_status_id`),
+  CONSTRAINT `link_bar_ibfk_1` FOREIGN KEY (`link_bar_type_id`) REFERENCES `link_bar_type` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `link_bar_ibfk_2` FOREIGN KEY (`link_bar_status_id`) REFERENCES `link_bar_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `link_bar`
+--
+
+LOCK TABLES `link_bar` WRITE;
+/*!40000 ALTER TABLE `link_bar` DISABLE KEYS */;
+/*!40000 ALTER TABLE `link_bar` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `link_bar_status`
+--
+
+DROP TABLE IF EXISTS `link_bar_status`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `link_bar_status` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `common_status_id` int NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `common_status_id` (`common_status_id`),
+  CONSTRAINT `link_bar_status_ibfk_1` FOREIGN KEY (`common_status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `link_bar_status`
+--
+
+LOCK TABLES `link_bar_status` WRITE;
+/*!40000 ALTER TABLE `link_bar_status` DISABLE KEYS */;
+INSERT INTO `link_bar_status` VALUES (4,'Active',1,'Link bar is active and visible on the website','2026-02-20 04:36:32',1,'2026-02-20 04:36:32',NULL,NULL,NULL),(5,'Inactive',1,'Link bar is hidden from public view','2026-02-20 04:36:32',1,'2026-02-20 04:36:52',NULL,NULL,NULL),(6,'Featured',1,'Link bar is featured with special styling','2026-02-20 04:36:32',1,'2026-02-20 04:36:52',NULL,NULL,NULL),(7,'Primary Navigation',1,'Main navigation bar for the website','2026-02-20 04:36:32',1,'2026-02-20 04:36:32',NULL,NULL,NULL),(8,'Secondary Navigation',1,'Secondary/utility navigation bar','2026-02-20 04:36:32',1,'2026-02-20 04:36:32',NULL,NULL,NULL),(9,'Footer Links',1,'Links displayed in the footer section','2026-02-20 04:36:32',1,'2026-02-20 04:36:32',NULL,NULL,NULL),(10,'Mobile Menu',1,'Link bar optimized for mobile devices','2026-02-20 04:36:32',1,'2026-02-20 04:36:32',NULL,NULL,NULL),(11,'Desktop Only',1,'Link bar visible only on desktop screens','2026-02-20 04:36:32',1,'2026-02-20 04:36:32',NULL,NULL,NULL),(12,'Mobile Only',1,'Link bar visible only on mobile screens','2026-02-20 04:36:32',1,'2026-02-20 04:36:32',NULL,NULL,NULL),(13,'Seasonal',1,'Link bar for seasonal promotions','2026-02-20 04:36:32',1,'2026-02-20 04:36:52',NULL,NULL,NULL),(14,'Promotional',1,'Link bar for special promotions and offers','2026-02-20 04:36:32',1,'2026-02-20 04:36:52',NULL,NULL,NULL),(15,'Scheduled',1,'Link bar scheduled for future display','2026-02-20 04:36:32',1,'2026-02-20 04:36:52',NULL,NULL,NULL),(16,'Expired',1,'Link bar has passed its display period','2026-02-20 04:36:32',1,'2026-02-20 04:36:52',NULL,NULL,NULL),(17,'Draft',1,'Link bar in draft mode, not ready for display','2026-02-20 04:36:32',1,'2026-02-20 04:36:52',NULL,NULL,NULL),(18,'Testing',1,'Link bar under testing, visible only to admins','2026-02-20 04:36:32',1,'2026-02-20 04:36:52',NULL,NULL,NULL),(19,'Archived',1,'Old link bar kept for reference','2026-02-20 04:36:32',1,'2026-02-20 04:36:52',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `link_bar_status` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `link_bar_type`
+--
+
+DROP TABLE IF EXISTS `link_bar_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `link_bar_type` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `common_status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `common_status_id` (`common_status_id`),
+  CONSTRAINT `link_bar_type_ibfk_1` FOREIGN KEY (`common_status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `link_bar_type`
+--
+
+LOCK TABLES `link_bar_type` WRITE;
+/*!40000 ALTER TABLE `link_bar_type` DISABLE KEYS */;
+INSERT INTO `link_bar_type` VALUES (1,'IMAGE_ONLY','Top navigation bar',1,'2025-09-15 16:08:46',1,'2025-09-19 15:39:21',NULL,NULL,NULL),(2,'FULL','Side menu bar',1,'2025-09-15 16:08:46',1,'2025-09-19 15:39:21',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `link_bar_type` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `meal_type`
+--
+
+DROP TABLE IF EXISTS `meal_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `meal_type` (
+  `meal_type_id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`meal_type_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `meal_type_ibfk_1` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `meal_type`
+--
+
+LOCK TABLES `meal_type` WRITE;
+/*!40000 ALTER TABLE `meal_type` DISABLE KEYS */;
+/*!40000 ALTER TABLE `meal_type` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `mobile_verified`
+--
+
+DROP TABLE IF EXISTS `mobile_verified`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mobile_verified` (
+  `mobile_verified_id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `send_code` varchar(50) DEFAULT NULL,
+  `typed_code` varchar(50) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `status_id` int DEFAULT NULL,
+  `which_mobile` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`mobile_verified_id`),
+  KEY `user_id` (`user_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `mobile_verified_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `mobile_verified_ibfk_2` FOREIGN KEY (`status_id`) REFERENCES `verified_status` (`verified_status_id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `mobile_verified`
+--
+
+LOCK TABLES `mobile_verified` WRITE;
+/*!40000 ALTER TABLE `mobile_verified` DISABLE KEYS */;
+/*!40000 ALTER TABLE `mobile_verified` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `nav_bar`
+--
+
+DROP TABLE IF EXISTS `nav_bar`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `nav_bar` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `status_id` int NOT NULL,
+  `link_url` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_navbar_navbarstatus` (`status_id`),
+  CONSTRAINT `fk_navbar_navbarstatus` FOREIGN KEY (`status_id`) REFERENCES `nav_bar_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `nav_bar`
+--
+
+LOCK TABLES `nav_bar` WRITE;
+/*!40000 ALTER TABLE `nav_bar` DISABLE KEYS */;
+INSERT INTO `nav_bar` VALUES (1,'Home','Homepage link',1,'/','2025-09-19 16:49:55',1,'2025-09-27 11:35:00',NULL,NULL,NULL),(2,'About Us','About us page link',1,'/about-us','2025-09-19 16:49:55',1,'2025-09-19 16:49:55',NULL,NULL,NULL),(3,'Accommodation','Find places to stay',2,'/accommodation','2025-09-19 16:49:55',1,'2026-02-17 09:23:48',NULL,NULL,NULL),(4,'Blogs','Travel blogs and articles',2,'/blogs','2025-09-19 16:49:55',1,'2026-01-27 17:44:46',NULL,NULL,NULL),(5,'Contact Us','Contact information and form',1,'/contact-us','2025-09-19 16:49:55',1,'2025-09-19 16:49:55',NULL,NULL,NULL),(6,'FAQ','Frequently Asked Questions',1,'/faq','2025-09-19 16:49:55',1,'2025-10-24 16:25:53',NULL,NULL,NULL),(7,'Sri Lankan Tours','Tour packages in Sri Lanka',1,'/sri-lankan-tours','2025-09-19 16:49:55',1,'2025-09-19 16:49:55',NULL,NULL,NULL),(8,'Reviews','Customer reviews and testimonials',2,'/reviews','2025-09-19 16:49:55',1,'2025-12-11 16:33:03',NULL,NULL,NULL),(9,'Offers','Special travel offers and discounts',2,'/offers','2025-09-19 16:49:55',1,'2025-12-11 16:33:03',NULL,NULL,NULL),(10,'Packages','Available travel packages',2,'/packages','2025-09-19 16:49:55',1,'2026-01-27 14:58:40',NULL,NULL,NULL),(11,'Gallery','Photo and video gallery',2,'/gallery','2025-09-19 16:49:55',1,'2025-12-11 16:33:03',NULL,NULL,NULL),(12,'Plan Your Trip','Trip planning section',2,'/plan-your-trip','2025-09-19 16:49:55',1,'2025-10-25 07:17:38',NULL,NULL,NULL),(13,'Activities','Things to do and activities',1,'/activities','2025-09-19 16:49:55',1,'2025-10-21 14:03:45',NULL,NULL,NULL),(14,'Destination','Destinations page link',1,'/destinations','2025-09-19 16:49:55',1,'2025-10-11 01:06:15',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `nav_bar` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `nav_bar_status`
+--
+
+DROP TABLE IF EXISTS `nav_bar_status`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `nav_bar_status` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `common_status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_navbarstatus_commonstatus` (`common_status_id`),
+  CONSTRAINT `fk_navbarstatus_commonstatus` FOREIGN KEY (`common_status_id`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `nav_bar_status`
+--
+
+LOCK TABLES `nav_bar_status` WRITE;
+/*!40000 ALTER TABLE `nav_bar_status` DISABLE KEYS */;
+INSERT INTO `nav_bar_status` VALUES (1,'VISIBLE','Nav bar item is visible',1,'2025-09-19 16:49:55',1,'2025-09-19 16:49:55',NULL,NULL,NULL),(2,'HIDDEN','Nav bar item is hidden',2,'2025-09-19 16:49:55',1,'2025-09-19 16:49:55',NULL,NULL,NULL),(3,'REMOVED','Nav bar item removed',3,'2025-09-19 16:49:55',1,'2025-09-19 16:49:55',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `nav_bar_status` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `nav_bar_submenu`
+--
+
+DROP TABLE IF EXISTS `nav_bar_submenu`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `nav_bar_submenu` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nav_bar_id` int NOT NULL,
+  `parent_submenu_id` int DEFAULT NULL,
+  `name` varchar(100) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `link_url` varchar(255) NOT NULL,
+  `icon_class` varchar(100) DEFAULT NULL,
+  `sort_order` int DEFAULT '0',
+  `opens_in_new_tab` tinyint(1) DEFAULT '0',
+  `is_featured` tinyint(1) DEFAULT '0',
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `nav_bar_id` (`nav_bar_id`),
+  KEY `parent_submenu_id` (`parent_submenu_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `nav_bar_submenu_ibfk_1` FOREIGN KEY (`nav_bar_id`) REFERENCES `nav_bar` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `nav_bar_submenu_ibfk_2` FOREIGN KEY (`parent_submenu_id`) REFERENCES `nav_bar_submenu` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `nav_bar_submenu_ibfk_3` FOREIGN KEY (`status_id`) REFERENCES `nav_bar_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `nav_bar_submenu`
+--
+
+LOCK TABLES `nav_bar_submenu` WRITE;
+/*!40000 ALTER TABLE `nav_bar_submenu` DISABLE KEYS */;
+INSERT INTO `nav_bar_submenu` VALUES (1,3,NULL,'All Accommodation','Browse all accommodation types','/accommodations','fa-list',1,0,0,1,'2025-10-25 08:08:06',1,'2025-10-25 11:26:02',NULL,NULL,NULL),(2,3,NULL,'Hotels','Luxury and budget hotels','/accommodations/hotels','fa-hotel',2,0,0,1,'2025-10-25 08:08:06',1,'2025-10-25 11:26:53',NULL,NULL,NULL),(3,3,NULL,'Resorts','Beach and mountain resorts','/accommodations/resorts','fa-umbrella-beach',3,0,0,1,'2025-10-25 08:08:06',1,'2025-10-25 11:25:44',NULL,NULL,NULL),(4,3,NULL,'Villas','Private vacation villas','/accommodations/villas','fa-home',4,0,0,1,'2025-10-25 08:08:06',1,'2025-10-25 11:25:44',NULL,NULL,NULL),(5,3,NULL,'Restaurants','Fine dining experiences','/accommodations/restaurants','fa-utensils',5,0,0,1,'2025-10-25 08:08:06',1,'2025-10-25 11:25:44',NULL,NULL,NULL),(6,3,NULL,'Hostels','Budget accommodations','/accommodations/hostels','fa-users',6,0,0,1,'2025-10-25 08:08:06',1,'2025-10-25 11:25:44',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `nav_bar_submenu` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `nearby_destinations`
+--
+
+DROP TABLE IF EXISTS `nearby_destinations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `nearby_destinations` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `destination_id` int NOT NULL,
+  `nearby_destination_id` int NOT NULL,
+  `distance_km` decimal(5,2) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_nearby_pair` (`destination_id`,`nearby_destination_id`),
+  KEY `nearby_destination_id` (`nearby_destination_id`),
+  CONSTRAINT `nearby_destinations_ibfk_1` FOREIGN KEY (`destination_id`) REFERENCES `destination` (`destination_id`),
+  CONSTRAINT `nearby_destinations_ibfk_2` FOREIGN KEY (`nearby_destination_id`) REFERENCES `destination` (`destination_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=126 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `nearby_destinations`
+--
+
+LOCK TABLES `nearby_destinations` WRITE;
+/*!40000 ALTER TABLE `nearby_destinations` DISABLE KEYS */;
+/*!40000 ALTER TABLE `nearby_destinations` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `our_core_values`
+--
+
+DROP TABLE IF EXISTS `our_core_values`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `our_core_values` (
+  `value_id` int NOT NULL AUTO_INCREMENT,
+  `title` varchar(150) NOT NULL,
+  `description` varchar(500) NOT NULL,
+  `icon_name` varchar(100) DEFAULT NULL,
+  `color` varchar(20) DEFAULT NULL,
+  `order_no` int NOT NULL,
+  `status_id` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`value_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `our_core_values_ibfk_1` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `our_core_values`
+--
+
+LOCK TABLES `our_core_values` WRITE;
+/*!40000 ALTER TABLE `our_core_values` DISABLE KEYS */;
+INSERT INTO `our_core_values` VALUES (1,'Authenticity','We believe in showcasing the real Sri Lanka - its culture, people, and untouched beauty.','MapPin','blue',1,1,'2025-12-11 18:04:19',1,'2025-12-11 18:04:19',NULL,NULL,NULL),(2,'Passion','Our love for travel and Sri Lanka drives everything we do, ensuring unforgettable experiences.','Heart','red',2,1,'2025-12-11 18:04:19',1,'2025-12-11 18:04:19',NULL,NULL,NULL),(3,'Excellence','We strive for perfection in every detail, from planning to execution of your journey.','Award','amber',3,1,'2025-12-11 18:04:19',1,'2025-12-11 18:04:19',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `our_core_values` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `our_features`
+--
+
+DROP TABLE IF EXISTS `our_features`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `our_features` (
+  `feature_id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `icon_url` varchar(255) DEFAULT NULL,
+  `color` varchar(7) DEFAULT NULL,
+  `hover_color` varchar(7) DEFAULT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `status_id` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`feature_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `our_features_ibfk_1` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `our_features`
+--
+
+LOCK TABLES `our_features` WRITE;
+/*!40000 ALTER TABLE `our_features` DISABLE KEYS */;
+INSERT INTO `our_features` VALUES (1,'Easy & Quick Booking','icon-book-now.png','#FCE5F0','#F8D0E0','Lorem ipsum dolor sit amet, consectetur adipiscing elit.',1,'2025-12-06 15:55:36',1,'2025-12-06 15:55:36',NULL,NULL,NULL),(2,'Best Guide','icon-guide.png','#E9FDE9','#D0F0D8','Lorem ipsum dolor sit amet, consectetur adipiscing elit.',1,'2025-12-06 15:55:36',1,'2025-12-06 15:55:36',NULL,NULL,NULL),(3,'Extended Customization','icon-customization.png','#FFF4E1','#FFE7B3','Lorem ipsum dolor sit amet, consectetur adipiscing elit.',1,'2025-12-06 15:55:36',1,'2025-12-06 15:55:36',NULL,NULL,NULL),(4,'Customer Care 24/7','icon-customer-care.png','#E6F0FF','#BFD9FF','Lorem ipsum dolor sit amet, consectetur adipiscing elit.',1,'2025-12-06 15:55:36',1,'2025-12-06 15:55:36',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `our_features` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `our_service_status`
+--
+
+DROP TABLE IF EXISTS `our_service_status`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `our_service_status` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `common_status_id` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_common_status_service` (`common_status_id`),
+  CONSTRAINT `fk_common_status_service` FOREIGN KEY (`common_status_id`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `our_service_status`
+--
+
+LOCK TABLES `our_service_status` WRITE;
+/*!40000 ALTER TABLE `our_service_status` DISABLE KEYS */;
+INSERT INTO `our_service_status` VALUES (1,'ACTIVE','Service is available',1,'2025-09-20 12:01:16',1,'2025-09-20 12:01:16',NULL,NULL,NULL),(2,'INACTIVE','Service is not available',2,'2025-09-20 12:01:16',1,'2025-09-20 12:01:16',NULL,NULL,NULL),(3,'TERMINATED','Service discontinued',1,'2025-09-20 12:01:16',1,'2025-09-20 12:01:16',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `our_service_status` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `our_services`
+--
+
+DROP TABLE IF EXISTS `our_services`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `our_services` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `sub_title` varchar(255) DEFAULT NULL,
+  `description` text,
+  `image_url` varchar(500) DEFAULT NULL,
+  `color` varchar(50) DEFAULT NULL,
+  `our_service_status_id` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  `icon_url` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_our_service_status` (`our_service_status_id`),
+  CONSTRAINT `fk_our_service_status` FOREIGN KEY (`our_service_status_id`) REFERENCES `our_service_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `our_services`
+--
+
+LOCK TABLES `our_services` WRITE;
+/*!40000 ALTER TABLE `our_services` DISABLE KEYS */;
+INSERT INTO `our_services` VALUES (1,'Guide Services','Expert Local Guides','Explore Sri Lanka with our certified local guides who bring destinations to life with deep cultural knowledge, historical insights, and personalized attention. Available in multiple languages.','/images/our-services-images/guide-service.jpg','#0891B2',1,'2025-09-20 12:01:25',1,'2026-02-20 04:40:30',1,NULL,NULL,'/icons/our-services-icons/guide.png'),(2,'MICE Services','Meetings, Incentives, Conferences & Exhibitions','Professional MICE services for corporate groups. We handle everything from venue selection and logistics to team building activities and special events across Sri Lanka.','/images/our-services-images/mice-service.jpg','#059669',1,'2025-09-20 12:01:25',1,'2026-02-20 04:40:30',1,NULL,NULL,'/icons/our-services-icons/mice.png'),(3,'Transport Services','Comfortable & Reliable Fleet','Travel in comfort with our modern fleet of vehicles including cars, vans, and luxury coaches. Professional drivers, air-conditioned vehicles, and competitive rates for all your travel needs.','/images/our-services-images/transport-service.jpg','#0D9488',1,'2025-09-20 12:01:25',1,'2026-02-20 04:40:30',1,NULL,NULL,'/icons/our-services-icons/transport.png'),(4,'Visa Services & Air Ticketing','Hassle-Free Travel Arrangements','Let us handle your travel paperwork. Quick and reliable visa assistance for Sri Lanka entry, plus competitive airfares on major airlines for both domestic and international flights.','/images/our-services-images/visa-service.jpg','#0284C7',1,'2025-09-20 12:01:25',1,'2026-02-20 04:40:30',1,NULL,NULL,'/icons/our-services-icons/visa.png');
+/*!40000 ALTER TABLE `our_services` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `our_story_timeline`
+--
+
+DROP TABLE IF EXISTS `our_story_timeline`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `our_story_timeline` (
+  `story_id` int NOT NULL AUTO_INCREMENT,
+  `year_label` varchar(50) NOT NULL,
+  `title` varchar(150) NOT NULL,
+  `description` varchar(500) NOT NULL,
+  `icon_name` varchar(100) DEFAULT NULL,
+  `color` varchar(20) DEFAULT NULL,
+  `order_no` int NOT NULL,
+  `status_id` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`story_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `our_story_timeline_ibfk_1` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `our_story_timeline`
+--
+
+LOCK TABLES `our_story_timeline` WRITE;
+/*!40000 ALTER TABLE `our_story_timeline` DISABLE KEYS */;
+INSERT INTO `our_story_timeline` VALUES (1,'Oct 2025 - The Beginning','Company Founded','Felicitra Trips was founded in Colombo with a simple mission: to share the beauty of Sri Lanka with the world. Started as a small travel desk with just three passionate team members.','fa-regular fa-calendar','#0891B2',1,1,'2025-12-11 18:04:19',1,'2026-02-20 04:43:16',1,NULL,NULL),(2,'Nov 2022 - Building the Team','Expert Team Formation','Assembled a team of experienced travel professionals, local guides, and customer support staff. Our team grew to 12 dedicated members passionate about creating memorable experiences.','fa-solid fa-users','#0D9488',2,1,'2025-12-11 18:04:19',1,'2026-02-20 04:43:16',1,NULL,NULL),(6,'Dec 2026 - Destination Research','Exploring Sri Lanka','Our team traveled across the island to curate the best experiences. Visited 15+ destinations, 30+ hotels, and tested countless activities to ensure quality.','fa-solid fa-map-location-dot','#0284C7',3,1,'2026-02-20 04:42:08',1,'2026-02-20 04:43:16',NULL,NULL,NULL),(7,'Jan 2026 - Partnership Building','Strong Local Partnerships','Established partnerships with top hotels, transport providers, activity operators, and local guides across Sri Lanka to offer exclusive experiences.','fa-solid fa-handshake','#059669',4,1,'2026-02-20 04:42:08',1,'2026-02-20 04:43:16',NULL,NULL,NULL),(8,'Feb 2026 - Website Launch','Digital Home Goes Live','Launched our official website to make booking Sri Lanka tours easier than ever. Now travelers from around the world can explore and book their dream vacation online.','fa-solid fa-rocket','#7C3AED',5,1,'2026-02-20 04:42:08',1,'2026-02-20 04:42:08',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `our_story_timeline` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `package_condition`
+--
+
+DROP TABLE IF EXISTS `package_condition`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `package_condition` (
+  `package_condition_id` int NOT NULL AUTO_INCREMENT,
+  `package_id` int NOT NULL,
+  `condition_text` text NOT NULL,
+  `display_order` int DEFAULT '0',
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`package_condition_id`),
+  KEY `fk_package_condition_tour` (`package_id`),
+  KEY `fk_package_condition_status` (`status_id`),
+  KEY `fk_package_condition_terminated_by` (`terminated_by`),
+  CONSTRAINT `fk_package_condition_status` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `fk_package_condition_terminated_by` FOREIGN KEY (`terminated_by`) REFERENCES `user` (`user_id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `fk_package_condition_tour` FOREIGN KEY (`package_id`) REFERENCES `packages` (`package_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `package_condition`
+--
+
+LOCK TABLES `package_condition` WRITE;
+/*!40000 ALTER TABLE `package_condition` DISABLE KEYS */;
+/*!40000 ALTER TABLE `package_condition` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `package_day_accommodation`
+--
+
+DROP TABLE IF EXISTS `package_day_accommodation`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `package_day_accommodation` (
+  `package_day_accommodation_id` int NOT NULL AUTO_INCREMENT,
+  `package_id` int NOT NULL,
+  `day_number` int NOT NULL,
+  `breakfast` tinyint(1) DEFAULT '0',
+  `breakfast_description` text,
+  `lunch` tinyint(1) DEFAULT '0',
+  `lunch_description` text,
+  `dinner` tinyint(1) DEFAULT '0',
+  `dinner_description` text,
+  `morning_tea` tinyint(1) DEFAULT '0',
+  `morning_tea_description` text,
+  `evening_tea` tinyint(1) DEFAULT '0',
+  `evening_tea_description` text,
+  `snacks` tinyint(1) DEFAULT '0',
+  `snack_note` text,
+  `hotel_id` int DEFAULT NULL,
+  `transport_id` int DEFAULT NULL,
+  `other_notes` text,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `status` int NOT NULL DEFAULT '1',
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  `local_price` int DEFAULT NULL,
+  `price` int DEFAULT NULL,
+  `discount` int DEFAULT NULL,
+  `service_charge` int DEFAULT NULL,
+  `tax` int DEFAULT NULL,
+  `extra_charge` int DEFAULT NULL,
+  `extra_charge_note` varchar(1000) DEFAULT NULL,
+  `transport_cost` int DEFAULT '0',
+  PRIMARY KEY (`package_day_accommodation_id`),
+  UNIQUE KEY `uq_package_day` (`package_id`,`day_number`),
+  KEY `fk_pda_hotel` (`hotel_id`),
+  KEY `fk_pda_transport` (`transport_id`),
+  KEY `idx_pda_status` (`status`),
+  KEY `idx_pda_terminated_at` (`terminated_at`),
+  KEY `idx_pda_terminated_by` (`terminated_by`),
+  CONSTRAINT `fk_pda_hotel` FOREIGN KEY (`hotel_id`) REFERENCES `service_provider` (`service_provider_id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `fk_pda_package` FOREIGN KEY (`package_id`) REFERENCES `packages` (`package_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_pda_status` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `fk_pda_terminated_by` FOREIGN KEY (`terminated_by`) REFERENCES `user` (`user_id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `fk_pda_transport` FOREIGN KEY (`transport_id`) REFERENCES `vehicles` (`vehicle_id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `package_day_accommodation`
+--
+
+LOCK TABLES `package_day_accommodation` WRITE;
+/*!40000 ALTER TABLE `package_day_accommodation` DISABLE KEYS */;
+/*!40000 ALTER TABLE `package_day_accommodation` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `package_exclusion`
+--
+
+DROP TABLE IF EXISTS `package_exclusion`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `package_exclusion` (
+  `package_exclusion_id` int NOT NULL AUTO_INCREMENT,
+  `package_id` int NOT NULL,
+  `exclusion_text` text NOT NULL,
+  `display_order` int DEFAULT '0',
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`package_exclusion_id`),
+  KEY `fk_package_exclusion_tour` (`package_id`),
+  KEY `fk_package_exclusion_status` (`status_id`),
+  KEY `fk_package_exclusion_terminated_by` (`terminated_by`),
+  CONSTRAINT `fk_package_exclusion_status` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `fk_package_exclusion_terminated_by` FOREIGN KEY (`terminated_by`) REFERENCES `user` (`user_id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `fk_package_exclusion_tour` FOREIGN KEY (`package_id`) REFERENCES `packages` (`package_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `package_exclusion`
+--
+
+LOCK TABLES `package_exclusion` WRITE;
+/*!40000 ALTER TABLE `package_exclusion` DISABLE KEYS */;
+/*!40000 ALTER TABLE `package_exclusion` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `package_hero_section`
+--
+
+DROP TABLE IF EXISTS `package_hero_section`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `package_hero_section` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `image_url` varchar(255) NOT NULL,
+  `title` varchar(100) DEFAULT NULL,
+  `subtitle` varchar(150) DEFAULT NULL,
+  `description` text,
+  `primary_button_text` varchar(50) DEFAULT NULL,
+  `primary_button_link` varchar(255) DEFAULT NULL,
+  `secondary_button_text` varchar(50) DEFAULT NULL,
+  `secondary_button_link` varchar(255) DEFAULT NULL,
+  `status` int NOT NULL,
+  `order` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `status` (`status`),
+  CONSTRAINT `package_hero_section_ibfk_1` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `package_hero_section`
+--
+
+LOCK TABLES `package_hero_section` WRITE;
+/*!40000 ALTER TABLE `package_hero_section` DISABLE KEYS */;
+INSERT INTO `package_hero_section` VALUES (1,'Main Packages Hero','https://images.unsplash.com/photo-1589394815804-964ed0be2eb5','Sri Lanka Tour Packages','Curated Experiences for Every Traveler','Discover our hand-picked tour packages designed to showcase the best of Sri Lanka. From cultural adventures to beach getaways, find your perfect island escape.','View All Packages','/packages','Customize Your Trip','/contact-us',1,1,'2026-02-20 04:44:50',1,'2026-02-20 04:45:11',NULL,NULL,NULL),(2,'Cultural Packages','https://images.unsplash.com/photo-1590212154058-ccddd1f0003e','Cultural Heritage Tours','Ancient Kingdoms & Sacred Sites','Journey through Sri Lanka\'s rich history with visits to ancient capitals, sacred temples, and UNESCO World Heritage sites. Perfect for history enthusiasts.','Explore Cultural Packages','/packages?type=cultural','View Destinations','/destinations',1,2,'2026-02-20 04:44:50',1,'2026-02-20 04:45:11',NULL,NULL,NULL),(3,'Beach Getaways','https://images.unsplash.com/photo-1589394815804-964ed0be2eb5','Beach Holiday Packages','Sun, Sand & Relaxation','Escape to paradise with our beach packages. Stay at stunning coastal resorts, enjoy water sports, and witness breathtaking sunsets over the Indian Ocean.','View Beach Packages','/packages?type=beach','Water Activities','/activities',1,3,'2026-02-20 04:44:50',1,'2026-02-20 04:45:11',NULL,NULL,NULL),(4,'Wildlife Safaris','https://images.unsplash.com/photo-1549366021-9f761d450615','Wildlife Adventure Packages','Leopards, Elephants & More','Embark on thrilling safari adventures in Sri Lanka\'s national parks. Perfect for nature lovers and wildlife photographers seeking unforgettable encounters.','Explore Wildlife Packages','/packages?type=wildlife','Safari Tips','/faq',1,4,'2026-02-20 04:44:50',1,'2026-02-20 04:45:11',NULL,NULL,NULL),(5,'Hill Country Escapes','https://images.unsplash.com/photo-1579232088694-9a1cdc74b27f','Misty Mountain Packages','Tea Plantations & Scenic Views','Escape to the cool climes of Sri Lanka\'s hill country. Ride scenic trains, visit tea plantations, and enjoy breathtaking mountain views.','View Hill Country Packages','/packages?type=hill-country','Hiking Trails','/activities',1,5,'2026-02-20 04:44:50',1,'2026-02-20 04:45:11',NULL,NULL,NULL),(6,'Romantic Getaways','https://images.unsplash.com/photo-1507525428034-b723cf961d3e','Honeymoon & Romance Packages','Perfect for Couples','Create unforgettable memories with our romantic packages. Private villas, sunset dinners, and intimate experiences designed for couples.','View Romance Packages','/packages?type=romantic','Plan Your Honeymoon','/contact-us',1,6,'2026-02-20 04:44:50',1,'2026-02-20 04:45:11',NULL,NULL,NULL),(7,'Family Adventures','https://images.unsplash.com/photo-1544191696-102dbdaeeaa0','Family Tour Packages','Fun for All Ages','Create lasting family memories with our family-friendly packages. Activities and accommodations suitable for travelers of all ages.','View Family Packages','/packages?type=family','Family Travel Tips','/faq',1,7,'2026-02-20 04:44:50',1,'2026-02-20 04:45:11',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `package_hero_section` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `package_history`
+--
+
+DROP TABLE IF EXISTS `package_history`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `package_history` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `package_schedule_id` int NOT NULL,
+  `number_of_participate` int DEFAULT NULL,
+  `rating` decimal(3,2) DEFAULT NULL,
+  `duration` int DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text,
+  `status` int NOT NULL,
+  `color` varchar(50) DEFAULT NULL,
+  `hover_color` varchar(50) DEFAULT NULL,
+  `start_date` date DEFAULT NULL,
+  `end_date` date DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `package_schedule_id` (`package_schedule_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `package_history_ibfk_1` FOREIGN KEY (`package_schedule_id`) REFERENCES `package_schedule` (`id`),
+  CONSTRAINT `package_history_ibfk_2` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `package_history`
+--
+
+LOCK TABLES `package_history` WRITE;
+/*!40000 ALTER TABLE `package_history` DISABLE KEYS */;
+/*!40000 ALTER TABLE `package_history` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `package_history_images`
+--
+
+DROP TABLE IF EXISTS `package_history_images`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `package_history_images` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `package_schedule_id` int NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text,
+  `image_url` varchar(500) DEFAULT NULL,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `package_schedule_id` (`package_schedule_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `package_history_images_ibfk_1` FOREIGN KEY (`package_schedule_id`) REFERENCES `package_schedule` (`id`),
+  CONSTRAINT `package_history_images_ibfk_2` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `package_history_images`
+--
+
+LOCK TABLES `package_history_images` WRITE;
+/*!40000 ALTER TABLE `package_history_images` DISABLE KEYS */;
+/*!40000 ALTER TABLE `package_history_images` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `package_images`
+--
+
+DROP TABLE IF EXISTS `package_images`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `package_images` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `package_id` int NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text,
+  `status` int NOT NULL,
+  `image_url` varchar(500) DEFAULT NULL,
+  `color` varchar(50) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `package_id` (`package_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `package_images_ibfk_1` FOREIGN KEY (`package_id`) REFERENCES `packages` (`package_id`),
+  CONSTRAINT `package_images_ibfk_2` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=80 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `package_images`
+--
+
+LOCK TABLES `package_images` WRITE;
+/*!40000 ALTER TABLE `package_images` DISABLE KEYS */;
+/*!40000 ALTER TABLE `package_images` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `package_inclusion`
+--
+
+DROP TABLE IF EXISTS `package_inclusion`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `package_inclusion` (
+  `package_inclusion_id` int NOT NULL AUTO_INCREMENT,
+  `package_id` int NOT NULL,
+  `inclusion_text` text NOT NULL,
+  `display_order` int DEFAULT '0',
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`package_inclusion_id`),
+  KEY `fk_package_inclusion_tour` (`package_id`),
+  KEY `fk_package_inclusion_status` (`status_id`),
+  KEY `fk_package_inclusion_terminated_by` (`terminated_by`),
+  CONSTRAINT `fk_package_inclusion_status` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `fk_package_inclusion_terminated_by` FOREIGN KEY (`terminated_by`) REFERENCES `user` (`user_id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `fk_package_inclusion_tour` FOREIGN KEY (`package_id`) REFERENCES `packages` (`package_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `package_inclusion`
+--
+
+LOCK TABLES `package_inclusion` WRITE;
+/*!40000 ALTER TABLE `package_inclusion` DISABLE KEYS */;
+/*!40000 ALTER TABLE `package_inclusion` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `package_review`
+--
+
+DROP TABLE IF EXISTS `package_review`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `package_review` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `package_schedule_id` int NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `review` text,
+  `rating` decimal(3,2) DEFAULT NULL,
+  `description` text,
+  `status` int NOT NULL,
+  `number_of_participate` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `package_schedule_id` (`package_schedule_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `package_review_ibfk_1` FOREIGN KEY (`package_schedule_id`) REFERENCES `package_schedule` (`id`),
+  CONSTRAINT `package_review_ibfk_2` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `package_review`
+--
+
+LOCK TABLES `package_review` WRITE;
+/*!40000 ALTER TABLE `package_review` DISABLE KEYS */;
+/*!40000 ALTER TABLE `package_review` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `package_review_comment`
+--
+
+DROP TABLE IF EXISTS `package_review_comment`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `package_review_comment` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `package_review_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `parent_comment_id` int DEFAULT NULL,
+  `comment` text NOT NULL,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `package_review_id` (`package_review_id`),
+  KEY `user_id` (`user_id`),
+  KEY `parent_comment_id` (`parent_comment_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `package_review_comment_ibfk_1` FOREIGN KEY (`package_review_id`) REFERENCES `package_review` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `package_review_comment_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `package_review_comment_ibfk_3` FOREIGN KEY (`parent_comment_id`) REFERENCES `package_review_comment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `package_review_comment_ibfk_4` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `package_review_comment`
+--
+
+LOCK TABLES `package_review_comment` WRITE;
+/*!40000 ALTER TABLE `package_review_comment` DISABLE KEYS */;
+/*!40000 ALTER TABLE `package_review_comment` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `package_review_comment_reaction`
+--
+
+DROP TABLE IF EXISTS `package_review_comment_reaction`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `package_review_comment_reaction` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `comment_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `reaction_type_id` int NOT NULL,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `comment_id` (`comment_id`,`user_id`,`reaction_type_id`),
+  KEY `user_id` (`user_id`),
+  KEY `reaction_type_id` (`reaction_type_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `package_review_comment_reaction_ibfk_1` FOREIGN KEY (`comment_id`) REFERENCES `package_review_comment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `package_review_comment_reaction_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `package_review_comment_reaction_ibfk_3` FOREIGN KEY (`reaction_type_id`) REFERENCES `reaction_type` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `package_review_comment_reaction_ibfk_4` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `package_review_comment_reaction`
+--
+
+LOCK TABLES `package_review_comment_reaction` WRITE;
+/*!40000 ALTER TABLE `package_review_comment_reaction` DISABLE KEYS */;
+/*!40000 ALTER TABLE `package_review_comment_reaction` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `package_review_images`
+--
+
+DROP TABLE IF EXISTS `package_review_images`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `package_review_images` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `package_review_id` int NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text,
+  `image_url` varchar(500) DEFAULT NULL,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `package_review_id` (`package_review_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `package_review_images_ibfk_1` FOREIGN KEY (`package_review_id`) REFERENCES `package_review` (`id`),
+  CONSTRAINT `package_review_images_ibfk_2` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `package_review_images`
+--
+
+LOCK TABLES `package_review_images` WRITE;
+/*!40000 ALTER TABLE `package_review_images` DISABLE KEYS */;
+/*!40000 ALTER TABLE `package_review_images` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `package_review_reaction`
+--
+
+DROP TABLE IF EXISTS `package_review_reaction`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `package_review_reaction` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `package_review_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `reaction_type_id` int NOT NULL,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `package_review_id` (`package_review_id`,`user_id`,`reaction_type_id`),
+  KEY `user_id` (`user_id`),
+  KEY `reaction_type_id` (`reaction_type_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `package_review_reaction_ibfk_1` FOREIGN KEY (`package_review_id`) REFERENCES `package_review` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `package_review_reaction_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `package_review_reaction_ibfk_3` FOREIGN KEY (`reaction_type_id`) REFERENCES `reaction_type` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `package_review_reaction_ibfk_4` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `package_review_reaction`
+--
+
+LOCK TABLES `package_review_reaction` WRITE;
+/*!40000 ALTER TABLE `package_review_reaction` DISABLE KEYS */;
+/*!40000 ALTER TABLE `package_review_reaction` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `package_schedule`
+--
+
+DROP TABLE IF EXISTS `package_schedule`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `package_schedule` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `package_id` int NOT NULL,
+  `assume_start_date` date DEFAULT NULL,
+  `assume_end_date` date DEFAULT NULL,
+  `duration_start` int DEFAULT NULL,
+  `duration_end` int DEFAULT NULL,
+  `special_note` text,
+  `description` text,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  `tour_shedule_id` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `package_id` (`package_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `package_schedule_ibfk_1` FOREIGN KEY (`package_id`) REFERENCES `packages` (`package_id`),
+  CONSTRAINT `package_schedule_ibfk_2` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=92 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `package_schedule`
+--
+
+LOCK TABLES `package_schedule` WRITE;
+/*!40000 ALTER TABLE `package_schedule` DISABLE KEYS */;
+/*!40000 ALTER TABLE `package_schedule` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `package_travel_tips`
+--
+
+DROP TABLE IF EXISTS `package_travel_tips`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `package_travel_tips` (
+  `package_travel_tip_id` int NOT NULL AUTO_INCREMENT,
+  `package_id` int NOT NULL,
+  `tip_title` varchar(150) DEFAULT NULL,
+  `tip_description` text NOT NULL,
+  `display_order` int DEFAULT '1',
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`package_travel_tip_id`),
+  KEY `package_id` (`package_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `package_travel_tips_ibfk_1` FOREIGN KEY (`package_id`) REFERENCES `packages` (`package_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `package_travel_tips_ibfk_2` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `package_travel_tips`
+--
+
+LOCK TABLES `package_travel_tips` WRITE;
+/*!40000 ALTER TABLE `package_travel_tips` DISABLE KEYS */;
+/*!40000 ALTER TABLE `package_travel_tips` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `package_type`
+--
+
+DROP TABLE IF EXISTS `package_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `package_type` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `description` text,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `status` (`status`),
+  CONSTRAINT `package_type_ibfk_1` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `package_type`
+--
+
+LOCK TABLES `package_type` WRITE;
+/*!40000 ALTER TABLE `package_type` DISABLE KEYS */;
+INSERT INTO `package_type` VALUES (1,'Smart Saver','Budget-friendly packages offering great value without compromising on essential experiences. Ideal for backpackers and cost-conscious travelers who want to explore Sri Lanka affordably.',1,'2026-02-20 04:50:11',1,'2026-02-20 04:50:34',NULL,NULL,NULL),(2,'Standard','Our most popular packages with comfortable accommodations and well-balanced itineraries. Perfect for travelers seeking a reliable and enjoyable experience at a reasonable price.',1,'2026-02-20 04:50:11',1,'2026-02-20 04:50:34',NULL,NULL,NULL),(3,'Comfort','Enhanced packages with better accommodations, more inclusions, and additional conveniences. Great for travelers who appreciate extra comfort and hassle-free travel.',1,'2026-02-20 04:50:11',1,'2026-02-20 04:50:34',NULL,NULL,NULL),(4,'Premium','High-quality packages featuring superior accommodations, exclusive experiences, and personalized service. Designed for discerning travelers who value quality and attention to detail.',1,'2026-02-20 04:50:11',1,'2026-02-20 04:50:34',NULL,NULL,NULL),(5,'Luxury','The ultimate Sri Lanka experience with 5-star accommodations, private guides, VIP treatment, and exclusive access to the best experiences the island has to offer.',1,'2026-02-20 04:50:11',1,'2026-02-20 04:50:34',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `package_type` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `package_wishlist`
+--
+
+DROP TABLE IF EXISTS `package_wishlist`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `package_wishlist` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `package_id` int NOT NULL,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `package_id` (`package_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `package_wishlist_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `package_wishlist_ibfk_2` FOREIGN KEY (`package_id`) REFERENCES `packages` (`package_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `package_wishlist_ibfk_3` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `package_wishlist`
+--
+
+LOCK TABLES `package_wishlist` WRITE;
+/*!40000 ALTER TABLE `package_wishlist` DISABLE KEYS */;
+/*!40000 ALTER TABLE `package_wishlist` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `package_wishlist_history`
+--
+
+DROP TABLE IF EXISTS `package_wishlist_history`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `package_wishlist_history` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `package_id` int NOT NULL,
+  `wishlist_id` int NOT NULL,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `package_id` (`package_id`),
+  KEY `wishlist_id` (`wishlist_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `package_wishlist_history_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `package_wishlist_history_ibfk_2` FOREIGN KEY (`package_id`) REFERENCES `packages` (`package_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `package_wishlist_history_ibfk_3` FOREIGN KEY (`wishlist_id`) REFERENCES `package_wishlist` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `package_wishlist_history_ibfk_4` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `package_wishlist_history`
+--
+
+LOCK TABLES `package_wishlist_history` WRITE;
+/*!40000 ALTER TABLE `package_wishlist_history` DISABLE KEYS */;
+/*!40000 ALTER TABLE `package_wishlist_history` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `packages`
+--
+
+DROP TABLE IF EXISTS `packages`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `packages` (
+  `package_id` int NOT NULL AUTO_INCREMENT,
+  `package_type_id` int DEFAULT NULL,
+  `tour_id` int NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text,
+  `total_price` decimal(10,2) DEFAULT NULL,
+  `discount_percentage` decimal(5,2) DEFAULT NULL,
+  `start_date` date DEFAULT NULL,
+  `end_date` date DEFAULT NULL,
+  `color` varchar(50) DEFAULT NULL,
+  `status` int NOT NULL,
+  `hover_color` varchar(50) DEFAULT NULL,
+  `min_person_count` int DEFAULT NULL,
+  `max_person_count` int DEFAULT NULL,
+  `price_per_person` decimal(10,2) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`package_id`),
+  KEY `tour_id` (`tour_id`),
+  KEY `status` (`status`),
+  KEY `fk_package_type` (`package_type_id`),
+  CONSTRAINT `fk_package_type` FOREIGN KEY (`package_type_id`) REFERENCES `package_type` (`id`),
+  CONSTRAINT `packages_ibfk_1` FOREIGN KEY (`tour_id`) REFERENCES `tour` (`tour_id`),
+  CONSTRAINT `packages_ibfk_2` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `packages`
+--
+
+LOCK TABLES `packages` WRITE;
+/*!40000 ALTER TABLE `packages` DISABLE KEYS */;
+/*!40000 ALTER TABLE `packages` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `page`
+--
+
+DROP TABLE IF EXISTS `page`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `page` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `slug` varchar(100) NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `slug` (`slug`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `page`
+--
+
+LOCK TABLES `page` WRITE;
+/*!40000 ALTER TABLE `page` DISABLE KEYS */;
+/*!40000 ALTER TABLE `page` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `page_component`
+--
+
+DROP TABLE IF EXISTS `page_component`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `page_component` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `page_id` int NOT NULL,
+  `component_id` int NOT NULL,
+  `order_index` int DEFAULT '0',
+  `is_visible` tinyint(1) DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `page_id` (`page_id`),
+  KEY `component_id` (`component_id`),
+  CONSTRAINT `page_component_ibfk_1` FOREIGN KEY (`page_id`) REFERENCES `page` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `page_component_ibfk_2` FOREIGN KEY (`component_id`) REFERENCES `component` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `page_component`
+--
+
+LOCK TABLES `page_component` WRITE;
+/*!40000 ALTER TABLE `page_component` DISABLE KEYS */;
+/*!40000 ALTER TABLE `page_component` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `partner_status`
+--
+
+DROP TABLE IF EXISTS `partner_status`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `partner_status` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `common_status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `common_status_id` (`common_status_id`),
+  CONSTRAINT `partner_status_ibfk_1` FOREIGN KEY (`common_status_id`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `partner_status`
+--
+
+LOCK TABLES `partner_status` WRITE;
+/*!40000 ALTER TABLE `partner_status` DISABLE KEYS */;
+INSERT INTO `partner_status` VALUES (4,'Active','Partner is fully active and available for bookings',1,'2026-02-20 04:53:04',1,'2026-02-20 04:53:04',NULL,NULL,NULL),(5,'Inactive','Partner is temporarily unavailable for bookings',1,'2026-02-20 04:53:04',1,'2026-02-20 04:53:22',NULL,NULL,NULL),(6,'Featured','Premium partner featured on website',1,'2026-02-20 04:53:04',1,'2026-02-20 04:53:22',NULL,NULL,NULL),(7,'Pending Approval','New partner awaiting verification and approval',1,'2026-02-20 04:53:04',1,'2026-02-20 04:53:22',NULL,NULL,NULL),(8,'Under Review','Partner under quality review or investigation',1,'2026-02-20 04:53:04',1,'2026-02-20 04:53:22',NULL,NULL,NULL),(9,'Suspended','Partner temporarily suspended due to issues',1,'2026-02-20 04:53:04',1,'2026-02-20 04:53:22',NULL,NULL,NULL),(10,'Terminated','Partnership permanently ended',1,'2026-02-20 04:53:04',1,'2026-02-20 04:53:22',NULL,NULL,NULL),(11,'On Hold','Partner on hold due to seasonal or other reasons',1,'2026-02-20 04:53:04',1,'2026-02-20 04:53:22',NULL,NULL,NULL),(12,'Verified','Partner verified and trusted',1,'2026-02-20 04:53:04',1,'2026-02-20 04:53:04',NULL,NULL,NULL),(13,'Premium Partner','Top-tier partner with special benefits',1,'2026-02-20 04:53:04',1,'2026-02-20 04:53:22',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `partner_status` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `partners`
+--
+
+DROP TABLE IF EXISTS `partners`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `partners` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `company_name` varchar(150) NOT NULL,
+  `company_description` text,
+  `company_logo` varchar(255) DEFAULT NULL,
+  `company_website_url` varchar(255) DEFAULT NULL,
+  `agreement` text,
+  `partner_status_id` int NOT NULL,
+  `from_date` date DEFAULT NULL,
+  `to_date` date DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `partner_status_id` (`partner_status_id`),
+  CONSTRAINT `partners_ibfk_1` FOREIGN KEY (`partner_status_id`) REFERENCES `partner_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `partners`
+--
+
+LOCK TABLES `partners` WRITE;
+/*!40000 ALTER TABLE `partners` DISABLE KEYS */;
+/*!40000 ALTER TABLE `partners` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `payment_methods`
+--
+
+DROP TABLE IF EXISTS `payment_methods`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `payment_methods` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `description` text,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `status` (`status`),
+  CONSTRAINT `payment_methods_ibfk_1` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `payment_methods`
+--
+
+LOCK TABLES `payment_methods` WRITE;
+/*!40000 ALTER TABLE `payment_methods` DISABLE KEYS */;
+INSERT INTO `payment_methods` VALUES (1,'CREDIT_CARD','Payment via credit card',1,'2025-11-30 04:38:04',1,'2025-11-30 04:38:04',NULL),(2,'DEBIT_CARD','Payment via debit card',1,'2025-11-30 04:38:04',1,'2025-11-30 04:38:04',NULL),(3,'BANK_TRANSFER','Payment via bank transfer',1,'2025-11-30 04:38:04',1,'2025-11-30 04:38:04',NULL),(4,'CASH','Payment in cash',1,'2025-11-30 04:38:04',1,'2025-11-30 04:38:04',NULL),(5,'DIGITAL_WALLET','Payment via digital wallet',1,'2025-11-30 04:38:04',1,'2025-11-30 04:38:04',NULL);
+/*!40000 ALTER TABLE `payment_methods` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `payment_status`
+--
+
+DROP TABLE IF EXISTS `payment_status`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `payment_status` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `description` text,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `status` (`status`),
+  CONSTRAINT `payment_status_ibfk_1` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `payment_status`
+--
+
+LOCK TABLES `payment_status` WRITE;
+/*!40000 ALTER TABLE `payment_status` DISABLE KEYS */;
+INSERT INTO `payment_status` VALUES (1,'PENDING','Payment is pending',1,'2025-11-30 04:38:04',1,'2025-11-30 04:38:04',NULL),(2,'PROCESSING','Payment is being processed',1,'2025-11-30 04:38:04',1,'2025-11-30 04:38:04',NULL),(3,'COMPLETED','Payment has been completed',1,'2025-11-30 04:38:04',1,'2025-11-30 04:38:04',NULL),(4,'FAILED','Payment has failed',1,'2025-11-30 04:38:04',1,'2025-11-30 04:38:04',NULL),(5,'REFUNDED','Payment has been refunded',1,'2025-11-30 04:38:04',1,'2025-11-30 04:38:04',NULL);
+/*!40000 ALTER TABLE `payment_status` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `payments`
+--
+
+DROP TABLE IF EXISTS `payments`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `payments` (
+  `payment_id` int NOT NULL AUTO_INCREMENT,
+  `booking_id` int NOT NULL,
+  `payment_reference` varchar(100) NOT NULL,
+  `amount` decimal(15,2) NOT NULL,
+  `payment_method_id` int NOT NULL,
+  `payment_status_id` int NOT NULL,
+  `installment_number` int DEFAULT '1',
+  `total_installments` int DEFAULT '1',
+  `payment_date` timestamp NULL DEFAULT NULL,
+  `due_date` date NOT NULL,
+  `transaction_id` varchar(200) DEFAULT NULL,
+  `gateway_response` text,
+  `gateway_name` varchar(100) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`payment_id`),
+  UNIQUE KEY `payment_reference` (`payment_reference`),
+  KEY `payment_method_id` (`payment_method_id`),
+  KEY `payment_status_id` (`payment_status_id`),
+  KEY `idx_payments_booking_id` (`booking_id`),
+  KEY `idx_payments_reference` (`payment_reference`),
+  CONSTRAINT `payments_ibfk_1` FOREIGN KEY (`booking_id`) REFERENCES `bookings` (`booking_id`),
+  CONSTRAINT `payments_ibfk_2` FOREIGN KEY (`payment_method_id`) REFERENCES `payment_methods` (`id`),
+  CONSTRAINT `payments_ibfk_3` FOREIGN KEY (`payment_status_id`) REFERENCES `payment_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `payments`
+--
+
+LOCK TABLES `payments` WRITE;
+/*!40000 ALTER TABLE `payments` DISABLE KEYS */;
+/*!40000 ALTER TABLE `payments` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `popular_destination`
+--
+
+DROP TABLE IF EXISTS `popular_destination`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `popular_destination` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `destination_id` int NOT NULL,
+  `rating` decimal(3,2) NOT NULL,
+  `popularity` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `destination_id` (`destination_id`),
+  CONSTRAINT `popular_destination_ibfk_1` FOREIGN KEY (`destination_id`) REFERENCES `destination` (`destination_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `popular_destination`
+--
+
+LOCK TABLES `popular_destination` WRITE;
+/*!40000 ALTER TABLE `popular_destination` DISABLE KEYS */;
+/*!40000 ALTER TABLE `popular_destination` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `privileges`
+--
+
+DROP TABLE IF EXISTS `privileges`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `privileges` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `privileges`
+--
+
+LOCK TABLES `privileges` WRITE;
+/*!40000 ALTER TABLE `privileges` DISABLE KEYS */;
+INSERT INTO `privileges` VALUES (77,'ACTIVITY_CATEGORY_VIEW'),(17,'ACTIVITY_CREATE'),(80,'ACTIVITY_HISTORY_IMAGES_VIEW'),(79,'ACTIVITY_HISTORY_VIEW'),(78,'ACTIVITY_REVIEW_VIEW'),(33,'ACTIVITY_SCHEDULE_CREATE'),(35,'ACTIVITY_SCHEDULE_TERMINATE'),(34,'ACTIVITY_SCHEDULE_UPDATE'),(32,'ACTIVITY_SCHEDULE_VIEW'),(19,'ACTIVITY_TERMINATE'),(18,'ACTIVITY_UPDATE'),(16,'ACTIVITY_VIEW'),(5,'ADMIN_ACCESS'),(3,'DELETE_PRIVILEGE'),(56,'DESTINATION_CATEGORY_VIEW'),(6,'DESTINATION_CREATE'),(63,'DESTINATION_HISTORY_IMAGES_VIEW'),(62,'DESTINATION_HISTORY_VIEW'),(58,'DESTINATION_NEW_VIEW'),(57,'DESTINATION_POPULAR_VIEW'),(61,'DESTINATION_REVIEWS_VIEW'),(15,'DESTINATION_TERMINATE'),(60,'DESTINATION_TOUR_MAP_VIEW'),(59,'DESTINATION_TRENDING_VIEW'),(14,'DESTINATION_UPDATE'),(13,'DESTINATION_VIEW'),(9,'EMPLOYEE_MANAGEMENT'),(12,'ERP_SYSTEM'),(81,'GALLERY_VIEW'),(43,'HERO_SECTION_ABOUT_US_VIEW'),(52,'HERO_SECTION_ACTIVITY_VIEW'),(45,'HERO_SECTION_BLOG_VIEW'),(50,'HERO_SECTION_BOOKED_TOUR_VIEW'),(44,'HERO_SECTION_CONTACT_US_VIEW'),(51,'HERO_SECTION_DESTINATION_VIEW'),(46,'HERO_SECTION_FAQ_VIEW'),(42,'HERO_SECTION_HOME_VIEW'),(49,'HERO_SECTION_PACKAGE_SCHEDULE_VIEW'),(48,'HERO_SECTION_PACKAGE_VIEW'),(47,'HERO_SECTION_TOUR_VIEW'),(10,'HOTEL_MANAGEMENT'),(40,'LINK_BAR_VIEW'),(41,'NAV_BAR_VIEW'),(54,'OUR_SERVICES_VIEW'),(25,'PACKAGE_CREATE'),(75,'PACKAGE_DETAILS_COMPARE_VIEW'),(74,'PACKAGE_DETAILS_DAY_BY_DAY_VIEW'),(76,'PACKAGE_EXTRA_DETAILS_DAY_BY_DAY_VIEW'),(73,'PACKAGE_HISTORY_IMAGES_VIEW'),(72,'PACKAGE_HISTORY_VIEW'),(71,'PACKAGE_REVIEW_VIEW'),(37,'PACKAGE_SCHEDULE_CREATE'),(39,'PACKAGE_SCHEDULE_TERMINATE'),(38,'PACKAGE_SCHEDULE_UPDATE'),(36,'PACKAGE_SCHEDULE_VIEW'),(27,'PACKAGE_TERMINATE'),(26,'PACKAGE_UPDATE'),(24,'PACKAGE_VIEW'),(1,'READ_PRIVILEGE'),(21,'TOUR_CREATE'),(69,'TOUR_DETAILS_DAY_BY_DAY_VIEW'),(70,'TOUR_EXTRA_DETAILS_DAY_BY_DAY_VIEW'),(68,'TOUR_HISTORY_IMAGES_VIEW'),(66,'TOUR_HISTORY_VIEW'),(67,'TOUR_MAP_VIEW'),(65,'TOUR_REVIEW_VIEW'),(29,'TOUR_SCHEDULE_CREATE'),(31,'TOUR_SCHEDULE_TERMINATE'),(30,'TOUR_SCHEDULE_UPDATE'),(28,'TOUR_SCHEDULE_VIEW'),(23,'TOUR_TERMINATE'),(22,'TOUR_UPDATE'),(20,'TOUR_VIEW'),(64,'TOUR_VIEW_POPULAR'),(8,'TRAVEL_MANAGEMENT'),(4,'USER_MANAGEMENT'),(91,'USER_PROFILE_ACCOUNT_SECURITY_VIEW'),(86,'USER_PROFILE_ACTIVITY_REVIEWS_VIEW'),(90,'USER_PROFILE_BROWSER_HISTORY_VIEW'),(98,'USER_PROFILE_CANCELLED_TOURS_VIEW'),(94,'USER_PROFILE_COMPLETED_TOURS_VIEW'),(88,'USER_PROFILE_COUPON_VIEW'),(87,'USER_PROFILE_DESTINATION_REVIEWS_VIEW'),(92,'USER_PROFILE_NOTIFICATION_VIEW'),(84,'USER_PROFILE_PACKAGE_REVIEWS_VIEW'),(100,'USER_PROFILE_PENDING_TOURS_VIEW'),(97,'USER_PROFILE_REQUESTED_TOURS_VIEW'),(83,'USER_PROFILE_REVIEWS_VIEW'),(85,'USER_PROFILE_TOUR_REVIEWS_VIEW'),(99,'USER_PROFILE_TOURS_VIEW'),(95,'USER_PROFILE_UPCOMING_TOURS_VIEW'),(96,'USER_PROFILE_USER_BENEFITS_VIEW'),(82,'USER_PROFILE_VIEW'),(89,'USER_PROFILE_WALLET_VIEW'),(93,'USER_PROFILE_WISH_LIST_VIEW'),(11,'VEHICLE_MANAGEMENT'),(7,'WEB_MANAGEMENT'),(53,'WHY_CHOOSE_US_VIEW'),(2,'WRITE_PRIVILEGE');
+/*!40000 ALTER TABLE `privileges` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `reaction_type`
+--
+
+DROP TABLE IF EXISTS `reaction_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `reaction_type` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `icon` varchar(255) DEFAULT NULL,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_reaction_type_status` (`status_id`),
+  CONSTRAINT `fk_reaction_type_status` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `reaction_type`
+--
+
+LOCK TABLES `reaction_type` WRITE;
+/*!40000 ALTER TABLE `reaction_type` DISABLE KEYS */;
+INSERT INTO `reaction_type` VALUES (1,'LIKE','Like this content','fa-regular fa-thumbs-up',1,'2025-09-24 04:18:47',1,'2026-02-20 04:55:05',1,NULL,NULL),(2,'LOVE','Love this content','fa-regular fa-heart',1,'2025-09-24 04:18:47',1,'2026-02-20 04:55:05',1,NULL,NULL),(3,'WOW','Wow, amazing!','fa-regular fa-face-surprise',1,'2025-09-24 04:18:47',1,'2026-02-20 04:55:05',1,NULL,NULL),(4,'HELPFUL','Helpful information','fa-regular fa-circle-check',1,'2025-09-24 04:18:47',1,'2026-02-20 04:55:05',1,NULL,NULL),(5,'USEFUL','Very useful content','fa-regular fa-star',1,'2026-02-20 04:55:05',1,'2026-02-20 04:55:05',NULL,NULL,NULL),(6,'INTERESTING','Interesting read','fa-regular fa-face-smile',1,'2026-02-20 04:55:05',1,'2026-02-20 04:55:05',NULL,NULL,NULL),(7,'SAVE','Save for later','fa-regular fa-bookmark',1,'2026-02-20 04:55:05',1,'2026-02-20 04:55:05',NULL,NULL,NULL),(8,'SHARE','Share this content','fa-regular fa-share-from-square',1,'2026-02-20 04:55:05',1,'2026-02-20 04:55:05',NULL,NULL,NULL),(9,'INFORMATIVE','Very informative','fa-regular fa-newspaper',1,'2026-02-20 04:55:05',1,'2026-02-20 04:55:05',NULL,NULL,NULL),(10,'INSPIRING','Inspiring travel ideas','fa-regular fa-lightbulb',1,'2026-02-20 04:55:05',1,'2026-02-20 04:55:05',NULL,NULL,NULL),(11,'FUNNY','Made me laugh','fa-regular fa-face-laugh',1,'2026-02-20 04:55:05',1,'2026-02-20 04:55:05',NULL,NULL,NULL),(12,'SAD','Sad story','fa-regular fa-face-frown',1,'2026-02-20 04:55:05',1,'2026-02-20 04:55:05',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `reaction_type` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `refresh_tokens`
+--
+
+DROP TABLE IF EXISTS `refresh_tokens`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `refresh_tokens` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `token` varchar(500) NOT NULL,
+  `expiry_date` timestamp NOT NULL,
+  `revoked` tinyint(1) DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `token` (`token`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `refresh_tokens_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=388 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `refresh_tokens`
+--
+
+LOCK TABLES `refresh_tokens` WRITE;
+/*!40000 ALTER TABLE `refresh_tokens` DISABLE KEYS */;
+/*!40000 ALTER TABLE `refresh_tokens` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `refund_status`
+--
+
+DROP TABLE IF EXISTS `refund_status`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `refund_status` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `description` text,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `status` (`status`),
+  CONSTRAINT `refund_status_ibfk_1` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `refund_status`
+--
+
+LOCK TABLES `refund_status` WRITE;
+/*!40000 ALTER TABLE `refund_status` DISABLE KEYS */;
+INSERT INTO `refund_status` VALUES (1,'PENDING','Refund is pending approval',1,'2025-11-30 04:38:04',1,'2025-11-30 04:38:04',NULL),(2,'APPROVED','Refund has been approved',1,'2025-11-30 04:38:04',1,'2025-11-30 04:38:04',NULL),(3,'PROCESSING','Refund is being processed',1,'2025-11-30 04:38:04',1,'2025-11-30 04:38:04',NULL),(4,'COMPLETED','Refund has been completed',1,'2025-11-30 04:38:04',1,'2025-11-30 04:38:04',NULL),(5,'REJECTED','Refund has been rejected',1,'2025-11-30 04:38:04',1,'2025-11-30 04:38:04',NULL);
+/*!40000 ALTER TABLE `refund_status` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `refunds`
+--
+
+DROP TABLE IF EXISTS `refunds`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `refunds` (
+  `refund_id` int NOT NULL AUTO_INCREMENT,
+  `booking_id` int NOT NULL,
+  `payment_id` int NOT NULL,
+  `refund_reference` varchar(100) NOT NULL,
+  `refund_amount` decimal(15,2) NOT NULL,
+  `refund_reason` text,
+  `refund_status_id` int NOT NULL,
+  `processed_date` timestamp NULL DEFAULT NULL,
+  `processed_by` int DEFAULT NULL,
+  `bank_account_number` varchar(50) DEFAULT NULL,
+  `bank_name` varchar(100) DEFAULT NULL,
+  `account_holder_name` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`refund_id`),
+  UNIQUE KEY `refund_reference` (`refund_reference`),
+  KEY `payment_id` (`payment_id`),
+  KEY `refund_status_id` (`refund_status_id`),
+  KEY `processed_by` (`processed_by`),
+  KEY `idx_refunds_booking_id` (`booking_id`),
+  CONSTRAINT `refunds_ibfk_1` FOREIGN KEY (`booking_id`) REFERENCES `bookings` (`booking_id`),
+  CONSTRAINT `refunds_ibfk_2` FOREIGN KEY (`payment_id`) REFERENCES `payments` (`payment_id`),
+  CONSTRAINT `refunds_ibfk_3` FOREIGN KEY (`refund_status_id`) REFERENCES `refund_status` (`id`),
+  CONSTRAINT `refunds_ibfk_4` FOREIGN KEY (`processed_by`) REFERENCES `user` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `refunds`
+--
+
+LOCK TABLES `refunds` WRITE;
+/*!40000 ALTER TABLE `refunds` DISABLE KEYS */;
+/*!40000 ALTER TABLE `refunds` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `religion`
+--
+
+DROP TABLE IF EXISTS `religion`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `religion` (
+  `religion_id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `status_id` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`religion_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `religion_ibfk_1` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `religion`
+--
+
+LOCK TABLES `religion` WRITE;
+/*!40000 ALTER TABLE `religion` DISABLE KEYS */;
+INSERT INTO `religion` VALUES (1,'Buddhism','Theravada Buddhism - practiced by approximately 70% of Sri Lankans',1,'2025-09-21 14:06:10',1,'2026-02-20 04:57:21',1,NULL,NULL),(2,'Hinduism','Hinduism - practiced mainly by Sri Lankan Tamils',1,'2025-09-21 14:06:10',1,'2026-02-20 04:57:21',1,NULL,NULL),(3,'Islam','Muslim - Sunni, Shia, and other traditions',1,'2026-02-20 04:57:21',1,'2026-02-20 04:57:21',NULL,NULL,NULL),(4,'Christianity','Catholic, Protestant, Orthodox, and other Christian denominations',1,'2026-02-20 04:57:21',1,'2026-02-20 04:57:21',NULL,NULL,NULL),(5,'Sikhism','Sikh religion',1,'2026-02-20 04:57:21',1,'2026-02-20 04:57:21',NULL,NULL,NULL),(6,'Judaism','Jewish faith',1,'2026-02-20 04:57:21',1,'2026-02-20 04:57:21',NULL,NULL,NULL),(7,'Jainism','Jain religion',1,'2026-02-20 04:57:21',1,'2026-02-20 04:57:21',NULL,NULL,NULL),(8,'Baha\'i Faith','Baha\'i religious tradition',1,'2026-02-20 04:57:21',1,'2026-02-20 04:57:21',NULL,NULL,NULL),(9,'Zoroastrianism','Zoroastrian religious tradition',1,'2026-02-20 04:57:21',1,'2026-02-20 04:57:21',NULL,NULL,NULL),(10,'Indigenous Beliefs','Traditional and indigenous spiritual practices',1,'2026-02-20 04:57:21',1,'2026-02-20 04:57:21',NULL,NULL,NULL),(11,'Other','Other religious or spiritual beliefs',1,'2026-02-20 04:57:21',1,'2026-02-20 04:57:21',NULL,NULL,NULL),(12,'No Religion','Atheist, agnostic, or no religious affiliation',1,'2026-02-20 04:57:21',1,'2026-02-20 04:57:21',NULL,NULL,NULL),(13,'Prefer not to say','User prefers not to disclose religious affiliation',1,'2026-02-20 04:57:21',1,'2026-02-20 04:57:21',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `religion` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `role_privileges`
+--
+
+DROP TABLE IF EXISTS `role_privileges`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `role_privileges` (
+  `role_id` int NOT NULL,
+  `privilege_id` int NOT NULL,
+  PRIMARY KEY (`role_id`,`privilege_id`),
+  KEY `privilege_id` (`privilege_id`),
+  CONSTRAINT `role_privileges_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`),
+  CONSTRAINT `role_privileges_ibfk_2` FOREIGN KEY (`privilege_id`) REFERENCES `privileges` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `role_privileges`
+--
+
+LOCK TABLES `role_privileges` WRITE;
+/*!40000 ALTER TABLE `role_privileges` DISABLE KEYS */;
+INSERT INTO `role_privileges` VALUES (1,1),(2,1),(3,1),(2,2),(3,2),(2,3),(2,4),(3,4),(2,5),(1,6),(1,7),(1,8),(1,9),(1,10),(1,11),(1,12),(1,13),(1,14),(1,15),(1,16),(1,17),(1,18),(1,19),(1,20),(1,21),(1,22),(1,23),(1,24),(1,25),(1,26),(1,27),(1,28),(1,29),(1,30),(1,31),(1,32),(1,33),(1,34),(1,35),(1,36),(1,37),(1,38),(1,39),(2,40),(1,82),(1,83),(1,84),(1,85),(1,86),(1,87),(1,88),(1,89),(1,90),(1,91),(1,92),(1,93),(1,94),(1,95),(1,96),(1,97),(1,98),(1,99),(1,100);
+/*!40000 ALTER TABLE `role_privileges` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `roles`
+--
+
+DROP TABLE IF EXISTS `roles`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `roles` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `roles`
+--
+
+LOCK TABLES `roles` WRITE;
+/*!40000 ALTER TABLE `roles` DISABLE KEYS */;
+INSERT INTO `roles` VALUES (13,'ACCOUNTANT'),(19,'API_USER'),(18,'BLOG_AUTHOR'),(10,'CONTENT_CREATOR'),(11,'CUSTOMER_SUPPORT'),(7,'DRIVER'),(12,'FINANCE_MANAGER'),(6,'GUIDE'),(14,'HR_MANAGER'),(9,'MARKETING_MANAGER'),(15,'OPERATIONS_MANAGER'),(16,'PARTNER_MANAGER'),(17,'REVIEW_MODERATOR'),(2,'ROLE_ADMIN'),(3,'ROLE_MODERATOR'),(4,'ROLE_USER'),(8,'SALES_EXECUTIVE'),(1,'SUPER_ADMIN'),(5,'TOUR_MANAGER');
+/*!40000 ALTER TABLE `roles` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `seasons`
+--
+
+DROP TABLE IF EXISTS `seasons`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `seasons` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `description` text,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `status` (`status`),
+  CONSTRAINT `seasons_ibfk_1` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `seasons`
+--
+
+LOCK TABLES `seasons` WRITE;
+/*!40000 ALTER TABLE `seasons` DISABLE KEYS */;
+INSERT INTO `seasons` VALUES (1,'Spring','Mild weather, flowers bloom, popular for outdoor activities',1,'2025-10-04 15:56:18',1,'2026-02-20 05:01:20',NULL,'2026-02-20 05:01:03',1),(2,'Summer','Hot and sunny season, ideal for beach activities, hiking, and festivals',1,'2025-10-04 15:56:18',1,'2026-02-20 05:01:20',NULL,'2026-02-20 05:01:03',1),(3,'Autumn','Cooler weather, leaves change color, great for scenic tours',1,'2025-10-04 15:56:18',1,'2026-02-20 05:01:20',NULL,'2026-02-20 05:01:03',1),(4,'Winter','Cold season, snow in some regions, perfect for skiing and mountain tours',1,'2025-10-04 15:56:18',1,'2026-02-20 05:01:20',NULL,'2026-02-20 05:01:03',1),(5,'Dry Season (East Coast)','May-September: Perfect weather for east coast beaches (Trincomalee, Nilaveli, Arugam Bay). Ideal for surfing, diving, and water sports.',1,'2025-10-04 15:56:18',1,'2026-02-20 05:01:03',1,NULL,NULL),(6,'Wet Season (Southwest)','May-September: Southwest monsoon affects Colombo, Bentota, Galle. Lush green landscapes, fewer tourists, great for budget travelers.',1,'2025-10-04 15:56:18',1,'2026-02-20 05:01:03',1,NULL,NULL),(7,'Inter-Monsoon','March-April & October-November: Brief rainy periods with thunderstorms. Lush scenery, cultural festivals, and good for photography.',1,'2025-10-04 15:56:18',1,'2026-02-20 05:01:03',1,NULL,NULL),(8,'Cool Season (Hill Country)','December-February: Pleasant temperatures in Nuwara Eliya, Ella, Kandy. Perfect for tea plantation visits and hiking. Night temperatures can drop to 5°C.',1,'2025-10-04 15:56:18',1,'2026-02-20 05:01:03',1,NULL,NULL),(9,'Peak Season (Dec-Mar)','Best weather on west and south coasts. Ideal for beach holidays, whale watching in Mirissa, and cultural sites. High demand period with premium prices.',1,'2025-10-04 15:56:18',1,'2026-02-20 05:01:03',1,NULL,NULL),(10,'Shoulder Season (Apr-May & Sep-Oct)','Transition periods with moderate weather. Fewer crowds, balanced prices. Good for cultural triangle visits and wildlife safaris.',1,'2025-10-04 15:56:18',1,'2026-02-20 05:01:03',1,NULL,NULL),(11,'Off Season (May-Sep)','Southwest monsoon affects west and south coasts. Best time for east coast beaches (Trincomalee, Arugam Bay). Lowest prices, lush landscapes.',1,'2025-10-04 15:56:18',1,'2026-02-20 05:01:03',1,NULL,NULL);
+/*!40000 ALTER TABLE `seasons` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `seasons_images`
+--
+
+DROP TABLE IF EXISTS `seasons_images`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `seasons_images` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `season_id` int NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text,
+  `image_url` varchar(500) DEFAULT NULL,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `season_id` (`season_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `seasons_images_ibfk_1` FOREIGN KEY (`season_id`) REFERENCES `seasons` (`id`),
+  CONSTRAINT `seasons_images_ibfk_2` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `seasons_images`
+--
+
+LOCK TABLES `seasons_images` WRITE;
+/*!40000 ALTER TABLE `seasons_images` DISABLE KEYS */;
+INSERT INTO `seasons_images` VALUES (34,9,'Mirissa Beach Paradise','Crystal clear waters and palm-fringed beaches at Mirissa during peak season','https://images.unsplash.com/photo-1589394815804-964ed0be2eb5',1,'2026-02-20 05:03:15',1,'2026-02-20 05:03:15',NULL,NULL,NULL),(35,9,'Galle Fort Sunset','Beautiful sunset at Galle Fort with the Indian Ocean','https://images.unsplash.com/photo-1589394815804-964ed0be2eb5',1,'2026-02-20 05:03:15',1,'2026-02-20 05:03:15',NULL,NULL,NULL),(36,9,'Bentota Beach Resort','Luxury beach resorts along Bentota coastline','https://images.unsplash.com/photo-1582719508461-905c673771fd',1,'2026-02-20 05:03:15',1,'2026-02-20 05:03:15',NULL,NULL,NULL),(37,9,'Whale Watching Mirissa','Blue whale sighting off Mirissa coast','https://images.unsplash.com/photo-1568430731210-1f9ae78183c1',1,'2026-02-20 05:03:15',1,'2026-02-20 05:03:15',NULL,NULL,NULL),(38,2,'Trincomalee Beach','Pristine turquoise waters of Trincomalee','https://images.unsplash.com/photo-1507525428034-b723cf961d3e',1,'2026-02-20 05:03:15',1,'2026-02-20 05:03:15',NULL,NULL,NULL),(39,2,'Arugam Bay Surf','Surfers riding waves at Arugam Bay','https://images.unsplash.com/photo-1502680390469-be75c86b636f',1,'2026-02-20 05:03:15',1,'2026-02-20 05:03:15',NULL,NULL,NULL),(40,2,'Nilaveli Beach','White sandy beach of Nilaveli','https://images.unsplash.com/photo-1589394815804-964ed0be2eb5',1,'2026-02-20 05:03:15',1,'2026-02-20 05:03:15',NULL,NULL,NULL),(41,2,'Pigeon Island Snorkeling','Snorkeling at Pigeon Island marine sanctuary','https://images.unsplash.com/photo-1544551763-46a013bb70d5',1,'2026-02-20 05:03:15',1,'2026-02-20 05:03:15',NULL,NULL,NULL),(42,3,'Ella Gap View','Misty morning view at Ella Gap','https://images.unsplash.com/photo-1625811180091-73c7bb8c7c5f',1,'2026-02-20 05:03:15',1,'2026-02-20 05:03:15',NULL,NULL,NULL),(43,3,'Tea Plantation Nuwara Eliya','Rolling green tea plantations in Nuwara Eliya','https://images.unsplash.com/photo-1579232088694-9a1cdc74b27f',1,'2026-02-20 05:03:15',1,'2026-02-20 05:03:15',NULL,NULL,NULL),(44,3,'Nine Arches Bridge','Iconic Nine Arches Bridge in Ella','https://images.unsplash.com/photo-1625811180091-73c7bb8c7c5f',1,'2026-02-20 05:03:15',1,'2026-02-20 05:03:15',NULL,NULL,NULL),(45,3,'Train Ride to Ella','Scenic train journey through hill country','https://images.unsplash.com/photo-1625811180091-73c7bb8c7c5f',1,'2026-02-20 05:03:15',1,'2026-02-20 05:03:15',NULL,NULL,NULL),(46,4,'Sigiriya Rock Fortress','Ancient Sigiriya rock fortress at sunrise','https://images.unsplash.com/photo-1590212869245-5b2c09f1b70b',1,'2026-02-20 05:03:15',1,'2026-02-20 05:03:15',NULL,NULL,NULL),(47,4,'Temple of the Tooth Kandy','Sacred Temple of the Tooth in Kandy','https://images.unsplash.com/photo-1590212154058-ccddd1f0003e',1,'2026-02-20 05:03:15',1,'2026-02-20 05:03:15',NULL,NULL,NULL),(48,4,'Dambulla Cave Temple','Ancient cave temple with Buddha statues','https://images.unsplash.com/photo-1590212869245-5b2c09f1b70b',1,'2026-02-20 05:03:15',1,'2026-02-20 05:03:15',NULL,NULL,NULL),(49,4,'Polonnaruwa Ruins','Ancient ruins of Polonnaruwa','https://images.unsplash.com/photo-1590212869245-5b2c09f1b70b',1,'2026-02-20 05:03:15',1,'2026-02-20 05:03:15',NULL,NULL,NULL),(50,5,'Leopard in Yala','Sri Lankan leopard in Yala National Park','https://images.unsplash.com/photo-1549366021-9f761d450615',1,'2026-02-20 05:03:15',1,'2026-02-20 05:03:15',NULL,NULL,NULL),(51,5,'Elephant Gathering','Wild elephants at Minneriya','https://images.unsplash.com/photo-1523802005156-6e0f988b3d3a',1,'2026-02-20 05:03:15',1,'2026-02-20 05:03:15',NULL,NULL,NULL),(52,5,'Sloth Bear','Rare sloth bear in its natural habitat','https://images.unsplash.com/photo-1534180477871-5d6cc81f3920',1,'2026-02-20 05:03:15',1,'2026-02-20 05:03:15',NULL,NULL,NULL),(53,5,'Peacock Dancing','Colorful peacock displaying feathers','https://images.unsplash.com/photo-1607355731390-5e18b7740a3a',1,'2026-02-20 05:03:15',1,'2026-02-20 05:03:15',NULL,NULL,NULL),(54,6,'Blue Whale Breaching','Majestic blue whale off Mirissa coast','https://images.unsplash.com/photo-1568430731210-1f9ae78183c1',1,'2026-02-20 05:03:15',1,'2026-02-20 05:03:15',NULL,NULL,NULL),(55,6,'Dolphin Pod','Playful dolphins in Kalpitiya','https://images.unsplash.com/photo-1607153862303-ce8ebc3a5e12',1,'2026-02-20 05:03:15',1,'2026-02-20 05:03:15',NULL,NULL,NULL),(56,6,'Whale Watching Boat','Tour boats in Mirissa for whale watching','https://images.unsplash.com/photo-1568430731210-1f9ae78183c1',1,'2026-02-20 05:03:15',1,'2026-02-20 05:03:15',NULL,NULL,NULL),(57,6,'Sperm Whale','Sperm whale sighting','https://images.unsplash.com/photo-1568430731210-1f9ae78183c1',1,'2026-02-20 05:03:15',1,'2026-02-20 05:03:15',NULL,NULL,NULL),(58,7,'Arugam Bay Surfer','Surfer riding wave at Arugam Bay','https://images.unsplash.com/photo-1502680390469-be75c86b636f',1,'2026-02-20 05:03:15',1,'2026-02-20 05:03:15',NULL,NULL,NULL),(59,7,'Sunset Surf','Surfing at sunset on east coast','https://images.unsplash.com/photo-1502680390469-be75c86b636f',1,'2026-02-20 05:03:15',1,'2026-02-20 05:03:15',NULL,NULL,NULL),(60,7,'Surf Camp','Surfers relaxing at beach camp','https://images.unsplash.com/photo-1507525428034-b723cf961d3e',1,'2026-02-20 05:03:15',1,'2026-02-20 05:03:15',NULL,NULL,NULL),(61,8,'Esala Perahera','Traditional dancers at Kandy Esala Perahera','https://images.unsplash.com/photo-1590212154058-ccddd1f0003e',1,'2026-02-20 05:03:15',1,'2026-02-20 05:03:15',NULL,NULL,NULL),(62,8,'Vesak Lanterns','Colorful Vesak festival lanterns','https://images.unsplash.com/photo-1590212869245-5b2c09f1b70b',1,'2026-02-20 05:03:15',1,'2026-02-20 05:03:15',NULL,NULL,NULL),(63,8,'Sinhala New Year','Traditional New Year celebrations','https://images.unsplash.com/photo-1604329760661-e71dc83f8f26',1,'2026-02-20 05:03:15',1,'2026-02-20 05:03:15',NULL,NULL,NULL),(64,8,'Deepavali Festival','Deepavali celebrations in Sri Lanka','https://images.unsplash.com/photo-1604329760661-e71dc83f8f26',1,'2026-02-20 05:03:15',1,'2026-02-20 05:03:15',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `seasons_images` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `secret_question`
+--
+
+DROP TABLE IF EXISTS `secret_question`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `secret_question` (
+  `secret_question_id` int NOT NULL AUTO_INCREMENT,
+  `question` varchar(255) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `status_id` int DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`secret_question_id`),
+  KEY `fk_secret_question_status` (`status_id`),
+  CONSTRAINT `fk_secret_question_status` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `secret_question`
+--
+
+LOCK TABLES `secret_question` WRITE;
+/*!40000 ALTER TABLE `secret_question` DISABLE KEYS */;
+INSERT INTO `secret_question` VALUES (1,'What is your first school name?',NULL,1,'2026-02-06 08:18:12',NULL,'2026-02-06 08:18:12',NULL,NULL,NULL),(2,'What is your mother\'s maiden name?',NULL,1,'2026-02-06 08:18:12',NULL,'2026-02-06 08:18:12',NULL,NULL,NULL),(3,'What is your first pet name?',NULL,1,'2026-02-06 08:18:12',NULL,'2026-02-06 08:18:12',NULL,NULL,NULL),(4,'What city were you born in?',NULL,1,'2026-02-06 08:18:12',NULL,'2026-02-06 08:18:12',NULL,NULL,NULL),(5,'What is your favorite teacher\'s name?',NULL,1,'2026-02-06 08:18:12',NULL,'2026-02-06 08:18:12',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `secret_question` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `service_provider`
+--
+
+DROP TABLE IF EXISTS `service_provider`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `service_provider` (
+  `service_provider_id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `service_provider_type_id` int NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text,
+  `address` varchar(255) DEFAULT NULL,
+  `contact_number` varchar(50) DEFAULT NULL,
+  `email` varchar(150) DEFAULT NULL,
+  `website_url` varchar(255) DEFAULT NULL,
+  `check_in_time` time DEFAULT NULL,
+  `check_out_time` time DEFAULT NULL,
+  `star_rating` tinyint DEFAULT NULL,
+  `currency_id` int NOT NULL,
+  `cancellation_policy` text,
+  `minimum_advance_booking_hours` int DEFAULT '24',
+  `establishment_year` year DEFAULT NULL,
+  `total_rooms` int DEFAULT '0',
+  `total_employees` int DEFAULT NULL,
+  `awards_certifications` text,
+  `languages_spoken` json DEFAULT NULL,
+  `parking_facility` tinyint(1) DEFAULT '0',
+  `parking_capacity` int DEFAULT NULL,
+  `wifi_available` tinyint(1) DEFAULT '0',
+  `pet_friendly` tinyint(1) DEFAULT '0',
+  `check_in_instructions` text,
+  `special_instructions` text,
+  `approval_status_id` int NOT NULL,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`service_provider_id`),
+  KEY `user_id` (`user_id`),
+  KEY `idx_service_provider_type` (`service_provider_type_id`),
+  KEY `idx_service_provider_status` (`status_id`),
+  KEY `idx_service_provider_approval` (`approval_status_id`),
+  KEY `idx_service_provider_email` (`email`),
+  KEY `idx_service_provider_currency` (`currency_id`),
+  CONSTRAINT `service_provider_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `service_provider_ibfk_2` FOREIGN KEY (`service_provider_type_id`) REFERENCES `service_provider_type` (`service_provider_type_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `service_provider_ibfk_3` FOREIGN KEY (`currency_id`) REFERENCES `currency` (`currency_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `service_provider_ibfk_4` FOREIGN KEY (`approval_status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `service_provider_ibfk_5` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `service_provider`
+--
+
+LOCK TABLES `service_provider` WRITE;
+/*!40000 ALTER TABLE `service_provider` DISABLE KEYS */;
+/*!40000 ALTER TABLE `service_provider` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `service_provider_amenity`
+--
+
+DROP TABLE IF EXISTS `service_provider_amenity`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `service_provider_amenity` (
+  `provider_amenity_id` int NOT NULL AUTO_INCREMENT,
+  `service_provider_id` int NOT NULL,
+  `amenity_type_id` int NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text,
+  `local_additional_charge` decimal(10,2) DEFAULT '0.00',
+  `foreign_additional_charge` decimal(10,2) DEFAULT '0.00',
+  `currency_id` int NOT NULL,
+  `is_available` tinyint(1) DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`provider_amenity_id`),
+  KEY `service_provider_id` (`service_provider_id`),
+  KEY `amenity_type_id` (`amenity_type_id`),
+  KEY `currency_id` (`currency_id`),
+  CONSTRAINT `service_provider_amenity_ibfk_1` FOREIGN KEY (`service_provider_id`) REFERENCES `service_provider` (`service_provider_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `service_provider_amenity_ibfk_2` FOREIGN KEY (`amenity_type_id`) REFERENCES `amenity_type` (`amenity_type_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `service_provider_amenity_ibfk_3` FOREIGN KEY (`currency_id`) REFERENCES `currency` (`currency_id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `service_provider_amenity`
+--
+
+LOCK TABLES `service_provider_amenity` WRITE;
+/*!40000 ALTER TABLE `service_provider_amenity` DISABLE KEYS */;
+/*!40000 ALTER TABLE `service_provider_amenity` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `service_provider_approval`
+--
+
+DROP TABLE IF EXISTS `service_provider_approval`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `service_provider_approval` (
+  `approval_id` int NOT NULL AUTO_INCREMENT,
+  `service_provider_id` int NOT NULL,
+  `approved_by` int DEFAULT NULL,
+  `approval_status_id` int NOT NULL,
+  `approval_comment` text,
+  `approved_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`approval_id`),
+  KEY `service_provider_id` (`service_provider_id`),
+  KEY `approval_status_id` (`approval_status_id`),
+  KEY `approved_by` (`approved_by`),
+  CONSTRAINT `service_provider_approval_ibfk_1` FOREIGN KEY (`service_provider_id`) REFERENCES `service_provider` (`service_provider_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `service_provider_approval_ibfk_2` FOREIGN KEY (`approval_status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `service_provider_approval_ibfk_3` FOREIGN KEY (`approved_by`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `service_provider_approval`
+--
+
+LOCK TABLES `service_provider_approval` WRITE;
+/*!40000 ALTER TABLE `service_provider_approval` DISABLE KEYS */;
+/*!40000 ALTER TABLE `service_provider_approval` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `service_provider_bank`
+--
+
+DROP TABLE IF EXISTS `service_provider_bank`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `service_provider_bank` (
+  `bank_id` int NOT NULL AUTO_INCREMENT,
+  `service_provider_id` int NOT NULL,
+  `bank_name` varchar(255) NOT NULL,
+  `account_holder_name` varchar(255) NOT NULL,
+  `account_number` varchar(100) NOT NULL,
+  `branch_name` varchar(255) DEFAULT NULL,
+  `branch_code` varchar(50) DEFAULT NULL,
+  `swift_code` varchar(50) DEFAULT NULL,
+  `iban` varchar(100) DEFAULT NULL,
+  `currency_id` int NOT NULL,
+  `is_primary` tinyint(1) DEFAULT '0',
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`bank_id`),
+  KEY `currency_id` (`currency_id`),
+  KEY `status_id` (`status_id`),
+  KEY `idx_bank_primary` (`service_provider_id`,`is_primary`),
+  CONSTRAINT `service_provider_bank_ibfk_1` FOREIGN KEY (`service_provider_id`) REFERENCES `service_provider` (`service_provider_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `service_provider_bank_ibfk_2` FOREIGN KEY (`currency_id`) REFERENCES `currency` (`currency_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `service_provider_bank_ibfk_3` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `service_provider_bank`
+--
+
+LOCK TABLES `service_provider_bank` WRITE;
+/*!40000 ALTER TABLE `service_provider_bank` DISABLE KEYS */;
+/*!40000 ALTER TABLE `service_provider_bank` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `service_provider_booking_restrictions`
+--
+
+DROP TABLE IF EXISTS `service_provider_booking_restrictions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `service_provider_booking_restrictions` (
+  `restriction_id` int NOT NULL AUTO_INCREMENT,
+  `service_provider_id` int NOT NULL,
+  `restriction_type` varchar(50) NOT NULL,
+  `min_stay_nights` int DEFAULT '1',
+  `max_stay_nights` int DEFAULT NULL,
+  `start_date` date DEFAULT NULL,
+  `end_date` date DEFAULT NULL,
+  `description` text,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`restriction_id`),
+  KEY `service_provider_id` (`service_provider_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `service_provider_booking_restrictions_ibfk_1` FOREIGN KEY (`service_provider_id`) REFERENCES `service_provider` (`service_provider_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `service_provider_booking_restrictions_ibfk_2` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `service_provider_booking_restrictions`
+--
+
+LOCK TABLES `service_provider_booking_restrictions` WRITE;
+/*!40000 ALTER TABLE `service_provider_booking_restrictions` DISABLE KEYS */;
+/*!40000 ALTER TABLE `service_provider_booking_restrictions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `service_provider_commission_settings`
+--
+
+DROP TABLE IF EXISTS `service_provider_commission_settings`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `service_provider_commission_settings` (
+  `commission_id` int NOT NULL AUTO_INCREMENT,
+  `service_provider_id` int NOT NULL,
+  `commission_percentage` decimal(5,2) NOT NULL,
+  `applies_to_rooms` tinyint(1) DEFAULT '1',
+  `applies_to_meals` tinyint(1) DEFAULT '1',
+  `applies_to_packages` tinyint(1) DEFAULT '1',
+  `minimum_commission_amount` decimal(10,2) DEFAULT '0.00',
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`commission_id`),
+  KEY `service_provider_id` (`service_provider_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `service_provider_commission_settings_ibfk_1` FOREIGN KEY (`service_provider_id`) REFERENCES `service_provider` (`service_provider_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `service_provider_commission_settings_ibfk_2` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `service_provider_commission_settings`
+--
+
+LOCK TABLES `service_provider_commission_settings` WRITE;
+/*!40000 ALTER TABLE `service_provider_commission_settings` DISABLE KEYS */;
+/*!40000 ALTER TABLE `service_provider_commission_settings` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `service_provider_contact_person`
+--
+
+DROP TABLE IF EXISTS `service_provider_contact_person`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `service_provider_contact_person` (
+  `contact_person_id` int NOT NULL AUTO_INCREMENT,
+  `service_provider_id` int NOT NULL,
+  `full_name` varchar(255) NOT NULL,
+  `designation` varchar(100) DEFAULT NULL,
+  `email` varchar(150) DEFAULT NULL,
+  `phone` varchar(50) DEFAULT NULL,
+  `mobile` varchar(50) DEFAULT NULL,
+  `is_primary` tinyint(1) DEFAULT '0',
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`contact_person_id`),
+  KEY `status_id` (`status_id`),
+  KEY `idx_contact_primary` (`service_provider_id`,`is_primary`),
+  CONSTRAINT `service_provider_contact_person_ibfk_1` FOREIGN KEY (`service_provider_id`) REFERENCES `service_provider` (`service_provider_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `service_provider_contact_person_ibfk_2` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `service_provider_contact_person`
+--
+
+LOCK TABLES `service_provider_contact_person` WRITE;
+/*!40000 ALTER TABLE `service_provider_contact_person` DISABLE KEYS */;
+/*!40000 ALTER TABLE `service_provider_contact_person` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `service_provider_destination`
+--
+
+DROP TABLE IF EXISTS `service_provider_destination`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `service_provider_destination` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `service_provider_id` int NOT NULL,
+  `destination_id` int NOT NULL,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_provider_destination` (`service_provider_id`,`destination_id`),
+  KEY `destination_id` (`destination_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `service_provider_destination_ibfk_1` FOREIGN KEY (`service_provider_id`) REFERENCES `service_provider` (`service_provider_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `service_provider_destination_ibfk_2` FOREIGN KEY (`destination_id`) REFERENCES `destination` (`destination_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `service_provider_destination_ibfk_3` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `service_provider_destination`
+--
+
+LOCK TABLES `service_provider_destination` WRITE;
+/*!40000 ALTER TABLE `service_provider_destination` DISABLE KEYS */;
+/*!40000 ALTER TABLE `service_provider_destination` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `service_provider_document`
+--
+
+DROP TABLE IF EXISTS `service_provider_document`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `service_provider_document` (
+  `document_id` int NOT NULL AUTO_INCREMENT,
+  `service_provider_id` int NOT NULL,
+  `document_type` varchar(100) NOT NULL,
+  `document_name` varchar(255) NOT NULL,
+  `document_url` varchar(255) NOT NULL,
+  `issue_date` date DEFAULT NULL,
+  `expiry_date` date DEFAULT NULL,
+  `is_verified` tinyint(1) DEFAULT '0',
+  `verified_by` int DEFAULT NULL,
+  `verified_at` timestamp NULL DEFAULT NULL,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`document_id`),
+  KEY `service_provider_id` (`service_provider_id`),
+  KEY `verified_by` (`verified_by`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `service_provider_document_ibfk_1` FOREIGN KEY (`service_provider_id`) REFERENCES `service_provider` (`service_provider_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `service_provider_document_ibfk_2` FOREIGN KEY (`verified_by`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `service_provider_document_ibfk_3` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `service_provider_document`
+--
+
+LOCK TABLES `service_provider_document` WRITE;
+/*!40000 ALTER TABLE `service_provider_document` DISABLE KEYS */;
+/*!40000 ALTER TABLE `service_provider_document` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `service_provider_facility`
+--
+
+DROP TABLE IF EXISTS `service_provider_facility`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `service_provider_facility` (
+  `facility_id` int NOT NULL AUTO_INCREMENT,
+  `service_provider_id` int NOT NULL,
+  `facility_name` varchar(255) NOT NULL,
+  `description` text,
+  `is_available` tinyint(1) DEFAULT '1',
+  `special_note` text,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`facility_id`),
+  KEY `service_provider_id` (`service_provider_id`),
+  CONSTRAINT `service_provider_facility_ibfk_1` FOREIGN KEY (`service_provider_id`) REFERENCES `service_provider` (`service_provider_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `service_provider_facility`
+--
+
+LOCK TABLES `service_provider_facility` WRITE;
+/*!40000 ALTER TABLE `service_provider_facility` DISABLE KEYS */;
+/*!40000 ALTER TABLE `service_provider_facility` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `service_provider_facility_image`
+--
+
+DROP TABLE IF EXISTS `service_provider_facility_image`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `service_provider_facility_image` (
+  `facility_image_id` int NOT NULL AUTO_INCREMENT,
+  `facility_id` int NOT NULL,
+  `image_url` varchar(255) NOT NULL,
+  `image_name` varchar(255) DEFAULT NULL,
+  `image_description` text,
+  `caption` varchar(255) DEFAULT NULL,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`facility_image_id`),
+  KEY `facility_id` (`facility_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `service_provider_facility_image_ibfk_1` FOREIGN KEY (`facility_id`) REFERENCES `service_provider_facility` (`facility_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `service_provider_facility_image_ibfk_2` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `service_provider_facility_image`
+--
+
+LOCK TABLES `service_provider_facility_image` WRITE;
+/*!40000 ALTER TABLE `service_provider_facility_image` DISABLE KEYS */;
+/*!40000 ALTER TABLE `service_provider_facility_image` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `service_provider_image`
+--
+
+DROP TABLE IF EXISTS `service_provider_image`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `service_provider_image` (
+  `image_id` int NOT NULL AUTO_INCREMENT,
+  `service_provider_id` int NOT NULL,
+  `image_url` varchar(255) NOT NULL,
+  `image_name` varchar(255) DEFAULT NULL,
+  `image_description` text,
+  `caption` varchar(255) DEFAULT NULL,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`image_id`),
+  KEY `service_provider_id` (`service_provider_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `service_provider_image_ibfk_1` FOREIGN KEY (`service_provider_id`) REFERENCES `service_provider` (`service_provider_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `service_provider_image_ibfk_2` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `service_provider_image`
+--
+
+LOCK TABLES `service_provider_image` WRITE;
+/*!40000 ALTER TABLE `service_provider_image` DISABLE KEYS */;
+/*!40000 ALTER TABLE `service_provider_image` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `service_provider_location`
+--
+
+DROP TABLE IF EXISTS `service_provider_location`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `service_provider_location` (
+  `location_id` int NOT NULL AUTO_INCREMENT,
+  `service_provider_id` int NOT NULL,
+  `latitude` decimal(10,8) DEFAULT NULL,
+  `longitude` decimal(11,8) DEFAULT NULL,
+  `google_place_id` varchar(255) DEFAULT NULL,
+  `timezone` varchar(50) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`location_id`),
+  KEY `service_provider_id` (`service_provider_id`),
+  CONSTRAINT `service_provider_location_ibfk_1` FOREIGN KEY (`service_provider_id`) REFERENCES `service_provider` (`service_provider_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `service_provider_location`
+--
+
+LOCK TABLES `service_provider_location` WRITE;
+/*!40000 ALTER TABLE `service_provider_location` DISABLE KEYS */;
+/*!40000 ALTER TABLE `service_provider_location` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `service_provider_meal`
+--
+
+DROP TABLE IF EXISTS `service_provider_meal`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `service_provider_meal` (
+  `meal_id` int NOT NULL AUTO_INCREMENT,
+  `service_provider_id` int NOT NULL,
+  `meal_type_id` int NOT NULL,
+  `description` text,
+  `local_price` decimal(10,2) DEFAULT NULL,
+  `foreign_price` decimal(10,2) DEFAULT NULL,
+  `currency_id` int NOT NULL,
+  `discount_percentage` decimal(5,2) DEFAULT '0.00',
+  `discount_requirements` text,
+  `serves_people` int DEFAULT '1',
+  `cuisine_type` varchar(100) DEFAULT NULL,
+  `dietary_tags` json DEFAULT NULL,
+  `preparation_time` int DEFAULT NULL,
+  `is_chef_special` tinyint(1) DEFAULT '0',
+  `is_spicy` tinyint(1) DEFAULT '0',
+  `spice_level` tinyint DEFAULT NULL,
+  `serving_size` varchar(100) DEFAULT NULL,
+  `calories` int DEFAULT NULL,
+  `allergens` text,
+  `available` tinyint(1) DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`meal_id`),
+  KEY `service_provider_id` (`service_provider_id`),
+  KEY `meal_type_id` (`meal_type_id`),
+  KEY `currency_id` (`currency_id`),
+  CONSTRAINT `service_provider_meal_ibfk_1` FOREIGN KEY (`service_provider_id`) REFERENCES `service_provider` (`service_provider_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `service_provider_meal_ibfk_2` FOREIGN KEY (`meal_type_id`) REFERENCES `meal_type` (`meal_type_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `service_provider_meal_ibfk_3` FOREIGN KEY (`currency_id`) REFERENCES `currency` (`currency_id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `service_provider_meal`
+--
+
+LOCK TABLES `service_provider_meal` WRITE;
+/*!40000 ALTER TABLE `service_provider_meal` DISABLE KEYS */;
+/*!40000 ALTER TABLE `service_provider_meal` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `service_provider_meal_image`
+--
+
+DROP TABLE IF EXISTS `service_provider_meal_image`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `service_provider_meal_image` (
+  `meal_image_id` int NOT NULL AUTO_INCREMENT,
+  `meal_id` int NOT NULL,
+  `image_url` varchar(255) NOT NULL,
+  `image_name` varchar(255) DEFAULT NULL,
+  `image_description` text,
+  `caption` varchar(255) DEFAULT NULL,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`meal_image_id`),
+  KEY `meal_id` (`meal_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `service_provider_meal_image_ibfk_1` FOREIGN KEY (`meal_id`) REFERENCES `service_provider_meal` (`meal_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `service_provider_meal_image_ibfk_2` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `service_provider_meal_image`
+--
+
+LOCK TABLES `service_provider_meal_image` WRITE;
+/*!40000 ALTER TABLE `service_provider_meal_image` DISABLE KEYS */;
+/*!40000 ALTER TABLE `service_provider_meal_image` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `service_provider_operating_hours`
+--
+
+DROP TABLE IF EXISTS `service_provider_operating_hours`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `service_provider_operating_hours` (
+  `hours_id` int NOT NULL AUTO_INCREMENT,
+  `service_provider_id` int NOT NULL,
+  `day_of_week` tinyint NOT NULL,
+  `opens_at` time DEFAULT NULL,
+  `closes_at` time DEFAULT NULL,
+  `is_24_hours` tinyint(1) DEFAULT '0',
+  `operating_status_id` int NOT NULL,
+  `special_note` text,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`hours_id`),
+  KEY `service_provider_id` (`service_provider_id`),
+  KEY `operating_status_id` (`operating_status_id`),
+  CONSTRAINT `service_provider_operating_hours_ibfk_1` FOREIGN KEY (`service_provider_id`) REFERENCES `service_provider` (`service_provider_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `service_provider_operating_hours_ibfk_2` FOREIGN KEY (`operating_status_id`) REFERENCES `service_provider_operating_hours_status` (`operating_status_id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `service_provider_operating_hours`
+--
+
+LOCK TABLES `service_provider_operating_hours` WRITE;
+/*!40000 ALTER TABLE `service_provider_operating_hours` DISABLE KEYS */;
+/*!40000 ALTER TABLE `service_provider_operating_hours` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `service_provider_operating_hours_status`
+--
+
+DROP TABLE IF EXISTS `service_provider_operating_hours_status`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `service_provider_operating_hours_status` (
+  `operating_status_id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`operating_status_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `service_provider_operating_hours_status_ibfk_1` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `service_provider_operating_hours_status`
+--
+
+LOCK TABLES `service_provider_operating_hours_status` WRITE;
+/*!40000 ALTER TABLE `service_provider_operating_hours_status` DISABLE KEYS */;
+/*!40000 ALTER TABLE `service_provider_operating_hours_status` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `service_provider_package`
+--
+
+DROP TABLE IF EXISTS `service_provider_package`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `service_provider_package` (
+  `service_provider_package_id` int NOT NULL AUTO_INCREMENT,
+  `service_provider_id` int NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text,
+  `local_price` decimal(10,2) DEFAULT NULL,
+  `foreign_price` decimal(10,2) DEFAULT NULL,
+  `currency_id` int NOT NULL,
+  `discount_percentage` decimal(5,2) DEFAULT '0.00',
+  `discount_requirements` text,
+  `duration_days` int DEFAULT NULL,
+  `start_date` date DEFAULT NULL,
+  `end_date` date DEFAULT NULL,
+  `min_persons` int DEFAULT '1',
+  `max_persons` int DEFAULT NULL,
+  `includes_children` tinyint(1) DEFAULT '0',
+  `max_children_included` int DEFAULT '0',
+  `is_customizable` tinyint(1) DEFAULT '0',
+  `booking_deadline_days` int DEFAULT NULL,
+  `package_code` varchar(50) DEFAULT NULL,
+  `package_category` varchar(100) DEFAULT NULL,
+  `season_type` varchar(50) DEFAULT NULL,
+  `advance_booking_days` int DEFAULT NULL,
+  `cancellation_policy` text,
+  `refund_policy` text,
+  `terms_conditions` text,
+  `highlights` json DEFAULT NULL,
+  `special_note` text,
+  `requirements` text,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`service_provider_package_id`),
+  UNIQUE KEY `package_code` (`package_code`),
+  KEY `currency_id` (`currency_id`),
+  KEY `idx_package_provider` (`service_provider_id`),
+  KEY `idx_package_dates` (`start_date`,`end_date`),
+  KEY `idx_package_status` (`status_id`),
+  KEY `idx_package_dates_active` (`start_date`,`end_date`,`status_id`),
+  CONSTRAINT `service_provider_package_ibfk_1` FOREIGN KEY (`service_provider_id`) REFERENCES `service_provider` (`service_provider_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `service_provider_package_ibfk_2` FOREIGN KEY (`currency_id`) REFERENCES `currency` (`currency_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `service_provider_package_ibfk_3` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `service_provider_package`
+--
+
+LOCK TABLES `service_provider_package` WRITE;
+/*!40000 ALTER TABLE `service_provider_package` DISABLE KEYS */;
+/*!40000 ALTER TABLE `service_provider_package` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `service_provider_package_feature`
+--
+
+DROP TABLE IF EXISTS `service_provider_package_feature`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `service_provider_package_feature` (
+  `package_feature_id` int NOT NULL AUTO_INCREMENT,
+  `service_provider_package_id` int NOT NULL,
+  `feature_name` varchar(255) NOT NULL,
+  `feature_value` varchar(255) DEFAULT NULL,
+  `description` text,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`package_feature_id`),
+  KEY `service_provider_package_id` (`service_provider_package_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `service_provider_package_feature_ibfk_1` FOREIGN KEY (`service_provider_package_id`) REFERENCES `service_provider_package` (`service_provider_package_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `service_provider_package_feature_ibfk_2` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `service_provider_package_feature`
+--
+
+LOCK TABLES `service_provider_package_feature` WRITE;
+/*!40000 ALTER TABLE `service_provider_package_feature` DISABLE KEYS */;
+/*!40000 ALTER TABLE `service_provider_package_feature` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `service_provider_package_image`
+--
+
+DROP TABLE IF EXISTS `service_provider_package_image`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `service_provider_package_image` (
+  `package_image_id` int NOT NULL AUTO_INCREMENT,
+  `service_provider_package_id` int NOT NULL,
+  `image_url` varchar(255) NOT NULL,
+  `image_name` varchar(255) DEFAULT NULL,
+  `image_description` text,
+  `caption` varchar(255) DEFAULT NULL,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`package_image_id`),
+  KEY `service_provider_package_id` (`service_provider_package_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `service_provider_package_image_ibfk_1` FOREIGN KEY (`service_provider_package_id`) REFERENCES `service_provider_package` (`service_provider_package_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `service_provider_package_image_ibfk_2` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `service_provider_package_image`
+--
+
+LOCK TABLES `service_provider_package_image` WRITE;
+/*!40000 ALTER TABLE `service_provider_package_image` DISABLE KEYS */;
+/*!40000 ALTER TABLE `service_provider_package_image` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `service_provider_package_inclusion`
+--
+
+DROP TABLE IF EXISTS `service_provider_package_inclusion`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `service_provider_package_inclusion` (
+  `inclusion_id` int NOT NULL AUTO_INCREMENT,
+  `service_provider_package_id` int NOT NULL,
+  `inclusion_name` varchar(255) NOT NULL,
+  `description` text,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`inclusion_id`),
+  KEY `service_provider_package_id` (`service_provider_package_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `service_provider_package_inclusion_ibfk_1` FOREIGN KEY (`service_provider_package_id`) REFERENCES `service_provider_package` (`service_provider_package_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `service_provider_package_inclusion_ibfk_2` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `service_provider_package_inclusion`
+--
+
+LOCK TABLES `service_provider_package_inclusion` WRITE;
+/*!40000 ALTER TABLE `service_provider_package_inclusion` DISABLE KEYS */;
+/*!40000 ALTER TABLE `service_provider_package_inclusion` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `service_provider_review`
+--
+
+DROP TABLE IF EXISTS `service_provider_review`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `service_provider_review` (
+  `review_id` int NOT NULL AUTO_INCREMENT,
+  `service_provider_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `rating` tinyint NOT NULL,
+  `title` varchar(255) DEFAULT NULL,
+  `comment` text,
+  `is_approved` tinyint(1) DEFAULT '0',
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`review_id`),
+  KEY `service_provider_id` (`service_provider_id`),
+  KEY `user_id` (`user_id`),
+  KEY `status_id` (`status_id`),
+  KEY `idx_review_rating_approved` (`rating`,`is_approved`,`status_id`),
+  CONSTRAINT `service_provider_review_ibfk_1` FOREIGN KEY (`service_provider_id`) REFERENCES `service_provider` (`service_provider_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `service_provider_review_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `service_provider_review_ibfk_3` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `chk_rating_range` CHECK ((`rating` between 1 and 5))
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `service_provider_review`
+--
+
+LOCK TABLES `service_provider_review` WRITE;
+/*!40000 ALTER TABLE `service_provider_review` DISABLE KEYS */;
+/*!40000 ALTER TABLE `service_provider_review` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `service_provider_review_rating_category`
+--
+
+DROP TABLE IF EXISTS `service_provider_review_rating_category`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `service_provider_review_rating_category` (
+  `category_id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`category_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `service_provider_review_rating_category_ibfk_1` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `service_provider_review_rating_category`
+--
+
+LOCK TABLES `service_provider_review_rating_category` WRITE;
+/*!40000 ALTER TABLE `service_provider_review_rating_category` DISABLE KEYS */;
+/*!40000 ALTER TABLE `service_provider_review_rating_category` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `service_provider_review_rating_detail`
+--
+
+DROP TABLE IF EXISTS `service_provider_review_rating_detail`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `service_provider_review_rating_detail` (
+  `detail_id` int NOT NULL AUTO_INCREMENT,
+  `review_id` int NOT NULL,
+  `category_id` int NOT NULL,
+  `rating` tinyint NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`detail_id`),
+  KEY `review_id` (`review_id`),
+  KEY `category_id` (`category_id`),
+  CONSTRAINT `service_provider_review_rating_detail_ibfk_1` FOREIGN KEY (`review_id`) REFERENCES `service_provider_review` (`review_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `service_provider_review_rating_detail_ibfk_2` FOREIGN KEY (`category_id`) REFERENCES `service_provider_review_rating_category` (`category_id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `service_provider_review_rating_detail`
+--
+
+LOCK TABLES `service_provider_review_rating_detail` WRITE;
+/*!40000 ALTER TABLE `service_provider_review_rating_detail` DISABLE KEYS */;
+/*!40000 ALTER TABLE `service_provider_review_rating_detail` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `service_provider_room`
+--
+
+DROP TABLE IF EXISTS `service_provider_room`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `service_provider_room` (
+  `room_id` int NOT NULL AUTO_INCREMENT,
+  `service_provider_id` int NOT NULL,
+  `room_type_id` int NOT NULL,
+  `room_number` varchar(50) DEFAULT NULL,
+  `description` text,
+  `capacity` int DEFAULT NULL,
+  `room_size` decimal(6,2) DEFAULT NULL,
+  `bed_type` varchar(100) DEFAULT NULL,
+  `number_of_beds` int DEFAULT NULL,
+  `number_of_bathrooms` int DEFAULT '1',
+  `max_adults` int DEFAULT NULL,
+  `max_children` int DEFAULT NULL,
+  `smoking_allowed` tinyint(1) DEFAULT '0',
+  `is_accessible` tinyint(1) DEFAULT '0',
+  `local_price_per_night` decimal(10,2) DEFAULT NULL,
+  `foreign_price_per_night` decimal(10,2) DEFAULT NULL,
+  `currency_id` int NOT NULL,
+  `discount_percentage` decimal(5,2) DEFAULT '0.00',
+  `discount_requirements` text,
+  `room_floor` int DEFAULT NULL,
+  `view_type` varchar(100) DEFAULT NULL,
+  `has_balcony` tinyint(1) DEFAULT '0',
+  `has_air_conditioning` tinyint(1) DEFAULT '0',
+  `has_tv` tinyint(1) DEFAULT '0',
+  `has_minibar` tinyint(1) DEFAULT '0',
+  `has_safe` tinyint(1) DEFAULT '0',
+  `has_kitchenette` tinyint(1) DEFAULT '0',
+  `internet_access` tinyint(1) DEFAULT '0',
+  `room_quality_rating` tinyint DEFAULT NULL,
+  `extra_bed_available` tinyint(1) DEFAULT '0',
+  `extra_bed_charge` decimal(10,2) DEFAULT '0.00',
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`room_id`),
+  KEY `currency_id` (`currency_id`),
+  KEY `idx_room_provider` (`service_provider_id`),
+  KEY `idx_room_status` (`status_id`),
+  KEY `idx_room_type` (`room_type_id`),
+  CONSTRAINT `service_provider_room_ibfk_1` FOREIGN KEY (`service_provider_id`) REFERENCES `service_provider` (`service_provider_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `service_provider_room_ibfk_2` FOREIGN KEY (`room_type_id`) REFERENCES `service_provider_room_type` (`room_type_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `service_provider_room_ibfk_3` FOREIGN KEY (`currency_id`) REFERENCES `currency` (`currency_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `service_provider_room_ibfk_4` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `service_provider_room`
+--
+
+LOCK TABLES `service_provider_room` WRITE;
+/*!40000 ALTER TABLE `service_provider_room` DISABLE KEYS */;
+/*!40000 ALTER TABLE `service_provider_room` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `service_provider_room_amenity`
+--
+
+DROP TABLE IF EXISTS `service_provider_room_amenity`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `service_provider_room_amenity` (
+  `room_amenity_id` int NOT NULL AUTO_INCREMENT,
+  `room_id` int NOT NULL,
+  `amenity_type_id` int NOT NULL,
+  `is_available` tinyint(1) DEFAULT '1',
+  `additional_notes` text,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`room_amenity_id`),
+  UNIQUE KEY `unique_room_amenity` (`room_id`,`amenity_type_id`),
+  KEY `amenity_type_id` (`amenity_type_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `service_provider_room_amenity_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `service_provider_room` (`room_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `service_provider_room_amenity_ibfk_2` FOREIGN KEY (`amenity_type_id`) REFERENCES `amenity_type` (`amenity_type_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `service_provider_room_amenity_ibfk_3` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `service_provider_room_amenity`
+--
+
+LOCK TABLES `service_provider_room_amenity` WRITE;
+/*!40000 ALTER TABLE `service_provider_room_amenity` DISABLE KEYS */;
+/*!40000 ALTER TABLE `service_provider_room_amenity` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `service_provider_room_availability`
+--
+
+DROP TABLE IF EXISTS `service_provider_room_availability`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `service_provider_room_availability` (
+  `availability_id` int NOT NULL AUTO_INCREMENT,
+  `room_id` int NOT NULL,
+  `date` date NOT NULL,
+  `available_rooms` int DEFAULT '0',
+  `booked_rooms` int DEFAULT '0',
+  `local_price_for_date` decimal(10,2) DEFAULT NULL,
+  `foreign_price_for_date` decimal(10,2) DEFAULT NULL,
+  `requirements` text,
+  `special_note` text,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`availability_id`),
+  UNIQUE KEY `unique_room_date` (`room_id`,`date`),
+  KEY `idx_room_availability` (`date`,`available_rooms`),
+  CONSTRAINT `service_provider_room_availability_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `service_provider_room` (`room_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `service_provider_room_availability`
+--
+
+LOCK TABLES `service_provider_room_availability` WRITE;
+/*!40000 ALTER TABLE `service_provider_room_availability` DISABLE KEYS */;
+/*!40000 ALTER TABLE `service_provider_room_availability` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `service_provider_room_feature`
+--
+
+DROP TABLE IF EXISTS `service_provider_room_feature`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `service_provider_room_feature` (
+  `room_feature_id` int NOT NULL AUTO_INCREMENT,
+  `room_id` int NOT NULL,
+  `feature_name` varchar(255) NOT NULL,
+  `feature_value` varchar(255) DEFAULT NULL,
+  `description` text,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`room_feature_id`),
+  KEY `room_id` (`room_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `service_provider_room_feature_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `service_provider_room` (`room_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `service_provider_room_feature_ibfk_2` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `service_provider_room_feature`
+--
+
+LOCK TABLES `service_provider_room_feature` WRITE;
+/*!40000 ALTER TABLE `service_provider_room_feature` DISABLE KEYS */;
+/*!40000 ALTER TABLE `service_provider_room_feature` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `service_provider_room_image`
+--
+
+DROP TABLE IF EXISTS `service_provider_room_image`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `service_provider_room_image` (
+  `room_image_id` int NOT NULL AUTO_INCREMENT,
+  `room_id` int NOT NULL,
+  `image_url` varchar(255) NOT NULL,
+  `image_name` varchar(255) DEFAULT NULL,
+  `image_description` text,
+  `caption` varchar(255) DEFAULT NULL,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`room_image_id`),
+  KEY `room_id` (`room_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `service_provider_room_image_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `service_provider_room` (`room_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `service_provider_room_image_ibfk_2` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `service_provider_room_image`
+--
+
+LOCK TABLES `service_provider_room_image` WRITE;
+/*!40000 ALTER TABLE `service_provider_room_image` DISABLE KEYS */;
+/*!40000 ALTER TABLE `service_provider_room_image` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `service_provider_room_type`
+--
+
+DROP TABLE IF EXISTS `service_provider_room_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `service_provider_room_type` (
+  `room_type_id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`room_type_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `service_provider_room_type_ibfk_1` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `service_provider_room_type`
+--
+
+LOCK TABLES `service_provider_room_type` WRITE;
+/*!40000 ALTER TABLE `service_provider_room_type` DISABLE KEYS */;
+/*!40000 ALTER TABLE `service_provider_room_type` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `service_provider_seasonal_pricing`
+--
+
+DROP TABLE IF EXISTS `service_provider_seasonal_pricing`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `service_provider_seasonal_pricing` (
+  `seasonal_price_id` int NOT NULL AUTO_INCREMENT,
+  `service_provider_id` int NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `start_date` date NOT NULL,
+  `end_date` date NOT NULL,
+  `local_multiplier` decimal(3,2) DEFAULT '1.00',
+  `foreign_multiplier` decimal(3,2) DEFAULT '1.00',
+  `description` text,
+  `requirements` text,
+  `special_note` text,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`seasonal_price_id`),
+  KEY `service_provider_id` (`service_provider_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `service_provider_seasonal_pricing_ibfk_1` FOREIGN KEY (`service_provider_id`) REFERENCES `service_provider` (`service_provider_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `service_provider_seasonal_pricing_ibfk_2` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `service_provider_seasonal_pricing`
+--
+
+LOCK TABLES `service_provider_seasonal_pricing` WRITE;
+/*!40000 ALTER TABLE `service_provider_seasonal_pricing` DISABLE KEYS */;
+/*!40000 ALTER TABLE `service_provider_seasonal_pricing` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `service_provider_social`
+--
+
+DROP TABLE IF EXISTS `service_provider_social`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `service_provider_social` (
+  `social_id` int NOT NULL AUTO_INCREMENT,
+  `service_provider_id` int NOT NULL,
+  `platform` varchar(50) NOT NULL,
+  `profile_url` varchar(255) DEFAULT NULL,
+  `verification_status_id` int NOT NULL,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`social_id`),
+  KEY `service_provider_id` (`service_provider_id`),
+  KEY `verification_status_id` (`verification_status_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `service_provider_social_ibfk_1` FOREIGN KEY (`service_provider_id`) REFERENCES `service_provider` (`service_provider_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `service_provider_social_ibfk_2` FOREIGN KEY (`verification_status_id`) REFERENCES `service_provider_social_verification_status` (`verification_status_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `service_provider_social_ibfk_3` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `service_provider_social`
+--
+
+LOCK TABLES `service_provider_social` WRITE;
+/*!40000 ALTER TABLE `service_provider_social` DISABLE KEYS */;
+/*!40000 ALTER TABLE `service_provider_social` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `service_provider_social_verification_status`
+--
+
+DROP TABLE IF EXISTS `service_provider_social_verification_status`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `service_provider_social_verification_status` (
+  `verification_status_id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`verification_status_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `service_provider_social_verification_status_ibfk_1` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `service_provider_social_verification_status`
+--
+
+LOCK TABLES `service_provider_social_verification_status` WRITE;
+/*!40000 ALTER TABLE `service_provider_social_verification_status` DISABLE KEYS */;
+/*!40000 ALTER TABLE `service_provider_social_verification_status` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `service_provider_statistics`
+--
+
+DROP TABLE IF EXISTS `service_provider_statistics`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `service_provider_statistics` (
+  `stats_id` int NOT NULL AUTO_INCREMENT,
+  `service_provider_id` int NOT NULL,
+  `total_bookings` int DEFAULT '0',
+  `total_revenue` decimal(15,2) DEFAULT '0.00',
+  `average_rating` decimal(3,2) DEFAULT '0.00',
+  `total_reviews` int DEFAULT '0',
+  `occupancy_rate` decimal(5,2) DEFAULT '0.00',
+  `last_updated` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`stats_id`),
+  UNIQUE KEY `unique_provider_stats` (`service_provider_id`),
+  CONSTRAINT `service_provider_statistics_ibfk_1` FOREIGN KEY (`service_provider_id`) REFERENCES `service_provider` (`service_provider_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `service_provider_statistics`
+--
+
+LOCK TABLES `service_provider_statistics` WRITE;
+/*!40000 ALTER TABLE `service_provider_statistics` DISABLE KEYS */;
+/*!40000 ALTER TABLE `service_provider_statistics` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `service_provider_tax_configuration`
+--
+
+DROP TABLE IF EXISTS `service_provider_tax_configuration`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `service_provider_tax_configuration` (
+  `tax_id` int NOT NULL AUTO_INCREMENT,
+  `service_provider_id` int NOT NULL,
+  `tax_name` varchar(100) NOT NULL,
+  `tax_percentage` decimal(5,2) NOT NULL,
+  `tax_number` varchar(100) DEFAULT NULL,
+  `is_active` tinyint(1) DEFAULT '1',
+  `applies_to_rooms` tinyint(1) DEFAULT '1',
+  `applies_to_meals` tinyint(1) DEFAULT '1',
+  `applies_to_packages` tinyint(1) DEFAULT '1',
+  `applies_to_amenities` tinyint(1) DEFAULT '1',
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`tax_id`),
+  KEY `service_provider_id` (`service_provider_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `service_provider_tax_configuration_ibfk_1` FOREIGN KEY (`service_provider_id`) REFERENCES `service_provider` (`service_provider_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `service_provider_tax_configuration_ibfk_2` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `service_provider_tax_configuration`
+--
+
+LOCK TABLES `service_provider_tax_configuration` WRITE;
+/*!40000 ALTER TABLE `service_provider_tax_configuration` DISABLE KEYS */;
+/*!40000 ALTER TABLE `service_provider_tax_configuration` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `service_provider_type`
+--
+
+DROP TABLE IF EXISTS `service_provider_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `service_provider_type` (
+  `service_provider_type_id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`service_provider_type_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `service_provider_type_ibfk_1` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `service_provider_type`
+--
+
+LOCK TABLES `service_provider_type` WRITE;
+/*!40000 ALTER TABLE `service_provider_type` DISABLE KEYS */;
+/*!40000 ALTER TABLE `service_provider_type` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `social_media`
+--
+
+DROP TABLE IF EXISTS `social_media`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `social_media` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `link` varchar(255) NOT NULL,
+  `icon_url` varchar(255) DEFAULT NULL,
+  `color` varchar(50) DEFAULT NULL,
+  `hover_color` varchar(50) DEFAULT NULL,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  `username` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_social_status` (`status`),
+  CONSTRAINT `fk_social_status` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `social_media`
+--
+
+LOCK TABLES `social_media` WRITE;
+/*!40000 ALTER TABLE `social_media` DISABLE KEYS */;
+/*!40000 ALTER TABLE `social_media` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `social_media_best_for`
+--
+
+DROP TABLE IF EXISTS `social_media_best_for`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `social_media_best_for` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `social_media_id` int NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_social_media_id` (`social_media_id`),
+  KEY `idx_status_id` (`status_id`),
+  CONSTRAINT `fk_smbf_social_media` FOREIGN KEY (`social_media_id`) REFERENCES `social_media` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `fk_smbf_status` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `social_media_best_for`
+--
+
+LOCK TABLES `social_media_best_for` WRITE;
+/*!40000 ALTER TABLE `social_media_best_for` DISABLE KEYS */;
+/*!40000 ALTER TABLE `social_media_best_for` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `social_media_platforms`
+--
+
+DROP TABLE IF EXISTS `social_media_platforms`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `social_media_platforms` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `platform_name` varchar(50) NOT NULL,
+  `platform_icon` varchar(100) DEFAULT NULL,
+  `base_url` varchar(100) DEFAULT NULL,
+  `description` text,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `status_id` int DEFAULT '1',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `platform_name` (`platform_name`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `social_media_platforms_ibfk_1` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `social_media_platforms`
+--
+
+LOCK TABLES `social_media_platforms` WRITE;
+/*!40000 ALTER TABLE `social_media_platforms` DISABLE KEYS */;
+/*!40000 ALTER TABLE `social_media_platforms` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `statistics`
+--
+
+DROP TABLE IF EXISTS `statistics`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `statistics` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `image_url` varchar(255) NOT NULL,
+  `title` varchar(100) DEFAULT NULL,
+  `description` text,
+  `color` varchar(50) DEFAULT NULL,
+  `hover_color` varchar(255) DEFAULT NULL,
+  `value` int DEFAULT NULL,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `status` (`status`),
+  CONSTRAINT `statistics_ibfk_1` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `statistics`
+--
+
+LOCK TABLES `statistics` WRITE;
+/*!40000 ALTER TABLE `statistics` DISABLE KEYS */;
+/*!40000 ALTER TABLE `statistics` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tags`
+--
+
+DROP TABLE IF EXISTS `tags`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tags` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `status` int DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`),
+  KEY `status` (`status`),
+  CONSTRAINT `tags_ibfk_1` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tags`
+--
+
+LOCK TABLES `tags` WRITE;
+/*!40000 ALTER TABLE `tags` DISABLE KEYS */;
+INSERT INTO `tags` VALUES (11,'Beaches','Articles about Sri Lanka\'s beautiful beaches and coastal destinations',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL),(12,'Hill Country','Posts about Ella, Nuwara Eliya, Kandy and mountain regions',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL),(13,'Cultural Triangle','Content about Sigiriya, Anuradhapura, Polonnaruwa and ancient cities',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL),(14,'Colombo','Blogs about Sri Lanka\'s capital city',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL),(15,'Galle','Articles about Galle Fort and southern coast',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL),(16,'Jaffna','Posts about northern Sri Lanka and Jaffna peninsula',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL),(17,'East Coast','Content about Trincomalee, Arugam Bay and east coast destinations',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL),(18,'Wildlife','Wildlife encounters, safaris, and national parks',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL),(19,'Safari','Safari experiences in Yala, Udawalawe, Wilpattu',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL),(20,'Hiking','Trekking and hiking adventures in Sri Lanka',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL),(21,'Water Sports','Surfing, diving, snorkeling, and water activities',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL),(22,'Surfing','Surf guides, spots, and surf culture',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL),(23,'Whale Watching','Whale and dolphin watching experiences',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL),(24,'Bird Watching','Birding hotspots and endemic species',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL),(25,'Photography','Travel photography tips and locations',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL),(26,'Temples','Buddhist and Hindu temple guides',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL),(27,'Festivals','Cultural festivals and celebrations',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL),(28,'History','Historical sites and ancient history',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL),(29,'Heritage','UNESCO World Heritage sites',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL),(30,'Local Customs','Sri Lankan traditions and customs',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL),(31,'Sri Lankan Food','Local cuisine, dishes, and dining guides',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL),(32,'Tea Culture','Ceylon tea, plantations, and tea experiences',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL),(33,'Ayurveda','Ayurvedic treatments and wellness',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL),(34,'Spices','Spice gardens and Sri Lankan spices',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL),(35,'Travel Tips','Essential tips for traveling in Sri Lanka',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL),(36,'Budget Travel','Tips for traveling Sri Lanka on a budget',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL),(37,'Luxury Travel','Luxury experiences and high-end accommodations',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL),(38,'Family Travel','Traveling with kids and family-friendly activities',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL),(39,'Solo Travel','Tips for solo travelers in Sri Lanka',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL),(40,'Honeymoon','Romantic getaways and honeymoon destinations',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL),(41,'Visa Guide','Visa information and application guides',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL),(42,'Transportation','Getting around Sri Lanka - trains, buses, drivers',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL),(43,'Accommodation','Hotels, resorts, and places to stay',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL),(44,'Packing Tips','What to pack for Sri Lanka',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL),(45,'Weather','Weather guides and best time to visit',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL),(46,'Peak Season','Travel during December-March peak season',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL),(47,'Off Season','Travel during May-September off season',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL),(48,'Monsoon','Travel during monsoon seasons',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL),(49,'Eco Travel','Sustainable and responsible tourism',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL),(50,'Adventure','Adventure travel and activities',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL),(51,'Wellness','Yoga, meditation, and wellness retreats',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL),(52,'Volunteer','Volunteer opportunities in Sri Lanka',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL),(53,'Travel Stories','Personal travel experiences and narratives',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL),(54,'Interviews','Interviews with travelers and locals',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL),(55,'Tips & Tricks','Useful travel hacks and advice',1,'2026-02-20 05:17:52',1,'2026-02-20 05:17:52',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `tags` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tour`
+--
+
+DROP TABLE IF EXISTS `tour`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tour` (
+  `tour_id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `description` text,
+  `tour_type` int DEFAULT NULL,
+  `tour_category` int DEFAULT NULL,
+  `duration` int DEFAULT NULL,
+  `latitude` decimal(10,8) DEFAULT NULL,
+  `longitude` decimal(11,8) DEFAULT NULL,
+  `start_location` varchar(255) DEFAULT NULL,
+  `end_location` varchar(255) DEFAULT NULL,
+  `season` int DEFAULT NULL,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  `assign_to` int DEFAULT NULL,
+  `assign_message` varchar(1000) DEFAULT 'This tour is managed by a dedicated coordinator who will assist with planning, bookings, and support for a smooth travel experience.',
+  PRIMARY KEY (`tour_id`),
+  KEY `tour_type` (`tour_type`),
+  KEY `tour_category` (`tour_category`),
+  KEY `season` (`season`),
+  KEY `status` (`status`),
+  CONSTRAINT `tour_ibfk_1` FOREIGN KEY (`tour_type`) REFERENCES `tour_type` (`id`),
+  CONSTRAINT `tour_ibfk_2` FOREIGN KEY (`tour_category`) REFERENCES `tour_category` (`id`),
+  CONSTRAINT `tour_ibfk_3` FOREIGN KEY (`season`) REFERENCES `seasons` (`id`),
+  CONSTRAINT `tour_ibfk_4` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tour`
+--
+
+LOCK TABLES `tour` WRITE;
+/*!40000 ALTER TABLE `tour` DISABLE KEYS */;
+INSERT INTO `tour` VALUES (25,'Sri Lanka Highlights - 6 Day Cultural & Wildlife Adventure','Experience the best of Sri Lanka in this 6-day journey through ancient cities, misty mountains, wildlife parks, and golden beaches.\n\nThis comprehensive tour takes you from the iconic Sigiriya Rock Fortress to the cultural capital Kandy, through the misty tea plantations of Nuwara Eliya, the scenic beauty of Ella, the wild landscapes of Yala National Park, and finally to the golden beaches of Bentota.\n\nPerfect for first-time visitors wanting to experience Sri Lanka\'s diverse attractions in one week, this itinerary combines UNESCO World Heritage sites, breathtaking landscapes, wildlife encounters, and coastal relaxation.\n\nYour journey includes comfortable accommodations, private transportation with an English-speaking driver, and experienced local guides at major sites to ensure you discover the rich history, culture, and natural beauty of this tropical island paradise.',1,4,6,7.94950000,80.76030000,'Sigiriya','Bentota',1,1,'2026-02-19 13:59:28',1,'2026-02-20 05:27:22',1,NULL,NULL,1,'This comprehensive 6-day tour is managed by our expert tour coordinator who will ensure smooth transitions between destinations, arrange local guides, and handle all logistics for a stress-free Sri Lankan adventure.');
+/*!40000 ALTER TABLE `tour` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tour_booking_inquiries`
+--
+
+DROP TABLE IF EXISTS `tour_booking_inquiries`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tour_booking_inquiries` (
+  `tour_booking_inquiry_id` int NOT NULL AUTO_INCREMENT,
+  `tour_id` int NOT NULL,
+  `package_id` int DEFAULT NULL,
+  `booking_status_id` int DEFAULT NULL,
+  `user_id` int DEFAULT NULL,
+  `name` varchar(150) NOT NULL,
+  `email` varchar(150) DEFAULT NULL,
+  `contact_number` varchar(50) NOT NULL,
+  `country` varchar(100) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`tour_booking_inquiry_id`),
+  KEY `idx_tbi_tour_id` (`tour_id`),
+  KEY `idx_tbi_package_id` (`package_id`),
+  KEY `idx_tbi_status` (`booking_status_id`),
+  KEY `idx_tbi_user_id` (`user_id`),
+  CONSTRAINT `tbi_fk_package` FOREIGN KEY (`package_id`) REFERENCES `packages` (`package_id`),
+  CONSTRAINT `tbi_fk_status` FOREIGN KEY (`booking_status_id`) REFERENCES `booking_status` (`id`),
+  CONSTRAINT `tbi_fk_tour` FOREIGN KEY (`tour_id`) REFERENCES `tour` (`tour_id`),
+  CONSTRAINT `tbi_fk_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tour_booking_inquiries`
+--
+
+LOCK TABLES `tour_booking_inquiries` WRITE;
+/*!40000 ALTER TABLE `tour_booking_inquiries` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tour_booking_inquiries` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tour_category`
+--
+
+DROP TABLE IF EXISTS `tour_category`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tour_category` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `description` text,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `status` (`status`),
+  CONSTRAINT `tour_category_ibfk_1` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tour_category`
+--
+
+LOCK TABLES `tour_category` WRITE;
+/*!40000 ALTER TABLE `tour_category` DISABLE KEYS */;
+INSERT INTO `tour_category` VALUES (1,'Luxury','Premium tours featuring 5-star accommodations, private guides, and exclusive experiences for discerning travelers seeking the finest Sri Lanka has to offer.',1,'2025-10-04 15:56:54',1,'2026-02-20 08:13:17',1,NULL,NULL),(2,'Budget','Affordable tours with comfortable accommodations, perfect for backpackers and cost-conscious travelers who want to experience Sri Lanka without breaking the bank.',1,'2025-10-04 15:56:54',1,'2026-02-20 08:13:17',1,NULL,NULL),(3,'Family','Family-friendly itineraries designed for all ages, with activities and accommodations suitable for children and parents traveling together.',1,'2025-10-04 15:56:54',1,'2026-02-20 08:13:17',1,NULL,NULL),(4,'Solo Traveler','Specially designed for independent travelers, with options for joining group tours or having private experiences at solo-friendly prices.',1,'2025-10-04 15:56:54',1,'2026-02-20 08:13:17',1,NULL,NULL),(5,'Group','Shared group experiences perfect for meeting fellow travelers, with fixed departures and social activities throughout the journey.',1,'2025-10-04 15:56:54',1,'2026-02-20 08:13:17',1,NULL,NULL),(6,'Cultural','Immerse yourself in Sri Lanka\'s rich heritage with visits to ancient cities, temples, and UNESCO World Heritage sites.',1,'2026-02-20 08:13:17',1,'2026-02-20 08:13:17',NULL,NULL,NULL),(7,'Wildlife','Adventure into national parks for leopard safaris, elephant gatherings, and bird watching experiences.',1,'2026-02-20 08:13:17',1,'2026-02-20 08:13:17',NULL,NULL,NULL),(8,'Beach','Relax on pristine beaches, enjoy water sports, and unwind at coastal resorts along Sri Lanka\'s beautiful coastline.',1,'2026-02-20 08:13:17',1,'2026-02-20 08:13:17',NULL,NULL,NULL),(9,'Adventure','Get your adrenaline pumping with hiking, surfing, white water rafting, and other thrilling activities.',1,'2026-02-20 08:13:17',1,'2026-02-20 08:13:17',NULL,NULL,NULL),(10,'Honeymoon','Romantic getaways designed for couples, featuring intimate accommodations, sunset dinners, and special experiences.',1,'2026-02-20 08:13:17',1,'2026-02-20 08:13:17',NULL,NULL,NULL),(11,'Wellness','Rejuvenate with Ayurvedic treatments, yoga retreats, and spa experiences in serene settings.',1,'2026-02-20 08:13:17',1,'2026-02-20 08:13:17',NULL,NULL,NULL),(12,'Photography','Specialized tours for photography enthusiasts, visiting the most photogenic locations at the best times of day.',1,'2026-02-20 08:13:17',1,'2026-02-20 08:13:17',NULL,NULL,NULL),(13,'Food & Culinary','Explore Sri Lankan cuisine through cooking classes, spice garden visits, and authentic dining experiences.',1,'2026-02-20 08:13:17',1,'2026-02-20 08:13:17',NULL,NULL,NULL),(14,'Short Getaway','Perfect for weekend trips or limited time, covering highlights in 2-4 days.',1,'2026-02-20 08:13:17',1,'2026-02-20 08:13:17',NULL,NULL,NULL),(15,'Extended Tour','In-depth exploration of Sri Lanka lasting 10+ days, covering multiple regions and experiences.',1,'2026-02-20 08:13:17',1,'2026-02-20 08:13:17',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `tour_category` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tour_condition`
+--
+
+DROP TABLE IF EXISTS `tour_condition`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tour_condition` (
+  `tour_condition_id` int NOT NULL AUTO_INCREMENT,
+  `tour_id` int NOT NULL,
+  `condition_text` text NOT NULL,
+  `display_order` int DEFAULT '0',
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`tour_condition_id`),
+  KEY `fk_tour_condition_tour` (`tour_id`),
+  KEY `fk_tour_condition_status` (`status_id`),
+  KEY `fk_tour_condition_terminated_by` (`terminated_by`),
+  CONSTRAINT `fk_tour_condition_status` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `fk_tour_condition_terminated_by` FOREIGN KEY (`terminated_by`) REFERENCES `user` (`user_id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `fk_tour_condition_tour` FOREIGN KEY (`tour_id`) REFERENCES `tour` (`tour_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tour_condition`
+--
+
+LOCK TABLES `tour_condition` WRITE;
+/*!40000 ALTER TABLE `tour_condition` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tour_condition` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tour_day_accommodation`
+--
+
+DROP TABLE IF EXISTS `tour_day_accommodation`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tour_day_accommodation` (
+  `tour_day_accommodation_id` int NOT NULL AUTO_INCREMENT,
+  `tour_id` int NOT NULL,
+  `day` int NOT NULL,
+  `breakfast` tinyint(1) DEFAULT '0',
+  `breakfast_description` text,
+  `lunch` tinyint(1) DEFAULT '0',
+  `lunch_description` text,
+  `dinner` tinyint(1) DEFAULT '0',
+  `dinner_description` text,
+  `morning_tea` tinyint(1) DEFAULT '0',
+  `morning_tea_description` text,
+  `evening_tea` tinyint(1) DEFAULT '0',
+  `evening_tea_description` text,
+  `snacks` tinyint(1) DEFAULT '0',
+  `snack_note` text,
+  `hotel_id` int DEFAULT NULL,
+  `transport_id` int DEFAULT NULL,
+  `other_notes` text,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`tour_day_accommodation_id`),
+  UNIQUE KEY `uq_tour_day` (`tour_id`,`day`),
+  KEY `fk_tour_day_accommodation_hotel` (`hotel_id`),
+  KEY `fk_tour_day_accommodation_transport` (`transport_id`),
+  CONSTRAINT `fk_tour_day_accommodation_hotel` FOREIGN KEY (`hotel_id`) REFERENCES `service_provider` (`service_provider_id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `fk_tour_day_accommodation_tour` FOREIGN KEY (`tour_id`) REFERENCES `tour` (`tour_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_tour_day_accommodation_transport` FOREIGN KEY (`transport_id`) REFERENCES `vehicles` (`vehicle_id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tour_day_accommodation`
+--
+
+LOCK TABLES `tour_day_accommodation` WRITE;
+/*!40000 ALTER TABLE `tour_day_accommodation` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tour_day_accommodation` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tour_destination`
+--
+
+DROP TABLE IF EXISTS `tour_destination`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tour_destination` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `tour_id` int NOT NULL,
+  `destination_id` int NOT NULL,
+  `activities_id` int DEFAULT NULL,
+  `day` int DEFAULT NULL,
+  `status` int NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `created_by` int DEFAULT NULL,
+  `updated_by` int DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `destination_id` (`destination_id`),
+  KEY `tour_destination_ibfk_1` (`tour_id`),
+  KEY `fk_tour_destination_created_by` (`created_by`),
+  KEY `fk_tour_destination_updated_by` (`updated_by`),
+  KEY `fk_tour_destination_terminated_by` (`terminated_by`),
+  CONSTRAINT `fk_tour_destination_created_by` FOREIGN KEY (`created_by`) REFERENCES `user` (`user_id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `fk_tour_destination_terminated_by` FOREIGN KEY (`terminated_by`) REFERENCES `user` (`user_id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `fk_tour_destination_updated_by` FOREIGN KEY (`updated_by`) REFERENCES `user` (`user_id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=118 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tour_destination`
+--
+
+LOCK TABLES `tour_destination` WRITE;
+/*!40000 ALTER TABLE `tour_destination` DISABLE KEYS */;
+INSERT INTO `tour_destination` VALUES (95,25,64,53,1,1,'2026-02-19 13:59:28','2026-02-19 13:59:28',NULL,NULL,NULL,NULL),(96,25,64,54,1,1,'2026-02-19 13:59:28','2026-02-19 13:59:28',NULL,NULL,NULL,NULL),(97,25,64,55,1,1,'2026-02-19 13:59:28','2026-02-19 13:59:28',NULL,NULL,NULL,NULL),(98,25,64,51,2,1,'2026-02-19 13:59:28','2026-02-19 13:59:28',NULL,NULL,NULL,NULL),(99,25,64,52,2,1,'2026-02-19 13:59:28','2026-02-19 13:59:28',NULL,NULL,NULL,NULL),(100,25,65,67,2,1,'2026-02-19 13:59:28','2026-02-19 13:59:28',NULL,NULL,NULL,NULL),(101,25,65,68,2,1,'2026-02-19 13:59:28','2026-02-19 13:59:28',NULL,NULL,NULL,NULL),(102,25,65,69,2,1,'2026-02-19 13:59:28','2026-02-19 13:59:28',NULL,NULL,NULL,NULL),(103,25,65,70,2,1,'2026-02-19 13:59:28','2026-02-19 13:59:28',NULL,NULL,NULL,NULL),(104,25,66,97,3,1,'2026-02-19 13:59:28','2026-02-19 13:59:28',NULL,NULL,NULL,NULL),(105,25,66,98,3,1,'2026-02-19 13:59:28','2026-02-19 13:59:28',NULL,NULL,NULL,NULL),(106,25,66,99,3,1,'2026-02-19 13:59:28','2026-02-19 13:59:28',NULL,NULL,NULL,NULL),(107,25,66,102,3,1,'2026-02-19 13:59:28','2026-02-19 13:59:28',NULL,NULL,NULL,NULL),(108,25,66,103,3,1,'2026-02-19 13:59:28','2026-02-19 13:59:28',NULL,NULL,NULL,NULL),(109,25,67,109,4,1,'2026-02-19 13:59:28','2026-02-19 13:59:28',NULL,NULL,NULL,NULL),(110,25,67,110,4,1,'2026-02-19 13:59:28','2026-02-19 13:59:28',NULL,NULL,NULL,NULL),(111,25,67,111,4,1,'2026-02-19 13:59:28','2026-02-19 13:59:28',NULL,NULL,NULL,NULL),(112,25,67,113,4,1,'2026-02-19 13:59:28','2026-02-19 13:59:28',NULL,NULL,NULL,NULL),(113,25,68,124,5,1,'2026-02-19 13:59:28','2026-02-19 13:59:28',NULL,NULL,NULL,NULL),(114,25,69,132,6,1,'2026-02-19 13:59:28','2026-02-19 13:59:28',NULL,NULL,NULL,NULL),(115,25,69,133,6,1,'2026-02-19 13:59:28','2026-02-19 13:59:28',NULL,NULL,NULL,NULL),(116,25,69,134,6,1,'2026-02-19 13:59:28','2026-02-19 13:59:28',NULL,NULL,NULL,NULL),(117,25,69,135,6,1,'2026-02-19 13:59:28','2026-02-19 13:59:28',NULL,NULL,NULL,NULL);
+/*!40000 ALTER TABLE `tour_destination` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tour_exclusion`
+--
+
+DROP TABLE IF EXISTS `tour_exclusion`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tour_exclusion` (
+  `tour_exclusion_id` int NOT NULL AUTO_INCREMENT,
+  `tour_id` int NOT NULL,
+  `exclusion_text` text NOT NULL,
+  `display_order` int DEFAULT '0',
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`tour_exclusion_id`),
+  KEY `fk_tour_exclusion_tour` (`tour_id`),
+  KEY `fk_tour_exclusion_status` (`status_id`),
+  KEY `fk_tour_exclusion_terminated_by` (`terminated_by`),
+  CONSTRAINT `fk_tour_exclusion_status` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `fk_tour_exclusion_terminated_by` FOREIGN KEY (`terminated_by`) REFERENCES `user` (`user_id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `fk_tour_exclusion_tour` FOREIGN KEY (`tour_id`) REFERENCES `tour` (`tour_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tour_exclusion`
+--
+
+LOCK TABLES `tour_exclusion` WRITE;
+/*!40000 ALTER TABLE `tour_exclusion` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tour_exclusion` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tour_hero_section`
+--
+
+DROP TABLE IF EXISTS `tour_hero_section`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tour_hero_section` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `image_url` varchar(255) NOT NULL,
+  `title` varchar(100) DEFAULT NULL,
+  `subtitle` varchar(150) DEFAULT NULL,
+  `description` text,
+  `primary_button_text` varchar(50) DEFAULT NULL,
+  `primary_button_link` varchar(255) DEFAULT NULL,
+  `secondary_button_text` varchar(50) DEFAULT NULL,
+  `secondary_button_link` varchar(255) DEFAULT NULL,
+  `status` int NOT NULL,
+  `order` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `status` (`status`),
+  CONSTRAINT `tour_hero_section_ibfk_1` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tour_hero_section`
+--
+
+LOCK TABLES `tour_hero_section` WRITE;
+/*!40000 ALTER TABLE `tour_hero_section` DISABLE KEYS */;
+INSERT INTO `tour_hero_section` VALUES (1,'beach-paradise','https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1500&q=80','Discover Sri Lanka\'s Golden Beaches','Where Turquoise Waters Meet Golden Sands','Experience the breathtaking coastal beauty of Sri Lanka, from the palm-fringed beaches of Mirissa to the surfing paradise of Arugam Bay. Our curated beach tours offer the perfect blend of relaxation and adventure.','Explore Beaches','beach','View Packages','colombo',1,1,'2025-12-15 14:05:35',1,'2025-12-16 13:11:14',1,NULL,NULL),(2,'cultural-heritage','https://images.unsplash.com/photo-1585506936724-fa0c19c7b7c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1500&q=80','Journey Through Ancient Kingdoms','Explore Sri Lanka\'s Rich Cultural Tapestry','Walk through UNESCO World Heritage sites, ancient temples, and historic fortresses. Discover the architectural marvels of Sigiriya Rock Fortress and the sacred city of Kandy.','Cultural Tours','cultural','Plan Your Visit','galle',1,2,'2025-12-15 14:05:35',1,'2025-12-16 13:11:14',1,NULL,NULL),(3,'wildlife-adventure','https://images.unsplash.com/photo-1579444741963-5bce5eb9d1d2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1500&q=80','Wildlife Safari Adventures','Encounter Sri Lanka\'s Majestic Wildlife','Embark on thrilling safaris in Yala, Udawalawe, and Wilpattu National Parks. Spot leopards, elephants, sloth bears, and diverse bird species in their natural habitats.','Book Safari','wildlife','Wildlife Guide','mirissa',1,3,'2025-12-15 14:05:35',1,'2025-12-16 13:11:14',1,NULL,NULL),(4,'tea-country','https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1500&q=80','Misty Tea Plantations','Breathtaking Views of Hill Country','Journey through the emerald green tea estates of Nuwara Eliya, Ella, and Hatton. Experience tea tasting, scenic train rides, and cool mountain climate.','Hill Country Tours','hill-country','Tea Experiences','yala',1,4,'2025-12-15 14:05:35',1,'2025-12-16 13:11:14',1,NULL,NULL),(5,'adventure-tours','https://images.unsplash.com/photo-1551632811-561732d1e306?ixlib=rb-4.0.3&auto=format&fit=crop&w=1500&q=80','Extreme Adventure Experiences','Thrilling Activities Across the Island','From hiking Adam\'s Peak at sunrise to white water rafting in Kitulgala, discover adrenaline-pumping adventures across Sri Lanka\'s diverse landscapes.','Adventure Packages','adventure','View Activities','ella',1,5,'2025-12-15 14:05:35',1,'2025-12-16 13:11:14',1,NULL,NULL),(6,'ayurveda-wellness','https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1500&q=80','Ayurveda & Wellness Retreats','Rejuvenate Your Mind, Body & Soul','Experience traditional Ayurvedic treatments, yoga retreats, and meditation sessions in serene environments. Perfect for holistic healing and relaxation.','Wellness Packages','wellness','Book Retreat','bentota',1,6,'2025-12-15 14:05:35',1,'2025-12-16 13:11:14',1,NULL,NULL),(7,'food-tours','https://images.unsplash.com/photo-1565557623262-b51c2513a641?ixlib=rb-4.0.3&auto=format&fit=crop&w=1500&q=80','Sri Lankan Culinary Journey','A Feast for Your Senses','Discover authentic Sri Lankan cuisine through cooking classes, street food tours, and traditional dining experiences. Taste spices, seafood, and exotic tropical fruits.','Food Experiences','foods','Cooking Classes','jaffna',1,7,'2025-12-15 14:05:35',1,'2025-12-16 13:11:14',1,NULL,NULL),(8,'family-holidays','https://images.unsplash.com/photo-1552733407-5d5c46c3bb3b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1500&q=80','Perfect Family Getaways','Memorable Vacations for All Ages','Family-friendly tours featuring elephant orphanages, turtle conservation, train rides, and beach activities. Create unforgettable memories together.','Family Packages','family-holidays','Kid-Friendly Activities','kithulgala',1,8,'2025-12-15 14:05:35',1,'2025-12-16 13:11:14',1,NULL,NULL),(9,'honeymoon-paradise','https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1500&q=80','Romantic Sri Lankan Escapes','Dream Honeymoon Destinations','Luxury romantic getaways featuring private villas, sunset dinners, couple spa treatments, and intimate beach experiences across the island.','Honeymoon Packages','honeymoon','Romantic Experiences','trincomalee',1,9,'2025-12-15 14:05:35',1,'2025-12-16 13:11:18',1,NULL,NULL),(11,'Main Tours Hero','https://images.unsplash.com/photo-1590212869245-5b2c09f1b70b','Sri Lanka Tour Packages','Curated Journeys Across the Island','Discover our hand-picked tours designed to showcase the very best of Sri Lanka. From ancient cities to wildlife safaris, tea country to tropical beaches - find your perfect adventure.','View All Tours','/sri-lankan-tours','Customize Your Tour','/contact-us',1,1,'2026-02-20 08:16:34',1,'2026-02-20 08:16:34',NULL,NULL,NULL),(12,'Cultural Tours','https://images.unsplash.com/photo-1590212154058-ccddd1f0003e','Cultural Heritage Tours','Ancient Kingdoms & Sacred Sites','Journey through 2500 years of history visiting UNESCO World Heritage sites, ancient temples, and royal cities. Perfect for history enthusiasts and culture lovers.','Explore Cultural Tours','/sri-lankan-tours','View Destinations','/destinations',1,2,'2026-02-20 08:16:34',1,'2026-02-20 08:16:34',NULL,NULL,NULL),(13,'Wildlife Safaris','https://images.unsplash.com/photo-1549366021-9f761d450615','Wildlife Adventure Tours','Leopards, Elephants & Exotic Birds','Embark on thrilling safaris in Yala, Udawalawe, and Wilpattu. Experience incredible wildlife encounters in their natural habitats with expert guides.','View Safari Tours','/sri-lankan-tours','Best Time for Safari','/faq',1,3,'2026-02-20 08:16:34',1,'2026-02-20 08:16:34',NULL,NULL,NULL),(14,'Hill Country Escapes','https://images.unsplash.com/photo-1579232088694-9a1cdc74b27f','Misty Mountain Tours','Tea Plantations & Scenic Railways','Escape to the cool climes of Ella, Nuwara Eliya, and Kandy. Ride the famous scenic train, visit tea estates, and trek through breathtaking landscapes.','Explore Hill Country','/sri-lankan-tours','Hiking Guides','/activities',1,4,'2026-02-20 08:16:34',1,'2026-02-20 08:16:34',NULL,NULL,NULL),(15,'Beach Holidays','https://images.unsplash.com/photo-1589394815804-964ed0be2eb5','Coastal Paradise Tours','Sun, Sand & Turquoise Waters','Relax on golden beaches in Bentota, Mirissa, and Unawatuna. Perfect for honeymoons, family vacations, or simply unwinding by the Indian Ocean.','View Beach Tours','/sri-lankan-tours','Water Activities','/activities',1,5,'2026-02-20 08:16:34',1,'2026-02-20 08:16:34',NULL,NULL,NULL),(16,'Honeymoon Packages','https://images.unsplash.com/photo-1507525428034-b723cf961d3e','Romantic Getaways','Perfect for Couples','Create unforgettable memories with our specially designed honeymoon tours. Private villas, sunset dinners, and intimate experiences across Sri Lanka.','View Honeymoon Tours','/sri-lankan-tours','Plan Your Honeymoon','/contact-us',1,6,'2026-02-20 08:16:34',1,'2026-02-20 08:16:34',NULL,NULL,NULL),(17,'Short & Extended Tours','https://images.unsplash.com/photo-1544191696-102dbdaeeaa0','Flexible Tour Durations','From Quick Getaways to Grand Adventures','Choose from 3-day express tours to comprehensive 14-day island explorations. Every itinerary is crafted to match your available time and interests.','View All Durations','/sri-lankan-tours','Contact Us','/contact-us',1,7,'2026-02-20 08:16:34',1,'2026-02-20 08:16:34',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `tour_hero_section` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tour_history`
+--
+
+DROP TABLE IF EXISTS `tour_history`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tour_history` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `tour_schedule_id` int NOT NULL,
+  `package_id` int DEFAULT NULL,
+  `number_of_participate` int DEFAULT NULL,
+  `rating` decimal(3,2) DEFAULT NULL,
+  `duration` int DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text,
+  `status` int NOT NULL,
+  `color` varchar(50) DEFAULT NULL,
+  `hover_color` varchar(50) DEFAULT NULL,
+  `start_date` date DEFAULT NULL,
+  `end_date` date DEFAULT NULL,
+  `vehicle_number` varchar(255) DEFAULT NULL,
+  `driver_id` int DEFAULT NULL,
+  `guide_id` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `tour_schedule_id` (`tour_schedule_id`),
+  KEY `package_id` (`package_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `tour_history_ibfk_1` FOREIGN KEY (`tour_schedule_id`) REFERENCES `tour_schedule` (`id`),
+  CONSTRAINT `tour_history_ibfk_2` FOREIGN KEY (`package_id`) REFERENCES `packages` (`package_id`),
+  CONSTRAINT `tour_history_ibfk_3` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tour_history`
+--
+
+LOCK TABLES `tour_history` WRITE;
+/*!40000 ALTER TABLE `tour_history` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tour_history` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tour_history_images`
+--
+
+DROP TABLE IF EXISTS `tour_history_images`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tour_history_images` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `tour_schedule_id` int NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text,
+  `status` int NOT NULL,
+  `image_url` varchar(500) DEFAULT NULL,
+  `color` varchar(50) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `tour_schedule_id` (`tour_schedule_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `tour_history_images_ibfk_1` FOREIGN KEY (`tour_schedule_id`) REFERENCES `tour_schedule` (`id`),
+  CONSTRAINT `tour_history_images_ibfk_2` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tour_history_images`
+--
+
+LOCK TABLES `tour_history_images` WRITE;
+/*!40000 ALTER TABLE `tour_history_images` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tour_history_images` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tour_images`
+--
+
+DROP TABLE IF EXISTS `tour_images`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tour_images` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `tour_id` int NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text,
+  `image_url` varchar(500) DEFAULT NULL,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `tour_id` (`tour_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `tour_images_ibfk_1` FOREIGN KEY (`tour_id`) REFERENCES `tour` (`tour_id`),
+  CONSTRAINT `tour_images_ibfk_2` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=81 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tour_images`
+--
+
+LOCK TABLES `tour_images` WRITE;
+/*!40000 ALTER TABLE `tour_images` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tour_images` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tour_inclusion`
+--
+
+DROP TABLE IF EXISTS `tour_inclusion`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tour_inclusion` (
+  `tour_inclusion_id` int NOT NULL AUTO_INCREMENT,
+  `tour_id` int NOT NULL,
+  `inclusion_text` text NOT NULL,
+  `display_order` int DEFAULT '0',
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`tour_inclusion_id`),
+  KEY `fk_tour_inclusion_tour` (`tour_id`),
+  KEY `fk_tour_inclusion_status` (`status_id`),
+  KEY `fk_tour_inclusion_terminated_by` (`terminated_by`),
+  CONSTRAINT `fk_tour_inclusion_status` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `fk_tour_inclusion_terminated_by` FOREIGN KEY (`terminated_by`) REFERENCES `user` (`user_id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `fk_tour_inclusion_tour` FOREIGN KEY (`tour_id`) REFERENCES `tour` (`tour_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tour_inclusion`
+--
+
+LOCK TABLES `tour_inclusion` WRITE;
+/*!40000 ALTER TABLE `tour_inclusion` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tour_inclusion` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tour_review`
+--
+
+DROP TABLE IF EXISTS `tour_review`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tour_review` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `tour_schedule_id` int NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `review` text,
+  `rating` decimal(3,2) DEFAULT NULL,
+  `description` text,
+  `status` int NOT NULL,
+  `number_of_participate` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `tour_schedule_id` (`tour_schedule_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `tour_review_ibfk_1` FOREIGN KEY (`tour_schedule_id`) REFERENCES `tour_schedule` (`id`),
+  CONSTRAINT `tour_review_ibfk_2` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tour_review`
+--
+
+LOCK TABLES `tour_review` WRITE;
+/*!40000 ALTER TABLE `tour_review` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tour_review` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tour_review_comment`
+--
+
+DROP TABLE IF EXISTS `tour_review_comment`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tour_review_comment` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `tour_review_id` int NOT NULL,
+  `parent_comment_id` int DEFAULT NULL,
+  `user_id` int NOT NULL,
+  `comment` text NOT NULL,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `tour_review_id` (`tour_review_id`),
+  KEY `parent_comment_id` (`parent_comment_id`),
+  KEY `user_id` (`user_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `tour_review_comment_ibfk_1` FOREIGN KEY (`tour_review_id`) REFERENCES `tour_review` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `tour_review_comment_ibfk_2` FOREIGN KEY (`parent_comment_id`) REFERENCES `tour_review_comment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `tour_review_comment_ibfk_3` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `tour_review_comment_ibfk_4` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tour_review_comment`
+--
+
+LOCK TABLES `tour_review_comment` WRITE;
+/*!40000 ALTER TABLE `tour_review_comment` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tour_review_comment` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tour_review_comment_reaction`
+--
+
+DROP TABLE IF EXISTS `tour_review_comment_reaction`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tour_review_comment_reaction` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `comment_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `reaction_type_id` int NOT NULL,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `comment_id` (`comment_id`,`user_id`,`reaction_type_id`),
+  KEY `user_id` (`user_id`),
+  KEY `reaction_type_id` (`reaction_type_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `tour_review_comment_reaction_ibfk_1` FOREIGN KEY (`comment_id`) REFERENCES `tour_review_comment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `tour_review_comment_reaction_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `tour_review_comment_reaction_ibfk_3` FOREIGN KEY (`reaction_type_id`) REFERENCES `reaction_type` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `tour_review_comment_reaction_ibfk_4` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tour_review_comment_reaction`
+--
+
+LOCK TABLES `tour_review_comment_reaction` WRITE;
+/*!40000 ALTER TABLE `tour_review_comment_reaction` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tour_review_comment_reaction` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tour_review_images`
+--
+
+DROP TABLE IF EXISTS `tour_review_images`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tour_review_images` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `tour_review_id` int NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text,
+  `image_url` varchar(500) DEFAULT NULL,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `tour_review_id` (`tour_review_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `tour_review_images_ibfk_1` FOREIGN KEY (`tour_review_id`) REFERENCES `tour_review` (`id`),
+  CONSTRAINT `tour_review_images_ibfk_2` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tour_review_images`
+--
+
+LOCK TABLES `tour_review_images` WRITE;
+/*!40000 ALTER TABLE `tour_review_images` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tour_review_images` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tour_review_reaction`
+--
+
+DROP TABLE IF EXISTS `tour_review_reaction`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tour_review_reaction` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `tour_review_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `reaction_type_id` int NOT NULL,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `tour_review_id` (`tour_review_id`,`user_id`,`reaction_type_id`),
+  KEY `user_id` (`user_id`),
+  KEY `reaction_type_id` (`reaction_type_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `tour_review_reaction_ibfk_1` FOREIGN KEY (`tour_review_id`) REFERENCES `tour_review` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `tour_review_reaction_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `tour_review_reaction_ibfk_3` FOREIGN KEY (`reaction_type_id`) REFERENCES `reaction_type` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `tour_review_reaction_ibfk_4` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tour_review_reaction`
+--
+
+LOCK TABLES `tour_review_reaction` WRITE;
+/*!40000 ALTER TABLE `tour_review_reaction` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tour_review_reaction` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tour_schedule`
+--
+
+DROP TABLE IF EXISTS `tour_schedule`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tour_schedule` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `tour_id` int NOT NULL,
+  `assume_start_date` date DEFAULT NULL,
+  `assume_end_date` date DEFAULT NULL,
+  `duration_start` int DEFAULT NULL,
+  `duration_end` int DEFAULT NULL,
+  `special_note` text,
+  `description` text,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `tour_id` (`tour_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `tour_schedule_ibfk_1` FOREIGN KEY (`tour_id`) REFERENCES `tour` (`tour_id`),
+  CONSTRAINT `tour_schedule_ibfk_2` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tour_schedule`
+--
+
+LOCK TABLES `tour_schedule` WRITE;
+/*!40000 ALTER TABLE `tour_schedule` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tour_schedule` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tour_travel_tips`
+--
+
+DROP TABLE IF EXISTS `tour_travel_tips`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tour_travel_tips` (
+  `tour_travel_tip_id` int NOT NULL AUTO_INCREMENT,
+  `tour_id` int NOT NULL,
+  `tip_title` varchar(150) DEFAULT NULL,
+  `tip_description` text NOT NULL,
+  `display_order` int DEFAULT '1',
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`tour_travel_tip_id`),
+  KEY `tour_id` (`tour_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `tour_travel_tips_ibfk_1` FOREIGN KEY (`tour_id`) REFERENCES `tour` (`tour_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `tour_travel_tips_ibfk_2` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tour_travel_tips`
+--
+
+LOCK TABLES `tour_travel_tips` WRITE;
+/*!40000 ALTER TABLE `tour_travel_tips` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tour_travel_tips` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tour_type`
+--
+
+DROP TABLE IF EXISTS `tour_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tour_type` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `description` text,
+  `status` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `status` (`status`),
+  CONSTRAINT `tour_type_ibfk_1` FOREIGN KEY (`status`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tour_type`
+--
+
+LOCK TABLES `tour_type` WRITE;
+/*!40000 ALTER TABLE `tour_type` DISABLE KEYS */;
+INSERT INTO `tour_type` VALUES (1,'Adventure','Thrilling adventures including hiking, rock climbing, white water rafting, and other adrenaline-pumping activities across Sri Lanka\'s diverse landscapes.',1,'2025-10-04 15:56:45',1,'2026-02-20 08:19:33',1,NULL,NULL),(2,'Cultural','Immersive experiences exploring ancient cities, sacred temples, UNESCO World Heritage sites, and vibrant local traditions and festivals.',1,'2025-10-04 15:56:45',1,'2026-02-20 08:19:33',1,NULL,NULL),(3,'Wildlife','Exciting safaris in national parks to spot leopards, elephants, sloth bears, exotic birds, and other incredible wildlife in their natural habitat.',1,'2025-10-04 15:56:45',1,'2026-02-20 08:19:33',1,NULL,NULL),(4,'Beach','Relaxing coastal getaways featuring golden beaches, water sports, snorkeling, diving, and stunning sunsets over the Indian Ocean.',1,'2025-10-04 15:56:45',1,'2026-02-20 08:19:33',1,NULL,NULL),(5,'Wellness & Ayurveda','Rejuvenating experiences with authentic Ayurvedic treatments, yoga retreats, meditation, and spa therapies in serene natural settings.',1,'2025-10-04 15:56:45',1,'2026-02-20 08:19:33',1,NULL,NULL),(6,'Hill Country','Scenic tours through misty mountains, emerald tea plantations, charming colonial towns, and breathtaking train journeys.',1,'2026-02-20 08:19:33',1,'2026-02-20 08:19:33',NULL,NULL,NULL),(7,'Honeymoon','Romantic escapes designed for couples featuring intimate accommodations, candlelit dinners, and special experiences.',1,'2026-02-20 08:19:33',1,'2026-02-20 08:19:33',NULL,NULL,NULL),(8,'Family','Kid-friendly tours with activities and accommodations suitable for travelers of all ages, creating lasting family memories.',1,'2026-02-20 08:19:33',1,'2026-02-20 08:19:33',NULL,NULL,NULL),(9,'Photography','Specialized tours for photography enthusiasts visiting the most photogenic locations at optimal times for the perfect shot.',1,'2026-02-20 08:19:33',1,'2026-02-20 08:19:33',NULL,NULL,NULL),(10,'Food & Culinary','Delicious journeys through Sri Lankan cuisine with cooking classes, spice garden visits, and authentic local dining experiences.',1,'2026-02-20 08:19:33',1,'2026-02-20 08:19:33',NULL,NULL,NULL),(11,'Luxury','Premium tours featuring 5-star accommodations, private guides, exclusive experiences, and VIP treatment throughout your journey.',1,'2026-02-20 08:19:33',1,'2026-02-20 08:19:33',NULL,NULL,NULL),(12,'Budget','Affordable tours perfect for backpackers and cost-conscious travelers who want to experience Sri Lanka without breaking the bank.',1,'2026-02-20 08:19:33',1,'2026-02-20 08:19:33',NULL,NULL,NULL),(13,'Solo Traveler','Tours designed for independent travelers with options for joining group tours or private experiences at solo-friendly prices.',1,'2026-02-20 08:19:33',1,'2026-02-20 08:19:33',NULL,NULL,NULL),(14,'Group Tours','Fixed-departure group tours perfect for meeting fellow travelers and sharing experiences while exploring Sri Lanka together.',1,'2026-02-20 08:19:33',1,'2026-02-20 08:19:33',NULL,NULL,NULL),(15,'Private Tours','Fully customizable itineraries with private vehicle and dedicated guide, allowing you to travel at your own pace.',1,'2026-02-20 08:19:33',1,'2026-02-20 08:19:33',NULL,NULL,NULL),(16,'Short Breaks','Compact 2-4 day tours ideal for weekend getaways or travelers with limited time, focusing on key highlights.',1,'2026-02-20 08:19:33',1,'2026-02-20 08:19:33',NULL,NULL,NULL),(17,'Extended Tours','Comprehensive 10+ day tours covering multiple regions and experiences for in-depth exploration of the island.',1,'2026-02-20 08:19:33',1,'2026-02-20 08:19:33',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `tour_type` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tour_wishlist`
+--
+
+DROP TABLE IF EXISTS `tour_wishlist`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tour_wishlist` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `tour_id` int NOT NULL,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `tour_id` (`tour_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `tour_wishlist_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `tour_wishlist_ibfk_2` FOREIGN KEY (`tour_id`) REFERENCES `tour` (`tour_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `tour_wishlist_ibfk_3` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tour_wishlist`
+--
+
+LOCK TABLES `tour_wishlist` WRITE;
+/*!40000 ALTER TABLE `tour_wishlist` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tour_wishlist` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tour_wishlist_history`
+--
+
+DROP TABLE IF EXISTS `tour_wishlist_history`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tour_wishlist_history` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `tour_id` int NOT NULL,
+  `wishlist_id` int NOT NULL,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `tour_id` (`tour_id`),
+  KEY `wishlist_id` (`wishlist_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `tour_wishlist_history_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `tour_wishlist_history_ibfk_2` FOREIGN KEY (`tour_id`) REFERENCES `tour` (`tour_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `tour_wishlist_history_ibfk_3` FOREIGN KEY (`wishlist_id`) REFERENCES `tour_wishlist` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `tour_wishlist_history_ibfk_4` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tour_wishlist_history`
+--
+
+LOCK TABLES `tour_wishlist_history` WRITE;
+/*!40000 ALTER TABLE `tour_wishlist_history` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tour_wishlist_history` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `transmission_types`
+--
+
+DROP TABLE IF EXISTS `transmission_types`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `transmission_types` (
+  `transmission_type_id` int NOT NULL AUTO_INCREMENT,
+  `transmission_type_name` varchar(50) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `is_active` tinyint(1) DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`transmission_type_id`),
+  UNIQUE KEY `transmission_type_name` (`transmission_type_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `transmission_types`
+--
+
+LOCK TABLES `transmission_types` WRITE;
+/*!40000 ALTER TABLE `transmission_types` DISABLE KEYS */;
+INSERT INTO `transmission_types` VALUES (1,'Manual','Manual transmission',1,'2025-11-02 06:13:48',NULL,'2025-11-02 06:13:48',NULL,NULL,NULL),(2,'Automatic','Traditional automatic transmission',1,'2025-11-02 06:13:48',NULL,'2025-11-02 06:13:48',NULL,NULL,NULL),(3,'CVT','Continuously Variable Transmission',1,'2025-11-02 06:13:48',NULL,'2025-11-02 06:13:48',NULL,NULL,NULL),(4,'DCT','Dual-Clutch Transmission',1,'2025-11-02 06:13:48',NULL,'2025-11-02 06:13:48',NULL,NULL,NULL),(5,'AMT','Automated Manual Transmission',1,'2025-11-02 06:13:48',NULL,'2025-11-02 06:13:48',NULL,NULL,NULL),(6,'Semi-Automatic','Semi-automatic transmission',1,'2025-11-02 06:13:48',NULL,'2025-11-02 06:13:48',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `transmission_types` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user`
+--
+
+DROP TABLE IF EXISTS `user`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user` (
+  `user_id` int NOT NULL AUTO_INCREMENT,
+  `username` varchar(100) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `first_name` varchar(100) DEFAULT NULL,
+  `middle_name` varchar(100) DEFAULT NULL,
+  `last_name` varchar(100) DEFAULT NULL,
+  `address_id` int DEFAULT NULL,
+  `nic` varchar(20) DEFAULT NULL,
+  `gender_id` int DEFAULT NULL,
+  `passport_number` varchar(50) DEFAULT NULL,
+  `driving_license_number` varchar(50) DEFAULT NULL,
+  `email` varchar(150) DEFAULT NULL,
+  `mobile_number1` varchar(20) DEFAULT NULL,
+  `mobile_number2` varchar(20) DEFAULT NULL,
+  `region_id` int DEFAULT NULL,
+  `religion_id` int DEFAULT NULL,
+  `date_of_birth` date DEFAULT NULL,
+  `image_url` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `user_status_id` int DEFAULT NULL,
+  `benefits_points_count` int DEFAULT '0',
+  `wallet_id` int DEFAULT NULL,
+  `user_type_id` int DEFAULT NULL,
+  `email2` varchar(200) DEFAULT NULL,
+  PRIMARY KEY (`user_id`),
+  UNIQUE KEY `username` (`username`),
+  UNIQUE KEY `nic` (`nic`),
+  UNIQUE KEY `email` (`email`),
+  KEY `address_id` (`address_id`),
+  KEY `gender_id` (`gender_id`),
+  KEY `region_id` (`region_id`),
+  KEY `religion_id` (`religion_id`),
+  KEY `user_status_id` (`user_status_id`),
+  KEY `wallet_id` (`wallet_id`),
+  KEY `user_type_id` (`user_type_id`),
+  CONSTRAINT `user_ibfk_1` FOREIGN KEY (`address_id`) REFERENCES `address` (`address_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `user_ibfk_2` FOREIGN KEY (`gender_id`) REFERENCES `gender` (`gender_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `user_ibfk_3` FOREIGN KEY (`region_id`) REFERENCES `country` (`country_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `user_ibfk_4` FOREIGN KEY (`religion_id`) REFERENCES `religion` (`religion_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `user_ibfk_5` FOREIGN KEY (`user_status_id`) REFERENCES `user_status` (`user_status_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `user_ibfk_6` FOREIGN KEY (`wallet_id`) REFERENCES `wallet` (`wallet_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `user_ibfk_7` FOREIGN KEY (`user_type_id`) REFERENCES `user_type` (`user_type_id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user`
+--
+
+LOCK TABLES `user` WRITE;
+/*!40000 ALTER TABLE `user` DISABLE KEYS */;
+INSERT INTO `user` VALUES (1,'pasindu','$2a$12$O6z9l/TwseYdoonQdFEhCeXNT2Hp/l1ckfpq9otmV.nQ/qn8khwki','Pasindu','Dilshan','Dimbulana',1,'901234567V',1,'N1234567','B1234567','john.doe@example.com','+94123456789','+94111222333',1,NULL,'1999-08-07','https://res.cloudinary.com/dtzrivqye/image/upload/v1771134250/apigj8srrb4f3ilzvg58.jpg','2025-09-21 14:06:10','2026-02-15 05:45:03',1,2550,1,2,NULL),(2,'adminuser','$2a$12$A3m1vy9bjtvI5hRfw5hh7etBxN.BXouSfuUTveA9yxC01fEjUrFxa','Admin',NULL,'User',2,'200045678V',2,'M7654321','D1239876','admin@example.com','0751234567','0769876543',2,2,'1985-05-20','/images/users/user-2.jpg','2025-09-21 14:06:10','2025-12-04 16:46:48',1,1200,2,1,NULL),(3,'adminuser2','$2a$12$A3m1vy9bjtvI5hRfw5hh7etBxN.BXouSfuUTveA9yxC01fEjUrFxa','Admin',NULL,'User',1,'102045678V',2,'M7654323','D1231876','ad2min@example.com','0751234532','0769876512',2,2,'1985-05-20','/images/users/user-3.jpg','2025-09-21 14:06:10','2025-12-04 16:46:48',1,500,3,1,NULL),(4,'user3','$2a$12$A3m1vy9bjtvI5hRfw5hh7etBxN.BXouSfuUTveA9yxC01fEjUrFxa',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'/images/users/user-4.jpg','2025-11-18 17:25:41','2025-12-04 16:46:48',NULL,0,NULL,NULL,NULL),(5,'pasindu123','$2a$12$XPp.p/YMp8k0dSlH8OajQe.HUguKUspKTyzkgK3ocNVZK6LrqYL5e','Pasindu','','Dilshan',NULL,NULL,NULL,NULL,NULL,'pasindu1@example.com','0771234567','0711234567',NULL,NULL,NULL,'/images/users/user-5.jpg','2025-11-23 07:06:05','2025-12-04 16:46:48',NULL,0,NULL,NULL,NULL),(6,'pasindudilshan','$2a$12$d4NZzcyAHXN8NpdGlZT0L.gQju42mgHPwfn1yc1eMe78AkNMa58uK','abc','ggi','def',NULL,NULL,NULL,NULL,NULL,'pas@gmail.com','0705752632',NULL,NULL,NULL,NULL,'/images/users/user-6.jpg','2025-11-23 07:22:36','2025-12-04 16:46:48',NULL,0,NULL,NULL,NULL),(8,'pas','$2a$12$euucHq3Ht./qJjfZDImNfOwiuUSsqgtKUhLYC8uZqkQPtFnmft/iy','aaa','ccc','bbb',NULL,NULL,NULL,NULL,NULL,'pass@gmail.com','0760654628',NULL,NULL,NULL,NULL,'/images/users/user-7.jpg','2025-11-23 07:30:00','2025-12-04 16:46:48',NULL,0,NULL,NULL,NULL),(9,'priyanka_g','TourGuide@2024','Priyanka',NULL,'Sharma',NULL,'199015500123',2,NULL,NULL,'priyanka.sharma@travelagency.com','+94771234567',NULL,NULL,NULL,'1990-05-15','/images/users/user-7.jpg','2025-12-06 15:33:15','2025-12-06 15:39:31',1,0,NULL,2,NULL),(10,'ravi_f','Guide2024@Ravi','Ravi',NULL,'Fernando',NULL,'198822800456',1,NULL,NULL,'ravi.fernando@travelagency.com','+94772345678',NULL,NULL,NULL,'1988-08-22','/images/users/user-5.jpg','2025-12-06 15:33:15','2025-12-06 15:39:31',1,0,NULL,2,NULL),(11,'anjali_p','PereraGuide@123','Anjali',NULL,'Perera',NULL,'199230700789',2,NULL,NULL,'anjali.perera@travelagency.com','+94773456789',NULL,NULL,NULL,'1992-11-30','/images/users/user-2.jpg','2025-12-06 15:33:15','2025-12-06 15:39:31',1,0,NULL,2,NULL),(12,'test','$2a$12$FOTxezpcZ20ZlfTp8wIjWuD9kX4q9ilgNy2I141DXHGGt0HKh8WP6','test','test','test',NULL,NULL,NULL,NULL,NULL,'test@example.com','0760767626',NULL,NULL,NULL,NULL,NULL,'2025-12-11 16:46:59','2025-12-11 16:46:59',NULL,0,NULL,NULL,NULL),(14,'pasindu99x','$2a$12$L11s0j317tz56gVN0LJE.uf7w1iE9JHBDOJFBWpNUJ6l0VCexleJ2','Pasindu',NULL,'Dilshan',NULL,NULL,NULL,NULL,NULL,'john@example.com','0707076052',NULL,NULL,NULL,NULL,NULL,'2026-01-06 11:39:51','2026-01-06 11:39:51',NULL,0,NULL,NULL,NULL);
+/*!40000 ALTER TABLE `user` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_level`
+--
+
+DROP TABLE IF EXISTS `user_level`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_level` (
+  `user_level_id` int NOT NULL AUTO_INCREMENT,
+  `level` varchar(50) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  `points_needed` int DEFAULT NULL,
+  PRIMARY KEY (`user_level_id`),
+  KEY `fk_user_level_status` (`status_id`),
+  CONSTRAINT `fk_user_level_status` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_level`
+--
+
+LOCK TABLES `user_level` WRITE;
+/*!40000 ALTER TABLE `user_level` DISABLE KEYS */;
+INSERT INTO `user_level` VALUES (1,'Silver','Entry-level member - Start earning points with every booking. Basic benefits include 2% discount on tours and early access to special offers.',1,'2025-09-24 05:42:53',1,'2026-02-20 08:22:42',1,NULL,NULL,0),(2,'Gold','Mid-tier member - Unlock better rewards. Enjoy 5% discount on tours, priority customer support, and exclusive seasonal promotions.',1,'2025-09-24 05:42:53',1,'2026-02-20 08:22:42',1,NULL,NULL,1000),(3,'Platinum','Top-tier member - Maximum benefits. Enjoy 10% discount on tours, dedicated concierge service, free airport transfers, and VIP treatment at partner hotels.',1,'2025-09-24 05:42:53',1,'2026-02-20 08:22:42',1,NULL,NULL,5000),(4,'Bronze','Starter level - New members begin here. Earn points with your first booking and get 1% discount on selected tours.',1,'2026-02-20 08:22:42',1,'2026-02-20 08:22:42',NULL,NULL,NULL,0),(5,'Diamond','Elite member - Our most exclusive tier. Enjoy 15% discount on all tours, complimentary upgrades, private guides, and exclusive access to luxury experiences.',1,'2026-02-20 08:22:42',1,'2026-02-20 08:22:42',NULL,NULL,NULL,10000);
+/*!40000 ALTER TABLE `user_level` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_level_benefit`
+--
+
+DROP TABLE IF EXISTS `user_level_benefit`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_level_benefit` (
+  `benefit_id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `description` text,
+  `benefit_value` decimal(10,2) DEFAULT NULL,
+  `benefit_type_id` int NOT NULL,
+  `valid_from` date DEFAULT NULL,
+  `valid_to` date DEFAULT NULL,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`benefit_id`),
+  KEY `fk_user_level_benefit_type` (`benefit_type_id`),
+  KEY `fk_user_level_benefit_status` (`status_id`),
+  CONSTRAINT `fk_user_level_benefit_status` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `fk_user_level_benefit_type` FOREIGN KEY (`benefit_type_id`) REFERENCES `benefit_type` (`benefit_type_id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_level_benefit`
+--
+
+LOCK TABLES `user_level_benefit` WRITE;
+/*!40000 ALTER TABLE `user_level_benefit` DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_level_benefit` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_level_benefit_mapping`
+--
+
+DROP TABLE IF EXISTS `user_level_benefit_mapping`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_level_benefit_mapping` (
+  `user_level_id` int NOT NULL,
+  `benefit_id` int NOT NULL,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`user_level_id`,`benefit_id`),
+  KEY `fk_mapping_benefit` (`benefit_id`),
+  KEY `fk_mapping_status` (`status_id`),
+  CONSTRAINT `fk_mapping_benefit` FOREIGN KEY (`benefit_id`) REFERENCES `user_level_benefit` (`benefit_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_mapping_status` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `fk_mapping_user_level` FOREIGN KEY (`user_level_id`) REFERENCES `user_level` (`user_level_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_level_benefit_mapping`
+--
+
+LOCK TABLES `user_level_benefit_mapping` WRITE;
+/*!40000 ALTER TABLE `user_level_benefit_mapping` DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_level_benefit_mapping` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_notification_permission`
+--
+
+DROP TABLE IF EXISTS `user_notification_permission`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_notification_permission` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `new_tours` tinyint(1) DEFAULT '0',
+  `new_tours_updated_at` datetime DEFAULT NULL,
+  `new_packages` tinyint(1) DEFAULT '0',
+  `new_packages_updated_at` datetime DEFAULT NULL,
+  `new_destinations` tinyint(1) DEFAULT '0',
+  `new_destinations_updated_at` datetime DEFAULT NULL,
+  `new_activities` tinyint(1) DEFAULT '0',
+  `new_activities_updated_at` datetime DEFAULT NULL,
+  `discounts` tinyint(1) DEFAULT '0',
+  `discounts_updated_at` datetime DEFAULT NULL,
+  `free_coupons` tinyint(1) DEFAULT '0',
+  `free_coupons_updated_at` datetime DEFAULT NULL,
+  `your_tour_details` tinyint(1) DEFAULT '0',
+  `your_tour_details_updated_at` datetime DEFAULT NULL,
+  `tour_reminders` tinyint(1) DEFAULT '0',
+  `tour_reminders_updated_at` datetime DEFAULT NULL,
+  `tour_suggestions` tinyint(1) DEFAULT '0',
+  `tour_suggestions_updated_at` datetime DEFAULT NULL,
+  `special_notices` tinyint(1) DEFAULT '0',
+  `special_notices_updated_at` datetime DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_id` (`user_id`),
+  CONSTRAINT `user_notification_permission_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_notification_permission`
+--
+
+LOCK TABLES `user_notification_permission` WRITE;
+/*!40000 ALTER TABLE `user_notification_permission` DISABLE KEYS */;
+INSERT INTO `user_notification_permission` VALUES (1,1,1,'2026-02-04 09:10:42',1,'2025-12-02 18:13:36',1,'2025-12-02 18:13:36',1,'2026-02-04 09:06:51',1,'2025-12-02 18:13:36',1,'2025-12-02 18:13:36',1,'2025-12-02 18:13:36',1,'2025-12-02 18:13:36',1,'2025-12-02 18:13:36',1,'2025-12-02 18:13:36','2025-11-28 14:07:36','2026-02-04 03:40:42');
+/*!40000 ALTER TABLE `user_notification_permission` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_profile_sidebar`
+--
+
+DROP TABLE IF EXISTS `user_profile_sidebar`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_profile_sidebar` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `parent_id` int DEFAULT NULL,
+  `name` varchar(100) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `privilege_id` int DEFAULT NULL,
+  `status_id` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  `url` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `parent_id` (`parent_id`),
+  KEY `privilege_id` (`privilege_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `user_profile_sidebar_ibfk_1` FOREIGN KEY (`parent_id`) REFERENCES `user_profile_sidebar` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `user_profile_sidebar_ibfk_2` FOREIGN KEY (`privilege_id`) REFERENCES `privileges` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `user_profile_sidebar_ibfk_3` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_profile_sidebar`
+--
+
+LOCK TABLES `user_profile_sidebar` WRITE;
+/*!40000 ALTER TABLE `user_profile_sidebar` DISABLE KEYS */;
+INSERT INTO `user_profile_sidebar` VALUES (1,NULL,'Profile','View and edit your profile',82,1,'2025-11-24 12:08:17',NULL,'2026-02-05 10:55:03',NULL,NULL,NULL,'/user'),(2,NULL,'Tours','You complete these tours',99,1,'2025-11-24 12:08:17',NULL,'2026-02-05 10:55:03',NULL,NULL,NULL,NULL),(3,NULL,'Wish List','Your saved items',93,1,'2025-11-24 12:08:17',NULL,'2026-02-05 10:55:03',NULL,NULL,NULL,NULL),(4,NULL,'Coupons & Offers','Your available coupons',88,1,'2025-11-24 12:08:17',NULL,'2026-02-05 10:55:03',NULL,NULL,NULL,'/coupons'),(5,NULL,'Account Security','Security settings',91,1,'2025-11-24 12:08:17',NULL,'2026-02-05 10:55:03',NULL,NULL,NULL,NULL),(6,NULL,'User benefits','Benifits you have',96,1,'2025-11-24 12:08:17',NULL,'2026-02-05 10:55:03',NULL,NULL,NULL,NULL),(7,NULL,'Wallet','Your wallet details',89,1,'2025-11-24 12:08:17',NULL,'2026-02-05 10:55:03',NULL,NULL,NULL,'/wallet'),(8,NULL,'Browsing History','View browsing history',90,1,'2025-11-24 12:08:17',NULL,'2026-02-05 10:55:03',NULL,NULL,NULL,NULL),(9,NULL,'Notifications','Manage notifications',92,1,'2025-11-24 12:08:17',NULL,'2026-02-05 10:55:03',NULL,NULL,NULL,NULL),(10,NULL,'Reviews','Your reviews',83,1,'2025-11-24 12:08:17',NULL,'2026-02-05 10:55:03',NULL,NULL,NULL,'/reviews'),(11,2,'Pending Tours','Tours which you have cancelled',100,1,'2025-11-24 12:08:17',NULL,'2026-02-14 11:04:57',NULL,NULL,NULL,NULL),(12,2,'Requested Tours','Tours which you requsted',97,1,'2025-11-24 12:08:17',NULL,'2026-02-14 11:04:57',NULL,NULL,NULL,NULL),(13,2,'Upcoming Tours','You books these tours',95,1,'2025-11-24 12:08:17',NULL,'2026-02-14 11:04:57',NULL,NULL,NULL,NULL),(14,2,'Completed Tours','You complete these tours',94,1,'2025-11-24 12:08:17',NULL,'2026-02-14 11:04:57',NULL,NULL,NULL,NULL),(15,2,'Cancelled Tours','Tours which you have cancelled',98,1,'2025-11-24 12:08:17',NULL,'2026-02-14 11:04:57',NULL,NULL,NULL,NULL),(16,10,'Tour Reviews','Your tour reviews',85,1,'2025-11-24 12:08:22',NULL,'2026-02-14 11:05:40',NULL,NULL,NULL,NULL),(17,10,'Destination Reviews','Your destination reviews',87,1,'2025-11-24 12:08:22',NULL,'2026-02-14 11:05:40',NULL,NULL,NULL,NULL),(18,10,'Activity Reviews','Your activity reviews',86,1,'2025-11-24 12:08:22',NULL,'2026-02-14 11:05:40',NULL,NULL,NULL,NULL),(19,10,'Package Reviews','Your package reviews',84,1,'2025-11-24 12:08:22',NULL,'2026-02-05 10:55:03',NULL,NULL,NULL,NULL);
+/*!40000 ALTER TABLE `user_profile_sidebar` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_roles`
+--
+
+DROP TABLE IF EXISTS `user_roles`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_roles` (
+  `user_id` int NOT NULL,
+  `role_id` int NOT NULL,
+  PRIMARY KEY (`user_id`,`role_id`),
+  KEY `role_id` (`role_id`),
+  CONSTRAINT `user_roles_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`),
+  CONSTRAINT `user_roles_ibfk_2` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_roles`
+--
+
+LOCK TABLES `user_roles` WRITE;
+/*!40000 ALTER TABLE `user_roles` DISABLE KEYS */;
+INSERT INTO `user_roles` VALUES (1,1),(14,1),(2,2),(5,2),(6,2),(8,2),(12,2),(3,3);
+/*!40000 ALTER TABLE `user_roles` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_secret_question`
+--
+
+DROP TABLE IF EXISTS `user_secret_question`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_secret_question` (
+  `user_secret_question_id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `secret_question_id` int NOT NULL,
+  `secret_answer` varchar(255) NOT NULL,
+  `status_id` int DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`user_secret_question_id`),
+  UNIQUE KEY `uk_user_secret_question` (`user_id`,`secret_question_id`),
+  KEY `fk_user_secret_question_question` (`secret_question_id`),
+  KEY `fk_user_secret_question_status` (`status_id`),
+  CONSTRAINT `fk_user_secret_question_question` FOREIGN KEY (`secret_question_id`) REFERENCES `secret_question` (`secret_question_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `fk_user_secret_question_status` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `fk_user_secret_question_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_secret_question`
+--
+
+LOCK TABLES `user_secret_question` WRITE;
+/*!40000 ALTER TABLE `user_secret_question` DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_secret_question` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_status`
+--
+
+DROP TABLE IF EXISTS `user_status`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_status` (
+  `user_status_id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `status_id` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`user_status_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `user_status_ibfk_1` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_status`
+--
+
+LOCK TABLES `user_status` WRITE;
+/*!40000 ALTER TABLE `user_status` DISABLE KEYS */;
+INSERT INTO `user_status` VALUES (1,'Active','User account is active and can log in, make bookings, and access all features',1,'2025-09-21 14:06:10',1,'2026-02-20 08:27:41',1,NULL,NULL),(2,'Suspended','User account temporarily suspended due to policy violations or payment issues',2,'2025-09-21 14:06:10',1,'2026-02-20 08:27:41',1,NULL,NULL),(18,'Pending Verification','New user awaiting email or phone verification',5,'2026-02-20 08:27:41',1,'2026-02-20 08:27:41',NULL,NULL,NULL),(19,'Inactive','User account is inactive (user has not logged in for extended period)',2,'2026-02-20 08:27:41',1,'2026-02-20 08:27:41',NULL,NULL,NULL),(20,'Blocked','User permanently blocked due to serious violations',2,'2026-02-20 08:27:41',1,'2026-02-20 08:27:41',NULL,NULL,NULL),(21,'Deleted','User account deleted (kept for audit purposes)',7,'2026-02-20 08:27:41',1,'2026-02-20 08:27:41',NULL,NULL,NULL),(22,'Locked','Account temporarily locked due to multiple failed login attempts',2,'2026-02-20 08:27:41',1,'2026-02-20 08:27:41',NULL,NULL,NULL),(23,'VIP','VIP user with special privileges and priority support',3,'2026-02-20 08:27:41',1,'2026-02-20 08:27:41',NULL,NULL,NULL),(24,'Verified','Email and phone verified user',1,'2026-02-20 08:27:41',1,'2026-02-20 08:27:41',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `user_status` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_type`
+--
+
+DROP TABLE IF EXISTS `user_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_type` (
+  `user_type_id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `projects_access` varchar(255) DEFAULT NULL,
+  `status_id` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`user_type_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `user_type_ibfk_1` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_type`
+--
+
+LOCK TABLES `user_type` WRITE;
+/*!40000 ALTER TABLE `user_type` DISABLE KEYS */;
+INSERT INTO `user_type` VALUES (1,'Admin','System administrator with full access to all features, user management, and system settings','ALL',1,'2025-09-21 14:06:10',1,'2026-02-20 08:27:41',1,NULL,NULL),(2,'Customer','Regular customer who can browse tours, make bookings, write reviews, and manage their profile','BOOKING,REVIEW,PROFILE',1,'2025-09-21 14:06:10',1,'2026-02-20 08:27:41',1,NULL,NULL),(3,'Super Admin','Highest level administrator with full system access including user management, content management, financial data, and system configuration','ALL',1,'2026-02-20 08:27:41',1,'2026-02-20 08:27:41',NULL,NULL,NULL),(4,'Tour Manager','Manages tour packages, itineraries, pricing, and availability. Can create and update tour content.','TOUR_CREATE,TOUR_UPDATE,TOUR_DELETE,TOUR_VIEW',1,'2026-02-20 08:27:41',1,'2026-02-20 08:27:41',NULL,NULL,NULL),(5,'Content Manager','Manages blog posts, destination guides, website content, and SEO optimization','BLOG_CREATE,BLOG_UPDATE,BLOG_DELETE,CONTENT_MANAGE',1,'2026-02-20 08:27:41',1,'2026-02-20 08:27:41',NULL,NULL,NULL),(6,'Customer Support','Handles customer inquiries, booking issues, and provides support via chat/email/phone','BOOKING_VIEW,CUSTOMER_CHAT,TICKET_MANAGE',1,'2026-02-20 08:27:41',1,'2026-02-20 08:27:41',NULL,NULL,NULL),(7,'Sales Agent','Manages bookings, processes payments, and handles customer communications','BOOKING_CREATE,BOOKING_UPDATE,BOOKING_VIEW,PAYMENT_PROCESS',1,'2026-02-20 08:27:41',1,'2026-02-20 08:27:41',NULL,NULL,NULL),(8,'Guide','Tour guide who can view assigned tours, update tour notes, and communicate with customers','TOUR_VIEW_ASSIGNED,CUSTOMER_COMMUNICATE',1,'2026-02-20 08:27:41',1,'2026-02-20 08:27:41',NULL,NULL,NULL),(9,'Driver','Driver who can view assigned transportation schedules and route information','TRANSPORT_VIEW_ASSIGNED',1,'2026-02-20 08:27:41',1,'2026-02-20 08:27:41',NULL,NULL,NULL),(10,'Partner','Hotel, activity provider, or other partner who can manage their listings and availability','PARTNER_LISTING_MANAGE,PARTNER_BOOKING_VIEW',1,'2026-02-20 08:27:41',1,'2026-02-20 08:27:41',NULL,NULL,NULL),(11,'Affiliate','Affiliate partner who can track referrals and commissions','AFFILIATE_DASHBOARD,COMMISSION_VIEW',1,'2026-02-20 08:27:41',1,'2026-02-20 08:27:41',NULL,NULL,NULL),(12,'Newsletter Subscriber','User who has only subscribed to newsletters without full account','NEWSLETTER_ONLY',1,'2026-02-20 08:27:41',1,'2026-02-20 08:27:41',NULL,NULL,NULL),(13,'Social Media User','User who registered via social media with limited profile information','SOCIAL_LOGIN,PROFILE_BASIC',1,'2026-02-20 08:27:41',1,'2026-02-20 08:27:41',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `user_type` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `vehicle_assignments`
+--
+
+DROP TABLE IF EXISTS `vehicle_assignments`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `vehicle_assignments` (
+  `assignment_id` int NOT NULL AUTO_INCREMENT,
+  `vehicle_id` int NOT NULL,
+  `start_date` date NOT NULL,
+  `end_date` date DEFAULT NULL,
+  `purpose` varchar(255) DEFAULT NULL,
+  `remarks` text,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  `driver_id` int DEFAULT NULL,
+  PRIMARY KEY (`assignment_id`),
+  KEY `vehicle_id` (`vehicle_id`),
+  KEY `driver_id` (`driver_id`),
+  CONSTRAINT `vehicle_assignments_ibfk_1` FOREIGN KEY (`vehicle_id`) REFERENCES `vehicles` (`vehicle_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `vehicle_assignments_ibfk_2` FOREIGN KEY (`driver_id`) REFERENCES `user` (`user_id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vehicle_assignments`
+--
+
+LOCK TABLES `vehicle_assignments` WRITE;
+/*!40000 ALTER TABLE `vehicle_assignments` DISABLE KEYS */;
+/*!40000 ALTER TABLE `vehicle_assignments` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `vehicle_details`
+--
+
+DROP TABLE IF EXISTS `vehicle_details`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `vehicle_details` (
+  `vehicle_details_id` int NOT NULL AUTO_INCREMENT,
+  `vehicle_id` int NOT NULL,
+  `chassis_number` varchar(50) DEFAULT NULL,
+  `engine_number` varchar(50) DEFAULT NULL,
+  `registration_date` date DEFAULT NULL,
+  `insurance_company` varchar(100) DEFAULT NULL,
+  `insurance_policy_number` varchar(50) DEFAULT NULL,
+  `insurance_expiry_date` date DEFAULT NULL,
+  `emission_test_number` varchar(50) DEFAULT NULL,
+  `emission_expiry_date` date DEFAULT NULL,
+  `permit_number` varchar(50) DEFAULT NULL,
+  `permit_expiry_date` date DEFAULT NULL,
+  `warranty_expiry_date` date DEFAULT NULL,
+  `gps_tracking_id` varchar(100) DEFAULT NULL,
+  `last_service_date` date DEFAULT NULL,
+  `next_service_date` date DEFAULT NULL,
+  `mileage` int DEFAULT NULL,
+  `remarks` text,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`vehicle_details_id`),
+  UNIQUE KEY `vehicle_id` (`vehicle_id`),
+  CONSTRAINT `vehicle_details_ibfk_1` FOREIGN KEY (`vehicle_id`) REFERENCES `vehicles` (`vehicle_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vehicle_details`
+--
+
+LOCK TABLES `vehicle_details` WRITE;
+/*!40000 ALTER TABLE `vehicle_details` DISABLE KEYS */;
+/*!40000 ALTER TABLE `vehicle_details` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `vehicle_document_types`
+--
+
+DROP TABLE IF EXISTS `vehicle_document_types`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `vehicle_document_types` (
+  `document_type_id` int NOT NULL AUTO_INCREMENT,
+  `document_type_name` varchar(50) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `is_required` tinyint(1) DEFAULT '0',
+  `validity_period_months` int DEFAULT NULL,
+  `is_active` tinyint(1) DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`document_type_id`),
+  UNIQUE KEY `document_type_name` (`document_type_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vehicle_document_types`
+--
+
+LOCK TABLES `vehicle_document_types` WRITE;
+/*!40000 ALTER TABLE `vehicle_document_types` DISABLE KEYS */;
+/*!40000 ALTER TABLE `vehicle_document_types` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `vehicle_documents`
+--
+
+DROP TABLE IF EXISTS `vehicle_documents`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `vehicle_documents` (
+  `document_id` int NOT NULL AUTO_INCREMENT,
+  `vehicle_id` int NOT NULL,
+  `document_type_id` int DEFAULT NULL,
+  `document_name` varchar(100) DEFAULT NULL,
+  `file_url` varchar(255) DEFAULT NULL,
+  `issue_date` date DEFAULT NULL,
+  `expiry_date` date DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`document_id`),
+  KEY `vehicle_id` (`vehicle_id`),
+  KEY `document_type_id` (`document_type_id`),
+  CONSTRAINT `vehicle_documents_ibfk_1` FOREIGN KEY (`vehicle_id`) REFERENCES `vehicles` (`vehicle_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `vehicle_documents_ibfk_2` FOREIGN KEY (`document_type_id`) REFERENCES `vehicle_document_types` (`document_type_id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vehicle_documents`
+--
+
+LOCK TABLES `vehicle_documents` WRITE;
+/*!40000 ALTER TABLE `vehicle_documents` DISABLE KEYS */;
+/*!40000 ALTER TABLE `vehicle_documents` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `vehicle_fuel_records`
+--
+
+DROP TABLE IF EXISTS `vehicle_fuel_records`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `vehicle_fuel_records` (
+  `fuel_record_id` int NOT NULL AUTO_INCREMENT,
+  `vehicle_id` int NOT NULL,
+  `refuel_date` date NOT NULL,
+  `fuel_type_id` int DEFAULT NULL,
+  `quantity_liters` decimal(10,2) DEFAULT NULL,
+  `cost` decimal(10,2) DEFAULT NULL,
+  `odometer_reading` int DEFAULT NULL,
+  `refuel_station` varchar(150) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`fuel_record_id`),
+  KEY `vehicle_id` (`vehicle_id`),
+  KEY `fuel_type_id` (`fuel_type_id`),
+  CONSTRAINT `vehicle_fuel_records_ibfk_1` FOREIGN KEY (`vehicle_id`) REFERENCES `vehicles` (`vehicle_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `vehicle_fuel_records_ibfk_2` FOREIGN KEY (`fuel_type_id`) REFERENCES `fuel_types` (`fuel_type_id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vehicle_fuel_records`
+--
+
+LOCK TABLES `vehicle_fuel_records` WRITE;
+/*!40000 ALTER TABLE `vehicle_fuel_records` DISABLE KEYS */;
+/*!40000 ALTER TABLE `vehicle_fuel_records` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `vehicle_images`
+--
+
+DROP TABLE IF EXISTS `vehicle_images`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `vehicle_images` (
+  `image_id` int NOT NULL AUTO_INCREMENT,
+  `vehicle_id` int NOT NULL,
+  `image_url` varchar(255) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `image_name` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`image_id`),
+  KEY `vehicle_id` (`vehicle_id`),
+  CONSTRAINT `vehicle_images_ibfk_1` FOREIGN KEY (`vehicle_id`) REFERENCES `vehicles` (`vehicle_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vehicle_images`
+--
+
+LOCK TABLES `vehicle_images` WRITE;
+/*!40000 ALTER TABLE `vehicle_images` DISABLE KEYS */;
+/*!40000 ALTER TABLE `vehicle_images` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `vehicle_inspections`
+--
+
+DROP TABLE IF EXISTS `vehicle_inspections`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `vehicle_inspections` (
+  `inspection_id` int NOT NULL AUTO_INCREMENT,
+  `vehicle_id` int NOT NULL,
+  `inspection_type` enum('Emission','Safety','Annual','Other') DEFAULT NULL,
+  `inspection_date` date DEFAULT NULL,
+  `expiry_date` date DEFAULT NULL,
+  `inspection_center` varchar(150) DEFAULT NULL,
+  `result` enum('Pass','Fail','Pending') DEFAULT NULL,
+  `remarks` text,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`inspection_id`),
+  KEY `vehicle_id` (`vehicle_id`),
+  CONSTRAINT `vehicle_inspections_ibfk_1` FOREIGN KEY (`vehicle_id`) REFERENCES `vehicles` (`vehicle_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vehicle_inspections`
+--
+
+LOCK TABLES `vehicle_inspections` WRITE;
+/*!40000 ALTER TABLE `vehicle_inspections` DISABLE KEYS */;
+/*!40000 ALTER TABLE `vehicle_inspections` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `vehicle_locations`
+--
+
+DROP TABLE IF EXISTS `vehicle_locations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `vehicle_locations` (
+  `location_id` int NOT NULL AUTO_INCREMENT,
+  `vehicle_id` int NOT NULL,
+  `latitude` decimal(10,6) DEFAULT NULL,
+  `longitude` decimal(10,6) DEFAULT NULL,
+  `recorded_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`location_id`),
+  KEY `vehicle_id` (`vehicle_id`),
+  CONSTRAINT `vehicle_locations_ibfk_1` FOREIGN KEY (`vehicle_id`) REFERENCES `vehicles` (`vehicle_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vehicle_locations`
+--
+
+LOCK TABLES `vehicle_locations` WRITE;
+/*!40000 ALTER TABLE `vehicle_locations` DISABLE KEYS */;
+/*!40000 ALTER TABLE `vehicle_locations` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `vehicle_maintenance_schedule`
+--
+
+DROP TABLE IF EXISTS `vehicle_maintenance_schedule`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `vehicle_maintenance_schedule` (
+  `schedule_id` int NOT NULL AUTO_INCREMENT,
+  `vehicle_id` int NOT NULL,
+  `maintenance_type` varchar(100) DEFAULT NULL,
+  `interval_km` int DEFAULT NULL,
+  `interval_days` int DEFAULT NULL,
+  `last_maintenance_date` date DEFAULT NULL,
+  `next_due_date` date DEFAULT NULL,
+  `remarks` text,
+  `created_by` int DEFAULT NULL,
+  `updated_by` int DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`schedule_id`),
+  KEY `vehicle_id` (`vehicle_id`),
+  CONSTRAINT `vehicle_maintenance_schedule_ibfk_1` FOREIGN KEY (`vehicle_id`) REFERENCES `vehicles` (`vehicle_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vehicle_maintenance_schedule`
+--
+
+LOCK TABLES `vehicle_maintenance_schedule` WRITE;
+/*!40000 ALTER TABLE `vehicle_maintenance_schedule` DISABLE KEYS */;
+/*!40000 ALTER TABLE `vehicle_maintenance_schedule` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `vehicle_ownership_history`
+--
+
+DROP TABLE IF EXISTS `vehicle_ownership_history`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `vehicle_ownership_history` (
+  `ownership_id` int NOT NULL AUTO_INCREMENT,
+  `vehicle_id` int NOT NULL,
+  `owner_id` int NOT NULL,
+  `purchase_date` date DEFAULT NULL,
+  `purchase_price` decimal(12,2) DEFAULT NULL,
+  `sale_date` date DEFAULT NULL,
+  `sale_price` decimal(12,2) DEFAULT NULL,
+  `remarks` text,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`ownership_id`),
+  KEY `vehicle_id` (`vehicle_id`),
+  KEY `owner_id` (`owner_id`),
+  CONSTRAINT `vehicle_ownership_history_ibfk_1` FOREIGN KEY (`vehicle_id`) REFERENCES `vehicles` (`vehicle_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `vehicle_ownership_history_ibfk_2` FOREIGN KEY (`owner_id`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vehicle_ownership_history`
+--
+
+LOCK TABLES `vehicle_ownership_history` WRITE;
+/*!40000 ALTER TABLE `vehicle_ownership_history` DISABLE KEYS */;
+/*!40000 ALTER TABLE `vehicle_ownership_history` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `vehicle_service_history`
+--
+
+DROP TABLE IF EXISTS `vehicle_service_history`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `vehicle_service_history` (
+  `service_id` int NOT NULL AUTO_INCREMENT,
+  `vehicle_id` int NOT NULL,
+  `service_date` date NOT NULL,
+  `service_center` varchar(150) DEFAULT NULL,
+  `service_type` varchar(100) DEFAULT NULL,
+  `odometer_reading` int DEFAULT NULL,
+  `cost` decimal(10,2) DEFAULT NULL,
+  `description` text,
+  `next_service_due` date DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`service_id`),
+  KEY `vehicle_id` (`vehicle_id`),
+  CONSTRAINT `vehicle_service_history_ibfk_1` FOREIGN KEY (`vehicle_id`) REFERENCES `vehicles` (`vehicle_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vehicle_service_history`
+--
+
+LOCK TABLES `vehicle_service_history` WRITE;
+/*!40000 ALTER TABLE `vehicle_service_history` DISABLE KEYS */;
+/*!40000 ALTER TABLE `vehicle_service_history` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `vehicle_service_images`
+--
+
+DROP TABLE IF EXISTS `vehicle_service_images`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `vehicle_service_images` (
+  `image_id` int NOT NULL AUTO_INCREMENT,
+  `service_id` int NOT NULL,
+  `image_url` varchar(255) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `image_name` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`image_id`),
+  KEY `service_id` (`service_id`),
+  CONSTRAINT `vehicle_service_images_ibfk_1` FOREIGN KEY (`service_id`) REFERENCES `vehicle_service_history` (`service_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vehicle_service_images`
+--
+
+LOCK TABLES `vehicle_service_images` WRITE;
+/*!40000 ALTER TABLE `vehicle_service_images` DISABLE KEYS */;
+/*!40000 ALTER TABLE `vehicle_service_images` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `vehicle_specification_images`
+--
+
+DROP TABLE IF EXISTS `vehicle_specification_images`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `vehicle_specification_images` (
+  `image_id` int NOT NULL AUTO_INCREMENT,
+  `specification_id` int NOT NULL,
+  `image_url` varchar(255) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `image_name` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`image_id`),
+  KEY `specification_id` (`specification_id`),
+  CONSTRAINT `vehicle_specification_images_ibfk_1` FOREIGN KEY (`specification_id`) REFERENCES `vehicle_specifications` (`specification_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vehicle_specification_images`
+--
+
+LOCK TABLES `vehicle_specification_images` WRITE;
+/*!40000 ALTER TABLE `vehicle_specification_images` DISABLE KEYS */;
+/*!40000 ALTER TABLE `vehicle_specification_images` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `vehicle_specifications`
+--
+
+DROP TABLE IF EXISTS `vehicle_specifications`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `vehicle_specifications` (
+  `specification_id` int NOT NULL AUTO_INCREMENT,
+  `make` varchar(50) NOT NULL,
+  `model` varchar(50) NOT NULL,
+  `year` int DEFAULT NULL,
+  `generation` varchar(50) DEFAULT NULL,
+  `body_type` varchar(50) DEFAULT NULL,
+  `price` decimal(12,2) DEFAULT NULL,
+  `engine_type` varchar(50) DEFAULT NULL,
+  `engine_capacity` varchar(20) DEFAULT NULL,
+  `horsepower_hp` decimal(8,2) DEFAULT NULL,
+  `torque_nm` decimal(8,2) DEFAULT NULL,
+  `transmission_type_id` int DEFAULT NULL,
+  `fuel_type_id` int DEFAULT NULL,
+  `electric_range_km` decimal(8,2) DEFAULT NULL,
+  `drivetrain` varchar(50) DEFAULT NULL,
+  `top_speed_kmh` decimal(10,2) DEFAULT NULL,
+  `acceleration_0_100` decimal(5,2) DEFAULT NULL,
+  `co2_emissions_g_km` decimal(8,2) DEFAULT NULL,
+  `doors` int DEFAULT NULL,
+  `seat_capacity` int DEFAULT NULL,
+  `dimensions` varchar(100) DEFAULT NULL,
+  `wheelbase_mm` decimal(8,2) DEFAULT NULL,
+  `weight_kg` decimal(10,2) DEFAULT NULL,
+  `wheel_size` varchar(20) DEFAULT NULL,
+  `tire_type` varchar(50) DEFAULT NULL,
+  `upholstery_type` varchar(100) DEFAULT NULL,
+  `ac_type_id` int DEFAULT NULL,
+  `sunroof_type` enum('None','Standard','Panoramic') DEFAULT NULL,
+  `cruise_control_type` enum('None','Standard','Adaptive') DEFAULT NULL,
+  `entertainment_features` text,
+  `comfort_features` text,
+  `ncap_safety_rating` int DEFAULT NULL,
+  `airbags_count` int DEFAULT NULL,
+  `parking_camera` enum('None','Rear','360-degree') DEFAULT NULL,
+  `lane_departure_warning` tinyint(1) DEFAULT NULL,
+  `safety_features` text,
+  `fuel_tank_capacity_liters` decimal(10,2) DEFAULT NULL,
+  `warranty_years` int DEFAULT NULL,
+  `image_url` varchar(255) DEFAULT NULL,
+  `is_active` tinyint(1) DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  `air_condition` tinyint DEFAULT '0',
+  PRIMARY KEY (`specification_id`),
+  KEY `transmission_type_id` (`transmission_type_id`),
+  KEY `fuel_type_id` (`fuel_type_id`),
+  KEY `ac_type_id` (`ac_type_id`),
+  CONSTRAINT `vehicle_specifications_ibfk_1` FOREIGN KEY (`transmission_type_id`) REFERENCES `transmission_types` (`transmission_type_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `vehicle_specifications_ibfk_2` FOREIGN KEY (`fuel_type_id`) REFERENCES `fuel_types` (`fuel_type_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `vehicle_specifications_ibfk_3` FOREIGN KEY (`ac_type_id`) REFERENCES `air_conditioning_types` (`ac_type_id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vehicle_specifications`
+--
+
+LOCK TABLES `vehicle_specifications` WRITE;
+/*!40000 ALTER TABLE `vehicle_specifications` DISABLE KEYS */;
+/*!40000 ALTER TABLE `vehicle_specifications` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `vehicle_type`
+--
+
+DROP TABLE IF EXISTS `vehicle_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `vehicle_type` (
+  `vehicle_type_id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`vehicle_type_id`),
+  KEY `fk_vehicle_type_status` (`status_id`),
+  CONSTRAINT `fk_vehicle_type_status` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vehicle_type`
+--
+
+LOCK TABLES `vehicle_type` WRITE;
+/*!40000 ALTER TABLE `vehicle_type` DISABLE KEYS */;
+/*!40000 ALTER TABLE `vehicle_type` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `vehicle_usage_log`
+--
+
+DROP TABLE IF EXISTS `vehicle_usage_log`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `vehicle_usage_log` (
+  `usage_id` int NOT NULL AUTO_INCREMENT,
+  `vehicle_id` int NOT NULL,
+  `driver_id` int DEFAULT NULL,
+  `package_id` int DEFAULT NULL,
+  `tour_id` int DEFAULT NULL,
+  `start_datetime` datetime NOT NULL,
+  `end_datetime` datetime DEFAULT NULL,
+  `start_odometer` int DEFAULT NULL,
+  `end_odometer` int DEFAULT NULL,
+  `route_description` varchar(255) DEFAULT NULL,
+  `purpose` varchar(255) DEFAULT NULL,
+  `fuel_used_liters` decimal(10,2) DEFAULT NULL,
+  `remarks` text,
+  `created_by` int DEFAULT NULL,
+  `updated_by` int DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`usage_id`),
+  KEY `vehicle_id` (`vehicle_id`),
+  CONSTRAINT `vehicle_usage_log_ibfk_1` FOREIGN KEY (`vehicle_id`) REFERENCES `vehicles` (`vehicle_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vehicle_usage_log`
+--
+
+LOCK TABLES `vehicle_usage_log` WRITE;
+/*!40000 ALTER TABLE `vehicle_usage_log` DISABLE KEYS */;
+/*!40000 ALTER TABLE `vehicle_usage_log` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `vehicles`
+--
+
+DROP TABLE IF EXISTS `vehicles`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `vehicles` (
+  `vehicle_id` int NOT NULL AUTO_INCREMENT,
+  `registration_number` varchar(20) NOT NULL,
+  `vehicle_type_id` int NOT NULL,
+  `specification_id` int DEFAULT NULL,
+  `purchase_date` date DEFAULT NULL,
+  `purchase_price` decimal(12,2) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  `status_id` int DEFAULT '1',
+  `owner_id` int DEFAULT NULL,
+  `assigned_driver_id` int DEFAULT NULL,
+  PRIMARY KEY (`vehicle_id`),
+  UNIQUE KEY `registration_number` (`registration_number`),
+  KEY `specification_id` (`specification_id`),
+  KEY `fk_vehicles_status` (`status_id`),
+  KEY `fk_vehicles_owner` (`owner_id`),
+  KEY `fk_vehicles_driver` (`assigned_driver_id`),
+  KEY `fk_vehicles_vehicle_type` (`vehicle_type_id`),
+  CONSTRAINT `fk_vehicles_driver` FOREIGN KEY (`assigned_driver_id`) REFERENCES `user` (`user_id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `fk_vehicles_owner` FOREIGN KEY (`owner_id`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `fk_vehicles_status` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `fk_vehicles_vehicle_type` FOREIGN KEY (`vehicle_type_id`) REFERENCES `vehicle_type` (`vehicle_type_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `vehicles_ibfk_1` FOREIGN KEY (`specification_id`) REFERENCES `vehicle_specifications` (`specification_id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vehicles`
+--
+
+LOCK TABLES `vehicles` WRITE;
+/*!40000 ALTER TABLE `vehicles` DISABLE KEYS */;
+/*!40000 ALTER TABLE `vehicles` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `verified_status`
+--
+
+DROP TABLE IF EXISTS `verified_status`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `verified_status` (
+  `verified_status_id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `status_id` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`verified_status_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `verified_status_ibfk_1` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `verified_status`
+--
+
+LOCK TABLES `verified_status` WRITE;
+/*!40000 ALTER TABLE `verified_status` DISABLE KEYS */;
+INSERT INTO `verified_status` VALUES (1,'Pending','Verification documents submitted and awaiting review by our team',1,'2025-09-21 14:06:10',1,'2026-02-20 08:36:14',1,NULL,NULL),(2,'Verified','Identity and documents successfully verified. User has full access to all features.',1,'2025-09-21 14:06:10',1,'2026-02-20 08:36:14',1,NULL,NULL),(3,'Rejected','Verification documents were rejected due to invalid or insufficient information',1,'2025-09-21 14:06:10',1,'2026-02-20 08:36:14',1,NULL,NULL),(4,'Unverified','User has not yet submitted any verification documents',1,'2025-09-21 14:06:10',1,'2026-02-20 08:36:14',1,NULL,NULL);
+/*!40000 ALTER TABLE `verified_status` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `wallet`
+--
+
+DROP TABLE IF EXISTS `wallet`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `wallet` (
+  `wallet_id` int NOT NULL AUTO_INCREMENT,
+  `wallet_number` varchar(100) NOT NULL,
+  `amount` decimal(15,2) DEFAULT '0.00',
+  `wallet_status_id` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`wallet_id`),
+  UNIQUE KEY `wallet_number` (`wallet_number`),
+  KEY `wallet_status_id` (`wallet_status_id`),
+  CONSTRAINT `wallet_ibfk_1` FOREIGN KEY (`wallet_status_id`) REFERENCES `wallet_status` (`wallet_status_id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `wallet`
+--
+
+LOCK TABLES `wallet` WRITE;
+/*!40000 ALTER TABLE `wallet` DISABLE KEYS */;
+INSERT INTO `wallet` VALUES (1,'WALLET1001',5000.00,1,'2025-09-21 14:06:10',1,'2025-09-21 14:06:10',NULL,NULL,NULL),(2,'WALLET1002',0.00,1,'2025-09-21 14:06:10',1,'2025-09-21 14:06:10',NULL,NULL,NULL),(3,'WALLET1003',0.00,1,'2025-09-21 14:06:10',1,'2025-09-21 14:06:10',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `wallet` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `wallet_status`
+--
+
+DROP TABLE IF EXISTS `wallet_status`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `wallet_status` (
+  `wallet_status_id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `status_id` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`wallet_status_id`),
+  KEY `status_id` (`status_id`),
+  CONSTRAINT `wallet_status_ibfk_1` FOREIGN KEY (`status_id`) REFERENCES `common_status` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `wallet_status`
+--
+
+LOCK TABLES `wallet_status` WRITE;
+/*!40000 ALTER TABLE `wallet_status` DISABLE KEYS */;
+INSERT INTO `wallet_status` VALUES (1,'Open','Wallet is active',1,'2025-09-21 14:06:10',1,'2025-09-21 14:06:10',NULL,NULL,NULL),(2,'Closed','Wallet is closed',2,'2025-09-21 14:06:10',1,'2025-09-21 14:06:10',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `wallet_status` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `why_choose_us`
+--
+
+DROP TABLE IF EXISTS `why_choose_us`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `why_choose_us` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `title` varchar(100) DEFAULT NULL,
+  `sub_title` varchar(100) DEFAULT NULL,
+  `description` text,
+  `image_url` varchar(255) DEFAULT NULL,
+  `icon_url` varchar(255) DEFAULT NULL,
+  `clicked_url` varchar(255) DEFAULT NULL,
+  `color` varchar(20) DEFAULT NULL,
+  `why_choose_us_status_id` int NOT NULL,
+  `order` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `why_choose_us_status_id` (`why_choose_us_status_id`),
+  CONSTRAINT `why_choose_us_ibfk_1` FOREIGN KEY (`why_choose_us_status_id`) REFERENCES `why_choose_us_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `why_choose_us`
+--
+
+LOCK TABLES `why_choose_us` WRITE;
+/*!40000 ALTER TABLE `why_choose_us` DISABLE KEYS */;
+INSERT INTO `why_choose_us` VALUES (1,'quality-service','Real Time Information','','Airline schedules, seat availability and confirmation in real time','/images/why-choose-us-images/real-time-information.jpg','/icons/quality-icon.png','/services','#06b6d4',1,1,'2025-09-19 20:21:48',1,'2026-02-04 16:12:29',NULL,NULL,NULL),(2,'expert-team','Customer Service','','Highly efficient customer service team on call','/images/why-choose-us-images/customer-service.jpg','/icons/team-icon.png','/team','#0ea5e9',1,2,'2025-09-19 20:21:48',1,'2026-02-04 16:13:41',NULL,NULL,NULL),(3,'innovation','Total Management','','We offer a complete travel package to travelers and travel agents','/images/why-choose-us-images/total-management.jpg','/icons/innovation-icon.png','/innovation','#1d4ed8',1,3,'2025-09-19 20:21:48',1,'2026-02-04 16:13:41',NULL,NULL,NULL),(4,'innovation','The Extra Mile','','Value added services and travel information','/images/why-choose-us-images/extra-mile.png','/icons/innovation-icon.png','/innovation','#2dd4bf',1,3,'2025-09-19 20:21:48',1,'2026-02-04 16:13:41',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `why_choose_us` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `why_choose_us_status`
+--
+
+DROP TABLE IF EXISTS `why_choose_us_status`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `why_choose_us_status` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `common_status_id` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `common_status_id` (`common_status_id`),
+  CONSTRAINT `why_choose_us_status_ibfk_1` FOREIGN KEY (`common_status_id`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `why_choose_us_status`
+--
+
+LOCK TABLES `why_choose_us_status` WRITE;
+/*!40000 ALTER TABLE `why_choose_us_status` DISABLE KEYS */;
+INSERT INTO `why_choose_us_status` VALUES (1,'VISIBLE','Visible in the frontend',1,'2025-09-19 20:21:48',1,'2025-09-19 20:21:48',NULL,NULL,NULL),(2,'HIDDEN','Hidden in the frontend',2,'2025-09-19 20:21:48',1,'2025-09-19 20:21:48',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `why_choose_us_status` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `work_flow`
+--
+
+DROP TABLE IF EXISTS `work_flow`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `work_flow` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `description` text,
+  `order_number` int DEFAULT NULL,
+  `icon_url` varchar(500) DEFAULT NULL,
+  `icon_color` varchar(50) DEFAULT NULL,
+  `bg_color` varchar(50) DEFAULT NULL,
+  `connect_text` varchar(255) DEFAULT NULL,
+  `link_url` varchar(500) DEFAULT NULL,
+  `work_flow_status_id` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_work_flow_status` (`work_flow_status_id`),
+  CONSTRAINT `fk_work_flow_status` FOREIGN KEY (`work_flow_status_id`) REFERENCES `work_flow_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `work_flow`
+--
+
+LOCK TABLES `work_flow` WRITE;
+/*!40000 ALTER TABLE `work_flow` DISABLE KEYS */;
+/*!40000 ALTER TABLE `work_flow` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `work_flow_status`
+--
+
+DROP TABLE IF EXISTS `work_flow_status`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `work_flow_status` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `common_status_id` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `terminated_at` timestamp NULL DEFAULT NULL,
+  `terminated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_common_status_workflow` (`common_status_id`),
+  CONSTRAINT `fk_common_status_workflow` FOREIGN KEY (`common_status_id`) REFERENCES `common_status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `work_flow_status`
+--
+
+LOCK TABLES `work_flow_status` WRITE;
+/*!40000 ALTER TABLE `work_flow_status` DISABLE KEYS */;
+INSERT INTO `work_flow_status` VALUES (1,'ACTIVE','Work flow step is active',1,'2025-09-20 12:39:08',1,'2025-09-20 12:39:08',NULL,NULL,NULL),(2,'INACTIVE','Work flow step is not active',2,'2025-09-20 12:39:08',1,'2025-09-20 12:39:08',NULL,NULL,NULL),(3,'TERMINATED','Work flow step discontinued',3,'2025-09-20 12:39:08',1,'2025-09-20 12:39:08',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `work_flow_status` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2026-02-20 14:09:42

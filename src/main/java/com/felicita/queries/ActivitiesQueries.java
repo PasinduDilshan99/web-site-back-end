@@ -5,79 +5,98 @@ import com.fasterxml.jackson.databind.deser.impl.BeanPropertyMap;
 public class ActivitiesQueries {
 
     public static final String GET_ALL_ACTIVITIES = """
-            SELECT
-                a.id,
-                a.destination_id,
-                a.name,
-                a.description,
-                a.activities_category,
-                a.duration_hours,
-                a.available_from,
-                a.available_to,
-                a.price_local,
-                a.price_foreigners,
-                a.min_participate,
-                a.max_participate,
-                a.season,
-                MAX(cs.name) AS status_name,
-                a.created_at,
-                a.updated_at,
-                MAX(ac.name) AS category_name,
-                MAX(ac.description) AS category_description,
-                CASE
-                    WHEN COUNT(asch.id) > 0 THEN
-                        JSON_ARRAYAGG(
-                            JSON_OBJECT(
-                                'id', asch.id,
-                                'name', asch.name,
-                                'assume_start_date', asch.assume_start_date,
-                                'assume_end_date', asch.assume_end_date,
-                                'duration_hours_start', asch.duration_hours_start,
-                                'duration_hours_end', asch.duration_hours_end,
-                                'special_note', asch.special_note,
-                                'description', asch.description,
-                                'status', asch.status
-                            )
-                        )
-                    ELSE JSON_ARRAY()
-                END AS schedules,
-                (SELECT COALESCE(JSON_ARRAYAGG(
-                    JSON_OBJECT(
-                        'id', ar.id,
-                        'name', ar.name,
-                        'value', ar.value,
-                        'description', ar.description,
-                        'color', ar.color,
-                        'status', ar.status
-                    )
-                ), JSON_ARRAY())
-                FROM activities_requirement ar
-                WHERE ar.activity_id = a.id AND ar.terminated_at IS NULL
-                ) AS requirements,
-                (SELECT COALESCE(JSON_ARRAYAGG(
-                    JSON_OBJECT(
-                        'id', ai.id,
-                        'name', ai.name,
-                        'description', ai.description,
-                        'image_url', ai.image_url,
-                        'status', ai.status
-                    )
-                ), JSON_ARRAY())
-                FROM activities_images ai
-                WHERE ai.activity_id = a.id AND ai.terminated_at IS NULL
-                ) AS images
-            FROM activities a
-            LEFT JOIN common_status cs ON a.status = cs.id
-            LEFT JOIN activity_category ac ON a.activities_category = ac.name
-            LEFT JOIN activities_schedule asch ON asch.activity_id = a.id
-                AND asch.terminated_at IS NULL
-            WHERE a.terminated_at IS NULL
-            GROUP BY a.id, a.destination_id, a.name, a.description, a.activities_category,
-                     a.duration_hours, a.available_from, a.available_to, a.price_local,
-                     a.price_foreigners, a.min_participate, a.max_participate, a.season,
-                     a.status, a.created_at, a.updated_at
-            LIMIT 1000
-            """;
+    SELECT
+        a.id,
+        a.destination_id,
+        a.name,
+        a.description,
+        a.duration_hours,
+        a.available_from,
+        a.available_to,
+        a.price_local,
+        a.price_foreigners,
+        a.min_participate,
+        a.max_participate,
+        a.season,
+        cs.name AS status_name,
+        a.created_at,
+        a.updated_at,
+
+        /* Categories */
+        (
+            SELECT COALESCE(JSON_ARRAYAGG(
+                JSON_OBJECT(
+                    'id', ac.id,
+                    'name', ac.name,
+                    'description', ac.description,
+                    'is_primary', acm.is_primary
+                )
+            ), JSON_ARRAY())
+            FROM activity_category_map acm
+            JOIN activity_category ac ON ac.id = acm.category_id
+            WHERE acm.activity_id = a.id
+              AND acm.terminated_at IS NULL
+              AND ac.terminated_at IS NULL
+        ) AS categories,
+
+        /* Schedules */
+        (
+            SELECT COALESCE(JSON_ARRAYAGG(
+                JSON_OBJECT(
+                    'id', asch.id,
+                    'name', asch.name,
+                    'assume_start_date', asch.assume_start_date,
+                    'assume_end_date', asch.assume_end_date,
+                    'duration_hours_start', asch.duration_hours_start,
+                    'duration_hours_end', asch.duration_hours_end,
+                    'special_note', asch.special_note,
+                    'description', asch.description,
+                    'status', asch.status
+                )
+            ), JSON_ARRAY())
+            FROM activities_schedule asch
+            WHERE asch.activity_id = a.id
+              AND asch.terminated_at IS NULL
+        ) AS schedules,
+
+        /* Requirements */
+        (
+            SELECT COALESCE(JSON_ARRAYAGG(
+                JSON_OBJECT(
+                    'id', ar.id,
+                    'name', ar.name,
+                    'value', ar.value,
+                    'description', ar.description,
+                    'color', ar.color,
+                    'status', ar.status
+                )
+            ), JSON_ARRAY())
+            FROM activities_requirement ar
+            WHERE ar.activity_id = a.id
+              AND ar.terminated_at IS NULL
+        ) AS requirements,
+
+        /* Images */
+        (
+            SELECT COALESCE(JSON_ARRAYAGG(
+                JSON_OBJECT(
+                    'id', ai.id,
+                    'name', ai.name,
+                    'description', ai.description,
+                    'image_url', ai.image_url,
+                    'status', ai.status
+                )
+            ), JSON_ARRAY())
+            FROM activities_images ai
+            WHERE ai.activity_id = a.id
+              AND ai.terminated_at IS NULL
+        ) AS images
+
+    FROM activities a
+    LEFT JOIN common_status cs ON a.status = cs.id
+    WHERE a.terminated_at IS NULL
+    LIMIT 1000
+""";
 
     public static final String GET_ALL_ACTIVITY_CATEGORIES = """
             SELECT
@@ -295,219 +314,262 @@ public class ActivitiesQueries {
             """;
 
     public static final String GET_ACTIVITY_DETAILS_BY_ID = """
-            SELECT
-            	a.id,
-            	a.destination_id,
-            	a.name,
-            	a.description,
-            	a.activities_category,
-            	a.duration_hours,
-            	a.available_from,
-            	a.available_to,
-            	a.price_local,
-            	a.price_foreigners,
-            	a.min_participate,
-            	a.max_participate,
-            	a.season,
-            	MAX(cs.name) AS status_name,
-            	a.created_at,
-            	a.updated_at,
-            	MAX(ac.name) AS category_name,
-            	MAX(ac.description) AS category_description,
-            	CASE
-            		WHEN COUNT(asch.id) > 0 THEN
-            			JSON_ARRAYAGG(
-            				JSON_OBJECT(
-            					'id', asch.id,
-            					'name', asch.name,
-            					'assume_start_date', asch.assume_start_date,
-            					'assume_end_date', asch.assume_end_date,
-            					'duration_hours_start', asch.duration_hours_start,
-            					'duration_hours_end', asch.duration_hours_end,
-            					'special_note', asch.special_note,
-            					'description', asch.description,
-            					'status', asch.status
-            				)
-            			)
-            		ELSE JSON_ARRAY()
-            	END AS schedules,
-            	(SELECT COALESCE(JSON_ARRAYAGG(
-            		JSON_OBJECT(
-            			'id', ar.id,
-            			'name', ar.name,
-            			'value', ar.value,
-            			'description', ar.description,
-            			'color', ar.color,
-            			'status', ar.status
-            		)
-            	), JSON_ARRAY())
-            	FROM activities_requirement ar
-            	WHERE ar.activity_id = a.id AND ar.terminated_at IS NULL
-            	) AS requirements,
-            	(SELECT COALESCE(JSON_ARRAYAGG(
-            		JSON_OBJECT(
-            			'id', ai.id,
-            			'name', ai.name,
-            			'description', ai.description,
-            			'image_url', ai.image_url,
-            			'status', ai.status
-            		)
-            	), JSON_ARRAY())
-            	FROM activities_images ai
-            	WHERE ai.activity_id = a.id AND ai.terminated_at IS NULL
-            	) AS images
-            FROM activities a
-            LEFT JOIN common_status cs ON a.status = cs.id
-            LEFT JOIN activity_category ac ON a.activities_category = ac.id
-            LEFT JOIN activities_schedule asch ON asch.activity_id = a.id
-            	AND asch.terminated_at IS NULL
-            WHERE a.terminated_at IS NULL AND a.id = ?
-            GROUP BY a.id, a.destination_id, a.name, a.description, a.activities_category,
-            		 a.duration_hours, a.available_from, a.available_to, a.price_local,
-            		 a.price_foreigners, a.min_participate, a.max_participate, a.season,
-            		 a.status, a.created_at, a.updated_at
-            """;
+    SELECT
+        a.id,
+        a.destination_id,
+        a.name,
+        a.description,
+        a.duration_hours,
+        a.available_from,
+        a.available_to,
+        a.price_local,
+        a.price_foreigners,
+        a.min_participate,
+        a.max_participate,
+        a.season,
+        cs.name AS status_name,
+        a.created_at,
+        a.updated_at,
+
+        -- Categories (FULL OBJECTS)
+        (SELECT COALESCE(JSON_ARRAYAGG(
+            JSON_OBJECT(
+                'id', ac.id,
+                'name', ac.name,
+                'description', ac.description,
+                'is_primary', acm.is_primary
+            )
+        ), JSON_ARRAY())
+        FROM activity_category_map acm
+        JOIN activity_category ac ON acm.category_id = ac.id
+        WHERE acm.activity_id = a.id
+          AND acm.terminated_at IS NULL
+          AND ac.status = 1
+        ) AS categories,
+
+        -- Schedules
+        (SELECT COALESCE(JSON_ARRAYAGG(
+            JSON_OBJECT(
+                'id', asch.id,
+                'name', asch.name,
+                'assume_start_date', asch.assume_start_date,
+                'assume_end_date', asch.assume_end_date,
+                'duration_hours_start', asch.duration_hours_start,
+                'duration_hours_end', asch.duration_hours_end,
+                'special_note', asch.special_note,
+                'description', asch.description,
+                'status', asch.status
+            )
+        ), JSON_ARRAY())
+        FROM activities_schedule asch
+        WHERE asch.activity_id = a.id
+          AND asch.terminated_at IS NULL
+        ) AS schedules,
+
+        -- Requirements
+        (SELECT COALESCE(JSON_ARRAYAGG(
+            JSON_OBJECT(
+                'id', ar.id,
+                'name', ar.name,
+                'value', ar.value,
+                'description', ar.description,
+                'color', ar.color,
+                'status', ar.status
+            )
+        ), JSON_ARRAY())
+        FROM activities_requirement ar
+        WHERE ar.activity_id = a.id
+          AND ar.terminated_at IS NULL
+        ) AS requirements,
+
+        -- Images
+        (SELECT COALESCE(JSON_ARRAYAGG(
+            JSON_OBJECT(
+                'id', ai.id,
+                'name', ai.name,
+                'description', ai.description,
+                'image_url', ai.image_url,
+                'status', ai.status
+            )
+        ), JSON_ARRAY())
+        FROM activities_images ai
+        WHERE ai.activity_id = a.id
+          AND ai.terminated_at IS NULL
+        ) AS images
+
+    FROM activities a
+    LEFT JOIN common_status cs ON a.status = cs.id
+    WHERE a.terminated_at IS NULL
+      AND a.id = ?
+""";
 
     public static final String GET_ACTIVITY_HISTORY_DETAILS = """
-            SELECT
-                ah.id AS history_id,
-                a.id AS activity_id,
-                a.name AS activity_name,
-                a.description AS activity_description,
-                a.activities_category AS activity_category,
-                a.duration_hours,
-                a.available_from,
-                a.available_to,
-                a.price_local,
-                a.price_foreigners,
-                a.min_participate,
-                a.max_participate,
-                a.season,
-                d.destination_id,
-                d.name AS destination_name,
-                d.description AS destination_description,
-                d.location AS destination_location,
-                d.latitude,
-                d.longitude,
-                asch.id AS schedule_id,
-                asch.name AS schedule_name,
-                asch.description AS schedule_description,
-                asch.assume_start_date,
-                asch.assume_end_date,
-                asch.duration_hours_start,
-                asch.duration_hours_end,
-                asch.special_note AS schedule_special_note,
-                ah.name AS history_name,
-                ah.description AS history_description,
-                ah.number_of_participate,
-                ah.activity_start,
-                ah.activity_end,
-                ah.rating,
-                ah.special_note AS history_special_note,
-                cs_history.name AS history_status_name,
-                u_created.username AS history_created_by_username,
-                u_updated.username AS history_updated_by_username,
-                u_terminated.username AS history_terminated_by_username,
-                ah.created_at AS history_created_at,
-                ah.updated_at AS history_updated_at,
-                ah.terminated_at AS history_terminated_at,
-                ahi.id AS image_id,
-                ahi.name AS image_name,
-                ahi.description AS image_description,
-                ahi.image_url,
-                cs_image.name AS image_status_name,
-                ui_created.username AS image_created_by_username,
-                ui_updated.username AS image_updated_by_username,
-                ui_terminated.username AS image_terminated_by_username,
-                ahi.created_at AS image_created_at,
-                ahi.updated_at AS image_updated_at,
-                ahi.terminated_at AS image_terminated_at
-            FROM activities_history ah
-            JOIN activities_schedule asch ON ah.activity_schedule_id = asch.id
-            JOIN activities a ON asch.activity_id = a.id
-            LEFT JOIN destination d ON a.destination_id = d.destination_id
-            LEFT JOIN common_status cs_history ON ah.status = cs_history.id
-            LEFT JOIN user u_created ON ah.created_by = u_created.user_id
-            LEFT JOIN user u_updated ON ah.updated_by = u_updated.user_id
-            LEFT JOIN user u_terminated ON ah.terminated_by = u_terminated.user_id
-            LEFT JOIN activities_history_images ahi ON ahi.activities_history_id = ah.id
-            LEFT JOIN common_status cs_image ON ahi.status = cs_image.id
-            LEFT JOIN user ui_created ON ahi.created_by = ui_created.user_id
-            LEFT JOIN user ui_updated ON ahi.updated_by = ui_updated.user_id
-            LEFT JOIN user ui_terminated ON ahi.terminated_by = ui_terminated.user_id
-            ORDER BY a.id, asch.id, ah.activity_start, ahi.id
-            """;
+    SELECT
+        ah.id AS history_id,
+        a.id AS activity_id,
+        a.name AS activity_name,
+        a.description AS activity_description,
+
+        -- FULL CATEGORY OBJECTS
+        (SELECT COALESCE(JSON_ARRAYAGG(
+            JSON_OBJECT(
+                'id', ac.id,
+                'name', ac.name,
+                'description', ac.description,
+                'is_primary', acm.is_primary
+            )
+        ), JSON_ARRAY())
+         FROM activity_category_map acm
+         JOIN activity_category ac ON acm.category_id = ac.id
+         WHERE acm.activity_id = a.id 
+           AND acm.terminated_at IS NULL
+           AND ac.status = 1
+        ) AS activity_categories,
+
+        a.duration_hours,
+        a.available_from,
+        a.available_to,
+        a.price_local,
+        a.price_foreigners,
+        a.min_participate,
+        a.max_participate,
+        a.season,
+
+        d.destination_id,
+        d.name AS destination_name,
+        d.description AS destination_description,
+        d.location AS destination_location,
+        d.latitude,
+        d.longitude,
+
+        asch.id AS schedule_id,
+        asch.name AS schedule_name,
+        asch.description AS schedule_description,
+        asch.assume_start_date,
+        asch.assume_end_date,
+        asch.duration_hours_start,
+        asch.duration_hours_end,
+        asch.special_note AS schedule_special_note,
+
+        ah.name AS history_name,
+        ah.description AS history_description,
+        ah.number_of_participate,
+        ah.activity_start,
+        ah.activity_end,
+        ah.rating,
+        ah.special_note AS history_special_note,
+        cs_history.name AS history_status_name,
+        u_created.username AS history_created_by_username,
+        u_updated.username AS history_updated_by_username,
+        u_terminated.username AS history_terminated_by_username,
+        ah.created_at AS history_created_at,
+        ah.updated_at AS history_updated_at,
+        ah.terminated_at AS history_terminated_at,
+
+        ahi.id AS image_id,
+        ahi.name AS image_name,
+        ahi.description AS image_description,
+        ahi.image_url,
+        cs_image.name AS image_status_name,
+        ui_created.username AS image_created_by_username,
+        ui_updated.username AS image_updated_by_username,
+        ui_terminated.username AS image_terminated_by_username,
+        ahi.created_at AS image_created_at,
+        ahi.updated_at AS image_updated_at,
+        ahi.terminated_at AS image_terminated_at
+
+    FROM activities_history ah
+    JOIN activities_schedule asch ON ah.activity_schedule_id = asch.id
+    JOIN activities a ON asch.activity_id = a.id
+    LEFT JOIN destination d ON a.destination_id = d.destination_id
+    LEFT JOIN common_status cs_history ON ah.status = cs_history.id
+    LEFT JOIN user u_created ON ah.created_by = u_created.user_id
+    LEFT JOIN user u_updated ON ah.updated_by = u_updated.user_id
+    LEFT JOIN user u_terminated ON ah.terminated_by = u_terminated.user_id
+    LEFT JOIN activities_history_images ahi ON ahi.activities_history_id = ah.id
+    LEFT JOIN common_status cs_image ON ahi.status = cs_image.id
+    LEFT JOIN user ui_created ON ahi.created_by = ui_created.user_id
+    LEFT JOIN user ui_updated ON ahi.updated_by = ui_updated.user_id
+    LEFT JOIN user ui_terminated ON ahi.terminated_by = ui_terminated.user_id
+    ORDER BY a.id, asch.id, ah.activity_start, ahi.id
+""";
 
     public static final String GET_ACTIVITY_HISTORY_DETAILS_BY_ID = """
-            SELECT
-                ah.id AS history_id,
-                a.id AS activity_id,
-                a.name AS activity_name,
-                a.description AS activity_description,
-                a.activities_category AS activity_category,
-                a.duration_hours,
-                a.available_from,
-                a.available_to,
-                a.price_local,
-                a.price_foreigners,
-                a.min_participate,
-                a.max_participate,
-                a.season,
-                d.destination_id,
-                d.name AS destination_name,
-                d.description AS destination_description,
-                d.location AS destination_location,
-                d.latitude,
-                d.longitude,
-                asch.id AS schedule_id,
-                asch.name AS schedule_name,
-                asch.description AS schedule_description,
-                asch.assume_start_date,
-                asch.assume_end_date,
-                asch.duration_hours_start,
-                asch.duration_hours_end,
-                asch.special_note AS schedule_special_note,
-                ah.name AS history_name,
-                ah.description AS history_description,
-                ah.number_of_participate,
-                ah.activity_start,
-                ah.activity_end,
-                ah.rating,
-                ah.special_note AS history_special_note,
-                cs_history.name AS history_status_name,
-                u_created.username AS history_created_by_username,
-                u_updated.username AS history_updated_by_username,
-                u_terminated.username AS history_terminated_by_username,
-                ah.created_at AS history_created_at,
-                ah.updated_at AS history_updated_at,
-                ah.terminated_at AS history_terminated_at,
-                ahi.id AS image_id,
-                ahi.name AS image_name,
-                ahi.description AS image_description,
-                ahi.image_url,
-                cs_image.name AS image_status_name,
-                ui_created.username AS image_created_by_username,
-                ui_updated.username AS image_updated_by_username,
-                ui_terminated.username AS image_terminated_by_username,
-                ahi.created_at AS image_created_at,
-                ahi.updated_at AS image_updated_at,
-                ahi.terminated_at AS image_terminated_at
-            FROM activities_history ah
-            JOIN activities_schedule asch ON ah.activity_schedule_id = asch.id
-            JOIN activities a ON asch.activity_id = a.id
-            LEFT JOIN destination d ON a.destination_id = d.destination_id
-            LEFT JOIN common_status cs_history ON ah.status = cs_history.id
-            LEFT JOIN user u_created ON ah.created_by = u_created.user_id
-            LEFT JOIN user u_updated ON ah.updated_by = u_updated.user_id
-            LEFT JOIN user u_terminated ON ah.terminated_by = u_terminated.user_id
-            LEFT JOIN activities_history_images ahi ON ahi.activities_history_id = ah.id
-            LEFT JOIN common_status cs_image ON ahi.status = cs_image.id
-            LEFT JOIN user ui_created ON ahi.created_by = ui_created.user_id
-            LEFT JOIN user ui_updated ON ahi.updated_by = ui_updated.user_id
-            LEFT JOIN user ui_terminated ON ahi.terminated_by = ui_terminated.user_id
-            WHERE a.id = ?
-            ORDER BY a.id, asch.id, ah.activity_start, ahi.id
-            """;
+    SELECT
+        ah.id AS history_id,
+        a.id AS activity_id,
+        a.name AS activity_name,
+        a.description AS activity_description,
+        (SELECT COALESCE(JSON_ARRAYAGG(ac.name), JSON_ARRAY())
+         FROM activity_category_map acm
+         JOIN activity_category ac ON acm.category_id = ac.id
+         WHERE acm.activity_id = a.id
+         AND acm.terminated_at IS NULL
+         AND ac.status = 1
+        ) AS activity_categories,
+        a.duration_hours,
+        a.available_from,
+        a.available_to,
+        a.price_local,
+        a.price_foreigners,
+        a.min_participate,
+        a.max_participate,
+        a.season,
+        d.destination_id,
+        d.name AS destination_name,
+        d.description AS destination_description,
+        d.location AS destination_location,
+        d.latitude,
+        d.longitude,
+        asch.id AS schedule_id,
+        asch.name AS schedule_name,
+        asch.description AS schedule_description,
+        asch.assume_start_date,
+        asch.assume_end_date,
+        asch.duration_hours_start,
+        asch.duration_hours_end,
+        asch.special_note AS schedule_special_note,
+        ah.name AS history_name,
+        ah.description AS history_description,
+        ah.number_of_participate,
+        ah.activity_start,
+        ah.activity_end,
+        ah.rating,
+        ah.special_note AS history_special_note,
+        cs_history.name AS history_status_name,
+        u_created.username AS history_created_by_username,
+        u_updated.username AS history_updated_by_username,
+        u_terminated.username AS history_terminated_by_username,
+        ah.created_at AS history_created_at,
+        ah.updated_at AS history_updated_at,
+        ah.terminated_at AS history_terminated_at,
+        ahi.id AS image_id,
+        ahi.name AS image_name,
+        ahi.description AS image_description,
+        ahi.image_url,
+        cs_image.name AS image_status_name,
+        ui_created.username AS image_created_by_username,
+        ui_updated.username AS image_updated_by_username,
+        ui_terminated.username AS image_terminated_by_username,
+        ahi.created_at AS image_created_at,
+        ahi.updated_at AS image_updated_at,
+        ahi.terminated_at AS image_terminated_at
+    FROM activities_history ah
+    JOIN activities_schedule asch ON ah.activity_schedule_id = asch.id
+    JOIN activities a ON asch.activity_id = a.id
+    LEFT JOIN destination d ON a.destination_id = d.destination_id
+    LEFT JOIN common_status cs_history ON ah.status = cs_history.id
+    LEFT JOIN user u_created ON ah.created_by = u_created.user_id
+    LEFT JOIN user u_updated ON ah.updated_by = u_updated.user_id
+    LEFT JOIN user u_terminated ON ah.terminated_by = u_terminated.user_id
+    LEFT JOIN activities_history_images ahi ON ahi.activities_history_id = ah.id
+    LEFT JOIN common_status cs_image ON ahi.status = cs_image.id
+    LEFT JOIN user ui_created ON ahi.created_by = ui_created.user_id
+    LEFT JOIN user ui_updated ON ahi.updated_by = ui_updated.user_id
+    LEFT JOIN user ui_terminated ON ahi.terminated_by = ui_terminated.user_id
+    WHERE a.id = ?
+    ORDER BY a.id, asch.id, ah.activity_start, ahi.id
+    """;
 
     public static final String GET_ACTIVITY_HISTORY_IMAGES = """
             SELECT
@@ -613,114 +675,138 @@ public class ActivitiesQueries {
             """;
 
     public static final String GET_ACTIVITY_IDS_WITH_FILTERS = """
-                SELECT a.id
-                FROM activities a
-                LEFT JOIN common_status cs ON a.status = cs.id
-                LEFT JOIN activity_category ac ON ac.id = a.activities_category
-                WHERE a.terminated_at IS NULL
-                  AND (? IS NULL OR a.name LIKE CONCAT('%', ?, '%'))
-                  AND (? IS NULL OR a.price_local >= ?)
-                  AND (? IS NULL OR a.price_local <= ?)
-                  AND (? IS NULL OR a.duration_hours = ?)
-                  AND (? IS NULL OR ac.name = ?)
-                  AND (? IS NULL OR a.season = ?)
-                  AND (? IS NULL OR cs.name = ?)
-                ORDER BY a.created_at DESC
-                LIMIT ? OFFSET ?
-            """;
+    SELECT a.id
+    FROM activities a
+    LEFT JOIN common_status cs ON a.status = cs.id
+    WHERE a.terminated_at IS NULL
+      AND (? IS NULL OR a.name LIKE CONCAT('%', ?, '%'))
+      AND (? IS NULL OR a.price_local >= ?)
+      AND (? IS NULL OR a.price_local <= ?)
+      AND (? IS NULL OR a.duration_hours = ?)
+      AND (? IS NULL OR a.season = ?)
+      AND (? IS NULL OR cs.name = ?)
+      AND (? IS NULL OR EXISTS (
+          SELECT 1 FROM activity_category_map acm
+          JOIN activity_category ac ON acm.category_id = ac.id
+          WHERE acm.activity_id = a.id 
+          AND acm.terminated_at IS NULL
+          AND ac.name = ?
+      ))
+    ORDER BY a.created_at DESC
+    LIMIT ? OFFSET ?
+    """;
 
     public static final String GET_ACTIVITY_COUNT_WITH_FILTERS = """
-                SELECT COUNT(*)
-                FROM activities a
-                LEFT JOIN common_status cs ON a.status = cs.id
-                LEFT JOIN activity_category ac ON ac.id = a.activities_category
-                WHERE a.terminated_at IS NULL
-                  AND (? IS NULL OR a.name LIKE CONCAT('%', ?, '%'))
-                  AND (? IS NULL OR a.price_local >= ?)
-                  AND (? IS NULL OR a.price_local <= ?)
-                  AND (? IS NULL OR a.duration_hours = ?)
-                  AND (? IS NULL OR ac.name = ?)
-                  AND (? IS NULL OR a.season = ?)
-                  AND (? IS NULL OR cs.name = ?)
-            """;
+    SELECT COUNT(DISTINCT a.id)
+    FROM activities a
+    LEFT JOIN common_status cs ON a.status = cs.id
+    WHERE a.terminated_at IS NULL
+      AND (? IS NULL OR a.name LIKE CONCAT('%', ?, '%'))
+      AND (? IS NULL OR a.price_local >= ?)
+      AND (? IS NULL OR a.price_local <= ?)
+      AND (? IS NULL OR a.duration_hours = ?)
+      AND (? IS NULL OR a.season = ?)
+      AND (? IS NULL OR cs.name = ?)
+      AND (? IS NULL OR EXISTS (
+          SELECT 1 FROM activity_category_map acm
+          JOIN activity_category ac ON acm.category_id = ac.id
+          WHERE acm.activity_id = a.id 
+          AND acm.terminated_at IS NULL
+          AND ac.name = ?
+      ))
+    """;
 
 
     public static final String GET_ACTIVITIES_BY_IDS = """
-                SELECT
-                    a.id,
-                    a.destination_id,
-                    a.name,
-                    a.description,
-                    ac.name AS activities_category,
-                    a.duration_hours,
-                    a.available_from,
-                    a.available_to,
-                    a.price_local,
-                    a.price_foreigners,
-                    a.min_participate,
-                    a.max_participate,
-                    a.season,
-                    MAX(cs.name) AS status_name,
-                    a.created_at,
-                    a.updated_at,
-                    MAX(ac.name) AS category_name,
-                    MAX(ac.description) AS category_description,
-            
-                    CASE
-                        WHEN COUNT(asch.id) > 0 THEN
-                            JSON_ARRAYAGG(
-                                JSON_OBJECT(
-                                    'id', asch.id,
-                                    'name', asch.name,
-                                    'assume_start_date', asch.assume_start_date,
-                                    'assume_end_date', asch.assume_end_date,
-                                    'duration_hours_start', asch.duration_hours_start,
-                                    'duration_hours_end', asch.duration_hours_end,
-                                    'special_note', asch.special_note,
-                                    'description', asch.description,
-                                    'status', asch.status
-                                )
-                            )
-                        ELSE JSON_ARRAY()
-                    END AS schedules,
-            
-                    (
-                        SELECT COALESCE(JSON_ARRAYAGG(
-                            JSON_OBJECT(
-                                'id', ar.id,
-                                'name', ar.name,
-                                'value', ar.value,
-                                'description', ar.description,
-                                'color', ar.color,
-                                'status', ar.status
-                            )
-                        ), JSON_ARRAY())
-                        FROM activities_requirement ar
-                        WHERE ar.activity_id = a.id AND ar.terminated_at IS NULL
-                    ) AS requirements,
-            
-                    (
-                        SELECT COALESCE(JSON_ARRAYAGG(
-                            JSON_OBJECT(
-                                'id', ai.id,
-                                'name', ai.name,
-                                'description', ai.description,
-                                'image_url', ai.image_url,
-                                'status', ai.status
-                            )
-                        ), JSON_ARRAY())
-                        FROM activities_images ai
-                        WHERE ai.activity_id = a.id AND ai.terminated_at IS NULL
-                    ) AS images
-            
-                FROM activities a
-                LEFT JOIN common_status cs ON a.status = cs.id
-                LEFT JOIN activity_category ac ON a.activities_category = ac.id
-                LEFT JOIN activities_schedule asch ON asch.activity_id = a.id
-                    AND asch.terminated_at IS NULL
-                WHERE a.id IN (%s)
-                GROUP BY a.id
-            """;
+    SELECT
+        a.id,
+        a.destination_id,
+        a.name,
+        a.description,
+        a.duration_hours,
+        a.available_from,
+        a.available_to,
+        a.price_local,
+        a.price_foreigners,
+        a.min_participate,
+        a.max_participate,
+        a.season,
+        cs.name AS status_name,
+        a.created_at,
+        a.updated_at,
+        -- Get all categories as JSON array
+        (SELECT COALESCE(JSON_ARRAYAGG(
+            JSON_OBJECT(
+                'id', ac.id,
+                'name', ac.name,
+                'description', ac.description,
+                'is_primary', acm.is_primary
+            )
+        ), JSON_ARRAY())
+        FROM activity_category_map acm
+        JOIN activity_category ac ON acm.category_id = ac.id
+        WHERE acm.activity_id = a.id 
+        AND acm.terminated_at IS NULL
+        AND ac.status = 1
+        ) AS categories,
+        
+        -- Get schedules as JSON array
+        CASE
+            WHEN COUNT(asch.id) > 0 THEN
+                JSON_ARRAYAGG(
+                    JSON_OBJECT(
+                        'id', asch.id,
+                        'name', asch.name,
+                        'assume_start_date', asch.assume_start_date,
+                        'assume_end_date', asch.assume_end_date,
+                        'duration_hours_start', asch.duration_hours_start,
+                        'duration_hours_end', asch.duration_hours_end,
+                        'special_note', asch.special_note,
+                        'description', asch.description,
+                        'status', asch.status
+                    )
+                )
+            ELSE JSON_ARRAY()
+        END AS schedules,
+
+        -- Get requirements as JSON array
+        (
+            SELECT COALESCE(JSON_ARRAYAGG(
+                JSON_OBJECT(
+                    'id', ar.id,
+                    'name', ar.name,
+                    'value', ar.value,
+                    'description', ar.description,
+                    'color', ar.color,
+                    'status', ar.status
+                )
+            ), JSON_ARRAY())
+            FROM activities_requirement ar
+            WHERE ar.activity_id = a.id AND ar.terminated_at IS NULL
+        ) AS requirements,
+
+        -- Get images as JSON array
+        (
+            SELECT COALESCE(JSON_ARRAYAGG(
+                JSON_OBJECT(
+                    'id', ai.id,
+                    'name', ai.name,
+                    'description', ai.description,
+                    'image_url', ai.image_url,
+                    'status', ai.status
+                )
+            ), JSON_ARRAY())
+            FROM activities_images ai
+            WHERE ai.activity_id = a.id AND ai.terminated_at IS NULL
+        ) AS images
+
+    FROM activities a
+    LEFT JOIN common_status cs ON a.status = cs.id
+    LEFT JOIN activities_schedule asch ON asch.activity_id = a.id
+        AND asch.terminated_at IS NULL
+    WHERE a.id IN (%s)
+    GROUP BY a.id
+    """;
 
     public static final String GET_ACTIVE_ACTIVITIES_FOR_TERMINATE = """
                         SELECT

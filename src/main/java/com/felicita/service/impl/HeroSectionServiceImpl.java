@@ -66,7 +66,7 @@ public class HeroSectionServiceImpl implements HeroSectionService {
             List<HeroSectionResponse> heroSectionResponses = getAllHomeHeroSectionData().getData();
 
             List<HeroSectionResponse> heroSectionResponsesList = heroSectionResponses.stream()
-                    .filter(item -> HeroSectionItemStatus.VISIBLE.toString().equalsIgnoreCase(item.getImageStatus()))
+                    .filter(item -> HeroSectionItemStatus.ACTIVE.toString().equalsIgnoreCase(item.getImageStatus()))
                     .toList();
 
             if (heroSectionResponsesList.isEmpty()) {
