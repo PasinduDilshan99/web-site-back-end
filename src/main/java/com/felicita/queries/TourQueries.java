@@ -138,6 +138,33 @@ public class TourQueries {
                 WHERE t.tour_id IN (%s)  -- will replace with comma-separated IDs
             """;
 
+    public static final String COUNT_TOURS_WITH_FILTER = """
+        SELECT COUNT(DISTINCT t.tour_id)
+        FROM tour t
+        LEFT JOIN common_status cs ON t.status = cs.id
+        LEFT JOIN seasons s ON t.season = s.id
+        WHERE cs.name = 'ACTIVE'
+          AND (? IS NULL OR t.name LIKE CONCAT('%', ?, '%'))
+          AND (? IS NULL OR t.duration = ?)
+          AND (? IS NULL OR (t.start_location LIKE CONCAT('%', ?, '%')
+               OR t.end_location LIKE CONCAT('%', ?, '%')))
+          AND (? IS NULL OR EXISTS (
+               SELECT 1
+               FROM tour_category_map tcm
+               JOIN tour_category tc2 ON tcm.category_id = tc2.id
+               WHERE tcm.tour_id = t.tour_id
+                 AND tc2.name = ?
+           ))                 
+          AND (? IS NULL OR s.name = ?)
+          AND (? IS NULL OR EXISTS (
+               SELECT 1
+               FROM tour_type_map ttm
+               JOIN tour_type tt2 ON ttm.type_id = tt2.id
+               WHERE ttm.tour_id = t.tour_id
+                 AND tt2.name = ?
+           ));
+        """;
+
 
     public static final String GET_TOUR_DETAILS_BY_ID = """
                 SELECT

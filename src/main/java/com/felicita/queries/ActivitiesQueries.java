@@ -109,8 +109,12 @@ public class ActivitiesQueries {
                 ac.updated_by AS category_updated_by,
                 ac.terminated_at AS category_terminated_at,
                 ac.terminated_by AS category_terminated_by,
+                ac.color,
+                ac.hover_color, 
                 cs1.name AS category_status,
+            
                 IFNULL(act.activity_count, 0) AS activities_count,
+            
                 aci.id AS image_id,
                 aci.name AS image_name,
                 aci.description AS image_description,
@@ -122,27 +126,32 @@ public class ActivitiesQueries {
                 aci.updated_by AS image_updated_by,
                 aci.terminated_at AS image_terminated_at,
                 aci.terminated_by AS image_terminated_by
-              FROM activity_category ac
-
-              LEFT JOIN (
+            
+            FROM activity_category ac
+            
+            LEFT JOIN (
                 SELECT
-                    activities_category,
-                    COUNT(*) AS activity_count
-                FROM activities
-                GROUP BY activities_category
-              ) act
-                ON act.activities_category = ac.id
-
-              LEFT JOIN activity_category_images aci
+                    acm.category_id,
+                    COUNT(acm.activity_id) AS activity_count
+                FROM activity_category_map acm
+                INNER JOIN activities a
+                    ON a.id = acm.activity_id
+                WHERE acm.terminated_at IS NULL
+                  AND a.terminated_at IS NULL
+                GROUP BY acm.category_id
+            ) act
+                ON act.category_id = ac.id
+            
+            LEFT JOIN activity_category_images aci
                 ON ac.id = aci.activity_category_id
-
-              LEFT JOIN common_status cs1
+            
+            LEFT JOIN common_status cs1
                 ON cs1.id = ac.status
-
-              LEFT JOIN common_status cs2
+            
+            LEFT JOIN common_status cs2
                 ON cs2.id = aci.status
-
-              ORDER BY ac.id, aci.id
+            
+            ORDER BY ac.id, aci.id
             """;
 
 
@@ -690,9 +699,9 @@ public class ActivitiesQueries {
           JOIN activity_category ac ON acm.category_id = ac.id
           WHERE acm.activity_id = a.id 
           AND acm.terminated_at IS NULL
-          AND ac.name = ?
+          AND LOWER(ac.name) = LOWER(?)
       ))
-    ORDER BY a.created_at DESC
+    ORDER BY a.created_at ASC
     LIMIT ? OFFSET ?
     """;
 

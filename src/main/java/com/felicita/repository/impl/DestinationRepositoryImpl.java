@@ -298,72 +298,69 @@ public class DestinationRepositoryImpl implements DestinationRepository {
 
     @Override
     public List<DestinationsForTourMapDto> getDestinationsForTourMap() {
-        String GET_DESTINATIONS_FOR_TOUR_MAP = DestinationQueries.GET_DESTINATIONS_FOR_TOUR_MAP;
+        String sql = DestinationQueries.GET_DESTINATIONS_FOR_TOUR_MAP;
+        ObjectMapper objectMapper = new ObjectMapper();
+
         try {
-            LOGGER.info("Executing query to fetch all destinations for tour map.");
+            return jdbcTemplate.query(sql, (rs, rowNum) -> {
+                DestinationsForTourMapDto dto = new DestinationsForTourMapDto();
+                dto.setDestinationId(rs.getLong("destination_id"));
+                dto.setDestinationName(rs.getString("destination_name"));
+                dto.setDestinationDescription(rs.getString("destination_description"));
+                dto.setDestinationStatus(rs.getString("destination_status"));
 
-            Map<Long, DestinationsForTourMapDto> destinationMap = new LinkedHashMap<>();
+                // Parse destination categories JSON array
+                String categoriesJson = rs.getString("destination_categories");
+                if (categoriesJson != null) {
+                    try {
+                        dto.setDestinationCategories(objectMapper.readValue(categoriesJson, new TypeReference<List<String>>() {}));
+                    } catch (JsonProcessingException e) {
+                        dto.setDestinationCategories(new ArrayList<>());
+                    }
+                } else {
+                    dto.setDestinationCategories(new ArrayList<>());
+                }
 
-            jdbcTemplate.query(GET_DESTINATIONS_FOR_TOUR_MAP, rs -> {
-                Long destinationId = rs.getLong("destination_id");
+                dto.setDestinationLocation(rs.getString("destination_location"));
+                dto.setDestinationLatitude(rs.getObject("destination_latitude") != null ? rs.getDouble("destination_latitude") : null);
+                dto.setDestinationLongitude(rs.getObject("destination_longitude") != null ? rs.getDouble("destination_longitude") : null);
+                dto.setDestinationCreatedAt(rs.getTimestamp("destination_created_at") != null
+                        ? rs.getTimestamp("destination_created_at").toLocalDateTime()
+                        : null);
+                dto.setDestinationCreatedBy(rs.getObject("destination_created_by") != null ? rs.getLong("destination_created_by") : null);
 
-                DestinationsForTourMapDto dto = destinationMap.get(destinationId);
-                if (dto == null) {
-                    dto = new DestinationsForTourMapDto();
-                    dto.setDestinationId(destinationId);
-                    dto.setDestinationName(rs.getString("destination_name"));
-                    dto.setDestinationDescription(rs.getString("destination_description"));
-                    dto.setDestinationStatus(rs.getString("destination_status"));
-                    dto.setDestinationCategory(rs.getString("destination_category"));
-                    dto.setDestinationCategoryStatus(rs.getString("destination_category_status"));
-                    dto.setDestinationLocation(rs.getString("destination_location"));
-                    dto.setDestinationLatitude(rs.getObject("destination_latitude") != null ? rs.getDouble("destination_latitude") : null);
-                    dto.setDestinationLongitude(rs.getObject("destination_longitude") != null ? rs.getDouble("destination_longitude") : null);
-                    dto.setDestinationCreatedAt(rs.getTimestamp("destination_created_at") != null
-                            ? rs.getTimestamp("destination_created_at").toLocalDateTime()
-                            : null);
-                    dto.setDestinationCreatedBy(rs.getObject("destination_created_by") != null ? rs.getLong("destination_created_by") : null);
-
+                // Parse destination images JSON array
+                String destinationImagesJson = rs.getString("destination_images");
+                if (destinationImagesJson != null) {
+                    try {
+                        dto.setDestinationImagesForTourMapDtos(objectMapper.readValue(
+                                destinationImagesJson,
+                                new TypeReference<List<DestinationImagesForTourMapDto>>() {}
+                        ));
+                    } catch (JsonProcessingException e) {
+                        dto.setDestinationImagesForTourMapDtos(new ArrayList<>());
+                    }
+                } else {
                     dto.setDestinationImagesForTourMapDtos(new ArrayList<>());
+                }
+
+                // Parse category images JSON array
+                String categoryImagesJson = rs.getString("destination_category_images");
+                if (categoryImagesJson != null) {
+                    try {
+                        dto.setDestinationCategoryImageForTourMapDtos(objectMapper.readValue(
+                                categoryImagesJson,
+                                new TypeReference<List<DestinationCategoryImageForTourMapDto>>() {}
+                        ));
+                    } catch (JsonProcessingException e) {
+                        dto.setDestinationCategoryImageForTourMapDtos(new ArrayList<>());
+                    }
+                } else {
                     dto.setDestinationCategoryImageForTourMapDtos(new ArrayList<>());
-
-                    destinationMap.put(destinationId, dto);
                 }
 
-                Long destinationImageId = rs.getObject("destination_image_id") != null ? rs.getLong("destination_image_id") : null;
-                if (destinationImageId != null) {
-                    DestinationImagesForTourMapDto imageDto = new DestinationImagesForTourMapDto();
-                    imageDto.setId(destinationImageId);
-                    imageDto.setName(rs.getString("destination_image_name"));
-                    imageDto.setDescription(rs.getString("destination_image_description"));
-                    imageDto.setImageUrl(rs.getString("destination_image_url"));
-                    imageDto.setStatus(rs.getString("destination_image_status"));
-
-                    if (!dto.getDestinationImagesForTourMapDtos().stream()
-                            .anyMatch(img -> img.getId().equals(destinationImageId))) {
-                        dto.getDestinationImagesForTourMapDtos().add(imageDto);
-                    }
-                }
-
-                Long destinationCategoryImageId = rs.getObject("destination_category_image_id") != null
-                        ? rs.getLong("destination_category_image_id")
-                        : null;
-                if (destinationCategoryImageId != null) {
-                    DestinationCategoryImageForTourMapDto categoryImageDto = new DestinationCategoryImageForTourMapDto();
-                    categoryImageDto.setId(destinationCategoryImageId);
-                    categoryImageDto.setName(rs.getString("destination_category_image_name"));
-                    categoryImageDto.setDescription(rs.getString("destination_category_image_description"));
-                    categoryImageDto.setImageUrl(rs.getString("destination_category_image_url"));
-                    categoryImageDto.setStatus(rs.getString("destination_category_image_status"));
-
-                    if (!dto.getDestinationCategoryImageForTourMapDtos().stream()
-                            .anyMatch(img -> img.getId().equals(destinationCategoryImageId))) {
-                        dto.getDestinationCategoryImageForTourMapDtos().add(categoryImageDto);
-                    }
-                }
+                return dto;
             });
-
-            return new ArrayList<>(destinationMap.values());
 
         } catch (DataAccessException ex) {
             LOGGER.error("Database error while fetching destinations for tour map: {}", ex.getMessage(), ex);

@@ -15,8 +15,7 @@ public class DestinationsForTourMapDto {
     private String destinationName;
     private String destinationDescription;
     private String destinationStatus;
-    private String destinationCategory;
-    private String destinationCategoryStatus;
+    private List<String> destinationCategories;
     private String destinationLocation;
     private Double destinationLatitude;
     private Double destinationLongitude;

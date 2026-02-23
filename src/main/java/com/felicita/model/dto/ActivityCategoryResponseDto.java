@@ -22,6 +22,8 @@ public class ActivityCategoryResponseDto {
     private Timestamp terminatedAt;
     private Integer terminatedBy;
     private Integer numberOfActivities;
+    private String color;
+    private String hoverColor;
     private List<ActivityCategoryImageResponseDto> images;
 }
 

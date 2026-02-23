@@ -595,38 +595,64 @@ public class DestinationQueries {
                 d.name AS destination_name,
                 d.description AS destination_description,
                 cs1.name AS destination_status,
-                dc.category AS destination_category,
-                cs2.name AS destination_category_status,
+            
+                -- All categories for destination as JSON array
+                (
+                    SELECT JSON_ARRAYAGG(dc.category)
+                    FROM destination_category_map dcm
+                    JOIN destination_categories dc ON dcm.category_id = dc.id
+                    JOIN common_status cs ON dcm.status = cs.id
+                    WHERE dcm.destination_id = d.destination_id
+                      AND cs.name = 'ACTIVE'
+                ) AS destination_categories,
+            
                 d.location AS destination_location,
                 d.latitude AS destination_latitude,
                 d.longitude AS destination_longitude,
                 d.created_at AS destination_created_at,
                 d.created_by AS destination_created_by,
-                di.id AS destination_image_id,
-                di.name AS destination_image_name,
-                di.description AS destination_image_description,
-                di.image_url AS destination_image_url,
-                cs3.name AS destination_image_status,
-                dci.id AS destination_category_image_id,
-                dci.name AS destination_category_image_name,
-                dci.description AS destination_category_image_description,
-                dci.image_url AS destination_category_image_url,
-                cs4.name AS destination_category_image_status
+            
+                -- Destination images as JSON array
+                (
+                    SELECT COALESCE(
+                        JSON_ARRAYAGG(
+                            JSON_OBJECT(
+                                'id', di.id,
+                                'name', di.name,
+                                'description', di.description,
+                                'imageUrl', di.image_url,
+                                'status', cs3.name
+                            )
+                        ),
+                        JSON_ARRAY()
+                    )
+                    FROM destination_images di
+                    JOIN common_status cs3 ON di.status = cs3.id
+                    WHERE di.destination_id = d.destination_id
+                ) AS destination_images,
+            
+                -- Destination category images as JSON array
+                (
+                    SELECT COALESCE(
+                        JSON_ARRAYAGG(
+                            JSON_OBJECT(
+                                'id', dci.id,
+                                'name', dci.name,
+                                'description', dci.description,
+                                'imageUrl', dci.image_url,
+                                'status', cs4.name
+                            )
+                        ),
+                        JSON_ARRAY()
+                    )
+                    FROM destination_categories_images dci
+                    JOIN destination_category_map dcm ON dcm.category_id = dci.destination_categories_id
+                    JOIN common_status cs4 ON dci.status = cs4.id
+                    WHERE dcm.destination_id = d.destination_id
+                ) AS destination_category_images
+            
             FROM destination d
-            LEFT JOIN common_status cs1
-                ON cs1.id = d.status
-            LEFT JOIN destination_categories dc
-                ON dc.id = d.destination_category
-            LEFT JOIN common_status cs2
-                ON cs2.id = dc.status
-            LEFT JOIN destination_images di
-                ON di.destination_id = d.destination_id
-            LEFT JOIN common_status cs3
-                ON cs3.id = di.status
-            LEFT JOIN destination_categories_images dci
-                ON dci.destination_categories_id = dc.id
-            LEFT JOIN common_status cs4
-                ON cs4.id = dci.status
+            LEFT JOIN common_status cs1 ON cs1.id = d.status
             WHERE cs1.name = 'ACTIVE'
             """;
 

@@ -24,8 +24,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-import static com.felicita.queries.TourQueries.GET_PAGINATED_TOUR_IDS;
-import static com.felicita.queries.TourQueries.GET_TOURS_BY_IDS;
+
+import static com.felicita.queries.TourQueries.*;
 
 @Repository
 public class TourRepositoryImpl implements TourRepository {
@@ -995,16 +995,18 @@ public class TourRepositoryImpl implements TourRepository {
                             tourDataRequest.getPageSize(), offset
                     }, Integer.class);
 
-            List<Integer> totalTourIds = jdbcTemplate.queryForList(GET_PAGINATED_TOUR_IDS,
+            Integer totalTours = jdbcTemplate.queryForObject(
+                    COUNT_TOURS_WITH_FILTER,
                     new Object[]{
                             tourDataRequest.getName(), tourDataRequest.getName(),
                             tourDataRequest.getDuration(), tourDataRequest.getDuration(),
                             tourDataRequest.getLocation(), tourDataRequest.getLocation(), tourDataRequest.getLocation(),
                             tourDataRequest.getTourCategory(), tourDataRequest.getTourCategory(),
                             tourDataRequest.getSeason(), tourDataRequest.getSeason(),
-                            tourDataRequest.getTourType(), tourDataRequest.getTourType(),
-                            1000000000, 1
-                    }, Integer.class);
+                            tourDataRequest.getTourType(), tourDataRequest.getTourType()
+                    },
+                    Integer.class
+            );
 
             if (tourIds.isEmpty()) {
                 return null;
@@ -1099,7 +1101,7 @@ public class TourRepositoryImpl implements TourRepository {
 
                 return new ArrayList<>(tourMap.values());
             });
-            return new ToursDetailsWithParamResponse(totalTourIds.size(), query);
+            return new ToursDetailsWithParamResponse(totalTours, query);
 
         } catch (DataAccessException ex) {
             LOGGER.error(ex.toString());

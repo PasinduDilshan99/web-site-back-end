@@ -16,7 +16,7 @@ public class ActivityDataRequest {
     private Long minPrice;
     private Long maxPrice;
     private String duration;
-    private Long activityCategory;
+    private String activityCategory;
     private String season;
     private String status;
     private int pageSize;

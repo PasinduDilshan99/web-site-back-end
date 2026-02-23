@@ -72,6 +72,8 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
                     category.setTerminatedAt(rs.getTimestamp("category_terminated_at"));
                     category.setTerminatedBy(rs.getObject("category_terminated_by", Integer.class));
                     category.setNumberOfActivities(rs.getInt("activities_count"));
+                    category.setColor(rs.getString("color"));
+                    category.setHoverColor(rs.getString("hover_color"));
                     category.setImages(new ArrayList<>());
 
                     categoryMap.put(categoryId, category);
@@ -843,14 +845,14 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
                             activityDataRequest.getMinPrice(), activityDataRequest.getMinPrice(),
                             activityDataRequest.getMaxPrice(), activityDataRequest.getMaxPrice(),
                             activityDataRequest.getDuration(), activityDataRequest.getDuration(),
-                            activityDataRequest.getActivityCategory(), activityDataRequest.getActivityCategory(),
-                            activityDataRequest.getSeason(), activityDataRequest.getSeason(),
-                            activityDataRequest.getStatus(), activityDataRequest.getStatus(),
-                            activityDataRequest.getPageSize(), offset
+                            activityDataRequest.getSeason(), activityDataRequest.getSeason(),          // FIXED
+                            activityDataRequest.getStatus(), activityDataRequest.getStatus(),          // FIXED
+                            activityDataRequest.getActivityCategory(), activityDataRequest.getActivityCategory(), // MOVED HERE
+                            activityDataRequest.getPageSize(),
+                            offset
                     },
                     (rs, rowNum) -> rs.getLong("id")
             );
-
             Integer totalCount = jdbcTemplate.queryForObject(
                     ActivitiesQueries.GET_ACTIVITY_COUNT_WITH_FILTERS,
                     new Object[]{
@@ -858,9 +860,9 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
                             activityDataRequest.getMinPrice(), activityDataRequest.getMinPrice(),
                             activityDataRequest.getMaxPrice(), activityDataRequest.getMaxPrice(),
                             activityDataRequest.getDuration(), activityDataRequest.getDuration(),
-                            activityDataRequest.getActivityCategory(), activityDataRequest.getActivityCategory(),
-                            activityDataRequest.getSeason(), activityDataRequest.getSeason(),
-                            activityDataRequest.getStatus(), activityDataRequest.getStatus()
+                            activityDataRequest.getSeason(), activityDataRequest.getSeason(),        // ✅ season
+                            activityDataRequest.getStatus(), activityDataRequest.getStatus(),        // ✅ status
+                            activityDataRequest.getActivityCategory(), activityDataRequest.getActivityCategory() // ✅ category
                     },
                     Integer.class
             );
