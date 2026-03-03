@@ -214,7 +214,7 @@ public class SecurityConfig {
 //                        .requestMatchers("/api/v0/inquiry/create").hasAuthority("INQUIRY_CREATE")
 
                         // Footer
-//                        .requestMatchers("/api/v0/footer/all").hasAuthority("FOOTER_VIEW")
+    //                        .requestMatchers("/api/v0/footer/all").hasAuthority("FOOTER_VIEW")
 //                        .requestMatchers("/api/v0/footer/active").hasAuthority("FOOTER_VIEW")
 
                         // Our Story

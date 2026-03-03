@@ -493,8 +493,6 @@ public class TourQueries {
                 destination_images di ON d.destination_id = di.destination_id
             WHERE
                 td.tour_id = ?
-            ORDER BY
-                d.destination_id;
             """;
 
 
@@ -698,7 +696,8 @@ public class TourQueries {
                 a.price_foreigners,
                 a.min_participate,
                 a.max_participate,
-                a.season,
+                s.name AS season,
+                a.season_id,
                 MAX(cs.name) AS status_name,
                 a.created_at,
                 a.updated_at,
@@ -751,6 +750,7 @@ public class TourQueries {
             LEFT JOIN common_status cs ON a.status = cs.id
             LEFT JOIN activity_category_map acm ON a.id = acm.activity_id
             LEFT JOIN activity_category ac ON acm.category_id = ac.id
+            LEFT JOIN seasons s ON s.id = a.season_id
             WHERE a.terminated_at IS NULL
             GROUP BY
                 a.id,

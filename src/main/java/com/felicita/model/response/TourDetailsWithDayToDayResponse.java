@@ -105,6 +105,7 @@ public class TourDetailsWithDayToDayResponse {
         private Integer maxParticipate;
 
         private String season;
+        private Long seasonId;
         private String status;
 
         private Timestamp createdAt;

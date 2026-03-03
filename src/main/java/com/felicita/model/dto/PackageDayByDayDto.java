@@ -39,8 +39,10 @@ public class PackageDayByDayDto {
     private Double hotelLongitude;
     private Long transportId;
     private String vehicleRegistrationNumber;
+    private Long vehicleTypeId;
     private String vehicleTypeName;
     private String vehicleModel;
+    private Long vehicleSpecificationId;
     private Integer seatCapacity;
     private Boolean airCondition;
 }

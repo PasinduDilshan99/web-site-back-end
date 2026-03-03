@@ -1295,6 +1295,7 @@ public class TourRepositoryImpl implements TourRepository {
                             .minParticipate(rs.getInt("min_participate"))
                             .maxParticipate(rs.getInt("max_participate"))
                             .season(rs.getString("season"))
+                            .seasonId(rs.getLong("season_id"))
                             .status(rs.getString("status_name"))
                             .createdAt(rs.getTimestamp("created_at"))
                             .updatedAt(rs.getTimestamp("updated_at"))

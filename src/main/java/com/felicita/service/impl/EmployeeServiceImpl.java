@@ -177,7 +177,8 @@ public class EmployeeServiceImpl implements EmployeeService {
                         "Pasindu Dilshan",
                         "Chief Executive Officer",
                         speech,
-                        "/images/users/user-1.jpg"
+//                        "/images/users/user-1.jpg"
+                        null
                 ),
                 Instant.now());    }
 }
