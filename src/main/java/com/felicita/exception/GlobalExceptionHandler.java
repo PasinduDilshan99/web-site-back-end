@@ -32,7 +32,7 @@ public class GlobalExceptionHandler {
                 Instant.now()
         );
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @ExceptionHandler(InternalServerErrorExceptionHandler.class)

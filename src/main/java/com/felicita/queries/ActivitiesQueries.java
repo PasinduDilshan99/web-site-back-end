@@ -336,7 +336,8 @@ public class ActivitiesQueries {
                     a.price_foreigners,
                     a.min_participate,
                     a.max_participate,
-                    a.season,
+                    s.id AS seasonId,
+                    s.name AS season,
                     cs.name AS status_name,
                     a.created_at,
                     a.updated_at,
@@ -408,6 +409,7 @@ public class ActivitiesQueries {
                     ) AS images
             
                 FROM activities a
+                LEFT JOIN seasons s ON s.id = a.season_id
                 LEFT JOIN common_status cs ON a.status = cs.id
                 WHERE a.terminated_at IS NULL
                   AND a.id = ?

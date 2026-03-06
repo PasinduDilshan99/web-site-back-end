@@ -46,6 +46,7 @@ public class ActivityResponseDto {
     @JsonProperty("max_participate")
     private Integer maxParticipate;
 
+    private Long seasonId;
     private String season;
     private String status;
 

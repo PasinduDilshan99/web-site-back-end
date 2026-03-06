@@ -883,10 +883,11 @@ public class DestinationQueries {
                                 'priceForeigners', a.price_foreigners,
                                 'minParticipate', a.min_participate,
                                 'maxParticipate', a.max_participate,
-                                'season', a.season
+                                'season', s.name
                             )
                         ), JSON_ARRAY())
                         FROM activities a
+                        LEFT JOIN seasons s ON s.id = a.season_id
                         WHERE a.destination_id = d.destination_id
                           AND a.terminated_at IS NULL
                     ) AS activities

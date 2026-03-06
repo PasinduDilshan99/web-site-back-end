@@ -375,6 +375,7 @@ public class ActivitiesRepositoryImpl implements ActivitiesRepository {
                         activity.setPriceForeigners(rs.getBigDecimal("price_foreigners"));
                         activity.setMinParticipate(rs.getInt("min_participate"));
                         activity.setMaxParticipate(rs.getInt("max_participate"));
+                        activity.setSeasonId(rs.getLong("seasonId"));
                         activity.setSeason(rs.getString("season"));
                         activity.setStatus(rs.getString("status_name"));
                         activity.setCreatedAt(rs.getTimestamp("created_at"));
