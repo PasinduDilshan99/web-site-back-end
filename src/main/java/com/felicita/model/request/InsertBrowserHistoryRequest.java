@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class InsertBrowserHistoryRequest {
     private String type;
     private Long dataId;
+    private String name;
 }

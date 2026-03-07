@@ -1,5 +1,6 @@
 package com.felicita.service.impl;
 
+import com.felicita.exception.DataAccessErrorExceptionHandler;
 import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
 import com.felicita.model.dto.VehicleBasicDetailsDto;
@@ -264,4 +265,67 @@ public class VehicleServiceImpl implements VehicleService {
             LOGGER.info("End fetching vehicle specification filters from repository");
         }
     }
+
+    @Override
+    public CommonResponse<List<VehicleTypeResponse>> getActiveVehiclesTypes() {
+        LOGGER.info("Start fetching vehicle types from repository");
+        try {
+            List<VehicleTypeResponse> vehicleTypeResponses = vehicleRepository.getActiveVehiclesTypes();
+
+            if (vehicleTypeResponses.isEmpty()) {
+                LOGGER.warn("No vehicle types found in database");
+                throw new DataNotFoundErrorExceptionHandler("No vehicle types found");
+            }
+
+            LOGGER.info("Fetched {} vehicle types successfully", vehicleTypeResponses.size());
+
+            return (
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            vehicleTypeResponses,
+                            Instant.now()
+                    )
+            );
+
+        }catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
+        }catch (Exception e) {
+            LOGGER.error("Error occurred while fetching vehicle types: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch vehicle types from database");
+        } finally {
+            LOGGER.info("End fetching all vehicle types from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<VehicleTypeResponse> getActiveVehiclesTypesDetailsById(Long typeId) {
+        LOGGER.info("Start fetching vehicle types details by id : {} from repository", typeId);
+        try {
+            VehicleTypeResponse vehicleTypeResponse = vehicleRepository.getActiveVehiclesTypesDetailsById(typeId);
+
+            LOGGER.info("Fetched vehicle types details by id : {} successfully", typeId);
+
+            return (
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            vehicleTypeResponse,
+                            Instant.now()
+                    )
+            );
+
+        }catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
+        }catch (Exception e) {
+            LOGGER.error("Error occurred while fetching vehicle types details by id {} : {}",typeId, e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch vehicle types details by id : "+ typeId);
+        } finally {
+            LOGGER.info("End fetching all vehicle types details by id : {} from repository",typeId);
+        }
+    }
+
+
 }

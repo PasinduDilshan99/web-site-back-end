@@ -20,4 +20,8 @@ public interface VehicleService {
     CommonResponse<VehicleSpecificationSearchResponse> getVehicleSpecificationDetails(VehicleSpecificationSearchRequest vehicleSpecificationSearchRequest);
 
     CommonResponse<VehicleSpecificationFilterResponse> getVehicleSpecificationFilters();
+
+    CommonResponse<List<VehicleTypeResponse>> getActiveVehiclesTypes();
+
+    CommonResponse<VehicleTypeResponse> getActiveVehiclesTypesDetailsById(Long typeId);
 }

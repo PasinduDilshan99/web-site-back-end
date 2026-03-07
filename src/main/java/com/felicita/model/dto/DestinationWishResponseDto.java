@@ -16,7 +16,7 @@ public class DestinationWishResponseDto {
     private String destinationName;
     private String destinationDescription;
     private String destinationLocation;
-    private String destinationCategory;
+//    private String destinationCategory;
     private List<String> destinationImages;
     private String destinationUrl;
     private String status;

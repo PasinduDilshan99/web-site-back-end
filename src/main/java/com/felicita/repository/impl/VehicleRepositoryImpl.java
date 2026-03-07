@@ -765,6 +765,107 @@ public class VehicleRepositoryImpl implements VehicleRepository {
         return jdbcTemplate.queryForList(sql, String.class);
     }
 
+    @Override
+    public List<VehicleTypeResponse> getActiveVehiclesTypes() {
+
+        String query = VehicleQueries.GET_VEHICLE_TYPES_DETAILS;
+
+        try {
+
+            Map<Long, VehicleTypeResponse> vehicleMap = new LinkedHashMap<>();
+
+            jdbcTemplate.query(query, rs -> {
+
+                Long vehicleTypeId = rs.getLong("vehicle_type_id");
+
+                VehicleTypeResponse vehicle =
+                        vehicleMap.computeIfAbsent(vehicleTypeId, id ->
+                                {
+                                    try {
+                                        return VehicleTypeResponse.builder()
+                                                .vehicleTypeId(id)
+                                                .name(rs.getString("name"))
+                                                .description(rs.getString("description"))
+                                                .status(rs.getString("status"))
+                                                .images(new ArrayList<>())
+                                                .build();
+                                    } catch (SQLException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }
+                        );
+
+                Long imageId = rs.getLong("image_id");
+
+                if (imageId != null && imageId != 0) {
+
+                    VehicleTypeResponse.Image image =
+                            VehicleTypeResponse.Image.builder()
+                                    .imageId(imageId)
+                                    .imageName(rs.getString("image_name"))
+                                    .imageDescription(rs.getString("image_description"))
+                                    .imageUrl(rs.getString("image_url"))
+                                    .build();
+
+                    vehicle.getImages().add(image);
+                }
+
+            });
+
+            return new ArrayList<>(vehicleMap.values());
+
+        } catch (Exception e) {
+            LOGGER.error(e.toString());
+            throw new DataAccessErrorExceptionHandler("Error fetching vehicle types");
+        }
+    }
+
+    @Override
+    public VehicleTypeResponse getActiveVehiclesTypesDetailsById(Long typeId) {
+        String query = VehicleQueries.GET_VEHICLE_TYPES_DETAILS_BY_ID;
+
+        try {
+            Map<Long, VehicleTypeResponse> vehicleMap = new LinkedHashMap<>();
+
+            jdbcTemplate.query(query, ps -> ps.setLong(1, typeId), rs -> {
+                Long vehicleTypeId = rs.getLong("vehicle_type_id");
+
+                VehicleTypeResponse vehicle = vehicleMap.computeIfAbsent(vehicleTypeId, id ->
+                        {
+                            try {
+                                return VehicleTypeResponse.builder()
+                                        .vehicleTypeId(id)
+                                        .name(rs.getString("name"))
+                                        .description(rs.getString("description"))
+                                        .status(rs.getString("status"))
+                                        .images(new ArrayList<>())
+                                        .build();
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                );
+
+                Long imageId = rs.getLong("image_id");
+                if (!rs.wasNull() && imageId != 0) {
+                    VehicleTypeResponse.Image image = VehicleTypeResponse.Image.builder()
+                            .imageId(imageId)
+                            .imageName(rs.getString("image_name"))
+                            .imageDescription(rs.getString("image_description"))
+                            .imageUrl(rs.getString("image_url"))
+                            .build();
+                    vehicle.getImages().add(image);
+                }
+            });
+
+            // return the single vehicle type or null if not found
+            return vehicleMap.values().stream().findFirst().orElse(null);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error fetching vehicle type details for ID: " + typeId, e);
+        }
+    }
+
     // Helper method to get vehicle assignments separately
     private List<VehicleDetailResponse.Assignment> getVehicleAssignments(Integer vehicleId) {
         String GET_VEHICLE_ASSIGNMENTS = """

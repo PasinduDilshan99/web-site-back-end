@@ -643,5 +643,281 @@ public class HeroSectionRepositoryImpl implements HeroSectionRepository {
         }
     }
 
+    @Override
+    public List<VehicleHeroSectionResponse> getVehicleHeroSectionDetails() {
+        String GET_ALL_VEHICLE_HERO_SECTION_DATA =
+                HeroSectionQueries.GET_ALL_VEHICLE_HERO_SECTION_DATA;
+
+        try {
+            LOGGER.info("Executing query to fetch vehicle hero section data");
+
+            List<VehicleHeroSectionResponse> results = jdbcTemplate.query(
+                    GET_ALL_VEHICLE_HERO_SECTION_DATA,
+                    (rs, rowNum) -> {
+
+                        Integer order = rs.getInt("order");
+                        if (rs.wasNull()) {
+                            order = null;
+                        }
+
+                        return VehicleHeroSectionResponse.builder()
+                                .id(rs.getLong("id"))
+                                .name(rs.getString("name"))
+                                .imageUrl(rs.getString("image_url"))
+                                .title(rs.getString("title"))
+                                .subtitle(rs.getString("subtitle"))
+                                .description(rs.getString("description"))
+
+                                .primaryButtonText(rs.getString("primary_button_text"))
+                                .primaryButtonLink(rs.getString("primary_button_link"))
+
+                                .secondaryButtonText(rs.getString("secondary_button_text"))
+                                .secondaryButtonLink(rs.getString("secondary_button_link"))
+
+                                .status(rs.getString("status"))
+                                .order(order)
+
+                                .createdAt(rs.getTimestamp("created_at") != null
+                                        ? rs.getTimestamp("created_at").toLocalDateTime()
+                                        : null)
+                                .createdBy(rs.getInt("created_by"))
+
+                                .updatedAt(rs.getTimestamp("updated_at") != null
+                                        ? rs.getTimestamp("updated_at").toLocalDateTime()
+                                        : null)
+                                .updatedBy(rs.getInt("updated_by"))
+
+                                .terminatedAt(rs.getTimestamp("terminated_at") != null
+                                        ? rs.getTimestamp("terminated_at").toLocalDateTime()
+                                        : null)
+                                .terminatedBy(rs.getInt("terminated_by"))
+                                .build();
+                    }
+            );
+
+            LOGGER.info("Successfully fetched {} vehicle hero section data.", results.size());
+            return results;
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching vehicle hero section data: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler(
+                    "Failed to fetch vehicle hero section data from database"
+            );
+
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching vehicle hero section data: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler(
+                    "Unexpected error occurred while fetching vehicle hero section data"
+            );
+        }
+    }
+
+    @Override
+    public List<VehicleSpecificationHeroSectionResponse> getVehicleSpecificationHeroSectionDetails() {
+        String GET_ALL_VEHICLE_SPECIFICATION_HERO_SECTION_DATA =
+                HeroSectionQueries.GET_ALL_VEHICLE_SPECIFICATION_HERO_SECTION_DATA;
+
+        try {
+            LOGGER.info("Executing query to fetch vehicle specification hero section data");
+
+            List<VehicleSpecificationHeroSectionResponse> results = jdbcTemplate.query(
+                    GET_ALL_VEHICLE_SPECIFICATION_HERO_SECTION_DATA,
+                    (rs, rowNum) -> {
+
+                        Integer order = rs.getInt("order");
+                        if (rs.wasNull()) {
+                            order = null;
+                        }
+
+                        return VehicleSpecificationHeroSectionResponse.builder()
+                                .id(rs.getLong("id"))
+                                .name(rs.getString("name"))
+                                .imageUrl(rs.getString("image_url"))
+                                .title(rs.getString("title"))
+                                .subtitle(rs.getString("subtitle"))
+                                .description(rs.getString("description"))
+
+                                .primaryButtonText(rs.getString("primary_button_text"))
+                                .primaryButtonLink(rs.getString("primary_button_link"))
+
+                                .secondaryButtonText(rs.getString("secondary_button_text"))
+                                .secondaryButtonLink(rs.getString("secondary_button_link"))
+
+                                .status(rs.getString("status"))
+                                .order(order)
+
+                                .createdAt(rs.getTimestamp("created_at") != null
+                                        ? rs.getTimestamp("created_at").toLocalDateTime()
+                                        : null)
+                                .createdBy(rs.getInt("created_by"))
+
+                                .updatedAt(rs.getTimestamp("updated_at") != null
+                                        ? rs.getTimestamp("updated_at").toLocalDateTime()
+                                        : null)
+                                .updatedBy(rs.getInt("updated_by"))
+
+                                .terminatedAt(rs.getTimestamp("terminated_at") != null
+                                        ? rs.getTimestamp("terminated_at").toLocalDateTime()
+                                        : null)
+                                .terminatedBy(rs.getInt("terminated_by"))
+                                .build();
+                    }
+            );
+
+            LOGGER.info("Successfully fetched {} vehicle specification hero section data.", results.size());
+            return results;
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching vehicle specification hero section data: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler(
+                    "Failed to fetch vehicle specification hero section data from database"
+            );
+
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching vehicle specification hero section data: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler(
+                    "Unexpected error occurred while fetching vehicle specification hero section data"
+            );
+        }
+    }
+
+    @Override
+    public List<VehicleTypesHeroSectionResponse> getVehicleTypesHeroSectionDetails() {
+        String GET_ALL_VEHICLE_TYPES_HERO_SECTION_DATA =
+                HeroSectionQueries.GET_ALL_VEHICLE_TYPES_HERO_SECTION_DATA;
+
+        try {
+            LOGGER.info("Executing query to fetch vehicle types hero section data");
+
+            List<VehicleTypesHeroSectionResponse> results = jdbcTemplate.query(
+                    GET_ALL_VEHICLE_TYPES_HERO_SECTION_DATA,
+                    (rs, rowNum) -> {
+
+                        Integer order = rs.getInt("order");
+                        if (rs.wasNull()) {
+                            order = null;
+                        }
+
+                        return VehicleTypesHeroSectionResponse.builder()
+                                .id(rs.getLong("id"))
+                                .name(rs.getString("name"))
+                                .imageUrl(rs.getString("image_url"))
+                                .title(rs.getString("title"))
+                                .subtitle(rs.getString("subtitle"))
+                                .description(rs.getString("description"))
+
+                                .primaryButtonText(rs.getString("primary_button_text"))
+                                .primaryButtonLink(rs.getString("primary_button_link"))
+
+                                .secondaryButtonText(rs.getString("secondary_button_text"))
+                                .secondaryButtonLink(rs.getString("secondary_button_link"))
+
+                                .status(rs.getString("status"))
+                                .order(order)
+
+                                .createdAt(rs.getTimestamp("created_at") != null
+                                        ? rs.getTimestamp("created_at").toLocalDateTime()
+                                        : null)
+                                .createdBy(rs.getInt("created_by"))
+
+                                .updatedAt(rs.getTimestamp("updated_at") != null
+                                        ? rs.getTimestamp("updated_at").toLocalDateTime()
+                                        : null)
+                                .updatedBy(rs.getInt("updated_by"))
+
+                                .terminatedAt(rs.getTimestamp("terminated_at") != null
+                                        ? rs.getTimestamp("terminated_at").toLocalDateTime()
+                                        : null)
+                                .terminatedBy(rs.getInt("terminated_by"))
+                                .build();
+                    }
+            );
+
+            LOGGER.info("Successfully fetched {} vehicle types hero section data.", results.size());
+            return results;
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching vehicle types hero section data: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler(
+                    "Failed to fetch vehicle types hero section data from database"
+            );
+
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching vehicle types hero section data: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler(
+                    "Unexpected error occurred while fetching vehicle types hero section data"
+            );
+        }
+    }
+
+    @Override
+    public List<SeasonsHeroSectionResponse> getSeasonHeroSectionDetails() {
+        String GET_ALL_SEASON_HERO_SECTION_DATA =
+                HeroSectionQueries.GET_ALL_SEASON_HERO_SECTION_DATA;
+
+        try {
+            LOGGER.info("Executing query to fetch seasons hero section data");
+
+            List<SeasonsHeroSectionResponse> results = jdbcTemplate.query(
+                    GET_ALL_SEASON_HERO_SECTION_DATA,
+                    (rs, rowNum) -> {
+
+                        Integer order = rs.getInt("order");
+                        if (rs.wasNull()) {
+                            order = null;
+                        }
+
+                        return SeasonsHeroSectionResponse.builder()
+                                .id(rs.getLong("id"))
+                                .name(rs.getString("name"))
+                                .imageUrl(rs.getString("image_url"))
+                                .title(rs.getString("title"))
+                                .subtitle(rs.getString("subtitle"))
+                                .description(rs.getString("description"))
+
+                                .primaryButtonText(rs.getString("primary_button_text"))
+                                .primaryButtonLink(rs.getString("primary_button_link"))
+
+                                .secondaryButtonText(rs.getString("secondary_button_text"))
+                                .secondaryButtonLink(rs.getString("secondary_button_link"))
+
+                                .status(rs.getString("status"))
+                                .order(order)
+
+                                .createdAt(rs.getTimestamp("created_at") != null
+                                        ? rs.getTimestamp("created_at").toLocalDateTime()
+                                        : null)
+                                .createdBy(rs.getInt("created_by"))
+
+                                .updatedAt(rs.getTimestamp("updated_at") != null
+                                        ? rs.getTimestamp("updated_at").toLocalDateTime()
+                                        : null)
+                                .updatedBy(rs.getInt("updated_by"))
+
+                                .terminatedAt(rs.getTimestamp("terminated_at") != null
+                                        ? rs.getTimestamp("terminated_at").toLocalDateTime()
+                                        : null)
+                                .terminatedBy(rs.getInt("terminated_by"))
+                                .build();
+                    }
+            );
+
+            LOGGER.info("Successfully fetched {} seasons hero section data.", results.size());
+            return results;
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching seasons hero section data: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler(
+                    "Failed to fetch seasons hero section data from database"
+            );
+
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching seasons hero section data: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler(
+                    "Unexpected error occurred while fetching seasons hero section data"
+            );
+        }
+    }
+
 
 }

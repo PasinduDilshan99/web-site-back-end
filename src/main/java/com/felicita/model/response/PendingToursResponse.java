@@ -26,8 +26,8 @@ public class PendingToursResponse {
     private Integer tourDuration;
     private String startLocation;
     private String endLocation;
-    private String tourType;
-    private String tourCategory;
+//    private String tourType;
+//    private String tourCategory;
 
     // Package Details
     private String packageName;

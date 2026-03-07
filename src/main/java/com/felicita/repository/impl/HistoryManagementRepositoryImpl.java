@@ -41,6 +41,7 @@ public class HistoryManagementRepositoryImpl implements HistoryManagementReposit
             int rowsAffected = jdbcTemplate.update(INSERT_HISTORY_DATA,
                     insertHistoryData.getType(),
                     insertHistoryData.getDataId(),
+                    insertHistoryData.getName(),
                     userId
             );
 
@@ -99,7 +100,7 @@ public class HistoryManagementRepositoryImpl implements HistoryManagementReposit
             int pageSize = request.getPageSize() > 0 ? request.getPageSize() : 20;
             int offset = request.getPageNumber() > 0 ? (request.getPageNumber() - 1) * pageSize : 0;
 
-            String dataQuery = "SELECT bh.id, bh.type, bh.data_id, bh.user_id, bh.created_at, cs.name AS status_name "
+            String dataQuery = "SELECT bh.id, bh.name, bh.type, bh.data_id, bh.user_id, bh.created_at, cs.name AS status_name "
                     + baseQuery + " ORDER BY bh.created_at DESC LIMIT ? OFFSET ?";
 
             List<Object> dataParams = new ArrayList<>(params);
@@ -112,6 +113,7 @@ public class HistoryManagementRepositoryImpl implements HistoryManagementReposit
                     (rs, rowNum) -> new BrowserHistoryResponse.HistoryResponse(
                             rs.getLong("id"),
                             rs.getString("type"),
+                            rs.getString("name"),
                             rs.getLong("data_id"),
                             rs.getLong("user_id"),
                             rs.getTimestamp("created_at").toLocalDateTime(),

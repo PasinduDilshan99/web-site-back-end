@@ -9,9 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class InsertHistoryData {
-
-    private String type;
-    private Integer dataId;
-    private String name;
+public class BookingCancelledRequest {
+    private Long bookingId;
+    private String bookingStatus;
 }

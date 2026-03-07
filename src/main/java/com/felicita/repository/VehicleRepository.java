@@ -34,4 +34,8 @@ public interface VehicleRepository {
     List<String> getDistinctRoofTypes();
 
     List<String> getDistinctAcTypes();
+
+    List<VehicleTypeResponse> getActiveVehiclesTypes();
+
+    VehicleTypeResponse getActiveVehiclesTypesDetailsById(Long typeId);
 }

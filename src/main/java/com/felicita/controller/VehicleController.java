@@ -34,6 +34,22 @@ public class VehicleController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping(path = "/vehicle-types")
+    public ResponseEntity<CommonResponse<List<VehicleTypeResponse>>> getActiveVehiclesTypes(){
+        LOGGER.info("{} Start execute get vehicle types details {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<VehicleTypeResponse>> response = vehicleService.getActiveVehiclesTypes();
+        LOGGER.info("{} End execute get vehicle types details {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/vehicle-types/{typeId}")
+    public ResponseEntity<CommonResponse<VehicleTypeResponse>> getActiveVehiclesTypesDetailsById(@PathVariable Long typeId){
+        LOGGER.info("{} Start execute get vehicle types details by id {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<VehicleTypeResponse> response = vehicleService.getActiveVehiclesTypesDetailsById(typeId);
+        LOGGER.info("{} End execute get vehicle types details by id {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @GetMapping(path = "/{vehicleId}")
     public ResponseEntity<CommonResponse<List<VehicleDetailResponse>>> getVehicleDetailsById(@PathVariable String vehicleId){
         LOGGER.info("{} Start execute get vehicles details by id {}", Constant.DOTS, Constant.DOTS);

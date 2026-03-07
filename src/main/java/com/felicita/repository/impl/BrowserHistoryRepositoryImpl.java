@@ -33,8 +33,9 @@ public class BrowserHistoryRepositoryImpl implements BrowserHistoryRepository {
                 PreparedStatement ps = connection.prepareStatement(INSERT_BROWSER_HISTORY_REQUEST);
                 ps.setString(1, insertBrowserHistoryRequest.getType());
                 ps.setLong(2, insertBrowserHistoryRequest.getDataId());
-                ps.setLong(3, userId);
-                ps.setString(4, "ACTIVE");
+                ps.setString(3, insertBrowserHistoryRequest.getName());
+                ps.setLong(4, userId);
+                ps.setString(5, "ACTIVE");
                 return ps;
             });
 

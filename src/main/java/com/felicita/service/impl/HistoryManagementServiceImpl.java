@@ -52,9 +52,9 @@ public class HistoryManagementServiceImpl implements HistoryManagementService {
             historyManagementRepository.insertHistoryData(insertHistoryData, userId);
             return
                     new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            CommonResponseMessages.SUCCESSFULLY_INSERT_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_INSERT_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_INSERT_MESSAGE,
                             new InsertResponse("Successfully insert history request"),
                             Instant.now()
                     );
@@ -83,11 +83,11 @@ public class HistoryManagementServiceImpl implements HistoryManagementService {
             }
 
             return new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
                     browserHistoryResponses,
-                            Instant.now());
+                    Instant.now());
 
         } catch (DataNotFoundErrorExceptionHandler e) {
             LOGGER.error("Error occurred while fetching active history data: {}", e.getMessage(), e);

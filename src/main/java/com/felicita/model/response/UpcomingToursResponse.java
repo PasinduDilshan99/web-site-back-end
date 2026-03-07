@@ -30,6 +30,9 @@ public class UpcomingToursResponse {
         private String bookingStatus;
         private String cancellationReason;
 
+        private Long assignTo;
+        private String assignToName;
+
         // Tour Details
         private Long tourId;
         private String tourName;
@@ -37,8 +40,8 @@ public class UpcomingToursResponse {
         private Integer tourDuration;
         private String startLocation;
         private String endLocation;
-        private String tourType;
-        private String tourCategory;
+//        private String tourType;
+//        private String tourCategory;
 
         // Package Details
         private String packageName;
@@ -106,7 +109,7 @@ public class UpcomingToursResponse {
         private Long bookingId;
         private String activityName;
         private String activityDescription;
-        private String activityCategory;
+//        private String activityCategory;
         private LocalDate activityDate;
         private String startTime;
         private String endTime;

@@ -31,6 +31,9 @@ public class RequestedToursResponse {
     private LocalDateTime cancellationDate;
     private BigDecimal refundAmount;
 
+    private Long assignTo;
+    private String assignToName;
+
     // Tour Details
     private Long tourId;
     private String tourName;
@@ -38,8 +41,8 @@ public class RequestedToursResponse {
     private Integer tourDuration;
     private String startLocation;
     private String endLocation;
-    private String tourType;
-    private String tourCategory;
+//    private String tourType;
+//    private String tourCategory;
 
     // Package Details
     private String packageName;
@@ -107,7 +110,7 @@ public class RequestedToursResponse {
         private Long bookingId;
         private String activityName;
         private String activityDescription;
-        private String activityCategory;
+//        private String activityCategory;
         private LocalDate activityDate;
         private String startTime;
         private String endTime;

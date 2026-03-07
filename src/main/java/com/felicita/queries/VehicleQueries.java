@@ -381,4 +381,35 @@ public class VehicleQueries {
                 WHERE vs.is_active = 1
             """;
 
+    public static final String GET_VEHICLE_TYPES_DETAILS = """
+            SELECT
+            	vt.vehicle_type_id,
+                vt.name,
+                vt.description,
+                cs.name AS status,
+                vti.id AS image_id,
+                vti.name AS image_name,
+                vti.description AS image_description,
+                vti.image_url AS image_url
+            FROM vehicle_type vt
+            LEFT JOIN vehicle_type_images vti ON vti.vehicle_type_id = vt.vehicle_type_id
+            LEFT JOIn common_status cs ON cs.id = vt.status_id
+            WHERE cs.name='ACTIVE'
+            """ ;
+    public static final String GET_VEHICLE_TYPES_DETAILS_BY_ID = """
+            SELECT
+            	vt.vehicle_type_id,
+                vt.name,
+                vt.description,
+                cs.name AS status,
+                vti.id AS image_id,
+                vti.name AS image_name,
+                vti.description AS image_description,
+                vti.image_url AS image_url
+            FROM vehicle_type vt
+            LEFT JOIN vehicle_type_images vti ON vti.vehicle_type_id = vt.vehicle_type_id
+            LEFT JOIn common_status cs ON cs.id = vt.status_id
+            WHERE cs.name='ACTIVE'
+            AND vt.vehicle_type_id = ?
+            """;
 }

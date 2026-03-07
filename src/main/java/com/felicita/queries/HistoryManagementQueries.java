@@ -3,8 +3,8 @@ package com.felicita.queries;
 public class HistoryManagementQueries {
 
     public static final String INSERT_HISTORY_DATA = """
-            INSERT INTO browser_history (type, data_id, user_id, status_id)
-            VALUES (?, ?, ?, 1)
+            INSERT INTO browser_history (type, data_id,name, user_id, status_id)
+            VALUES (?, ?, ?,?, 1)
             """;
 
     public static final String GET_HISTORY_DATA = """

@@ -1,5 +1,6 @@
 package com.felicita.controller;
 
+import com.felicita.model.request.BookingCancelledRequest;
 import com.felicita.model.request.BookingRequest;
 import com.felicita.model.request.TourBookingInquiryRequest;
 import com.felicita.model.response.*;
@@ -32,6 +33,14 @@ public class BookingController {
         LOGGER.info("{} Start execute get pending booking tours details {}", Constant.DOTS, Constant.DOTS);
         CommonResponse<List<PendingToursResponse>> response = bookingService.getPendingBookingToursDetailsById();
         LOGGER.info("{} End execute get pending booking tours details {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping(path = "/cancelled-pending")
+    public ResponseEntity<CommonResponse<UpdateResponse>> cancelledPendingBooking(@RequestBody BookingCancelledRequest bookingCancelledRequest) {
+        LOGGER.info("{} Start execute cancelled pending booking {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<UpdateResponse> response = bookingService.cancelledPendingBooking(bookingCancelledRequest);
+        LOGGER.info("{} End execute cancelled pending booking {}", Constant.DOTS, Constant.DOTS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
