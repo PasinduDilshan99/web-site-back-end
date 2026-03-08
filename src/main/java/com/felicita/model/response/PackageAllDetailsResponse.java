@@ -34,6 +34,7 @@ public class PackageAllDetailsResponse {
     private String packageTypeName;
     private String startLocation;
     private Integer duration;
+    private Boolean isWished = false;
 
     private Long tourId;
     private String tourName;

@@ -19,6 +19,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -42,90 +43,35 @@ public class TourRepositoryImpl implements TourRepository {
 
     @Override
     public List<TourResponseDto> getAllTours() {
+
         try {
-            return jdbcTemplate.query(TourQueries.GET_ALL_TOURS, (ResultSet rs) -> {
-                Map<Long, TourResponseDto> tourMap = new HashMap<>();
 
-                while (rs.next()) {
-                    Long tourId = rs.getLong("tour_id");
+            return jdbcTemplate.query(TourQueries.GET_ALL_TOURS, (rs, rowNum) -> {
 
-                    TourResponseDto tour = tourMap.get(tourId);
-                    if (tour == null) {
-                        tour = TourResponseDto.builder()
-                                .tourId(tourId)
-                                .tourName(rs.getString("tour_name"))
-                                .tourDescription(rs.getString("tour_description"))
-                                .duration(rs.getObject("duration", Integer.class))
-                                .latitude(rs.getObject("latitude", Double.class))
-                                .longitude(rs.getObject("longitude", Double.class))
-                                .startLocation(rs.getString("start_location"))
-                                .endLocation(rs.getString("end_location"))
-                                .seasonName(rs.getString("season_name"))
-                                .seasonDescription(rs.getString("season_description"))
-                                .statusName(rs.getString("status_name"))
-                                .tourTypeDtos(new ArrayList<>())
-                                .tourCategoryDto(new ArrayList<>())
-                                .schedules(new ArrayList<>())
-                                .images(new ArrayList<>())
-                                .build();
-
-                        tourMap.put(tourId, tour);
-                    }
-
-                    // ----- Handle Tour Types -----
-                    Long tourTypeId = rs.getLong("tour_type_id");
-                    if (tourTypeId != 0 && tour.getTourTypeDtos().stream().noneMatch(tt -> tt.getTourTypeId().equals(tourTypeId))) {
-                        tour.getTourTypeDtos().add(
-                                TourTypeDto.builder()
-                                        .tourTypeId(tourTypeId)
-                                        .tourTypeName(rs.getString("tour_type_name"))
-                                        .tourTypeDescription(rs.getString("tour_type_description"))
-                                        .build()
-                        );
-                    }
-
-                    // ----- Handle Tour Categories -----
-                    Long tourCategoryId = rs.getLong("tour_category_id");
-                    if (tourCategoryId != 0 && tour.getTourCategoryDto().stream().noneMatch(tc -> tc.getTourCategoryId().equals(tourCategoryId))) {
-                        tour.getTourCategoryDto().add(
-                                TourCategoryDto.builder()
-                                        .tourCategoryId(tourCategoryId)
-                                        .tourCategoryName(rs.getString("tour_category_name"))
-                                        .tourCategoryDescription(rs.getString("tour_category_description"))
-                                        .build()
-                        );
-                    }
-
-                    // ----- Handle Schedules (duplicates allowed) -----
-                    int scheduleId = rs.getInt("schedule_id");
-                    if (scheduleId != 0 && rs.getString("schedule_name") != null) {
-                        TourScheduleResponseDto schedule = new TourScheduleResponseDto();
-                        schedule.setScheduleId(scheduleId);
-                        schedule.setScheduleName(rs.getString("schedule_name"));
-                        schedule.setAssumeStartDate(rs.getObject("assume_start_date", LocalDate.class));
-                        schedule.setAssumeEndDate(rs.getObject("assume_end_date", LocalDate.class));
-                        schedule.setDurationStart(rs.getObject("duration_start", Integer.class));
-                        schedule.setDurationEnd(rs.getObject("duration_end", Integer.class));
-                        schedule.setSpecialNote(rs.getString("special_note"));
-                        schedule.setScheduleDescription(rs.getString("schedule_description"));
-
-                        tour.getSchedules().add(schedule);
-                    }
-
-                    // ----- Handle Images (duplicates allowed) -----
-                    int imageId = rs.getInt("image_id");
-                    if (imageId != 0 && rs.getString("image_url") != null) {
-                        TourImageResponseDto image = new TourImageResponseDto();
-                        image.setImageId(imageId);
-                        image.setImageName(rs.getString("image_name"));
-                        image.setImageDescription(rs.getString("image_description"));
-                        image.setImageUrl(rs.getString("image_url"));
-
-                        tour.getImages().add(image);
-                    }
+                TourResponseDto tour = null;
+                try {
+                    tour = TourResponseDto.builder()
+                            .tourId(rs.getLong("tour_id"))
+                            .tourName(rs.getString("tour_name"))
+                            .tourDescription(rs.getString("tour_description"))
+                            .duration(rs.getObject("duration", Integer.class))
+                            .latitude(rs.getObject("latitude", Double.class))
+                            .longitude(rs.getObject("longitude", Double.class))
+                            .startLocation(rs.getString("start_location"))
+                            .endLocation(rs.getString("end_location"))
+                            .seasonName(rs.getString("season_name"))
+                            .seasonDescription(rs.getString("season_description"))
+                            .statusName(rs.getString("status_name"))
+                            .tourTypeDtos(parseTourTypes(rs.getString("tour_types")))
+                            .tourCategoryDto(parseTourCategories(rs.getString("tour_categories")))
+                            .schedules(parseSchedules(rs.getString("schedules")))
+                            .images(parseImages(rs.getString("images")))
+                            .build();
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException(e);
                 }
 
-                return new ArrayList<>(tourMap.values());
+                return tour;
             });
 
         } catch (DataAccessException ex) {
@@ -133,6 +79,32 @@ public class TourRepositoryImpl implements TourRepository {
         } catch (Exception ex) {
             throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching tours");
         }
+    }
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    private List<TourTypeDto> parseTourTypes(String json) throws JsonProcessingException {
+        if (json == null) return new ArrayList<>();
+        return objectMapper.readValue(json, new TypeReference<List<TourTypeDto>>() {
+        });
+    }
+
+    private List<TourCategoryDto> parseTourCategories(String json) throws JsonProcessingException {
+        if (json == null) return new ArrayList<>();
+        return objectMapper.readValue(json, new TypeReference<List<TourCategoryDto>>() {
+        });
+    }
+
+    private List<TourScheduleResponseDto> parseSchedules(String json) throws JsonProcessingException {
+        if (json == null) return new ArrayList<>();
+        return objectMapper.readValue(json, new TypeReference<List<TourScheduleResponseDto>>() {
+        });
+    }
+
+    private List<TourImageResponseDto> parseImages(String json) throws JsonProcessingException {
+        if (json == null) return new ArrayList<>();
+        return objectMapper.readValue(json, new TypeReference<List<TourImageResponseDto>>() {
+        });
     }
 
     @Override
@@ -1265,7 +1237,8 @@ public class TourRepositoryImpl implements TourRepository {
                     try {
                         requirements = objectMapper.readValue(
                                 rs.getString("requirements"),
-                                new TypeReference<>() {}
+                                new TypeReference<>() {
+                                }
                         );
                     } catch (JsonProcessingException e) {
                         requirements = List.of();
@@ -1275,7 +1248,8 @@ public class TourRepositoryImpl implements TourRepository {
                     try {
                         images = objectMapper.readValue(
                                 rs.getString("images"),
-                                new TypeReference<>() {}
+                                new TypeReference<>() {
+                                }
                         );
                     } catch (JsonProcessingException e) {
                         images = List.of();
@@ -2195,7 +2169,6 @@ public class TourRepositoryImpl implements TourRepository {
     }
 
 
-
     @Override
     public void removeTourConditions(Long tourId, List<Long> removeConditions, Long userId) {
         try {
@@ -2217,7 +2190,6 @@ public class TourRepositoryImpl implements TourRepository {
             throw new InternalServerErrorExceptionHandler("Failed to remove condition");
         }
     }
-
 
 
     @Override

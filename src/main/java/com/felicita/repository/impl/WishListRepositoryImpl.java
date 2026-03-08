@@ -779,6 +779,26 @@ public class WishListRepositoryImpl implements WishListRepository {
         }
     }
 
+    @Override
+    public Boolean isWishThisPackageByUserId(Long packageId, Long userId) {
+        String sql = """
+        SELECT COUNT(*)
+        FROM package_wishlist
+        WHERE package_id = ? 
+        AND user_id = ?
+        AND status_id = 1
+    """;
+
+        Integer count = jdbcTemplate.queryForObject(
+                sql,
+                Integer.class,
+                packageId,
+                userId
+        );
+
+        return count != null && count > 0;
+    }
+
 
     @Override
     public ExistTourWishListDataDto getExistingTourWishListData(

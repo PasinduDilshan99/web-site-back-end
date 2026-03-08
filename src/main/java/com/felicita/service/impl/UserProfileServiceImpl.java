@@ -306,6 +306,7 @@ public class UserProfileServiceImpl implements UserProfileService {
             Long userId = commonService.getUserIdBySecurityContext();
             Long addressId = userProfileRepository.getUserProfileAddressId(userId);
             if (addressId != null) {
+                userUpdateRequest.setAddressId(addressId);
                 userProfileRepository.updateUserProfileAddress(userUpdateRequest, addressId);
             }else{
                 addressId = userProfileRepository.insertUserProfileAddress(new UserProfileAddressInsertRequest(

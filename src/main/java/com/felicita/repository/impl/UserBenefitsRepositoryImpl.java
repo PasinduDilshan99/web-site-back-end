@@ -116,6 +116,7 @@ public class UserBenefitsRepositoryImpl implements UserBenefitsRepository {
                         .username(rs.getString("username"))
                         .firstName(rs.getString("first_name"))
                         .lastName(rs.getString("last_name"))
+                        .createdAt(rs.getDate("created_at"))
                         .benefitsPointsCount(rs.getInt("benefits_points_count"))
                         .currentLevelId(rs.getInt("current_level_id"))
                         .currentLevelName(rs.getString("current_level_name"))
@@ -202,6 +203,7 @@ public class UserBenefitsRepositoryImpl implements UserBenefitsRepository {
                 .username(result.getUsername())
                 .firstName(result.getFirstName())
                 .lastName(result.getLastName())
+                .createdAt(result.getCreatedAt())
                 .benefitsPointsCount(result.getBenefitsPointsCount())
                 .build();
     }

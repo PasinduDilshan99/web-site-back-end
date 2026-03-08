@@ -57,6 +57,7 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                         destination.setLocation(rs.getString("location"));
                         destination.setLatitude(rs.getObject("latitude", Double.class));
                         destination.setLongitude(rs.getObject("longitude", Double.class));
+                        destination.setRatings(rs.getObject("ratings", Double.class));
                         destination.setStatusName(rs.getString("status_name"));
 
                         ObjectMapper mapper = new ObjectMapper();
@@ -388,6 +389,7 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                     dto.setLocation(rs.getString("location"));
                     dto.setLatitude(rs.getObject("latitude", Double.class));
                     dto.setLongitude(rs.getObject("longitude", Double.class));
+                    dto.setRatings(rs.getObject("ratings", Double.class));
                     dto.setStatusName(rs.getString("status_name"));
 
                     try {
@@ -691,6 +693,7 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                 dto.setLocation(rs.getString("location"));
                 dto.setLatitude(rs.getObject("latitude", Double.class));
                 dto.setLongitude(rs.getObject("longitude", Double.class));
+                dto.setRatings(rs.getObject("ratings", Double.class));
                 dto.setStatusName(rs.getString("status_name"));
 
                 ObjectMapper mapper = new ObjectMapper();
@@ -1184,6 +1187,7 @@ public class DestinationRepositoryImpl implements DestinationRepository {
                         destination.setLocation(rs.getString("location"));
                         destination.setLatitude(rs.getObject("latitude", Double.class));
                         destination.setLongitude(rs.getObject("longitude", Double.class));
+                        destination.setRatings(rs.getObject("ratings", Double.class));
                         destination.setStatusName(rs.getString("status_name"));
 
                         ObjectMapper mapper = new ObjectMapper();

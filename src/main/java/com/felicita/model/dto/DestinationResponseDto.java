@@ -17,6 +17,7 @@ public class DestinationResponseDto {
     private Double latitude;
     private Double longitude;
     private Boolean wish = false;
+    private Double ratings;
     private List<DestinationCategoryDetailsDto> destinationCategoryDetailsDtos;
     private String statusName;
 
