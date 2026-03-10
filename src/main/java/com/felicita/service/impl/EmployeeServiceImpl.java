@@ -167,6 +167,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         speech.add("Welcome to our journey of innovation and excellence. Since our founding, we have been committed to delivering exceptional experiences to our clients and creating meaningful opportunities for our team.");
         speech.add("Our vision extends beyond business success—we aim to make a lasting positive impact on the communities we serve. Through dedication, creativity, and unwavering integrity, we continue to push boundaries and set new standards in our industry.");
         speech.add("Together, we are building something truly remarkable.");
+        speech.add("See More. Feel More. Live More."); // Tagline added
+
 
         return new CommonResponse<>(
                 CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
@@ -174,7 +176,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
                 new CeoDetailsReponse(
                         1L,
-                        "Pasindu Dilshan",
+                        "Nipunika Sathsarani",
                         "Chief Executive Officer",
                         speech,
 //                        "/images/users/user-1.jpg"
