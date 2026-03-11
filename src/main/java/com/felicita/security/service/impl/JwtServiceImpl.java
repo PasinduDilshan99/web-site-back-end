@@ -142,12 +142,10 @@
         public ResponseCookie buildAccessTokenCookie(String token) {
             return ResponseCookie.from(accessCookieName, token)
                     .httpOnly(true)
-                    .secure(false) // change to true if you serve over HTTPS
+                    .secure(true) // change to true if you serve over HTTPS
                     .path("/")
                     .maxAge(Duration.ofSeconds(accessCookieMaxAge))
-//                    .sameSite("Strict")
-                    .sameSite("Lax") // <- allow cross-site requests
-//                    .sameSite("None") // <- allow cross-site requests
+                    .sameSite("None") // <- allow cross-site requests
                     .domain(".felicitatrips.com") // <- allow cookies for all subdomains
                     .build();
         }
@@ -156,10 +154,10 @@
         public ResponseCookie buildRefreshTokenCookie(String token) {
             return ResponseCookie.from(refreshCookieName, token)
                     .httpOnly(true)
-                    .secure(false)
+                    .secure(true)
                     .path("/")
                     .maxAge(Duration.ofSeconds(refreshCookieMaxAge))
-                    .sameSite("Lax")
+                    .sameSite("None")
                     .domain(".felicitatrips.com")
                     .build();
         }
@@ -215,11 +213,10 @@
         public ResponseCookie buildLogoutAccessTokenCookie() {
             return ResponseCookie.from(accessCookieName, "")
                     .httpOnly(true)
-                    .secure(false)
+                    .secure(true)
                     .path("/")
                     .maxAge(0)
-                    .sameSite("Lax")
-//                    .sameSite("Strict")
+                    .sameSite("None")
                     .domain(".felicitatrips.com") // Leading dot allows all subdomains
                     .build();
         }
@@ -228,10 +225,10 @@
         public ResponseCookie buildLogoutRefreshTokenCookie() {
             return ResponseCookie.from(refreshCookieName, "")
                     .httpOnly(true)
-                    .secure(false)
+                    .secure(true)
                     .path("/")
                     .maxAge(0)
-                    .sameSite("Lax")
+                    .sameSite("None")
                     .domain(".felicitatrips.com") // Leading dot allows all subdomains
                     .build();
         }
