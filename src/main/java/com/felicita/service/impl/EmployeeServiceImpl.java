@@ -176,7 +176,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
                 new CeoDetailsReponse(
                         1L,
-                        "Nipunika Sathsarani",
+                        "Dilshan Dimbulana",
                         "Chief Executive Officer",
                         speech,
 //                        "/images/users/user-1.jpg"
