@@ -1,9 +1,6 @@
 package com.felicita.repository;
 
-import com.felicita.model.response.EmployeeGuideResponse;
-import com.felicita.model.response.EmployeeWithSocialMediaResponse;
-import com.felicita.model.response.EmployeesForAssignTourResponse;
-import com.felicita.model.response.TourAssignedEmployeeResponse;
+import com.felicita.model.response.*;
 
 import java.util.List;
 
@@ -21,4 +18,6 @@ public interface EmployeeRepository {
     List<Long> getEmployeeIdsForAssignTour();
 
     List<EmployeesForAssignTourResponse> getEmployeeDetailsForAssignTour();
+
+    CeoDetailsReponse getCeoDetails();
 }
