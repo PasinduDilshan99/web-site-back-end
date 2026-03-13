@@ -1,7 +1,9 @@
 package com.felicita.repository;
 
 import com.felicita.model.dto.*;
+import com.felicita.model.request.BookingCancelledRequest;
 import com.felicita.model.request.BookingRequest;
+import com.felicita.model.request.TourBookingInquiryRequest;
 import com.felicita.model.response.*;
 
 import java.time.LocalDate;
@@ -43,4 +45,12 @@ public interface BookingRepository {
     List<UserBookingSummaryResponse> getBookedTours(Long userId);
 
     void bookingAirportTransportation(Long bookingId, BookingRequest.Transport transport, Long userId);
+
+    List<PendingToursResponse> getPendingBookingToursDetailsById(Long userId);
+
+    Long insertTourBookingInquiry(TourBookingInquiryRequest tourBookingInquiryRequest, Long userId);
+
+    void insertBookingInquiryToBookings(TourBookingInquiryRequest tourBookingInquiryRequest, Long userId, String bookingReference);
+
+    void cancelledPendingBooking(BookingCancelledRequest bookingCancelledRequest, Long userId);
 }

@@ -84,7 +84,7 @@ public class WishItemsQueries {
                     d.name AS destination_name,
                     d.description AS destination_description,
                     d.location AS destination_location,
-                    dc.category AS destination_category,
+                    -- dc.category AS destination_category,
                     di.image_url AS destination_image,
                     CONCAT('/destinations/', d.destination_id) AS destination_url,
                     cs.name AS status,
@@ -92,8 +92,8 @@ public class WishItemsQueries {
                 FROM destination d
                 LEFT JOIN destination_images di
                     ON d.destination_id = di.destination_id AND di.status = 1
-                LEFT JOIN destination_categories dc
-                    ON d.destination_category = dc.id
+                -- LEFT JOIN destination_categories dc
+                --    ON d.destination_category = dc.id
                 LEFT JOIN destination_wishlist dw
                     ON dw.destination_id = d.destination_id
                 LEFT JOIN common_status cs
@@ -108,7 +108,7 @@ public class WishItemsQueries {
                     a.id AS activity_id,
                     a.name AS activity_name,
                     a.description AS activity_description,
-                    ac.name AS activities_category,
+                    -- ac.name AS activities_category,
                     a.season,
                     ai.image_url AS activity_image,
                     CONCAT('/activities/', a.id) AS activity_url,
@@ -118,8 +118,8 @@ public class WishItemsQueries {
                 FROM activities a
                 LEFT JOIN activities_images ai
                     ON a.id = ai.activity_id AND ai.status = 1
-                LEFT JOIN activity_category ac
-                    ON a.activities_category = ac.name
+                -- LEFT JOIN activity_category ac
+                --    ON a.activities_category = ac.name
                 LEFT JOIN activity_wishlist aw
                     ON aw.activity_id = a.id
                 LEFT JOIN common_status cs

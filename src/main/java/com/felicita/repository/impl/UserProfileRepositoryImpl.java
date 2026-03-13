@@ -3,6 +3,7 @@ package com.felicita.repository.impl;
 import com.felicita.exception.DataAccessErrorExceptionHandler;
 import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
+import com.felicita.model.request.UserProfileAddressInsertRequest;
 import com.felicita.model.request.UserProfileDetailsRequest;
 import com.felicita.model.request.UserUpdateRequest;
 import com.felicita.model.response.*;
@@ -13,9 +14,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.*;
 
 @Repository
@@ -709,11 +714,95 @@ public class UserProfileRepositoryImpl implements UserProfileRepository {
     }
 
     @Override
+    public void updateUserProfileAddress(UserUpdateRequest updateRequest, Long addressId) {
+
+        String UPDATE_USER_PROFILE_ADDRESS = UserProfileQueries.UPDATE_USER_PROFILE_ADDRESS;
+        try {
+            LOGGER.info("Executing query to update user profile address. AddressId: {}", addressId);
+
+            int rowsAffected = jdbcTemplate.update(
+                    UPDATE_USER_PROFILE_ADDRESS,
+                    updateRequest.getAddressNumber(),
+                    updateRequest.getAddressLine1(),
+                    updateRequest.getAddressLine2(),
+                    updateRequest.getCity(),
+                    updateRequest.getDistrict(),
+                    updateRequest.getProvince(),
+                    updateRequest.getCountry(),
+                    updateRequest.getPostalCode(),
+                    addressId
+            );
+            if (rowsAffected == 0) {
+                LOGGER.warn("No address record updated. AddressId: {}", addressId);
+                throw new DataAccessErrorExceptionHandler("No address found for the given addressId");
+            }
+            LOGGER.info("Successfully updated user profile address. AddressId: {}, RowsAffected: {}", addressId, rowsAffected);
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while updating user profile address. AddressId: {}, Error: {}", addressId, ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler("Failed to update user profile address in database");
+
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while updating user profile address. AddressId: {}, Error: {}", addressId, ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while updating user profile address");
+        }
+    }
+
+    @Override
+    public Long insertUserProfileAddress(UserProfileAddressInsertRequest request) {
+
+        String INSERT_USER_PROFILE_ADDRESS = UserProfileQueries.INSERT_USER_PROFILE_ADDRESS;
+
+        try {
+            LOGGER.info("Executing query to insert user profile address. City: {}, PostalCode: {}",
+                    request.getCity(), request.getPostalCode());
+
+            KeyHolder keyHolder = new GeneratedKeyHolder();
+
+            int rowsAffected = jdbcTemplate.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(
+                        INSERT_USER_PROFILE_ADDRESS,
+                        Statement.RETURN_GENERATED_KEYS
+                );
+
+                ps.setString(1, request.getAddressNumber());
+                ps.setString(2, request.getAddressLine1());
+                ps.setString(3, request.getAddressLine2());
+                ps.setString(4, request.getCity());
+                ps.setString(5, request.getDistrict());
+                ps.setString(6, request.getProvince());
+                ps.setString(7, request.getCountry());
+                ps.setString(8, request.getPostalCode());
+
+                return ps;
+            }, keyHolder);
+
+            if (rowsAffected == 0) {
+                LOGGER.error("Failed to insert user profile address. No rows affected.");
+                throw new DataAccessErrorExceptionHandler("Failed to insert user profile address");
+            }
+
+            Long generatedAddressId = keyHolder.getKey().longValue();
+
+            LOGGER.info("Successfully inserted user profile address. AddressId: {}", generatedAddressId);
+
+            return generatedAddressId;
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while inserting user profile address. Error: {}", ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler("Failed to insert user profile address in database");
+
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while inserting user profile address. Error: {}", ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while inserting user profile address");
+        }
+    }
+
+
+    @Override
     public void updateUserProfileDetails(UserUpdateRequest request, Long userId) {
 
         try {
             LOGGER.info("Updating user profile details for userId: {}", userId);
-
             int rowsAffected = jdbcTemplate.update(
                     UserProfileQueries.UPDATE_USER_PROFILE_DETAILS,
                     request.getFirstName(),
@@ -721,15 +810,13 @@ public class UserProfileRepositoryImpl implements UserProfileRepository {
                     request.getLastName(),
                     request.getAddressId(),
                     request.getNic(),
-                    request.getGenderId(),
+                    request.getGender(),
                     request.getPassportNumber(),
                     request.getDrivingLicenseNumber(),
                     request.getEmail(),
-                    request.getEmail2(),
                     request.getMobileNumber1(),
                     request.getMobileNumber2(),
-                    request.getRegionId(),
-                    request.getReligionId(),
+                    request.getCountry(),
                     request.getDateOfBirth(),
                     request.getImageUrl(),
                     userId
@@ -739,7 +826,6 @@ public class UserProfileRepositoryImpl implements UserProfileRepository {
                 LOGGER.warn("User not found with userId: {}", userId);
                 throw new DataNotFoundErrorExceptionHandler("User not found");
             }
-
             LOGGER.info("User profile updated successfully for userId: {}", userId);
 
         } catch (DataAccessException ex) {
@@ -750,6 +836,36 @@ public class UserProfileRepositoryImpl implements UserProfileRepository {
             throw new InternalServerErrorExceptionHandler("Unexpected error occurred while updating user profile");
         }
     }
+
+    @Override
+    public Long getUserProfileAddressId(Long userId) {
+
+        String GET_USER_PROFILE_ADDRESS_ID = UserProfileQueries.GET_USER_PROFILE_ADDRESS_ID;
+
+        try {
+            LOGGER.info("Fetching addressId for userId: {}", userId);
+
+            Long addressId = jdbcTemplate.query(
+                    GET_USER_PROFILE_ADDRESS_ID,
+                    ps -> ps.setLong(1, userId),
+                    rs -> rs.next() ? rs.getLong("address_id") : null
+            );
+
+            if (addressId == null || addressId == 0) {
+                LOGGER.info("No addressId found for userId: {}", userId);
+                return null;
+            }
+
+            LOGGER.info("Found addressId: {} for userId: {}", addressId, userId);
+            return addressId;
+
+        } catch (Exception ex) {
+            LOGGER.error("Error fetching addressId for userId: {}. Returning null. Error: {}",
+                    userId, ex.getMessage());
+            return null;
+        }
+    }
+
 
     private List<UserProfileSidebarResponse> buildSidebarTree(List<UserProfileSidebarResponse> flatList) {
         Map<Integer, UserProfileSidebarResponse> map = new HashMap<>();

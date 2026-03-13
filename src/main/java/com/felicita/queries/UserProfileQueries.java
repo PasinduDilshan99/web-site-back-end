@@ -420,27 +420,61 @@ public class UserProfileQueries {
             """;
 
     public static final String UPDATE_USER_PROFILE_DETAILS = """
-                UPDATE user
-                SET
-                    first_name = ?,
-                    middle_name = ?,
-                    last_name = ?,
-                    address_id = ?,
-                    nic = ?,
-                    gender_id = ?,
-                    passport_number = ?,
-                    driving_license_number = ?,
-                    email = ?,
-                    email2 = ?,
-                    mobile_number1 = ?,
-                    mobile_number2 = ?,
-                    region_id = ?,
-                    religion_id = ?,
-                    date_of_birth = ?,
-                    image_url = ?,
-                    updated_at = CURRENT_TIMESTAMP
-                WHERE user_id = ?
+        UPDATE user
+        SET
+            first_name = ?,
+            middle_name = ?,
+            last_name = ?,
+            address_id = ?,
+            nic = ?,
+            gender_id = (SELECT gender_id FROM gender WHERE name = ? LIMIT 1),
+            passport_number = ?,
+            driving_license_number = ?,
+            email = ?,
+            mobile_number1 = ?,
+            mobile_number2 = ?,
+            region_id = (SELECT country_id FROM country WHERE name = ? LIMIT 1),
+            date_of_birth = ?,
+            image_url = ?,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE user_id = ?
+        """;
+
+
+    public static final String UPDATE_USER_PROFILE_ADDRESS = """
+            UPDATE address
+            SET
+                number = ?,
+                address_line1 = ?,
+                address_line2 = ?,
+                city = ?,
+                district = ?,
+                province = ?,
+                country_id = (SELECT country_id FROM country WHERE name = ? LIMIT 1),
+                postal_code = ?
+            WHERE address_id = ?;
             """;
+
+    public static final String INSERT_USER_PROFILE_ADDRESS = """
+        INSERT INTO address
+        (
+            number,
+            address_line1,
+            address_line2,
+            city,
+            district,
+            province,
+            country_id,
+            postal_code
+        )
+        VALUES (?, ?, ?, ?, ?, ?, (SELECT country_id FROM country WHERE name = ? LIMIT 1), ?)
+        """;
+
+    public static final String GET_USER_PROFILE_ADDRESS_ID = """
+        SELECT address_id
+        FROM user
+        WHERE user_id = ?
+        """;
 
 
 }

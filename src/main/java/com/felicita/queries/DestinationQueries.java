@@ -13,30 +13,66 @@ public class DestinationQueries {
                 d.location,
                 d.latitude,
                 d.longitude,
-                dc.category AS category_name,
-                dc.description AS category_description,
+                d.ratings,
                 cs.name AS status_name,
-                a.id AS activity_id,
-                a.name AS activity_name,
-                a.description AS activity_description,
-                a.activities_category,
-                a.duration_hours,
-                a.available_from,
-                a.available_to,
-                a.price_local,
-                a.price_foreigners,
-                a.min_participate,
-                a.max_participate,
-                a.season,
-                di.id AS image_id,
-                di.name AS image_name,
-                di.description AS image_description,
-                di.image_url
+            
+                -- Destination Categories
+                (
+                    SELECT COALESCE(JSON_ARRAYAGG(
+                        JSON_OBJECT(
+                            'id', dc.id,
+                            'name', dc.category,
+                            'description', dc.description,
+                            'isPrimary', dcm.is_primary
+                        )
+                    ), JSON_ARRAY())
+                    FROM destination_category_map dcm
+                    JOIN destination_categories dc ON dcm.category_id = dc.id
+                    WHERE dcm.destination_id = d.destination_id
+                      AND dcm.terminated_at IS NULL
+                      AND dc.terminated_at IS NULL
+                ) AS destination_categories,
+            
+                -- Activities
+                (
+                    SELECT COALESCE(JSON_ARRAYAGG(
+                        JSON_OBJECT(
+                            'activityId', a.id,
+                            'activityName', a.name,
+                            'activityDescription', a.description,
+                            'durationHours', a.duration_hours,
+                            'availableFrom', a.available_from,
+                            'availableTo', a.available_to,
+                            'priceLocal', a.price_local,
+                            'priceForeigners', a.price_foreigners,
+                            'minParticipate', a.min_participate,
+                            'maxParticipate', a.max_participate,
+                            'season', a.season
+                        )
+                    ), JSON_ARRAY())
+                    FROM activities a
+                    WHERE a.destination_id = d.destination_id
+                      AND a.terminated_at IS NULL
+                ) AS activities,
+            
+                -- Images
+                (
+                    SELECT COALESCE(JSON_ARRAYAGG(
+                        JSON_OBJECT(
+                            'imageId', di.id,
+                            'imageName', di.name,
+                            'imageDescription', di.description,
+                            'imageUrl', di.image_url
+                        )
+                    ), JSON_ARRAY())
+                    FROM destination_images di
+                    WHERE di.destination_id = d.destination_id
+                      AND di.terminated_at IS NULL
+                ) AS images
+            
             FROM destination d
-            LEFT JOIN destination_categories dc ON d.destination_category = dc.id
             LEFT JOIN common_status cs ON d.status = cs.id
-            LEFT JOIN activities a ON d.destination_id = a.destination_id
-            LEFT JOIN destination_images di ON d.destination_id = di.destination_id
+            WHERE d.terminated_at IS NULL
             """;
 
     public static final String GET_PAGINATED_DESTINATION_IDS = """
@@ -48,10 +84,17 @@ public class DestinationQueries {
                   AND (? IS NULL OR a.price_local >= ?)
                   AND (? IS NULL OR a.price_local <= ?)
                   AND (? IS NULL OR a.duration_hours = ?)
-                  AND (? IS NULL OR a.activities_category = ?)
-                  AND (? IS NULL OR a.season = ?)
+            AND (? IS NULL OR EXISTS (
+                SELECT 1
+                FROM destination_category_map dcm
+                JOIN destination_categories dc ON dcm.category_id = dc.id
+                WHERE dcm.destination_id = d.destination_id
+                  AND dcm.terminated_at IS NULL
+                  AND dc.category = ?
+            ))                  AND (? IS NULL OR a.season = ?)
                   AND (? IS NULL OR cs.name = ?)
                 GROUP BY d.destination_id
+                ORDER BY d.created_at DESC
                 LIMIT ? OFFSET ?
             """;
 
@@ -63,31 +106,67 @@ public class DestinationQueries {
                     d.location,
                     d.latitude,
                     d.longitude,
-                    dc.category AS category_name,
-                    dc.description AS category_description,
+                    d.ratings,
                     cs.name AS status_name,
-                    a.id AS activity_id,
-                    a.name AS activity_name,
-                    a.description AS activity_description,
-                    a.activities_category,
-                    a.duration_hours,
-                    a.available_from,
-                    a.available_to,
-                    a.price_local,
-                    a.price_foreigners,
-                    a.min_participate,
-                    a.max_participate,
-                    a.season,
-                    di.id AS image_id,
-                    di.name AS image_name,
-                    di.description AS image_description,
-                    di.image_url
+            
+                    -- Destination Categories
+                    (
+                        SELECT COALESCE(JSON_ARRAYAGG(
+                            JSON_OBJECT(
+                                'id', dc.id,
+                                'name', dc.category,
+                                'description', dc.description,
+                                'isPrimary', dcm.is_primary
+                            )
+                        ), JSON_ARRAY())
+                        FROM destination_category_map dcm
+                        JOIN destination_categories dc ON dcm.category_id = dc.id
+                        WHERE dcm.destination_id = d.destination_id
+                          AND dcm.terminated_at IS NULL
+                          AND dc.terminated_at IS NULL
+                    ) AS destination_categories,
+            
+                    -- Activities
+                    (
+                        SELECT COALESCE(JSON_ARRAYAGG(
+                            JSON_OBJECT(
+                                'activityId', a.id,
+                                'activityName', a.name,
+                                'activityDescription', a.description,
+                                'durationHours', a.duration_hours,
+                                'availableFrom', a.available_from,
+                                'availableTo', a.available_to,
+                                'priceLocal', a.price_local,
+                                'priceForeigners', a.price_foreigners,
+                                'minParticipate', a.min_participate,
+                                'maxParticipate', a.max_participate,
+                                'season', a.season
+                            )
+                        ), JSON_ARRAY())
+                        FROM activities a
+                        WHERE a.destination_id = d.destination_id
+                          AND a.terminated_at IS NULL
+                    ) AS activities,
+            
+                    -- Images
+                    (
+                        SELECT COALESCE(JSON_ARRAYAGG(
+                            JSON_OBJECT(
+                                'imageId', di.id,
+                                'imageName', di.name,
+                                'imageDescription', di.description,
+                                'imageUrl', di.image_url
+                            )
+                        ), JSON_ARRAY())
+                        FROM destination_images di
+                        WHERE di.destination_id = d.destination_id
+                          AND di.terminated_at IS NULL
+                    ) AS images
+            
                 FROM destination d
-                LEFT JOIN destination_categories dc ON d.destination_category = dc.id
                 LEFT JOIN common_status cs ON d.status = cs.id
-                LEFT JOIN activities a ON d.destination_id = a.destination_id
-                LEFT JOIN destination_images di ON d.destination_id = di.destination_id
                 WHERE d.destination_id IN (%s)
+                  AND d.terminated_at IS NULL
             """;
 
     public static final String GET_FILTERED_DESTINATION_COUNT = """
@@ -99,47 +178,100 @@ public class DestinationQueries {
                   AND (? IS NULL OR a.price_local >= ?)
                   AND (? IS NULL OR a.price_local <= ?)
                   AND (? IS NULL OR a.duration_hours = ?)
-                  AND (? IS NULL OR a.activities_category = ?)
+            AND (? IS NULL OR EXISTS (
+                SELECT 1
+                FROM destination_category_map dcm
+                JOIN destination_categories dc ON dcm.category_id = dc.id
+                WHERE dcm.destination_id = d.destination_id
+                  AND dcm.terminated_at IS NULL
+                  AND dc.category = ?
+            ))             
                   AND (? IS NULL OR a.season = ?)
                   AND (? IS NULL OR cs.name = ?);
             """;
 
     public static final String GET_ALL_DESTINATIONS_BY_TOUR_ID = """
-            SELECT
-                d.destination_id,
-                d.name AS destination_name,
-                d.description AS destination_description,
-                d.location,
-                d.latitude,
-                d.longitude,
-                dc.category AS category_name,
-                dc.description AS category_description,
-                cs.name AS status_name,
-            	a.id AS activity_id,
-                a.name AS activity_name,
-                a.description AS activity_description,
-                ac.name AS activities_category,
-                a.duration_hours,
-                a.available_from,
-                a.available_to,
-                a.price_local,
-                a.price_foreigners,
-                a.min_participate,
-                a.max_participate,
-                a.season,
-            	di.id AS image_id,
-                di.name AS image_name,
-                di.description AS image_description,
-                di.image_url
-            FROM tour t
-            JOIN tour_destination td ON t.tour_id = td.tour_id
-            JOIN destination d ON td.destination_id = d.destination_id
-            LEFT JOIN destination_categories dc ON d.destination_category = dc.id
-            LEFT JOIN common_status cs ON d.status = cs.id
-            LEFT JOIN activities a ON d.destination_id = a.destination_id
-            LEFT JOIN activity_category ac ON a.activities_category = ac.id
-            LEFT JOIN destination_images di ON d.destination_id = di.destination_id
-            WHERE t.tour_id = ?
+               SELECT DISTINCT
+                  d.destination_id,
+                  d.name AS destination_name,
+                  d.description AS destination_description,
+                  d.location,
+                  d.latitude,
+                  d.longitude,
+                  d.ratings,
+                  cs.name AS status_name,
+
+                  -- Destination Categories (many-to-many)
+                  (
+                      SELECT COALESCE(JSON_ARRAYAGG(
+                          JSON_OBJECT(
+                              'id', dc.id,
+                              'name', dc.category,
+                              'description', dc.description,
+                              'isPrimary', dcm.is_primary
+                          )
+                      ), JSON_ARRAY())
+                      FROM destination_category_map dcm
+                      JOIN destination_categories dc ON dcm.category_id = dc.id
+                      WHERE dcm.destination_id = d.destination_id
+                        AND dcm.terminated_at IS NULL
+                        AND dc.terminated_at IS NULL
+                  ) AS destination_categories,
+
+                  -- Images
+                  (
+                      SELECT COALESCE(JSON_ARRAYAGG(
+                          JSON_OBJECT(
+                              'imageId', di.id,
+                              'imageName', di.name,
+                              'imageDescription', di.description,
+                              'imageUrl', di.image_url
+                          )
+                      ), JSON_ARRAY())
+                      FROM destination_images di
+                      WHERE di.destination_id = d.destination_id
+                        AND di.terminated_at IS NULL
+                  ) AS images,
+
+                  -- Activities (ONLY activities in this tour + destination)
+                  (
+                      SELECT COALESCE(JSON_ARRAYAGG(
+                          JSON_OBJECT(
+                              'activityId', a.id,
+                              'activityName', a.name,
+                              'activityDescription', a.description,
+                              'activityCategories', (
+                                  SELECT COALESCE(JSON_ARRAYAGG(ac.name), JSON_ARRAY())
+                                  FROM activity_category_map acm
+                                  JOIN activity_category ac ON acm.category_id = ac.id
+                                  WHERE acm.activity_id = a.id
+                                    AND acm.terminated_at IS NULL
+                                    AND ac.terminated_at IS NULL
+                              ),
+                              'durationHours', a.duration_hours,
+                              'availableFrom', a.available_from,
+                              'availableTo', a.available_to,
+                              'priceLocal', a.price_local,
+                              'priceForeigners', a.price_foreigners,
+                              'minParticipate', a.min_participate,
+                              'maxParticipate', a.max_participate,
+                              'season', a.season
+                          )
+                      ), JSON_ARRAY())
+                      FROM tour_destination td2
+                      JOIN activities a ON a.id = td2.activities_id
+                      WHERE td2.tour_id = t.tour_id
+                        AND td2.destination_id = d.destination_id
+                        AND td2.terminated_at IS NULL
+                        AND a.terminated_at IS NULL
+                  ) AS activities
+
+              FROM tour t
+              JOIN tour_destination td ON t.tour_id = td.tour_id
+              JOIN destination d ON td.destination_id = d.destination_id
+              LEFT JOIN common_status cs ON d.status = cs.id
+              WHERE t.tour_id = ?
+                AND td.terminated_at IS NULL
             """;
 
     public static final String GET_ALL_DESTINATIONS_CATEGORIES = """
@@ -167,89 +299,141 @@ public class DestinationQueries {
             """;
 
     public static final String GET_POPULAR_DESTINATIONS = """
-            SELECT
-                pd.id AS popular_id,
-                pd.rating,
-                pd.popularity,
-                pd.created_at AS popular_created_at,
-                d.destination_id,
-                d.name AS destination_name,
-                d.description AS destination_description,
-                d.location,
-                d.latitude,
-                d.longitude,
-                cs_dest.name AS destination_status,
-                dc.id AS category_id,
-                dc.category AS category_name,
-                dc.description AS category_description,
-                cs_cat.name AS category_status,
-                di.id AS image_id,
-                di.name AS image_name,
-                di.description AS image_description,
-                di.image_url,
-                cs_img.name AS image_status
-            FROM popular_destination pd
-            JOIN destination d
-                ON pd.destination_id = d.destination_id
-            JOIN common_status cs_dest
-                ON d.status = cs_dest.id
-            LEFT JOIN destination_categories dc
-                ON d.destination_category = dc.id
-            LEFT JOIN common_status cs_cat
-                ON dc.status = cs_cat.id
-            LEFT JOIN destination_images di
-                ON d.destination_id = di.destination_id
-            LEFT JOIN common_status cs_img
-                ON di.status = cs_img.id
-            ORDER BY pd.popularity DESC, pd.rating DESC;
+                SELECT
+                    pd.id AS popular_id,
+                    pd.rating,
+                    pd.popularity,
+                    pd.created_at AS popular_created_at,
+            
+                    d.destination_id,
+                    d.name AS destination_name,
+                    d.description AS destination_description,
+                    d.location,
+                    d.latitude,
+                    d.longitude,
+                    cs_dest.name AS destination_status,
+            
+                    -- Destination Categories
+                    (
+                        SELECT COALESCE(JSON_ARRAYAGG(
+                            JSON_OBJECT(
+                                'id', dc.id,
+                                'name', dc.category,
+                                'description', dc.description,
+                                'isPrimary', dcm.is_primary
+                            )
+                        ), JSON_ARRAY())
+                        FROM destination_category_map dcm
+                        JOIN destination_categories dc ON dcm.category_id = dc.id
+                        WHERE dcm.destination_id = d.destination_id
+                          AND dcm.terminated_at IS NULL
+                          AND dc.terminated_at IS NULL
+                    ) AS destination_categories,
+            
+                    -- Images
+                    (
+                        SELECT COALESCE(JSON_ARRAYAGG(
+                            JSON_OBJECT(
+                                'imageId', di.id,
+                                'imageName', di.name,
+                                'imageDescription', di.description,
+                                'imageUrl', di.image_url
+                            )
+                        ), JSON_ARRAY())
+                        FROM destination_images di
+                        WHERE di.destination_id = d.destination_id
+                          AND di.terminated_at IS NULL
+                    ) AS images
+            
+                FROM popular_destination pd
+                JOIN destination d ON pd.destination_id = d.destination_id
+                JOIN common_status cs_dest ON d.status = cs_dest.id
+                WHERE d.terminated_at IS NULL
+                ORDER BY pd.popularity DESC, pd.rating DESC
             """;
 
     public static final String GET_TRENDING_DESTINATIONS = """
-            SELECT
-                pd.id AS popular_id,
-                pd.rating,
-                pd.popularity,
-                pd.created_at AS popular_created_at,
-                d.destination_id,
-                d.name AS destination_name,
-                d.description AS destination_description,
-                d.location,
-                d.latitude,
-                d.longitude,
-                cs_dest.name AS destination_status,
-                dc.id AS category_id,
-                dc.category AS category_name,
-                dc.description AS category_description,
-                cs_cat.name AS category_status,
-                di.id AS image_id,
-                di.name AS image_name,
-                di.description AS image_description,
-                di.image_url,
-                cs_img.name AS image_status,
-                di.created_at AS image_created_at,
-                a.id AS activity_id,
-                a.name AS activity_name,
-                a.description AS activity_description,
-                a.activities_category,
-                a.duration_hours,
-                a.available_from,
-                a.available_to,
-                a.price_local,
-                a.price_foreigners,
-                a.min_participate,
-                a.max_participate,
-                a.season
-            FROM popular_destination pd
-            JOIN destination d ON pd.destination_id = d.destination_id
-            JOIN common_status cs_dest ON d.status = cs_dest.id
-            LEFT JOIN destination_categories dc ON d.destination_category = dc.id
-            LEFT JOIN common_status cs_cat ON dc.status = cs_cat.id
-            LEFT JOIN destination_images di ON d.destination_id = di.destination_id
-            LEFT JOIN common_status cs_img ON di.status = cs_img.id
-            LEFT JOIN activities a ON d.destination_id = a.destination_id
-            LEFT JOIN common_status cs_act ON a.status = cs_act.id
-            WHERE pd.rating > 4.0
-            ORDER BY pd.popularity DESC, pd.rating DESC
+                SELECT
+                    pd.id AS popular_id,
+                    pd.rating,
+                    pd.popularity,
+                    pd.created_at AS popular_created_at,
+            
+                    d.destination_id,
+                    d.name AS destination_name,
+                    d.description AS destination_description,
+                    d.location,
+                    d.latitude,
+                    d.longitude,
+                    cs_dest.name AS destination_status,
+            
+                    -- Destination Categories (many-to-many)
+                    (
+                        SELECT COALESCE(JSON_ARRAYAGG(
+                            JSON_OBJECT(
+                                'id', dc.id,
+                                'name', dc.category,
+                                'description', dc.description,
+                                'isPrimary', dcm.is_primary
+                            )
+                        ), JSON_ARRAY())
+                        FROM destination_category_map dcm
+                        JOIN destination_categories dc ON dcm.category_id = dc.id
+                        WHERE dcm.destination_id = d.destination_id
+                          AND dcm.terminated_at IS NULL
+                          AND dc.terminated_at IS NULL
+                    ) AS destination_categories,
+            
+                    -- Images
+                    (
+                        SELECT COALESCE(JSON_ARRAYAGG(
+                            JSON_OBJECT(
+                                'imageId', di.id,
+                                'imageName', di.name,
+                                'imageDescription', di.description,
+                                'imageUrl', di.image_url
+                            )
+                        ), JSON_ARRAY())
+                        FROM destination_images di
+                        WHERE di.destination_id = d.destination_id
+                          AND di.terminated_at IS NULL
+                    ) AS images,
+            
+                    -- Activities
+                    (
+                        SELECT COALESCE(JSON_ARRAYAGG(
+                            JSON_OBJECT(
+                                'activityId', a.id,
+                                'activityName', a.name,
+                                'activityDescription', a.description,
+                                'activityCategories', (
+                                    SELECT COALESCE(JSON_ARRAYAGG(ac.name), JSON_ARRAY())
+                                    FROM activity_category_map acm
+                                    JOIN activity_category ac ON acm.category_id = ac.id
+                                    WHERE acm.activity_id = a.id
+                                      AND acm.terminated_at IS NULL
+                                      AND ac.terminated_at IS NULL
+                                ),
+                                'durationHours', a.duration_hours,
+                                'availableFrom', a.available_from,
+                                'availableTo', a.available_to,
+                                'priceLocal', a.price_local,
+                                'priceForeigners', a.price_foreigners,
+                                'minParticipate', a.min_participate,
+                                'maxParticipate', a.max_participate,
+                                'season', a.season
+                            )
+                        ), JSON_ARRAY())
+                        FROM activities a
+                        WHERE a.destination_id = d.destination_id
+                          AND a.terminated_at IS NULL
+                    ) AS activities
+            
+                FROM popular_destination pd
+                JOIN destination d ON pd.destination_id = d.destination_id
+                JOIN common_status cs_dest ON d.status = cs_dest.id
+                WHERE d.destination_id IN (64,67,66,71)
+                ORDER BY pd.popularity DESC, pd.rating DESC
             """;
 
     public static final String GET_ALL_DESTINATIONS_CATEGORY = """
@@ -418,38 +602,64 @@ public class DestinationQueries {
                 d.name AS destination_name,
                 d.description AS destination_description,
                 cs1.name AS destination_status,
-                dc.category AS destination_category,
-                cs2.name AS destination_category_status,
+            
+                -- All categories for destination as JSON array
+                (
+                    SELECT JSON_ARRAYAGG(dc.category)
+                    FROM destination_category_map dcm
+                    JOIN destination_categories dc ON dcm.category_id = dc.id
+                    JOIN common_status cs ON dcm.status = cs.id
+                    WHERE dcm.destination_id = d.destination_id
+                      AND cs.name = 'ACTIVE'
+                ) AS destination_categories,
+            
                 d.location AS destination_location,
                 d.latitude AS destination_latitude,
                 d.longitude AS destination_longitude,
                 d.created_at AS destination_created_at,
                 d.created_by AS destination_created_by,
-                di.id AS destination_image_id,
-                di.name AS destination_image_name,
-                di.description AS destination_image_description,
-                di.image_url AS destination_image_url,
-                cs3.name AS destination_image_status,
-                dci.id AS destination_category_image_id,
-                dci.name AS destination_category_image_name,
-                dci.description AS destination_category_image_description,
-                dci.image_url AS destination_category_image_url,
-                cs4.name AS destination_category_image_status
+            
+                -- Destination images as JSON array
+                (
+                    SELECT COALESCE(
+                        JSON_ARRAYAGG(
+                            JSON_OBJECT(
+                                'id', di.id,
+                                'name', di.name,
+                                'description', di.description,
+                                'imageUrl', di.image_url,
+                                'status', cs3.name
+                            )
+                        ),
+                        JSON_ARRAY()
+                    )
+                    FROM destination_images di
+                    JOIN common_status cs3 ON di.status = cs3.id
+                    WHERE di.destination_id = d.destination_id
+                ) AS destination_images,
+            
+                -- Destination category images as JSON array
+                (
+                    SELECT COALESCE(
+                        JSON_ARRAYAGG(
+                            JSON_OBJECT(
+                                'id', dci.id,
+                                'name', dci.name,
+                                'description', dci.description,
+                                'imageUrl', dci.image_url,
+                                'status', cs4.name
+                            )
+                        ),
+                        JSON_ARRAY()
+                    )
+                    FROM destination_categories_images dci
+                    JOIN destination_category_map dcm ON dcm.category_id = dci.destination_categories_id
+                    JOIN common_status cs4 ON dci.status = cs4.id
+                    WHERE dcm.destination_id = d.destination_id
+                ) AS destination_category_images
+            
             FROM destination d
-            LEFT JOIN common_status cs1
-                ON cs1.id = d.status
-            LEFT JOIN destination_categories dc
-                ON dc.id = d.destination_category
-            LEFT JOIN common_status cs2
-                ON cs2.id = dc.status
-            LEFT JOIN destination_images di
-                ON di.destination_id = d.destination_id
-            LEFT JOIN common_status cs3
-                ON cs3.id = di.status
-            LEFT JOIN destination_categories_images dci
-                ON dci.destination_categories_id = dc.id
-            LEFT JOIN common_status cs4
-                ON cs4.id = dci.status
+            LEFT JOIN common_status cs1 ON cs1.id = d.status
             WHERE cs1.name = 'ACTIVE'
             """;
 
@@ -617,43 +827,82 @@ public class DestinationQueries {
             """;
 
     public static final String GET_DESTINATION_DETAILS_BY_ID = """
-            SELECT
-            	d.destination_id,
-            	d.name AS destination_name,
-            	d.description AS destination_description,
-            	d.location,
-            	d.latitude,
-            	d.longitude,
-            	dc.category AS category_name,
-            	dc.description AS category_description,
-            	cs.name AS status_name,
-            	a.id AS activity_id,
-            	a.name AS activity_name,
-            	a.description AS activity_description,
-            	ac.name AS activities_category,
-            	a.duration_hours,
-            	a.available_from,
-            	a.available_to,
-            	a.price_local,
-            	a.price_foreigners,
-            	a.min_participate,
-            	a.max_participate,
-            	a.season,
-            	di.id AS image_id,
-            	di.name AS image_name,
-            	di.description AS image_description,
-            	di.image_url
-            FROM destination d
-            LEFT JOIN destination_categories dc ON d.destination_category = dc.id
-            LEFT JOIN common_status cs ON d.status = cs.id
-            LEFT JOIN activities a ON d.destination_id = a.destination_id
-            LEFT JOIN activity_category ac ON ac.id = a.activities_category
-            LEFT JOIN destination_images di
-               ON d.destination_id = di.destination_id
-              AND di.status = (
-                  SELECT id FROM common_status WHERE name = 'ACTIVE' LIMIT 1
-              )
-            WHERE d.destination_id=?
+                SELECT
+                    d.destination_id,
+                    d.name AS destination_name,
+                    d.description AS destination_description,
+                    d.location,
+                    d.latitude,
+                    d.longitude,
+                    d.ratings,
+                    cs.name AS status_name,
+            
+                    -- Categories (many-to-many)
+                    (
+                        SELECT COALESCE(JSON_ARRAYAGG(
+                            JSON_OBJECT(
+                                'id', dc.id,
+                                'name', dc.category,
+                                'description', dc.description,
+                                'isPrimary', dcm.is_primary
+                            )
+                        ), JSON_ARRAY())
+                        FROM destination_category_map dcm
+                        JOIN destination_categories dc ON dcm.category_id = dc.id
+                        WHERE dcm.destination_id = d.destination_id
+                          AND dcm.terminated_at IS NULL
+                          AND dc.terminated_at IS NULL
+                    ) AS destination_categories,
+            
+                    -- Images
+                    (
+                        SELECT COALESCE(JSON_ARRAYAGG(
+                            JSON_OBJECT(
+                                'imageId', di.id,
+                                'imageName', di.name,
+                                'imageDescription', di.description,
+                                'imageUrl', di.image_url
+                            )
+                        ), JSON_ARRAY())
+                        FROM destination_images di
+                        WHERE di.destination_id = d.destination_id
+                          AND di.terminated_at IS NULL
+                    ) AS images,
+            
+                    -- Activities (with categories)
+                    (
+                        SELECT COALESCE(JSON_ARRAYAGG(
+                            JSON_OBJECT(
+                                'activityId', a.id,
+                                'activityName', a.name,
+                                'activityDescription', a.description,
+                                'activityCategories', (
+                                    SELECT COALESCE(JSON_ARRAYAGG(ac.name), JSON_ARRAY())
+                                    FROM activity_category_map acm
+                                    JOIN activity_category ac ON acm.category_id = ac.id
+                                    WHERE acm.activity_id = a.id
+                                      AND acm.terminated_at IS NULL
+                                      AND ac.terminated_at IS NULL
+                                ),
+                                'durationHours', a.duration_hours,
+                                'availableFrom', a.available_from,
+                                'availableTo', a.available_to,
+                                'priceLocal', a.price_local,
+                                'priceForeigners', a.price_foreigners,
+                                'minParticipate', a.min_participate,
+                                'maxParticipate', a.max_participate,
+                                'season', s.name
+                            )
+                        ), JSON_ARRAY())
+                        FROM activities a
+                        LEFT JOIN seasons s ON s.id = a.season_id
+                        WHERE a.destination_id = d.destination_id
+                          AND a.terminated_at IS NULL
+                    ) AS activities
+            
+                FROM destination d
+                LEFT JOIN common_status cs ON d.status = cs.id
+                WHERE d.destination_id = ?
             """;
 
     public static final String GET_DESTINATION_REVIEW_DETAILS = """

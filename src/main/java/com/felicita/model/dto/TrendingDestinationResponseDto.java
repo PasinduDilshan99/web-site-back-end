@@ -24,11 +24,8 @@ public class TrendingDestinationResponseDto {
     private Double longitude;
     private String destinationStatus;
 
-    private int categoryId;
-    private String categoryName;
-    private String categoryDescription;
-    private String categoryStatus;
+    List<DestinationCategoryDetailsDto> destinationCategoryDetailsDtos;
 
-    private List<DestinationImageResponseDto> images;       // One-to-many
+    private List<DestinationImageResponseDto> images;
     private List<DestinationActivityResponseDto> activities;
 }

@@ -42,6 +42,7 @@ public class UserBenefitsQueries {
             u.username,
             u.first_name,
             u.last_name,
+            u.created_at,
             u.benefits_points_count,
             
             -- Current Level

@@ -214,7 +214,7 @@ public class SecurityConfig {
 //                        .requestMatchers("/api/v0/inquiry/create").hasAuthority("INQUIRY_CREATE")
 
                         // Footer
-//                        .requestMatchers("/api/v0/footer/all").hasAuthority("FOOTER_VIEW")
+    //                        .requestMatchers("/api/v0/footer/all").hasAuthority("FOOTER_VIEW")
 //                        .requestMatchers("/api/v0/footer/active").hasAuthority("FOOTER_VIEW")
 
                         // Our Story
@@ -257,9 +257,9 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000","http://localhost:3001"));
+        configuration.setAllowedOrigins(List.of("https://felicitatrips.com","https://api.felicitatrips.com"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type","Cookie"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

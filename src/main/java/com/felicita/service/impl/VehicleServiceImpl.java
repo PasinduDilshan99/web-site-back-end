@@ -1,10 +1,11 @@
 package com.felicita.service.impl;
 
+import com.felicita.exception.DataAccessErrorExceptionHandler;
 import com.felicita.exception.DataNotFoundErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
 import com.felicita.model.dto.VehicleBasicDetailsDto;
 import com.felicita.model.enums.CommonStatus;
-import com.felicita.model.enums.PartnerStatus;
+import com.felicita.model.request.VehicleSpecificationSearchRequest;
 import com.felicita.model.response.*;
 import com.felicita.repository.VehicleRepository;
 import com.felicita.service.VehicleService;
@@ -12,7 +13,6 @@ import com.felicita.util.CommonResponseMessages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -169,4 +169,163 @@ public class VehicleServiceImpl implements VehicleService {
             LOGGER.info("End fetching active vehicles ids and register numbers from repository");
         }
     }
+
+    @Override
+    public CommonResponse<VehicleSpecificationDetailsResponse> getVehicleSpecificationDetailsById(Long specificationId) {
+        LOGGER.info("Start fetching vehicle specification details from repository");
+        try {
+
+            VehicleSpecificationDetailsResponse vehicleSpecificationDetailsResponses =
+                    vehicleRepository.getVehicleSpecificationDetailsById(specificationId);
+
+            return
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            vehicleSpecificationDetailsResponses,
+                            Instant.now());
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching vehicle specification details for id : {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching vehicle specification details for id: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch vehicle specification details for id from database");
+        } finally {
+            LOGGER.info("End fetching vehicle specification details for id from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<VehicleSpecificationSearchResponse> getVehicleSpecificationDetails(VehicleSpecificationSearchRequest vehicleSpecificationSearchRequest) {
+        LOGGER.info("Start fetching vehicle specification from repository");
+        try {
+
+            VehicleSpecificationSearchResponse vehicleSpecificationDetailsResponse =
+                    vehicleRepository.getVehicleSpecificationDetails(vehicleSpecificationSearchRequest);
+
+            return
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            vehicleSpecificationDetailsResponse,
+                            Instant.now());
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching vehicle specification : {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching vehicle specification : {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch vehicle specification from database");
+        } finally {
+            LOGGER.info("End fetching vehicle specification from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<VehicleSpecificationFilterResponse> getVehicleSpecificationFilters() {
+        LOGGER.info("Start fetching vehicle specification filters from repository");
+        try {
+            VehicleSpecificationFilterResponse vehicleSpecificationFilterResponse = new VehicleSpecificationFilterResponse();
+            List<String> makes = vehicleRepository.getDistinctMakes();
+            List<String> models = vehicleRepository.getDistinctModels();
+            List<Integer> years = vehicleRepository.getDistinctYears();
+            List<String> bodyTypes = vehicleRepository.getDistinctBodyTypes();
+            VehicleSpecificationFilterResponse.HorsePowerRange horsePowerRange = vehicleRepository.getDistinctHorsePowers();
+            List<Integer> seats = vehicleRepository.getDistinctSeatsCount();
+            List<String> roofTypes = vehicleRepository.getDistinctRoofTypes();
+            List<String> acTypes = vehicleRepository.getDistinctAcTypes();
+
+            vehicleSpecificationFilterResponse.setMakes(makes);
+            vehicleSpecificationFilterResponse.setModels(models);
+            vehicleSpecificationFilterResponse.setYears(years);
+            vehicleSpecificationFilterResponse.setBodyTypes(bodyTypes);
+            vehicleSpecificationFilterResponse.setHorsePowerRange(horsePowerRange);
+            vehicleSpecificationFilterResponse.setSeats(seats);
+            vehicleSpecificationFilterResponse.setRoofTypes(roofTypes);
+            vehicleSpecificationFilterResponse.setAcTypes(acTypes);
+
+            return
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            vehicleSpecificationFilterResponse,
+                            Instant.now());
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching vehicle specification filters : {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching vehicle specification filters : {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch vehicle specification filters from database");
+        } finally {
+            LOGGER.info("End fetching vehicle specification filters from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<List<VehicleTypeResponse>> getActiveVehiclesTypes() {
+        LOGGER.info("Start fetching vehicle types from repository");
+        try {
+            List<VehicleTypeResponse> vehicleTypeResponses = vehicleRepository.getActiveVehiclesTypes();
+
+            if (vehicleTypeResponses.isEmpty()) {
+                LOGGER.warn("No vehicle types found in database");
+                throw new DataNotFoundErrorExceptionHandler("No vehicle types found");
+            }
+
+            LOGGER.info("Fetched {} vehicle types successfully", vehicleTypeResponses.size());
+
+            return (
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            vehicleTypeResponses,
+                            Instant.now()
+                    )
+            );
+
+        }catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
+        }catch (Exception e) {
+            LOGGER.error("Error occurred while fetching vehicle types: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch vehicle types from database");
+        } finally {
+            LOGGER.info("End fetching all vehicle types from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<VehicleTypeResponse> getActiveVehiclesTypesDetailsById(Long typeId) {
+        LOGGER.info("Start fetching vehicle types details by id : {} from repository", typeId);
+        try {
+            VehicleTypeResponse vehicleTypeResponse = vehicleRepository.getActiveVehiclesTypesDetailsById(typeId);
+
+            LOGGER.info("Fetched vehicle types details by id : {} successfully", typeId);
+
+            return (
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            vehicleTypeResponse,
+                            Instant.now()
+                    )
+            );
+
+        }catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
+        }catch (Exception e) {
+            LOGGER.error("Error occurred while fetching vehicle types details by id {} : {}",typeId, e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch vehicle types details by id : "+ typeId);
+        } finally {
+            LOGGER.info("End fetching all vehicle types details by id : {} from repository",typeId);
+        }
+    }
+
+
 }

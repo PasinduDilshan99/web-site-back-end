@@ -4,6 +4,7 @@ import com.felicita.exception.DataAccessErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
 import com.felicita.model.dto.VehicleBasicDetailsDto;
 import com.felicita.model.enums.CommonStatus;
+import com.felicita.model.request.VehicleSpecificationSearchRequest;
 import com.felicita.model.response.*;
 import com.felicita.queries.PartnerQueries;
 import com.felicita.queries.TourQueries;
@@ -412,6 +413,458 @@ public class VehicleRepositoryImpl implements VehicleRepository {
         }
     }
 
+    @Override
+    public VehicleSpecificationDetailsResponse getVehicleSpecificationDetailsById(Long specificationId) {
+
+        try {
+
+            return jdbcTemplate.query(
+                    VehicleQueries.GET_VEHICLE_SPECIFICATION_DETAILS_BY_ID,
+                    new Object[]{specificationId},
+                    rs -> {
+
+                        VehicleSpecificationDetailsResponse response = null;
+
+                        while (rs.next()) {
+
+                            if (response == null) {
+
+                                response = VehicleSpecificationDetailsResponse.builder()
+                                        .specificationId(rs.getLong("specification_id"))
+                                        .make(rs.getString("make"))
+                                        .model(rs.getString("model"))
+                                        .year(rs.getObject("year", Integer.class))
+                                        .generation(rs.getString("generation"))
+                                        .bodyType(rs.getString("body_type"))
+                                        .price(rs.getBigDecimal("price"))
+                                        .engineType(rs.getString("engine_type"))
+                                        .engineCapacity(rs.getString("engine_capacity"))
+                                        .horsepowerHp(rs.getBigDecimal("horsepower_hp"))
+                                        .torqueNm(rs.getBigDecimal("torque_nm"))
+                                        .electricRangeKm(rs.getBigDecimal("electric_range_km"))
+                                        .drivetrain(rs.getString("drivetrain"))
+                                        .topSpeedKmh(rs.getBigDecimal("top_speed_kmh"))
+                                        .acceleration0To100(rs.getBigDecimal("acceleration_0_100"))
+                                        .co2EmissionsGKm(rs.getBigDecimal("co2_emissions_g_km"))
+                                        .doors(rs.getObject("doors", Integer.class))
+                                        .seatCapacity(rs.getObject("seat_capacity", Integer.class))
+                                        .dimensions(rs.getString("dimensions"))
+                                        .wheelbaseMm(rs.getBigDecimal("wheelbase_mm"))
+                                        .weightKg(rs.getBigDecimal("weight_kg"))
+                                        .wheelSize(rs.getString("wheel_size"))
+                                        .tireType(rs.getString("tire_type"))
+                                        .upholsteryType(rs.getString("upholstery_type"))
+                                        .sunroofType(rs.getString("sunroof_type"))
+                                        .cruiseControlType(rs.getString("cruise_control_type"))
+                                        .entertainmentFeatures(rs.getString("entertainment_features"))
+                                        .comfortFeatures(rs.getString("comfort_features"))
+                                        .ncapSafetyRating(rs.getObject("ncap_safety_rating", Integer.class))
+                                        .airbagsCount(rs.getObject("airbags_count", Integer.class))
+                                        .parkingCamera(rs.getString("parking_camera"))
+                                        .laneDepartureWarning(rs.getObject("lane_departure_warning", Boolean.class))
+                                        .safetyFeatures(rs.getString("safety_features"))
+                                        .fuelTankCapacityLiters(rs.getBigDecimal("fuel_tank_capacity_liters"))
+                                        .warrantyYears(rs.getObject("warranty_years", Integer.class))
+                                        .imageUrl(rs.getString("image_url"))
+                                        .airCondition(rs.getObject("air_condition", Boolean.class))
+                                        .isActive(rs.getObject("is_active", Boolean.class))
+                                        .createdAt(rs.getTimestamp("created_at") != null ?
+                                                rs.getTimestamp("created_at").toLocalDateTime() : null)
+                                        .updatedAt(rs.getTimestamp("updated_at") != null ?
+                                                rs.getTimestamp("updated_at").toLocalDateTime() : null)
+
+                                        .transmission(
+                                                VehicleSpecificationDetailsResponse.Transmission.builder()
+                                                        .transmissionTypeId(rs.getObject("transmission_type_id", Integer.class))
+                                                        .transmissionTypeName(rs.getString("transmission_type_name"))
+                                                        .description(rs.getString("transmission_description"))
+                                                        .build()
+                                        )
+                                        .fuelType(
+                                                VehicleSpecificationDetailsResponse.FuelType.builder()
+                                                        .fuelTypeId(rs.getObject("fuel_type_id", Integer.class))
+                                                        .fuelTypeName(rs.getString("fuel_type_name"))
+                                                        .description(rs.getString("fuel_description"))
+                                                        .build()
+                                        )
+                                        .airConditioningType(
+                                                VehicleSpecificationDetailsResponse.AirConditioningType.builder()
+                                                        .acTypeId(rs.getObject("ac_type_id", Integer.class))
+                                                        .acTypeName(rs.getString("ac_type_name"))
+                                                        .description(rs.getString("ac_description"))
+                                                        .build()
+                                        )
+                                        .images(new ArrayList<>())
+                                        .build();
+                            }
+
+                            // Add images (if exist)
+                            Long imageId = rs.getObject("image_id", Long.class);
+                            if (imageId != null) {
+                                response.getImages().add(
+                                        VehicleSpecificationDetailsResponse.VehicleImage.builder()
+                                                .imageId(imageId)
+                                                .imageUrl(rs.getString("additional_image_url"))
+                                                .imageName(rs.getString("image_name"))
+                                                .description(rs.getString("image_description"))
+                                                .createdAt(rs.getTimestamp("image_created_at") != null ?
+                                                        rs.getTimestamp("image_created_at").toLocalDateTime() : null)
+                                                .updatedAt(rs.getTimestamp("image_updated_at") != null ?
+                                                        rs.getTimestamp("image_updated_at").toLocalDateTime() : null)
+                                                .build()
+                                );
+                            }
+                        }
+
+                        return response; // 🔥 returns single object
+                    });
+
+        } catch (Exception e) {
+            LOGGER.error("Error fetching vehicle specification details for ID {}: {}", specificationId, e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler(
+                    "Unexpected error occurred while fetching vehicle specification details"
+            );
+        }
+    }
+
+    @Override
+    public VehicleSpecificationSearchResponse getVehicleSpecificationDetails(
+            VehicleSpecificationSearchRequest request) {
+
+        LOGGER.info(request.toString());
+
+        StringBuilder query = new StringBuilder(VehicleQueries.VEHICLE_SPECIFICATION_SEARCH_QUERY);
+        StringBuilder countQuery = new StringBuilder(VehicleQueries.VEHICLE_SPECIFICATION_COUNT_QUERY);
+
+        List<Object> params = new ArrayList<>();
+        List<Object> countParams = new ArrayList<>();
+
+        // ============= FILTERS =============
+
+        if (request.getMake() != null) {
+            query.append(" AND vs.make = ? ");
+            countQuery.append(" AND vs.make = ? ");
+            params.add(request.getMake());
+            countParams.add(request.getMake());
+        }
+
+        if (request.getModel() != null) {
+            query.append(" AND vs.model = ? ");
+            countQuery.append(" AND vs.model = ? ");
+            params.add(request.getModel());
+            countParams.add(request.getModel());
+        }
+
+        if (request.getYear() != null) {
+            query.append(" AND vs.year = ? ");
+            countQuery.append(" AND vs.year = ? ");
+            params.add(request.getYear());
+            countParams.add(request.getYear());
+        }
+
+        if (request.getBodyType() != null) {
+            query.append(" AND vs.body_type = ? ");
+            countQuery.append(" AND vs.body_type = ? ");
+            params.add(request.getBodyType());
+            countParams.add(request.getBodyType());
+        }
+
+        if (request.getMinHorsepower() != null) {
+            query.append(" AND vs.horsepower_hp >= ? ");
+            countQuery.append(" AND vs.horsepower_hp >= ? ");
+            params.add(request.getMinHorsepower());
+            countParams.add(request.getMinHorsepower());
+        }
+
+        if (request.getMaxHorsepower() != null) {
+            query.append(" AND vs.horsepower_hp <= ? ");
+            countQuery.append(" AND vs.horsepower_hp <= ? ");
+            params.add(request.getMaxHorsepower());
+            countParams.add(request.getMaxHorsepower());
+        }
+
+        if (request.getSeatCapacity() != null) {
+            query.append(" AND vs.seat_capacity = ? ");
+            countQuery.append(" AND vs.seat_capacity = ? ");
+            params.add(request.getSeatCapacity());
+            countParams.add(request.getSeatCapacity());
+        }
+
+        if (request.getSunroofType() != null) {
+            query.append(" AND vs.sunroof_type = ? ");
+            countQuery.append(" AND vs.sunroof_type = ? ");
+            params.add(request.getSunroofType());
+            countParams.add(request.getSunroofType());
+        }
+
+        if (request.getAcTypeId() != null) {
+            query.append(" AND vs.ac_type_id = ? ");
+            countQuery.append(" AND vs.ac_type_id = ? ");
+            params.add(request.getAcTypeId());
+            countParams.add(request.getAcTypeId());
+        }
+
+        // ============= TOTAL COUNT =============
+        Long totalRecords = jdbcTemplate.queryForObject(
+                countQuery.toString(),
+                countParams.toArray(),
+                Long.class
+        );
+
+        // ============= PAGINATION =============
+        int offset = request.getPageNumber() * request.getPageSize();
+        query.append(" LIMIT ? OFFSET ? ");
+        params.add(request.getPageSize());
+        params.add(offset);
+
+        // ============= DATA QUERY =============
+        List<VehicleSpecificationSearchResponse.VehicleSpecificationBasic> list =
+                jdbcTemplate.query(query.toString(), params.toArray(), (rs, rowNum) ->
+                        VehicleSpecificationSearchResponse.VehicleSpecificationBasic.builder()
+                                .specificationId(rs.getLong("specification_id"))
+                                .make(rs.getString("make"))
+                                .model(rs.getString("model"))
+                                .year(rs.getInt("year"))
+                                .bodyType(rs.getString("body_type"))
+                                .price(rs.getBigDecimal("price"))
+                                .horsepowerHp(rs.getInt("horsepower_hp"))
+                                .seatCapacity(rs.getInt("seat_capacity"))
+                                .sunroofType(rs.getString("sunroof_type"))
+                                .acTypeName(rs.getString("ac_type_name"))
+                                .imageUrl(rs.getString("image_url"))
+                                .build()
+                );
+
+        return VehicleSpecificationSearchResponse.builder()
+                .totalRecords(totalRecords)
+                .pageNumber(request.getPageNumber())
+                .pageSize(request.getPageSize())
+                .vehicles(list)
+                .build();
+    }
+
+    @Override
+    public List<String> getDistinctMakes() {
+
+        String sql = """
+        SELECT DISTINCT make
+        FROM vehicle_specifications
+        WHERE make IS NOT NULL
+          AND is_active = 1
+        ORDER BY make ASC
+        """;
+
+        return jdbcTemplate.queryForList(sql, String.class);
+    }
+
+    @Override
+    public List<String> getDistinctModels() {
+
+        String sql = """
+        SELECT DISTINCT model
+        FROM vehicle_specifications
+        WHERE model IS NOT NULL
+          AND is_active = 1
+        ORDER BY model ASC
+        """;
+
+        return jdbcTemplate.queryForList(sql, String.class);
+    }
+
+    @Override
+    public List<Integer> getDistinctYears() {
+
+        String sql = """
+        SELECT DISTINCT year
+        FROM vehicle_specifications
+        WHERE year IS NOT NULL
+          AND is_active = 1
+        ORDER BY year DESC
+        """;
+
+        return jdbcTemplate.queryForList(sql, Integer.class);
+    }
+
+    @Override
+    public List<String> getDistinctBodyTypes() {
+
+        String sql = """
+        SELECT DISTINCT body_type
+        FROM vehicle_specifications
+        WHERE body_type IS NOT NULL
+          AND is_active = 1
+        ORDER BY body_type ASC
+        """;
+
+        return jdbcTemplate.queryForList(sql, String.class);
+    }
+
+    @Override
+    public VehicleSpecificationFilterResponse.HorsePowerRange getDistinctHorsePowers() {
+
+        String sql = """
+        SELECT 
+            MIN(horsepower_hp) AS min_hp,
+            MAX(horsepower_hp) AS max_hp
+        FROM vehicle_specifications
+        WHERE horsepower_hp IS NOT NULL
+          AND is_active = 1
+        """;
+
+        return jdbcTemplate.queryForObject(sql, (rs, rowNum) ->
+                new VehicleSpecificationFilterResponse.HorsePowerRange(
+                        rs.getBigDecimal("min_hp") != null
+                                ? rs.getBigDecimal("min_hp").intValue() : 0,
+                        rs.getBigDecimal("max_hp") != null
+                                ? rs.getBigDecimal("max_hp").intValue() : 0
+                )
+        );
+    }
+
+    @Override
+    public List<Integer> getDistinctSeatsCount() {
+
+        String sql = """
+        SELECT DISTINCT seat_capacity
+        FROM vehicle_specifications
+        WHERE seat_capacity IS NOT NULL
+          AND is_active = 1
+        ORDER BY seat_capacity ASC
+        """;
+
+        return jdbcTemplate.queryForList(sql, Integer.class);
+    }
+
+    @Override
+    public List<String> getDistinctRoofTypes() {
+
+        String sql = """
+        SELECT DISTINCT sunroof_type
+        FROM vehicle_specifications
+        WHERE sunroof_type IS NOT NULL
+          AND is_active = 1
+        ORDER BY sunroof_type ASC
+        """;
+
+        return jdbcTemplate.queryForList(sql, String.class);
+    }
+
+    @Override
+    public List<String> getDistinctAcTypes() {
+
+        String sql = """
+        SELECT DISTINCT act.ac_type_name
+        FROM vehicle_specifications vs
+        JOIN air_conditioning_types act 
+            ON vs.ac_type_id = act.ac_type_id
+        WHERE vs.is_active = 1
+          AND act.is_active = 1
+        ORDER BY act.ac_type_name ASC
+        """;
+
+        return jdbcTemplate.queryForList(sql, String.class);
+    }
+
+    @Override
+    public List<VehicleTypeResponse> getActiveVehiclesTypes() {
+
+        String query = VehicleQueries.GET_VEHICLE_TYPES_DETAILS;
+
+        try {
+
+            Map<Long, VehicleTypeResponse> vehicleMap = new LinkedHashMap<>();
+
+            jdbcTemplate.query(query, rs -> {
+
+                Long vehicleTypeId = rs.getLong("vehicle_type_id");
+
+                VehicleTypeResponse vehicle =
+                        vehicleMap.computeIfAbsent(vehicleTypeId, id ->
+                                {
+                                    try {
+                                        return VehicleTypeResponse.builder()
+                                                .vehicleTypeId(id)
+                                                .name(rs.getString("name"))
+                                                .description(rs.getString("description"))
+                                                .status(rs.getString("status"))
+                                                .images(new ArrayList<>())
+                                                .build();
+                                    } catch (SQLException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }
+                        );
+
+                Long imageId = rs.getLong("image_id");
+
+                if (imageId != null && imageId != 0) {
+
+                    VehicleTypeResponse.Image image =
+                            VehicleTypeResponse.Image.builder()
+                                    .imageId(imageId)
+                                    .imageName(rs.getString("image_name"))
+                                    .imageDescription(rs.getString("image_description"))
+                                    .imageUrl(rs.getString("image_url"))
+                                    .build();
+
+                    vehicle.getImages().add(image);
+                }
+
+            });
+
+            return new ArrayList<>(vehicleMap.values());
+
+        } catch (Exception e) {
+            LOGGER.error(e.toString());
+            throw new DataAccessErrorExceptionHandler("Error fetching vehicle types");
+        }
+    }
+
+    @Override
+    public VehicleTypeResponse getActiveVehiclesTypesDetailsById(Long typeId) {
+        String query = VehicleQueries.GET_VEHICLE_TYPES_DETAILS_BY_ID;
+
+        try {
+            Map<Long, VehicleTypeResponse> vehicleMap = new LinkedHashMap<>();
+
+            jdbcTemplate.query(query, ps -> ps.setLong(1, typeId), rs -> {
+                Long vehicleTypeId = rs.getLong("vehicle_type_id");
+
+                VehicleTypeResponse vehicle = vehicleMap.computeIfAbsent(vehicleTypeId, id ->
+                        {
+                            try {
+                                return VehicleTypeResponse.builder()
+                                        .vehicleTypeId(id)
+                                        .name(rs.getString("name"))
+                                        .description(rs.getString("description"))
+                                        .status(rs.getString("status"))
+                                        .images(new ArrayList<>())
+                                        .build();
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                );
+
+                Long imageId = rs.getLong("image_id");
+                if (!rs.wasNull() && imageId != 0) {
+                    VehicleTypeResponse.Image image = VehicleTypeResponse.Image.builder()
+                            .imageId(imageId)
+                            .imageName(rs.getString("image_name"))
+                            .imageDescription(rs.getString("image_description"))
+                            .imageUrl(rs.getString("image_url"))
+                            .build();
+                    vehicle.getImages().add(image);
+                }
+            });
+
+            // return the single vehicle type or null if not found
+            return vehicleMap.values().stream().findFirst().orElse(null);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error fetching vehicle type details for ID: " + typeId, e);
+        }
+    }
 
     // Helper method to get vehicle assignments separately
     private List<VehicleDetailResponse.Assignment> getVehicleAssignments(Integer vehicleId) {

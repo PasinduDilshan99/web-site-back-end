@@ -23,6 +23,7 @@ public class BrowserHistoryResponse {
     public static class HistoryResponse{
         private Long id;
         private String type;
+        private String name;
         private Long dataId;
         private Long userId;
         private LocalDateTime createdAt;

@@ -780,6 +780,11 @@ public class PackageServiceImpl implements PackageService {
     public CommonResponse<PackageAllDetailsResponse> getPackageAllDetailsById(Long packageId) {
         LOGGER.info("Start fetching all package details by package id : {} from repository", packageId);
         try {
+            Long userId = commonService.getUserIdBySecurityContextWithOutException();
+            Boolean isWished =false;
+            if (userId != null){
+                 isWished = wishListRepository.isWishThisPackageByUserId(packageId,userId);
+            }
             PackageAllDetailsResponse packageAllDetailsResponse = new PackageAllDetailsResponse();
             PackageResponseDto packageDetailsById = getPackageDetailsById(packageId).getData();
 
@@ -801,6 +806,7 @@ public class PackageServiceImpl implements PackageService {
             packageAllDetailsResponse.setTourName(packageDetailsById.getTourName());
             packageAllDetailsResponse.setPackageFeatures(packageDetailsById.getFeatures());
             packageAllDetailsResponse.setPackageImages(packageDetailsById.getImages());
+            packageAllDetailsResponse.setIsWished(isWished);
 
 
             List<PackageExtrasResponse.PackageInclusion> packageInclusions = packageRepository.getPackageInclusions(packageId);

@@ -1,13 +1,12 @@
 package com.felicita.service.impl;
 
-import com.felicita.exception.DataNotFoundErrorExceptionHandler;
-import com.felicita.exception.InsertFailedErrorExceptionHandler;
-import com.felicita.exception.InternalServerErrorExceptionHandler;
-import com.felicita.exception.ValidationFailedErrorExceptionHandler;
+import com.felicita.exception.*;
 import com.felicita.helper.BookingHelperService;
 import com.felicita.model.dto.*;
 import com.felicita.model.enums.BookingStatus;
+import com.felicita.model.request.BookingCancelledRequest;
 import com.felicita.model.request.BookingRequest;
+import com.felicita.model.request.TourBookingInquiryRequest;
 import com.felicita.model.response.*;
 import com.felicita.repository.BookingRepository;
 import com.felicita.service.BookingService;
@@ -26,6 +25,7 @@ import java.sql.Date;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -68,19 +68,20 @@ public class BookingServiceImpl implements BookingService {
             }
 
             LOGGER.info("Fetched {} completed booking tours details successfully", completeToursResponses.size());
-            return (
-                    new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            completeToursResponses,
-                            Instant.now()
-                    )
-            );
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    completeToursResponses,
+                    Instant.now());
 
         } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching completed booking tours details: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    new ArrayList<>(),
+                    Instant.now());
         } catch (Exception e) {
             LOGGER.error("Error occurred while fetching completed booking tours details: {}", e.getMessage(), e);
             throw new InternalServerErrorExceptionHandler("Failed to fetch completed booking tours details from database");
@@ -102,19 +103,20 @@ public class BookingServiceImpl implements BookingService {
             }
 
             LOGGER.info("Fetched {} upcoming booking tours details successfully", upcomingToursResponses.size());
-            return (
-                    new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            upcomingToursResponses,
-                            Instant.now()
-                    )
-            );
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    upcomingToursResponses,
+                    Instant.now());
 
         } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching upcoming booking tours details: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    new ArrayList<>(),
+                    Instant.now());
         } catch (Exception e) {
             LOGGER.error("Error occurred while fetching upcoming booking tours details: {}", e.getMessage(), e);
             throw new InternalServerErrorExceptionHandler("Failed to fetch upcoming booking tours details from database");
@@ -136,19 +138,20 @@ public class BookingServiceImpl implements BookingService {
             }
 
             LOGGER.info("Fetched {} requested booking tours details successfully", requestedToursResponses.size());
-            return (
-                    new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            requestedToursResponses,
-                            Instant.now()
-                    )
-            );
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    requestedToursResponses,
+                    Instant.now());
 
         } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching requested booking tours details: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    new ArrayList<>(),
+                    Instant.now());
         } catch (Exception e) {
             LOGGER.error("Error occurred while fetching requested booking tours details: {}", e.getMessage(), e);
             throw new InternalServerErrorExceptionHandler("Failed to fetch requested booking tours details from database");
@@ -170,19 +173,20 @@ public class BookingServiceImpl implements BookingService {
             }
 
             LOGGER.info("Fetched {} cancelled booking tours details successfully", cancelledToursResponses.size());
-            return (
-                    new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            cancelledToursResponses,
-                            Instant.now()
-                    )
-            );
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    cancelledToursResponses,
+                    Instant.now());
 
         } catch (DataNotFoundErrorExceptionHandler e) {
-            LOGGER.error("Error occurred while fetching cancelled booking tours details: {}", e.getMessage(), e);
-            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    new ArrayList<>(),
+                    Instant.now());
         } catch (Exception e) {
             LOGGER.error("Error occurred while fetching cancelled booking tours details: {}", e.getMessage(), e);
             throw new InternalServerErrorExceptionHandler("Failed to fetch cancelled booking tours details from database");
@@ -392,11 +396,11 @@ public class BookingServiceImpl implements BookingService {
 
             LOGGER.info("Fetched {} booked tours details successfully", userBookingSummaryResponses.size());
             return new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
                     userBookingSummaryResponses,
-                            Instant.now()
+                    Instant.now()
             );
 
         } catch (DataNotFoundErrorExceptionHandler e) {
@@ -410,5 +414,103 @@ public class BookingServiceImpl implements BookingService {
         }
     }
 
+    @Override
+    public CommonResponse<List<PendingToursResponse>> getPendingBookingToursDetailsById() {
+        LOGGER.info("Start fetching all pending booking tours details from repository");
+        try {
+            Long userId = commonService.getUserIdBySecurityContext();
+            List<PendingToursResponse> pendingToursResponses = bookingRepository.getPendingBookingToursDetailsById(userId);
+
+            if (pendingToursResponses.isEmpty()) {
+                LOGGER.warn("No pending booking tours details found in database");
+                throw new DataNotFoundErrorExceptionHandler("No pending booking tours details found");
+            }
+
+            LOGGER.info("Fetched {} pending booking tours details successfully", pendingToursResponses.size());
+            return (
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            pendingToursResponses,
+                            Instant.now()
+                    )
+            );
+
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            return (
+                    new CommonResponse<>(
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                            new ArrayList<>(),
+                            Instant.now()
+                    )
+            );
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching pending booking tours details: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch pending booking tours details from database");
+        } finally {
+            LOGGER.info("End fetching all pending booking tours details from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<InsertResponse> tourBookingInquiry(TourBookingInquiryRequest tourBookingInquiryRequest) {
+        LOGGER.info("Start insert tour booking inquiry request.");
+        try {
+            Long userId = commonService.getUserIdBySecurityContextWithOutException();
+            bookingValidationService.validateTourBookingInquiryRequest(tourBookingInquiryRequest);
+            if (userId != null) {
+                String bookingReference = bookingHelperService.generateUniqueBookingReferance();
+                bookingRepository.insertBookingInquiryToBookings(tourBookingInquiryRequest, userId, bookingReference);
+            }
+            Long tourBookingInquiryId = bookingRepository.insertTourBookingInquiry(tourBookingInquiryRequest, userId);
+
+            if (tourBookingInquiryId == null || tourBookingInquiryId <= 0) {
+                throw new InsertFailedErrorExceptionHandler("Failed to insert tour booking inquiry");
+            }
+
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_INSERT_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_INSERT_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_INSERT_MESSAGE,
+                    new InsertResponse("Successfully insert tour booking inquiry."),
+                    Instant.now());
+
+        } catch (InsertFailedErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while insert booking tours inquiry : {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to insert booking tours inquiry to database");
+        } finally {
+            LOGGER.info("End insert booking tours inquiry to repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<UpdateResponse> cancelledPendingBooking(BookingCancelledRequest bookingCancelledRequest) {
+        LOGGER.info("Start cancelled tour booking inquiry request.");
+        try {
+            Long userId = commonService.getUserIdBySecurityContext();
+            bookingValidationService.validateBookingCancelledRequest(bookingCancelledRequest);
+            bookingRepository.cancelledPendingBooking(bookingCancelledRequest, userId);
+
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_UPDATE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_UPDATE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_UPDATE_MESSAGE,
+                    new UpdateResponse("Successfully cancelled tour booking inquiry.", bookingCancelledRequest.getBookingId()),
+                    Instant.now());
+
+        } catch (UpdateFailedErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while cancelled booking tours inquiry : {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to cancelled booking tours inquiry to database");
+        } finally {
+            LOGGER.info("End cancelled booking tours inquiry to repository");
+        }
+    }
 
 }

@@ -1,5 +1,6 @@
 package com.felicita.model.response;
 
+import com.felicita.model.dto.ActivityCategoryDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,7 +28,7 @@ public class ActivityHistoryDetailsResponse {
         private Long activityId;
         private String activityName;
         private String activityDescription;
-        private String activityCategory;
+        private List<ActivityCategoryDto> activityCategoryDtos;
         private Integer durationHours;
         private LocalDateTime availableFrom;
         private LocalDateTime availableTo;

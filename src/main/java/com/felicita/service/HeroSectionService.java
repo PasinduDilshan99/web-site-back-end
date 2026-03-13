@@ -31,4 +31,11 @@ public interface HeroSectionService {
 
     CommonResponse<List<ActivityDetailsHeroSectionResponse>> getActivityHeroSectionDetailsByActivityId(Long activityId);
 
+    CommonResponse<List<VehicleHeroSectionResponse>> getVehicleHeroSectionDetails();
+
+    CommonResponse<List<VehicleSpecificationHeroSectionResponse>> getVehicleSpecificationHeroSectionDetails();
+
+    CommonResponse<List<VehicleTypesHeroSectionResponse>> getVehicleTypesHeroSectionDetails();
+
+    CommonResponse<List<SeasonsHeroSectionResponse>> getSeasonHeroSectionDetails();
 }

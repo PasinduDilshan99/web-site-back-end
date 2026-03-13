@@ -34,6 +34,7 @@ public class HistoryManagementController {
     @PostMapping(path = "/insert")
     public ResponseEntity<CommonResponse<InsertResponse>> insertHistoryData(@RequestBody InsertHistoryData insertHistoryData){
         LOGGER.info("{} Start execute insert history management request data {}", Constant.DOTS, Constant.DOTS);
+        LOGGER.info(insertHistoryData.toString());
         CommonResponse<InsertResponse> response = historyManagementService.insertHistoryData(insertHistoryData);
         LOGGER.info("{} End execute insert history management request data {}", Constant.DOTS, Constant.DOTS);
         return ResponseEntity.ok(response);

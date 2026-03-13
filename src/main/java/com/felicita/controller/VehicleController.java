@@ -1,5 +1,6 @@
 package com.felicita.controller;
 
+import com.felicita.model.request.VehicleSpecificationSearchRequest;
 import com.felicita.model.response.*;
 import com.felicita.service.VehicleService;
 import com.felicita.util.Constant;
@@ -8,10 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -36,11 +34,51 @@ public class VehicleController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping(path = "/vehicle-types")
+    public ResponseEntity<CommonResponse<List<VehicleTypeResponse>>> getActiveVehiclesTypes(){
+        LOGGER.info("{} Start execute get vehicle types details {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<VehicleTypeResponse>> response = vehicleService.getActiveVehiclesTypes();
+        LOGGER.info("{} End execute get vehicle types details {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/vehicle-types/{typeId}")
+    public ResponseEntity<CommonResponse<VehicleTypeResponse>> getActiveVehiclesTypesDetailsById(@PathVariable Long typeId){
+        LOGGER.info("{} Start execute get vehicle types details by id {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<VehicleTypeResponse> response = vehicleService.getActiveVehiclesTypesDetailsById(typeId);
+        LOGGER.info("{} End execute get vehicle types details by id {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @GetMapping(path = "/{vehicleId}")
     public ResponseEntity<CommonResponse<List<VehicleDetailResponse>>> getVehicleDetailsById(@PathVariable String vehicleId){
         LOGGER.info("{} Start execute get vehicles details by id {}", Constant.DOTS, Constant.DOTS);
         CommonResponse<List<VehicleDetailResponse>> response = vehicleService.getVehicleDetailsById(vehicleId);
         LOGGER.info("{} End execute get vehicles details by id {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/specification/{specificationId}")
+    public ResponseEntity<CommonResponse<VehicleSpecificationDetailsResponse>> getVehicleSpecificationDetailsById(@PathVariable Long specificationId){
+        LOGGER.info("{} Start execute get vehicle specification details by id {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<VehicleSpecificationDetailsResponse> response = vehicleService.getVehicleSpecificationDetailsById(specificationId);
+        LOGGER.info("{} End execute get vehicle specification details by id {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/specification-filters")
+    public ResponseEntity<CommonResponse<VehicleSpecificationFilterResponse>> getVehicleSpecificationFilters(){
+        LOGGER.info("{} Start execute get vehicle specification filters {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<VehicleSpecificationFilterResponse> response = vehicleService.getVehicleSpecificationFilters();
+        LOGGER.info("{} End execute get vehicle specification filters {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping(path = "/specification")
+    public ResponseEntity<CommonResponse<VehicleSpecificationSearchResponse>> getVehicleSpecificationDetails(@RequestBody VehicleSpecificationSearchRequest vehicleSpecificationSearchRequest){
+        LOGGER.info("{} Start execute get vehicle specification details {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<VehicleSpecificationSearchResponse> response = vehicleService.getVehicleSpecificationDetails(vehicleSpecificationSearchRequest);
+        LOGGER.info("{} End execute get vehicle specification details {}", Constant.DOTS, Constant.DOTS);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

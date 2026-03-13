@@ -59,4 +59,6 @@ public interface WishListRepository {
     List<Long> getAllTourWishListByUserId(Long userId);
 
     List<Long> getAllPackageWishListByUserId(Long userId);
+
+    Boolean isWishThisPackageByUserId(Long packageId, Long userId);
 }

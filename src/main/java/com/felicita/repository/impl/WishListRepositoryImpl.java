@@ -75,6 +75,9 @@ public class WishListRepositoryImpl implements WishListRepository {
 
     @Override
     public List<PackageWishResponseDto> getPackageWishList(List<Long> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return new ArrayList<>();
+        }
         try {
             Map<String, Object> params = Map.of("ids", ids);
 
@@ -133,6 +136,9 @@ public class WishListRepositoryImpl implements WishListRepository {
 
     @Override
     public List<TourWishResponsesDto> getTourWishList(List<Long> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return new ArrayList<>();
+        }
         try {
             Map<String, Object> params = Map.of("ids", ids);
 
@@ -186,6 +192,9 @@ public class WishListRepositoryImpl implements WishListRepository {
 
     @Override
     public List<DestinationWishResponseDto> getDestinationWishList(List<Long> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return new ArrayList<>();
+        }
         try {
             Map<String, Object> params = Map.of("ids", ids);
 
@@ -207,7 +216,7 @@ public class WishListRepositoryImpl implements WishListRepository {
                                                     .destinationName(rs.getString("destination_name"))
                                                     .destinationDescription(rs.getString("destination_description"))
                                                     .destinationLocation(rs.getString("destination_location"))
-                                                    .destinationCategory(rs.getString("destination_category"))
+//                                                    .destinationCategory(rs.getString("destination_category"))
                                                     .destinationImages(new ArrayList<>())
                                                     .destinationUrl(rs.getString("destination_url"))
                                                     .status(rs.getString("status"))
@@ -238,6 +247,9 @@ public class WishListRepositoryImpl implements WishListRepository {
 
     @Override
     public List<ActivityWishResponseDto> getActivitiesWishList(List<Long> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return new ArrayList<>();
+        }
         try {
             Map<String, Object> params = Map.of("ids", ids);
             return namedJdbc.query(
@@ -254,7 +266,7 @@ public class WishListRepositoryImpl implements WishListRepository {
                                                     .activityId(id)
                                                     .activityName(rs.getString("activity_name"))
                                                     .activityDescription(rs.getString("activity_description"))
-                                                    .activitiesCategory(rs.getString("activities_category"))
+//                                                    .activitiesCategory(rs.getString("activities_category"))
                                                     .season(rs.getString("season"))
                                                     .activityUrl(rs.getString("activity_url"))
                                                     .activityDuration(rs.getDouble("activity_duration"))
@@ -765,6 +777,26 @@ public class WishListRepositoryImpl implements WishListRepository {
             LOGGER.error("Error fetching existing wishlist data", e);
             throw new InternalServerErrorExceptionHandler("Something went wrong");
         }
+    }
+
+    @Override
+    public Boolean isWishThisPackageByUserId(Long packageId, Long userId) {
+        String sql = """
+        SELECT COUNT(*)
+        FROM package_wishlist
+        WHERE package_id = ? 
+        AND user_id = ?
+        AND status_id = 1
+    """;
+
+        Integer count = jdbcTemplate.queryForObject(
+                sql,
+                Integer.class,
+                packageId,
+                userId
+        );
+
+        return count != null && count > 0;
     }
 
 

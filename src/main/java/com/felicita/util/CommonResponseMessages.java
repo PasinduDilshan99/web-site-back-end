@@ -43,9 +43,9 @@ public class CommonResponseMessages {
     public static final String SUCCESSFULLY_RETRIEVE_MESSAGE = "SUCCESSFULLY_RETRIEVE";
 
 
-    public static final int DATA_RETRIEVE_FAILED_CODE = 200;
-    public static final String DATA_RETRIEVE_FAILED_STATUS = "SUCCESSFULLY_RETRIEVE";
-    public static final String DATA_RETRIEVE_FAILED_MESSAGE = "SUCCESSFULLY_RETRIEVE";
+    public static final int DATA_RETRIEVE_FAILED_CODE = 400;
+    public static final String DATA_RETRIEVE_FAILED_STATUS = "UNSUCCESSFULLY_RETRIEVE";
+    public static final String DATA_RETRIEVE_FAILED_MESSAGE = "UNSUCCESSFULLY_RETRIEVE";
 
     // BAD_REQUEST
     public static final int BAD_REQUEST_CODE = 404;

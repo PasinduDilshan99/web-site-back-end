@@ -66,7 +66,7 @@ public class HeroSectionServiceImpl implements HeroSectionService {
             List<HeroSectionResponse> heroSectionResponses = getAllHomeHeroSectionData().getData();
 
             List<HeroSectionResponse> heroSectionResponsesList = heroSectionResponses.stream()
-                    .filter(item -> HeroSectionItemStatus.VISIBLE.toString().equalsIgnoreCase(item.getImageStatus()))
+                    .filter(item -> HeroSectionItemStatus.ACTIVE.toString().equalsIgnoreCase(item.getImageStatus()))
                     .toList();
 
             if (heroSectionResponsesList.isEmpty()) {
@@ -117,11 +117,11 @@ public class HeroSectionServiceImpl implements HeroSectionService {
             LOGGER.info("Fetched {} active about us hero section data successfully", heroSectionResponsesList.size());
 
             return new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            aboutUsHeroSectionResponses,
-                            Instant.now());
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    aboutUsHeroSectionResponses,
+                    Instant.now());
 
         } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
             throw e;
@@ -157,11 +157,11 @@ public class HeroSectionServiceImpl implements HeroSectionService {
             LOGGER.info("Fetched {} active contact us hero section data successfully", contactUsHeroSectionResponseList.size());
 
             return new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            contactUsHeroSectionResponses,
-                            Instant.now());
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    contactUsHeroSectionResponses,
+                    Instant.now());
 
         } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
             throw e;
@@ -197,11 +197,11 @@ public class HeroSectionServiceImpl implements HeroSectionService {
             LOGGER.info("Fetched {} active blog hero section data successfully", blogHeroSectionResponseList.size());
 
             return new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            blogHeroSectionResponseList,
-                            Instant.now());
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    blogHeroSectionResponseList,
+                    Instant.now());
 
         } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
             throw e;
@@ -237,11 +237,11 @@ public class HeroSectionServiceImpl implements HeroSectionService {
             LOGGER.info("Fetched {} active faq hero section data successfully", faqHeroSectionResponseList.size());
 
             return new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            faqHeroSectionResponseList,
-                            Instant.now());
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    faqHeroSectionResponseList,
+                    Instant.now());
 
         } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
             throw e;
@@ -499,10 +499,10 @@ public class HeroSectionServiceImpl implements HeroSectionService {
 
             if (activityDetailsHeroSectionResponseList.isEmpty()) {
                 LOGGER.warn("No active activity hero section data by activity id : {} found in database", activityId);
-                throw new DataNotFoundErrorExceptionHandler("No active activity hero section data by activity id : "+ activityId);
+                throw new DataNotFoundErrorExceptionHandler("No active activity hero section data by activity id : " + activityId);
             }
 
-            LOGGER.info("Fetched {} active activity hero section data by activity id : {} successfully",activityDetailsHeroSectionResponseList.size(), activityId);
+            LOGGER.info("Fetched {} active activity hero section data by activity id : {} successfully", activityDetailsHeroSectionResponseList.size(), activityId);
 
             return new CommonResponse<>(
                     CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
@@ -519,6 +519,138 @@ public class HeroSectionServiceImpl implements HeroSectionService {
             throw new InternalServerErrorExceptionHandler("Failed to fetch activity hero section data by activity id : " + activityId);
         } finally {
             LOGGER.info("End fetching activity hero section data from by activity id : {} repository", activityId);
+        }
+    }
+
+    @Override
+    public CommonResponse<List<VehicleHeroSectionResponse>> getVehicleHeroSectionDetails() {
+        LOGGER.info("Start fetching vehicle hero section data from repository");
+
+        try {
+            List<VehicleHeroSectionResponse> vehicleHeroSectionResponses =
+                    heroSectionRepository.getVehicleHeroSectionDetails();
+
+            if (vehicleHeroSectionResponses.isEmpty()) {
+                LOGGER.warn("No booked vehicle section data found in database");
+                throw new DataNotFoundErrorExceptionHandler("No vehicle hero section data found");
+            }
+
+            LOGGER.info("Fetched {} active vehicle hero section data successfully", vehicleHeroSectionResponses.size());
+
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    vehicleHeroSectionResponses,
+                    Instant.now()
+            );
+
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching active vehicle hero section data: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch vehicle hero section data from database");
+        } finally {
+            LOGGER.info("End fetching vehicle hero section data from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<List<VehicleSpecificationHeroSectionResponse>> getVehicleSpecificationHeroSectionDetails() {
+        LOGGER.info("Start fetching vehicle specification hero section data from repository");
+
+        try {
+            List<VehicleSpecificationHeroSectionResponse> vehicleSpecificationHeroSectionResponses =
+                    heroSectionRepository.getVehicleSpecificationHeroSectionDetails();
+
+            if (vehicleSpecificationHeroSectionResponses.isEmpty()) {
+                LOGGER.warn("No booked vehicle specification section data found in database");
+                throw new DataNotFoundErrorExceptionHandler("No vehicle specification hero section data found");
+            }
+
+            LOGGER.info("Fetched {} active vehicle specification hero section data successfully", vehicleSpecificationHeroSectionResponses.size());
+
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    vehicleSpecificationHeroSectionResponses,
+                    Instant.now()
+            );
+
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching active vehicle specification hero section data: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch vehicle specification hero section data from database");
+        } finally {
+            LOGGER.info("End fetching vehicle specification hero section data from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<List<VehicleTypesHeroSectionResponse>> getVehicleTypesHeroSectionDetails() {
+        LOGGER.info("Start fetching vehicle types hero section data from repository");
+
+        try {
+            List<VehicleTypesHeroSectionResponse> vehicleTypesHeroSectionResponses =
+                    heroSectionRepository.getVehicleTypesHeroSectionDetails();
+
+            if (vehicleTypesHeroSectionResponses.isEmpty()) {
+                LOGGER.warn("No booked vehicle types section data found in database");
+                throw new DataNotFoundErrorExceptionHandler("No vehicle types hero section data found");
+            }
+
+            LOGGER.info("Fetched {} active vehicle types hero section data successfully", vehicleTypesHeroSectionResponses.size());
+
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    vehicleTypesHeroSectionResponses,
+                    Instant.now()
+            );
+
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching active vehicle types hero section data: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch vehicle types hero section data from database");
+        } finally {
+            LOGGER.info("End fetching vehicle types hero section data from repository");
+        }
+    }
+
+    @Override
+    public CommonResponse<List<SeasonsHeroSectionResponse>> getSeasonHeroSectionDetails() {
+        LOGGER.info("Start fetching seasons hero section data from repository");
+
+        try {
+            List<SeasonsHeroSectionResponse> seasonsHeroSectionResponses =
+                    heroSectionRepository.getSeasonHeroSectionDetails();
+
+            if (seasonsHeroSectionResponses.isEmpty()) {
+                LOGGER.warn("No booked seasons section data found in database");
+                throw new DataNotFoundErrorExceptionHandler("No seasons hero section data found");
+            }
+
+            LOGGER.info("Fetched {} active seasons hero section data successfully", seasonsHeroSectionResponses.size());
+
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    seasonsHeroSectionResponses,
+                    Instant.now()
+            );
+
+        } catch (DataNotFoundErrorExceptionHandler | DataAccessErrorExceptionHandler e) {
+            throw e;
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching active seasons hero section data: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch seasons hero section data from database");
+        } finally {
+            LOGGER.info("End fetching seasons hero section data from repository");
         }
     }
 

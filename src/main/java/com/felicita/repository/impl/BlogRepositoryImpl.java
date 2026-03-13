@@ -149,6 +149,7 @@ public class BlogRepositoryImpl implements BlogRepository {
                         response.setViews(rs.getLong("views"));
                         response.setBlogCategory(rs.getString("blog_category"));
                         response.setWriterName(rs.getString("writer_name"));
+                        response.setWriterImageUrl(rs.getString("writer_image_url"));
                         response.setBlogStatus(rs.getString("blog_status"));
                         response.setBlogCreatedAt(rs.getTimestamp("blog_created_at").toLocalDateTime());
 

@@ -13,4 +13,5 @@ public class InsertHistoryData {
 
     private String type;
     private Integer dataId;
+    private String name;
 }

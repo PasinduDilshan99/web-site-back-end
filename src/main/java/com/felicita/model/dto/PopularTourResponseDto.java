@@ -18,8 +18,8 @@ public class PopularTourResponseDto {
     private Double longitude;
     private String startLocation;
     private String endLocation;
-    private String tourType;
-    private String tourCategory;
+    private List<TourCategoryDto> categoryDtos;
+    private List<TourTypeDto> typeDtos;
     private String season;
     private String tourStatus;
 

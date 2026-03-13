@@ -15,7 +15,7 @@ public class ActivityWishResponseDto {
     private Long activityId;
     private String activityName;
     private String activityDescription;
-    private String activitiesCategory;
+//    private String activitiesCategory;
     private String season;
     private List<String> activityImages;
     private String activityUrl;

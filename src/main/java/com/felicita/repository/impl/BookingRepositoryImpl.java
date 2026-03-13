@@ -1,12 +1,16 @@
 package com.felicita.repository.impl;
 
 import com.felicita.exception.DataAccessErrorExceptionHandler;
+import com.felicita.exception.InsertFailedErrorExceptionHandler;
 import com.felicita.exception.InternalServerErrorExceptionHandler;
 import com.felicita.model.dto.*;
+import com.felicita.model.request.BookingCancelledRequest;
 import com.felicita.model.request.BookingRequest;
+import com.felicita.model.request.TourBookingInquiryRequest;
 import com.felicita.model.response.*;
 import com.felicita.queries.ActivitiesQueries;
 import com.felicita.queries.BookingQueries;
+import com.felicita.queries.TourQueries;
 import com.felicita.repository.BookingRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +25,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.sql.Types;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -80,8 +85,8 @@ public class BookingRepositoryImpl implements BookingRepository {
                         .tourDuration(rs.getInt("tour_duration"))
                         .startLocation(rs.getString("start_location"))
                         .endLocation(rs.getString("end_location"))
-                        .tourType(rs.getString("tour_type"))
-                        .tourCategory(rs.getString("tour_category"))
+//                        .tourType(rs.getString("tour_type"))
+//                        .tourCategory(rs.getString("tour_category"))
                         .packageName(rs.getString("package_name"))
                         .packageDescription(rs.getString("package_description"))
                         .packageTotalPrice(rs.getBigDecimal("package_total_price"))
@@ -153,7 +158,7 @@ public class BookingRepositoryImpl implements BookingRepository {
                                 .bookingId(bookingId)
                                 .activityName(rs.getString("activity_name"))
                                 .activityDescription(rs.getString("activity_description"))
-                                .activityCategory(rs.getString("activity_category"))
+//                                .activityCategory(rs.getString("activity_category"))
                                 .activityDate(rs.getDate("activity_date") != null ?
                                         rs.getDate("activity_date").toLocalDate() : null)
                                 .startTime(rs.getString("start_time"))
@@ -270,6 +275,8 @@ public class BookingRepositoryImpl implements BookingRepository {
                         .totalAmount(rs.getBigDecimal("total_amount"))
                         .discountAmount(rs.getBigDecimal("discount_amount"))
                         .taxAmount(rs.getBigDecimal("tax_amount"))
+                        .assignTo(rs.getLong("assign_to"))
+                        .assignToName(rs.getString("assign_to_name"))
                         .insuranceAmount(rs.getBigDecimal("insurance_amount"))
                         .finalAmount(rs.getBigDecimal("final_amount"))
                         .bookingStatus(rs.getString("booking_status"))
@@ -280,8 +287,8 @@ public class BookingRepositoryImpl implements BookingRepository {
                         .tourDuration(rs.getInt("tour_duration"))
                         .startLocation(rs.getString("start_location"))
                         .endLocation(rs.getString("end_location"))
-                        .tourType(rs.getString("tour_type"))
-                        .tourCategory(rs.getString("tour_category"))
+//                        .tourType(rs.getString("tour_type"))
+//                        .tourCategory(rs.getString("tour_category"))
                         .packageName(rs.getString("package_name"))
                         .packageDescription(rs.getString("package_description"))
                         .packageTotalPrice(rs.getBigDecimal("package_total_price"))
@@ -359,7 +366,7 @@ public class BookingRepositoryImpl implements BookingRepository {
                                 .bookingId(bookingId)
                                 .activityName(rs.getString("activity_name"))
                                 .activityDescription(rs.getString("activity_description"))
-                                .activityCategory(rs.getString("activity_category"))
+//                                .activityCategory(rs.getString("activity_category"))
                                 .activityDate(rs.getDate("activity_date") != null ?
                                         rs.getDate("activity_date").toLocalDate() : null)
                                 .startTime(rs.getString("start_time"))
@@ -473,8 +480,16 @@ public class BookingRepositoryImpl implements BookingRepository {
                         .bookingId(bookingId)
                         .bookingReference(rs.getString("booking_reference"))
                         .bookingDate(rs.getDate("booking_date").toLocalDate())
-                        .travelStartDate(rs.getDate("travel_start_date").toLocalDate())
-                        .travelEndDate(rs.getDate("travel_end_date").toLocalDate())
+                        .travelStartDate(
+                                rs.getDate("travel_start_date") != null
+                                        ? rs.getDate("travel_start_date").toLocalDate()
+                                        : null
+                        )
+                        .travelEndDate(
+                                rs.getDate("travel_start_date") != null
+                                        ? rs.getDate("travel_end_date").toLocalDate()
+                                        : null
+                        )
                         .totalPersons(rs.getInt("total_persons"))
                         .totalAmount(rs.getBigDecimal("total_amount"))
                         .discountAmount(rs.getBigDecimal("discount_amount"))
@@ -492,9 +507,11 @@ public class BookingRepositoryImpl implements BookingRepository {
                         .tourDuration(rs.getInt("tour_duration"))
                         .startLocation(rs.getString("start_location"))
                         .endLocation(rs.getString("end_location"))
-                        .tourType(rs.getString("tour_type"))
-                        .tourCategory(rs.getString("tour_category"))
+//                        .tourType(rs.getString("tour_type"))
+//                        .tourCategory(rs.getString("tour_category"))
                         .packageName(rs.getString("package_name"))
+                        .assignTo(rs.getLong("assign_to"))
+                        .assignToName(rs.getString("assign_to_name"))
                         .packageDescription(rs.getString("package_description"))
                         .packageTotalPrice(rs.getBigDecimal("package_total_price"))
                         .discountPercentage(rs.getBigDecimal("discount_percentage"))
@@ -571,7 +588,7 @@ public class BookingRepositoryImpl implements BookingRepository {
                                 .bookingId(bookingId)
                                 .activityName(rs.getString("activity_name"))
                                 .activityDescription(rs.getString("activity_description"))
-                                .activityCategory(rs.getString("activity_category"))
+//                                .activityCategory(rs.getString("activity_category"))
                                 .activityDate(rs.getDate("activity_date") != null ?
                                         rs.getDate("activity_date").toLocalDate() : null)
                                 .startTime(rs.getString("start_time"))
@@ -711,8 +728,8 @@ public class BookingRepositoryImpl implements BookingRepository {
                         .tourDuration(rs.getInt("tour_duration"))
                         .startLocation(rs.getString("start_location"))
                         .endLocation(rs.getString("end_location"))
-                        .tourType(rs.getString("tour_type"))
-                        .tourCategory(rs.getString("tour_category"))
+//                        .tourType(rs.getString("tour_type"))
+//                        .tourCategory(rs.getString("tour_category"))
                         .packageName(rs.getString("package_name"))
                         .packageDescription(rs.getString("package_description"))
                         .packageTotalPrice(rs.getBigDecimal("package_total_price"))
@@ -789,7 +806,7 @@ public class BookingRepositoryImpl implements BookingRepository {
                                 .bookingId(bookingId)
                                 .activityName(rs.getString("activity_name"))
                                 .activityDescription(rs.getString("activity_description"))
-                                .activityCategory(rs.getString("activity_category"))
+//                                .activityCategory(rs.getString("activity_category"))
                                 .activityDate(rs.getDate("activity_date") != null ?
                                         rs.getDate("activity_date").toLocalDate() : null)
                                 .startTime(rs.getString("start_time"))
@@ -1456,6 +1473,167 @@ public class BookingRepositoryImpl implements BookingRepository {
         }
     }
 
+    @Override
+    public List<PendingToursResponse> getPendingBookingToursDetailsById(Long userId) {
+        String GET_PENDING_BOOKING_DETAILS_BY_ID = BookingQueries.GET_PENDING_BOOKING_DETAILS_BY_ID;
 
+        try {
+            LOGGER.info("Executing query to fetch pending booking tours for user ID: {}", userId);
+
+            // Create a map to store bookings by ID
+            Map<Long, PendingToursResponse> bookingMap = new LinkedHashMap<>();
+
+            // 1. Fetch main booking details
+            jdbcTemplate.query(GET_PENDING_BOOKING_DETAILS_BY_ID, new Object[]{userId}, (rs) -> {
+                Long bookingId = rs.getLong("booking_id");
+
+                PendingToursResponse booking = PendingToursResponse.builder()
+                        .bookingId(bookingId)
+                        .bookingReference(rs.getString("booking_reference"))
+                        .bookingDate(rs.getDate("booking_date").toLocalDate())
+                        .bookingStatus(rs.getString("booking_status"))
+                        .tourId(rs.getLong("tour_id"))
+                        .tourName(rs.getString("tour_name"))
+                        .tourDescription(rs.getString("tour_description"))
+                        .tourDuration(rs.getInt("tour_duration"))
+                        .startLocation(rs.getString("start_location"))
+                        .endLocation(rs.getString("end_location"))
+//                        .tourType(rs.getString("tour_type"))
+//                        .tourCategory(rs.getString("tour_category"))
+                        .packageName(rs.getString("package_name"))
+                        .packageDescription(rs.getString("package_description"))
+                        .packageTotalPrice(rs.getBigDecimal("package_total_price"))
+                        .discountPercentage(rs.getBigDecimal("discount_percentage"))
+                        .packagePricePerPerson(rs.getBigDecimal("package_price_per_person"))
+                        .username(rs.getString("username"))
+                        .userFullName(rs.getString("user_full_name"))
+                        .email(rs.getString("email"))
+                        .mobileNumber1(rs.getString("mobile_number1"))
+                        .build();
+
+                bookingMap.put(bookingId, booking);
+            });
+            LOGGER.info("Successfully fetched {} pending booking tours for user ID: {}",
+                    bookingMap.size(), userId);
+
+            return new ArrayList<>(bookingMap.values());
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while fetching pending booking tours for user {}: {}",
+                    userId, ex.getMessage(), ex);
+            throw new DataAccessErrorExceptionHandler("Failed to fetch pending booking tours from database");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching pending booking tours for user {}: {}",
+                    userId, ex.getMessage(), ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error occurred while fetching pending booking tours");
+        }
+    }
+
+    @Override
+    public Long insertTourBookingInquiry(TourBookingInquiryRequest request, Long userId) {
+        try {
+            KeyHolder keyHolder = new GeneratedKeyHolder();
+            jdbcTemplate.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(
+                        BookingQueries.INSERT_TOUR_BOOKING_INQUIRY,
+                        Statement.RETURN_GENERATED_KEYS
+                );
+
+                ps.setLong(1, request.getTourId());
+                if (request.getPackageId() != null) {
+                    ps.setLong(2, request.getPackageId());
+                } else {
+                    ps.setNull(2, Types.BIGINT);
+                }
+                ps.setString(3, "PENDING_INQUIRY");
+
+                if (userId != null) {
+                    ps.setLong(4, userId);
+                } else {
+                    ps.setNull(4, Types.BIGINT);
+                }
+                ps.setString(5, request.getName());
+                ps.setString(6, request.getEmail());
+                ps.setString(7, request.getContactNumber());
+                ps.setString(8, request.getCountry());
+                if (userId != null) {
+                    ps.setLong(9, userId);
+                } else {
+                    ps.setNull(9, Types.BIGINT);
+                }
+                return ps;
+            }, keyHolder);
+
+            if (keyHolder.getKey() == null) {
+                throw new InsertFailedErrorExceptionHandler("Failed to generate inquiry ID");
+            }
+            return keyHolder.getKey().longValue();
+        } catch (DataAccessException dae) {
+            LOGGER.error("DB error while inserting tour booking inquiry", dae);
+            throw new InsertFailedErrorExceptionHandler(dae.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Failed to insert tour booking inquiry", e);
+            throw new InternalServerErrorExceptionHandler("Failed to insert tour booking inquiry");
+        }
+    }
+
+    @Override
+    public void insertBookingInquiryToBookings(
+            TourBookingInquiryRequest request,
+            Long userId,
+            String bookingReference) {
+
+        try {
+
+            jdbcTemplate.update(
+                    BookingQueries.INSERT_BOOKING_INQUIRY_TO_BOOKINGS,
+                    bookingReference,
+                    userId,
+                    request.getTourId(),
+                    request.getPackageId(),
+                    "PENDING_INQUIRY",
+                    userId
+            );
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while inserting booking from inquiry. bookingReference={}", bookingReference, ex);
+            throw new InternalServerErrorExceptionHandler("Database error while inserting booking");
+
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while inserting booking from inquiry. bookingReference={}", bookingReference, ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error while inserting booking");
+        }
+    }
+
+    @Override
+    public void cancelledPendingBooking(BookingCancelledRequest bookingCancelledRequest, Long userId) {
+        try {
+            String updatedStatus = "PENDING_INQUIRY";
+            if (bookingCancelledRequest.getBookingStatus().equalsIgnoreCase("PENDING_INQUIRY")) {
+                updatedStatus = "PENDING_CANCELLED";
+            } else if (bookingCancelledRequest.getBookingStatus().equalsIgnoreCase("PENDING")
+                    || bookingCancelledRequest.getBookingStatus().equalsIgnoreCase("IN_PROGRESS")
+                    || bookingCancelledRequest.getBookingStatus().equalsIgnoreCase("CONFIRMED")
+                    || bookingCancelledRequest.getBookingStatus().equalsIgnoreCase("BOOKING_COMPLETED")
+                    || bookingCancelledRequest.getBookingStatus().equalsIgnoreCase("PAID")
+            ) {
+                updatedStatus = "CANCELLED";
+            }
+            jdbcTemplate.update(
+                    BookingQueries.CANCELLED_BOOKING_PENDING_REQUEST,
+                    updatedStatus,
+                    userId,
+                    bookingCancelledRequest.getBookingId()
+            );
+
+        } catch (DataAccessException ex) {
+            LOGGER.error("Database error while cancelling booking from inquiry. booking id = {}", bookingCancelledRequest.getBookingId(), ex);
+            throw new InternalServerErrorExceptionHandler("Database error while cancelling booking");
+
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while cancelling booking from inquiry. booking id = {}", bookingCancelledRequest.getBookingId(), ex);
+            throw new InternalServerErrorExceptionHandler("Unexpected error while cancelling booking");
+        }
+    }
 
 }

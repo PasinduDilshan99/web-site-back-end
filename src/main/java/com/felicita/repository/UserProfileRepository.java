@@ -1,5 +1,6 @@
 package com.felicita.repository;
 
+import com.felicita.model.request.UserProfileAddressInsertRequest;
 import com.felicita.model.request.UserProfileDetailsRequest;
 import com.felicita.model.request.UserUpdateRequest;
 import com.felicita.model.response.*;
@@ -24,4 +25,10 @@ public interface UserProfileRepository {
     UserProfileWalletResponse getUserProfileWalletDetails(Long userId);
 
     void updateUserProfileDetails(UserUpdateRequest userUpdateRequest, Long userId);
+
+    Long getUserProfileAddressId(Long userId);
+
+    void updateUserProfileAddress(UserUpdateRequest updateRequest, Long addressId);
+
+    Long insertUserProfileAddress(UserProfileAddressInsertRequest request);
 }

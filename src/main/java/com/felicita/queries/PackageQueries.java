@@ -673,8 +673,10 @@ public class PackageQueries {
                 spl.longitude AS hotel_longitude,
                 v.vehicle_id AS transport_id,
                 v.registration_number AS vehicle_registration_number,
+                vt.vehicle_type_id AS vehicle_type_id,
                 vt.name AS vehicle_type_name,
                 vs.model AS vehicle_model,
+                vs.specification_id AS specification_id,
                 vs.seat_capacity,
                 vs.air_condition
             FROM packages p

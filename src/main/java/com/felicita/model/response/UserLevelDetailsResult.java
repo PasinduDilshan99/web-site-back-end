@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Date;
 
 @Data
 @Builder
@@ -16,6 +18,7 @@ public class UserLevelDetailsResult {
     private String username;
     private String firstName;
     private String lastName;
+    private Date createdAt;
     private Integer benefitsPointsCount;
 
     private Integer currentLevelId;

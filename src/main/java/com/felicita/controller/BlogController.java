@@ -116,6 +116,7 @@ public class BlogController {
     @PostMapping(path = "/add-comment")
     public ResponseEntity<CommonResponse<InsertResponse>> addCommentToBlog(@RequestBody BlogCommentRequest blogCommentRequest) {
         LOGGER.info("{} Start execute add comment to blog {}", Constant.DOTS, Constant.DOTS);
+        LOGGER.info("Blog Comment Request : {}", blogCommentRequest);
         CommonResponse<InsertResponse> response = blogService.addCommentToBlog(blogCommentRequest);
         LOGGER.info("{} End execute add comment to blog {}", Constant.DOTS, Constant.DOTS);
         return new ResponseEntity<>(response, HttpStatus.OK);

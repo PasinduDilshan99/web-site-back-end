@@ -25,8 +25,8 @@ public class BookingQueries {
                 t.duration AS tour_duration,
                 t.start_location,
                 t.end_location,
-                tt.name AS tour_type,
-                tc.name AS tour_category,
+                -- tt.name AS tour_type,
+                -- tc.name AS tour_category,
                 p.name AS package_name,
                 p.description AS package_description,
                 p.total_price AS package_total_price,
@@ -42,14 +42,14 @@ public class BookingQueries {
                 DATEDIFF(b.travel_end_date, b.travel_start_date) + 1 AS actual_duration_days,
                 CONCAT('Completed ', DATEDIFF(CURDATE(), b.travel_end_date), ' days ago') AS completion_time
             FROM bookings b
-            INNER JOIN booking_status bs ON b.booking_status_id = bs.id
-            INNER JOIN package_schedule ps ON b.package_schedule_id = ps.id
-            INNER JOIN packages p ON ps.package_id = p.package_id
-            INNER JOIN tour t ON p.tour_id = t.tour_id
-            LEFT JOIN tour_type tt ON t.tour_type = tt.id
-            LEFT JOIN tour_category tc ON t.tour_category = tc.id
+            LEFT JOIN booking_status bs ON b.booking_status_id = bs.id
+            LEFT JOIN package_schedule ps ON b.package_schedule_id = ps.id
+            LEFT JOIN packages p ON b.package_id = p.package_id
+            LEFT JOIN tour t ON b.tour_id = t.tour_id
+            -- LEFT JOIN tour_type tt ON t.tour_type = tt.id
+            -- LEFT JOIN tour_category tc ON t.tour_category = tc.id
             LEFT JOIN cancellation_reasons cr ON b.cancellation_reason_id = cr.id
-            INNER JOIN user u ON b.user_id = u.user_id
+            LEFT JOIN user u ON b.user_id = u.user_id
             WHERE b.user_id = ?
             AND bs.name = 'TOUR_COMPLETED'
             ORDER BY b.travel_end_date DESC
@@ -94,7 +94,7 @@ public class BookingQueries {
                 ba.booking_id,
                 a.name AS activity_name,
                 a.description AS activity_description,
-                ac.name AS activity_category,
+                -- ac.name AS activity_category,
                 ba.activity_date,
                 ba.start_time,
                 ba.end_time,
@@ -108,8 +108,8 @@ public class BookingQueries {
                 -- Activity status (completed since tour is completed)
                 'COMPLETED' AS activity_status
             FROM booking_activities ba
-            INNER JOIN activities a ON ba.activity_id = a.id
-            LEFT JOIN activity_category ac ON a.activities_category = ac.id
+            LEFT JOIN activities a ON ba.activity_id = a.id
+            -- LEFT JOIN activity_category ac ON a.activities_category = ac.id
             LEFT JOIN destination d ON a.destination_id = d.destination_id
             WHERE ba.booking_id IN (
                 SELECT b.booking_id FROM bookings b
@@ -184,8 +184,8 @@ public class BookingQueries {
                 t.duration AS tour_duration,
                 t.start_location,
                 t.end_location,
-                tt.name AS tour_type,
-                tc.name AS tour_category,
+                -- tt.name AS tour_type,
+                -- tc.name AS tour_category,
                 p.name AS package_name,
                 p.description AS package_description,
                 p.total_price AS package_total_price,
@@ -196,6 +196,8 @@ public class BookingQueries {
                 ps.assume_end_date,
                 u.username,
                 CONCAT(u.first_name, ' ', u.last_name) AS user_full_name,
+                u2.user_id AS assign_to,
+                CONCAT(u2.first_name, ' ', u2.last_name) AS assign_to_name,
                 u.email,
                 u.mobile_number1,
                 DATEDIFF(b.travel_start_date, CURDATE()) AS days_until_travel,
@@ -206,14 +208,15 @@ public class BookingQueries {
                 END AS travel_urgency,
                 CONCAT('Starts in ', DATEDIFF(b.travel_start_date, CURDATE()), ' days') AS countdown
             FROM bookings b
-            INNER JOIN booking_status bs ON b.booking_status_id = bs.id
-            INNER JOIN package_schedule ps ON b.package_schedule_id = ps.id
-            INNER JOIN packages p ON ps.package_id = p.package_id
-            INNER JOIN tour t ON p.tour_id = t.tour_id
-            LEFT JOIN tour_type tt ON t.tour_type = tt.id
-            LEFT JOIN tour_category tc ON t.tour_category = tc.id
+            LEFT JOIN booking_status bs ON b.booking_status_id = bs.id
+            LEFT JOIN package_schedule ps ON b.package_schedule_id = ps.id
+            LEFT JOIN packages p ON b.package_id = p.package_id
+            LEFT JOIN tour t ON b.tour_id = t.tour_id
+            -- LEFT JOIN tour_type tt ON t.tour_type = tt.id
+            -- LEFT JOIN tour_category tc ON t.tour_category = tc.id
             LEFT JOIN cancellation_reasons cr ON b.cancellation_reason_id = cr.id
-            INNER JOIN user u ON b.user_id = u.user_id
+            LEFT JOIN user u ON b.user_id = u.user_id
+            LEFT JOIN user u2 ON b.assign_to = u.user_id
             WHERE b.user_id = ?
             AND bs.name IN ('CONFIRMED', 'PAID')
             AND b.travel_start_date > CURDATE()
@@ -260,7 +263,7 @@ public class BookingQueries {
                 ba.booking_id,
                 a.name AS activity_name,
                 a.description AS activity_description,
-                ac.name AS activity_category,
+                -- ac.name AS activity_category,
                 ba.activity_date,
                 ba.start_time,
                 ba.end_time,
@@ -280,7 +283,7 @@ public class BookingQueries {
             FROM booking_activities ba
             INNER JOIN activities a ON ba.activity_id = a.id
             INNER JOIN bookings b ON ba.booking_id = b.booking_id
-            LEFT JOIN activity_category ac ON a.activities_category = ac.id
+            -- LEFT JOIN activity_category ac ON a.activities_category = ac.id
             LEFT JOIN destination d ON a.destination_id = d.destination_id
             WHERE ba.booking_id IN (
                 SELECT b.booking_id FROM bookings b
@@ -352,7 +355,7 @@ public class BookingQueries {
             """;
 
     public static final String GET_REQUESTED_BOOKING_DETAILS_BY_ID = """
-            SELECT 
+            SELECT
                 b.booking_id,
                 b.booking_reference,
                 b.booking_date,
@@ -374,8 +377,8 @@ public class BookingQueries {
                 t.duration AS tour_duration,
                 t.start_location,
                 t.end_location,
-                tt.name AS tour_type,
-                tc.name AS tour_category,
+                -- tt.name AS tour_type,
+                -- tc.name AS tour_category,
                 p.name AS package_name,
                 p.description AS package_description,
                 p.total_price AS package_total_price,
@@ -386,6 +389,8 @@ public class BookingQueries {
                 ps.assume_end_date,
                 u.username,
                 CONCAT(u.first_name, ' ', u.last_name) AS user_full_name,
+                u2.user_id AS assign_to,
+                CONCAT(u2.first_name, ' ', u2.last_name) AS assign_to_name,
                 u.email,
                 u.mobile_number1,
                 -- Request Status Info
@@ -407,14 +412,15 @@ public class BookingQueries {
                 END AS request_urgency,
                 CONCAT('Requested ', DATEDIFF(CURDATE(), b.booking_date), ' days ago') AS request_age
             FROM bookings b
-            INNER JOIN booking_status bs ON b.booking_status_id = bs.id
-            INNER JOIN package_schedule ps ON b.package_schedule_id = ps.id
-            INNER JOIN packages p ON ps.package_id = p.package_id
-            INNER JOIN tour t ON p.tour_id = t.tour_id
-            LEFT JOIN tour_type tt ON t.tour_type = tt.id
-            LEFT JOIN tour_category tc ON t.tour_category = tc.id
+            LEFT JOIN booking_status bs ON b.booking_status_id = bs.id
+            LEFT JOIN package_schedule ps ON b.package_schedule_id = ps.id
+            LEFT JOIN packages p ON b.package_id = p.package_id
+            LEFT JOIN tour t ON b.tour_id = t.tour_id
+            -- LEFT JOIN tour_type tt ON t.tour_type = tt.id
+            -- LEFT JOIN tour_category tc ON t.tour_category = tc.id
             LEFT JOIN cancellation_reasons cr ON b.cancellation_reason_id = cr.id
-            INNER JOIN user u ON b.user_id = u.user_id
+            LEFT JOIN user u ON b.user_id = u.user_id
+            LEFT JOIN user u2 ON u2.user_id = b.assign_to
             WHERE b.user_id = ?
             AND bs.name IN ('PENDING', 'IN_PROGRESS')
             ORDER BY 
@@ -465,7 +471,7 @@ public class BookingQueries {
                 ba.booking_id,
                 a.name AS activity_name,
                 a.description AS activity_description,
-                ac.name AS activity_category,
+                -- ac.name AS activity_category,
                 ba.activity_date,
                 ba.start_time,
                 ba.end_time,
@@ -483,7 +489,7 @@ public class BookingQueries {
                 END AS availability_status
             FROM booking_activities ba
             INNER JOIN activities a ON ba.activity_id = a.id
-            LEFT JOIN activity_category ac ON a.activities_category = ac.id
+            -- LEFT JOIN activity_category ac ON a.activities_category = ac.id
             LEFT JOIN destination d ON a.destination_id = d.destination_id
             WHERE ba.booking_id IN (
                 SELECT b.booking_id FROM bookings b
@@ -563,7 +569,7 @@ public class BookingQueries {
             """;
 
     public static final String GET_CANCELLED_BOOKING_DETAILS_BY_ID = """
-            SELECT 
+            SELECT
                 b.booking_id,
                 b.booking_reference,
                 b.booking_date,
@@ -588,8 +594,8 @@ public class BookingQueries {
                 t.duration AS tour_duration,
                 t.start_location,
                 t.end_location,
-                tt.name AS tour_type,
-                tc.name AS tour_category,
+                -- tt.name AS tour_type,
+                -- tc.name AS tour_category,
                 p.name AS package_name,
                 p.description AS package_description,
                 p.total_price AS package_total_price,
@@ -619,16 +625,16 @@ public class BookingQueries {
                 END AS cancellation_penalty_percentage,
                 b.cancellation_notes
             FROM bookings b
-            INNER JOIN booking_status bs ON b.booking_status_id = bs.id
-            INNER JOIN package_schedule ps ON b.package_schedule_id = ps.id
-            INNER JOIN packages p ON ps.package_id = p.package_id
-            INNER JOIN tour t ON p.tour_id = t.tour_id
-            LEFT JOIN tour_type tt ON t.tour_type = tt.id
-            LEFT JOIN tour_category tc ON t.tour_category = tc.id
+            LEFT JOIN booking_status bs ON b.booking_status_id = bs.id
+            LEFT JOIN package_schedule ps ON b.package_schedule_id = ps.id
+            LEFT JOIN packages p ON b.package_id = p.package_id
+            LEFT JOIN tour t ON b.tour_id = t.tour_id
+            -- LEFT JOIN tour_type tt ON t.tour_type = tt.id
+            -- LEFT JOIN tour_category tc ON t.tour_category = tc.id
             LEFT JOIN cancellation_reasons cr ON b.cancellation_reason_id = cr.id
             LEFT JOIN refunds r ON b.booking_id = r.booking_id
             LEFT JOIN refund_status rs ON r.refund_status_id = rs.id
-            INNER JOIN user u ON b.user_id = u.user_id
+            LEFT JOIN user u ON b.user_id = u.user_id
             WHERE b.user_id = ?
             AND bs.name = 'CANCELLED'
             ORDER BY b.cancellation_date DESC
@@ -683,7 +689,7 @@ public class BookingQueries {
                 ba.booking_id,
                 a.name AS activity_name,
                 a.description AS activity_description,
-                ac.name AS activity_category,
+                -- ac.name AS activity_category,
                 ba.activity_date,
                 ba.start_time,
                 ba.end_time,
@@ -706,7 +712,7 @@ public class BookingQueries {
             FROM booking_activities ba
             INNER JOIN activities a ON ba.activity_id = a.id
             INNER JOIN bookings b ON ba.booking_id = b.booking_id
-            LEFT JOIN activity_category ac ON a.activities_category = ac.id
+            -- LEFT JOIN activity_category ac ON a.activities_category = ac.id
             LEFT JOIN destination d ON a.destination_id = d.destination_id
             WHERE ba.booking_id IN (
                 SELECT b.booking_id FROM bookings b
@@ -934,47 +940,47 @@ public class BookingQueries {
             """;
 
     public static final String INSERT_BOOKING_ACTIVITIES = """
-    INSERT INTO booking_activities (
-        booking_id,
-        activity_id,
-        activity_schedule_id,
-        activity_date,
-        start_time,
-        end_time,
-        number_of_participants,
-        price_per_person,
-        total_price,
-        status,
-        created_at,
-        created_by
-    ) VALUES (
-        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?
-    )
-""";
+                INSERT INTO booking_activities (
+                    booking_id,
+                    activity_id,
+                    activity_schedule_id,
+                    activity_date,
+                    start_time,
+                    end_time,
+                    number_of_participants,
+                    price_per_person,
+                    total_price,
+                    status,
+                    created_at,
+                    created_by
+                ) VALUES (
+                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?
+                )
+            """;
 
     public static final String INSERT_BOOKING_INVOICE = """
-    INSERT INTO booking_invoices (
-        booking_id,
-        invoice_number,
-        invoice_date,
-        due_date,
-        subtotal,
-        tax_amount,
-        discount_amount,
-        total_amount,
-        amount_paid,
-        balance_due,
-        billing_full_name,
-        billing_address,
-        billing_email,
-        billing_phone,
-        status,
-        created_at,
-        created_by
-    ) VALUES (
-        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?
-    )
-""";
+                INSERT INTO booking_invoices (
+                    booking_id,
+                    invoice_number,
+                    invoice_date,
+                    due_date,
+                    subtotal,
+                    tax_amount,
+                    discount_amount,
+                    total_amount,
+                    amount_paid,
+                    balance_due,
+                    billing_full_name,
+                    billing_address,
+                    billing_email,
+                    billing_phone,
+                    status,
+                    created_at,
+                    created_by
+                ) VALUES (
+                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?
+                )
+            """;
 
 
     public static final String GET_BOOKING_BASIC_DETAILS_BY_BOOKING_ID = """
@@ -1092,20 +1098,108 @@ public class BookingQueries {
             """;
 
     public static final String INSERT_BOOKING_AIRPORT_TRANSPORTATION = """
-    INSERT INTO booking_transportation (
-        booking_id,
-        transport_type,
-        departure_date,
-        departure_time,
-        arrival_date,
-        arrival_time,
-        departure_location,
-        arrival_location,
-        created_by,
-        created_at
-    ) VALUES (
-        ?,?, ?, ?, ?, ?, ?, ?, ?, NOW()
-    )
-    """;
+            INSERT INTO booking_transportation (
+                booking_id,
+                transport_type,
+                departure_date,
+                departure_time,
+                arrival_date,
+                arrival_time,
+                departure_location,
+                arrival_location,
+                created_by,
+                created_at
+            ) VALUES (
+                ?,?, ?, ?, ?, ?, ?, ?, ?, NOW()
+            )
+            """;
 
+    public static final String GET_PENDING_BOOKING_DETAILS_BY_ID = """
+            SELECT
+                b.booking_id,
+                b.booking_reference,
+                b.booking_date,
+                bs.name AS booking_status,
+                t.tour_id,
+                t.name AS tour_name,
+                t.description AS tour_description,
+                t.duration AS tour_duration,
+                t.start_location,
+                t.end_location,
+                -- tt.name AS tour_type,
+                -- tc.name AS tour_category,
+                p.package_id,
+                p.name AS package_name,
+                p.description AS package_description,
+                p.total_price AS package_total_price,
+                p.discount_percentage,
+                p.price_per_person AS package_price_per_person,
+                u.username,
+                CONCAT(u.first_name, ' ', u.last_name) AS user_full_name,
+                u.email,
+                u.mobile_number1
+            FROM bookings b
+            LEFT JOIN booking_status bs
+                ON b.booking_status_id = bs.id
+            LEFT JOIN packages p
+                ON b.package_id = p.package_id
+            LEFT JOIN tour t
+                ON b.tour_id = t.tour_id
+            -- LEFT JOIN tour_type tt
+            --     ON t.tour_type = tt.id
+            -- LEFT JOIN tour_category tc
+            --    ON t.tour_category = tc.id
+            LEFT JOIN user u
+                ON b.user_id = u.user_id
+            WHERE b.user_id = ?
+              AND bs.name = 'PENDING_INQUIRY'
+            ORDER BY b.travel_end_date DESC
+            """;
+
+    public static final String INSERT_TOUR_BOOKING_INQUIRY = """
+            INSERT INTO tour_booking_inquiries (
+                tour_id,
+                package_id,
+                booking_status_id,
+                user_id,
+                name,
+                email,
+                contact_number,
+                country,
+                created_by
+            ) VALUES (?, ?, (SELECT id FROM booking_status bs WHERE bs.name = ?)  , ?, ?, ?, ?, ?, ?)
+            """;
+
+    public static final String INSERT_BOOKING_INQUIRY_TO_BOOKINGS = """
+            INSERT INTO bookings (
+                booking_reference,
+                user_id,
+                tour_id,
+                package_id,
+                booking_status_id,
+                created_by,
+                booking_date
+            )
+            VALUES (
+                ?,
+                ?,
+                ?,
+                ?,
+                (SELECT id FROM booking_status WHERE name = ?),
+                ?,
+                CURRENT_DATE
+            )
+            """;
+
+    public static final String CANCELLED_BOOKING_PENDING_REQUEST = """
+            UPDATE bookings b
+            JOIN booking_status bs
+                ON bs.name = ?
+            SET
+                b.booking_status_id = bs.id,
+                b.cancellation_date = NOW(),
+                b.updated_by = ?,
+                b.updated_at = NOW()
+            WHERE b.booking_id = ?
+            """;
 }

@@ -14,4 +14,6 @@ public interface EmployeeService {
     CommonResponse<TourAssignedEmployeeResponse> getEmployeeAssignToTourId(Long tourId);
 
     CommonResponse<List<EmployeesForAssignTourResponse>> getEmployeeDetailsForAssignTour();
+
+    CommonResponse<CeoDetailsReponse> getCeoDetails();
 }

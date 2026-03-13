@@ -29,4 +29,11 @@ public interface HeroSectionRepository {
 
     List<ActivityDetailsHeroSectionResponse> getActivityHeroSectionDetailsByActivityId(Long activityId);
 
+    List<VehicleHeroSectionResponse> getVehicleHeroSectionDetails();
+
+    List<VehicleSpecificationHeroSectionResponse> getVehicleSpecificationHeroSectionDetails();
+
+    List<VehicleTypesHeroSectionResponse> getVehicleTypesHeroSectionDetails();
+
+    List<SeasonsHeroSectionResponse> getSeasonHeroSectionDetails();
 }

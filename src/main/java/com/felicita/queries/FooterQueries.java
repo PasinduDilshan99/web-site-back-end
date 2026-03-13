@@ -20,7 +20,8 @@ public class FooterQueries {
            LEFT JOIN common_status cs1
            ON cs1.id = f.status
            LEFT JOIN common_status cs2
-           ON cs2.id = f.status
+           ON cs2.id = s.status
+           WHERE cs2.name = 'ACTIVE' AND cs1.name = 'ACTIVE'
             """;
 
     public static final String GET_ALL_OTHERS_FOOTER_DATA = """

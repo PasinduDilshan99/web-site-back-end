@@ -123,6 +123,38 @@ public class HeroSectionController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping(path = "/vehicle")
+    public ResponseEntity<CommonResponse<List<VehicleHeroSectionResponse>>> getVehicleHeroSectionDetails(){
+        LOGGER.info("{} Start execute get vehicle hero section data {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<VehicleHeroSectionResponse>> response = heroSectionService.getVehicleHeroSectionDetails();
+        LOGGER.info("{} End execute get vehicle hero section data {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/vehicle-specification")
+    public ResponseEntity<CommonResponse<List<VehicleSpecificationHeroSectionResponse>>> getVehicleSpecificationHeroSectionDetails(){
+        LOGGER.info("{} Start execute get vehicle specification hero section data {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<VehicleSpecificationHeroSectionResponse>> response = heroSectionService.getVehicleSpecificationHeroSectionDetails();
+        LOGGER.info("{} End execute get vehicle specification hero section data {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/vehicle-types")
+    public ResponseEntity<CommonResponse<List<VehicleTypesHeroSectionResponse>>> getVehicleTypesHeroSectionDetails(){
+        LOGGER.info("{} Start execute get vehicle types hero section data {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<VehicleTypesHeroSectionResponse>> response = heroSectionService.getVehicleTypesHeroSectionDetails();
+        LOGGER.info("{} End execute get vehicle types hero section data {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/seasons")
+    public ResponseEntity<CommonResponse<List<SeasonsHeroSectionResponse>>> getSeasonHeroSectionDetails(){
+        LOGGER.info("{} Start execute get season hero section data {}", Constant.DOTS, Constant.DOTS);
+        CommonResponse<List<SeasonsHeroSectionResponse>> response = heroSectionService.getSeasonHeroSectionDetails();
+        LOGGER.info("{} End execute get season hero section data {}", Constant.DOTS, Constant.DOTS);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @GetMapping(path = "/activity/{activityId}")
     public ResponseEntity<CommonResponse<List<ActivityDetailsHeroSectionResponse>>> getActivityHeroSectionDetailsByActivityId(@PathVariable Long activityId){
         LOGGER.info("{} Start execute get activity hero section data by activity id {}", Constant.DOTS, Constant.DOTS);

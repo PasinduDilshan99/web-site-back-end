@@ -32,6 +32,9 @@ public class BlogResponse {
     @JsonProperty("writer_name")
     private String writerName;
 
+    @JsonProperty("writer_image_url")
+    private String writerImageUrl;
+
     @JsonProperty("blog_status")
     private String blogStatus;
 
@@ -80,6 +83,8 @@ public class BlogResponse {
         @JsonProperty("user_id")
         private Long userId;
 
+        @JsonProperty("image_url")
+        private String imageUrl;
         private String username;
         private String comment;
 
@@ -100,6 +105,9 @@ public class BlogResponse {
         private Long userId;
 
         private String username;
+
+        @JsonProperty("image_url")
+        private String imageUrl;
 
         @JsonProperty("reaction_type")
         private String reactionType;

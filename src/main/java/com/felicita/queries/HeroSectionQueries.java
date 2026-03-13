@@ -2,6 +2,103 @@ package com.felicita.queries;
 
 public class HeroSectionQueries {
 
+    public static final String GET_ALL_VEHICLE_HERO_SECTION_DATA = """
+            SELECT
+                vhs.id,
+                vhs.name,
+                vhs.image_url,
+                vhs.title,
+                vhs.subtitle,
+                vhs.description,
+                vhs.primary_button_text,
+                vhs.primary_button_link,
+                vhs.secondary_button_text,
+                vhs.secondary_button_link,
+                cs.name AS status,
+                vhs.`order`,
+                vhs.created_at,
+                vhs.created_by,
+                vhs.updated_at,
+                vhs.updated_by,
+                vhs.terminated_at,
+                vhs.terminated_by
+            FROM vehicle_hero_section vhs
+            JOIN common_status cs ON vhs.status = cs.id
+            ORDER BY vhs.`order` ASC
+            """;
+    public static final String GET_ALL_VEHICLE_SPECIFICATION_HERO_SECTION_DATA = """
+            SELECT
+                vshs.id,
+                vshs.name,
+                vshs.image_url,
+                vshs.title,
+                vshs.subtitle,
+                vshs.description,
+                vshs.primary_button_text,
+                vshs.primary_button_link,
+                vshs.secondary_button_text,
+                vshs.secondary_button_link,
+                cs.name AS status,
+                vshs.`order`,
+                vshs.created_at,
+                vshs.created_by,
+                vshs.updated_at,
+                vshs.updated_by,
+                vshs.terminated_at,
+                vshs.terminated_by
+            FROM vehicle_specification_hero_section vshs
+            JOIN common_status cs ON vshs.status = cs.id
+            ORDER BY vshs.`order` ASC
+            """;
+    public static final String GET_ALL_VEHICLE_TYPES_HERO_SECTION_DATA = """
+            SELECT
+                vths.id,
+                vths.name,
+                vths.image_url,
+                vths.title,
+                vths.subtitle,
+                vths.description,
+                vths.primary_button_text,
+                vths.primary_button_link,
+                vths.secondary_button_text,
+                vths.secondary_button_link,
+                cs.name AS status,
+                vths.`order`,
+                vths.created_at,
+                vths.created_by,
+                vths.updated_at,
+                vths.updated_by,
+                vths.terminated_at,
+                vths.terminated_by
+            FROM vehicle_types_hero_section vths
+            JOIN common_status cs ON vths.status = cs.id
+            ORDER BY vths.`order` ASC
+            """;
+    public static final String GET_ALL_SEASON_HERO_SECTION_DATA = """
+            SELECT
+                shs.id,
+                shs.name,
+                shs.image_url,
+                shs.title,
+                shs.subtitle,
+                shs.description,
+                shs.primary_button_text,
+                shs.primary_button_link,
+                shs.secondary_button_text,
+                shs.secondary_button_link,
+                cs.name AS status,
+                shs.`order`,
+                shs.created_at,
+                shs.created_by,
+                shs.updated_at,
+                shs.updated_by,
+                shs.terminated_at,
+                shs.terminated_by
+            FROM seasons_hero_section shs
+            JOIN common_status cs ON shs.status = cs.id
+            ORDER BY shs.`order` ASC
+            """;
+
     private HeroSectionQueries() {
     }
 

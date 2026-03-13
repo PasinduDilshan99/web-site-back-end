@@ -280,4 +280,136 @@ public class VehicleQueries {
             	ON cs.id = v.status_id
             WHERE cs.name = ?
             """;
+
+    public static final String GET_VEHICLE_SPECIFICATION_DETAILS_BY_ID = """
+                SELECT 
+                    vs.specification_id,
+                    vs.make,
+                    vs.model,
+                    vs.year,
+                    vs.generation,
+                    vs.body_type,
+                    vs.price,
+                    vs.engine_type,
+                    vs.engine_capacity,
+                    vs.horsepower_hp,
+                    vs.torque_nm,
+                    vs.electric_range_km,
+                    vs.drivetrain,
+                    vs.top_speed_kmh,
+                    vs.acceleration_0_100,
+                    vs.co2_emissions_g_km,
+                    vs.doors,
+                    vs.seat_capacity,
+                    vs.dimensions,
+                    vs.wheelbase_mm,
+                    vs.weight_kg,
+                    vs.wheel_size,
+                    vs.tire_type,
+                    vs.upholstery_type,
+                    vs.sunroof_type,
+                    vs.cruise_control_type,
+                    vs.entertainment_features,
+                    vs.comfort_features,
+                    vs.ncap_safety_rating,
+                    vs.airbags_count,
+                    vs.parking_camera,
+                    vs.lane_departure_warning,
+                    vs.safety_features,
+                    vs.fuel_tank_capacity_liters,
+                    vs.warranty_years,
+                    vs.image_url,
+                    vs.air_condition,
+                    vs.is_active,
+                    vs.created_at,
+                    vs.updated_at,
+            
+                    tt.transmission_type_id,
+                    tt.transmission_type_name,
+                    tt.description AS transmission_description,
+            
+                    ft.fuel_type_id,
+                    ft.fuel_type_name,
+                    ft.description AS fuel_description,
+            
+                    act.ac_type_id,
+                    act.ac_type_name,
+                    act.description AS ac_description,
+            
+                    vsi.image_id,
+                    vsi.image_url AS additional_image_url,
+                    vsi.image_name,
+                    vsi.description AS image_description,
+                    vsi.created_at AS image_created_at,
+                    vsi.updated_at AS image_updated_at
+            
+                FROM vehicle_specifications vs
+                LEFT JOIN transmission_types tt 
+                    ON vs.transmission_type_id = tt.transmission_type_id
+                LEFT JOIN fuel_types ft 
+                    ON vs.fuel_type_id = ft.fuel_type_id
+                LEFT JOIN air_conditioning_types act 
+                    ON vs.ac_type_id = act.ac_type_id
+                LEFT JOIN vehicle_specification_images vsi 
+                    ON vs.specification_id = vsi.specification_id
+                WHERE vs.specification_id = ?
+                AND vs.is_active = 1
+            """;
+
+    public static final String VEHICLE_SPECIFICATION_SEARCH_QUERY = """
+                SELECT
+                    vs.specification_id,
+                    vs.make,
+                    vs.model,
+                    vs.year,
+                    vs.body_type,
+                    vs.price,
+                    vs.horsepower_hp,
+                    vs.seat_capacity,
+                    vs.sunroof_type,
+                    act.ac_type_name,
+                    vs.image_url
+                FROM vehicle_specifications vs
+                LEFT JOIN air_conditioning_types act 
+                    ON vs.ac_type_id = act.ac_type_id
+                WHERE vs.is_active = 1
+            """;
+
+    public static final String VEHICLE_SPECIFICATION_COUNT_QUERY = """
+                SELECT DISTINCT COUNT(*)
+                FROM vehicle_specifications vs
+                WHERE vs.is_active = 1
+            """;
+
+    public static final String GET_VEHICLE_TYPES_DETAILS = """
+            SELECT
+            	vt.vehicle_type_id,
+                vt.name,
+                vt.description,
+                cs.name AS status,
+                vti.id AS image_id,
+                vti.name AS image_name,
+                vti.description AS image_description,
+                vti.image_url AS image_url
+            FROM vehicle_type vt
+            LEFT JOIN vehicle_type_images vti ON vti.vehicle_type_id = vt.vehicle_type_id
+            LEFT JOIn common_status cs ON cs.id = vt.status_id
+            WHERE cs.name='ACTIVE'
+            """ ;
+    public static final String GET_VEHICLE_TYPES_DETAILS_BY_ID = """
+            SELECT
+            	vt.vehicle_type_id,
+                vt.name,
+                vt.description,
+                cs.name AS status,
+                vti.id AS image_id,
+                vti.name AS image_name,
+                vti.description AS image_description,
+                vti.image_url AS image_url
+            FROM vehicle_type vt
+            LEFT JOIN vehicle_type_images vti ON vti.vehicle_type_id = vt.vehicle_type_id
+            LEFT JOIn common_status cs ON cs.id = vt.status_id
+            WHERE cs.name='ACTIVE'
+            AND vt.vehicle_type_id = ?
+            """;
 }
