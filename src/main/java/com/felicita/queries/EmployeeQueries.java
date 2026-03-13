@@ -61,14 +61,14 @@ public class EmployeeQueries {
             FROM tour t
             JOIN tour ref ON ref.tour_id = ?
             WHERE t.assign_to = ref.assign_to
-            """ ;
+            """;
     public static final String GET_EMPLOYEE_IDS_FOR_ASSIGN_TOUR = """
             SELECT e.id
             FROM employees e
             LEFT JOIN employee_departments ed
             	ON ed.id = e.department_id
             WHERE ed.department_name IN ('Sales & Marketing','Executive Management')
-            """ ;
+            """;
     public static final String GET_EMPLOYEE_DETAILS_FOR_ASSIGN_TOUR = """
             SELECT
             	e.id,
@@ -95,5 +95,26 @@ public class EmployeeQueries {
             	ON ede.id = e.department_id
             WHERE ede.department_name IN ('Sales & Marketing','Executive Management')
             GROUP BY e.id,u.first_name, u.last_name, u.image_url, u.email, u.mobile_number1, ed.designation_name 
+            """;
+
+    public static final String GET_CEO_DETAILS = """
+                SELECT
+                    id,
+                    name,
+                    designation,
+                    profile_image,
+                    speech1,
+                    speech2,
+                    speech3,
+                    speech4,
+                    speech5,
+                    speech6,
+                    speech7,
+                    speech8,
+                    speech9,
+                    speech10
+                FROM ceo_details
+                WHERE status = 1
+                LIMIT 1
             """;
 }
