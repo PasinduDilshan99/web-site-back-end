@@ -143,11 +143,11 @@ public class EmployeeServiceImpl implements EmployeeService {
                     employeeRepository.getEmployeeDetailsForAssignTour();
 
             return new CommonResponse<>(
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                            CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                            employeesForAssignTourResponses,
-                            Instant.now());
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    employeesForAssignTourResponses,
+                    Instant.now());
 
         } catch (DataNotFoundErrorExceptionHandler e) {
             LOGGER.error("Error occurred while fetching employee assign for tour  : {}", e.getMessage(), e);
@@ -162,25 +162,26 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public CommonResponse<CeoDetailsReponse> getCeoDetails() {
+        LOGGER.info("Start fetching ceo details from repository");
+        try {
+            CeoDetailsReponse ceoDetailsReponse =
+                    employeeRepository.getCeoDetails();
 
-        List<String> speech = new ArrayList<>();
-        speech.add("Welcome to our journey of innovation and excellence. Since our founding, we have been committed to delivering exceptional experiences to our clients and creating meaningful opportunities for our team.");
-        speech.add("Our vision extends beyond business success—we aim to make a lasting positive impact on the communities we serve. Through dedication, creativity, and unwavering integrity, we continue to push boundaries and set new standards in our industry.");
-        speech.add("Together, we are building something truly remarkable.");
-        speech.add("See More. Feel More. Live More."); // Tagline added
+            return new CommonResponse<>(
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
+                    CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
+                    ceoDetailsReponse,
+                    Instant.now());
 
-
-        return new CommonResponse<>(
-                CommonResponseMessages.SUCCESSFULLY_RETRIEVE_CODE,
-                CommonResponseMessages.SUCCESSFULLY_RETRIEVE_STATUS,
-                CommonResponseMessages.SUCCESSFULLY_RETRIEVE_MESSAGE,
-                new CeoDetailsReponse(
-                        1L,
-                        "Dilshan Dimbulana",
-                        "Chief Executive Officer",
-                        speech,
-//                        "/images/users/user-1.jpg"
-                        null
-                ),
-                Instant.now());    }
+        } catch (DataNotFoundErrorExceptionHandler e) {
+            LOGGER.error("Error occurred while fetching ceo details  : {}", e.getMessage(), e);
+            throw new DataNotFoundErrorExceptionHandler(e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while fetching ceo details from repository: {}", e.getMessage(), e);
+            throw new InternalServerErrorExceptionHandler("Failed to fetch ceo details from repository");
+        } finally {
+            LOGGER.info("End fetching ceo details from repository");
+        }
+    }
 }

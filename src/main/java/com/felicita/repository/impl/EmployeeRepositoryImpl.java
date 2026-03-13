@@ -401,6 +401,38 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
         }
     }
 
+    @Override
+    public CeoDetailsReponse getCeoDetails() {
+        String sql = EmployeeQueries.GET_CEO_DETAILS;
+
+        try {
+            return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
+                List<String> speeches = new ArrayList<>();
+                for (int i = 1; i <= 10; i++) {
+                    String speech = rs.getString("speech" + i);
+                    if (speech != null && !speech.isBlank()) {
+                        speeches.add(speech);
+                    }
+                }
+
+                return CeoDetailsReponse.builder()
+                        .userId(rs.getLong("id"))
+                        .name(rs.getString("name"))
+                        .title(rs.getString("designation"))
+                        .imageUrl(rs.getString("profile_image"))
+                        .speech(speeches)
+                        .build();
+            });
+
+        } catch (EmptyResultDataAccessException ex) {
+            throw new DataNotFoundErrorExceptionHandler("No ceo details.");
+        } catch (Exception ex) {
+            LOGGER.error("Unexpected error while fetching ceo details.", ex);
+            throw new InternalServerErrorExceptionHandler(
+                    "Unexpected error occurred while fetching ceo details."
+            );
+        }
+    }
 
 
 }
